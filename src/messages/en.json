@@ -1,0 +1,11 @@
+{
+    "common": {
+        "save": "Save",
+        "cancel": "Cancel",
+        "search": "Search"
+    },
+    "users": {
+        "title": "User Management",
+        "add": "Add user"
+    }
+}

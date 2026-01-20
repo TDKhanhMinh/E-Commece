@@ -1,0 +1,11 @@
+{
+    "common": {
+        "save": "Lưu",
+        "cancel": "Hủy",
+        "search": "Tìm kiếm"
+    },
+    "users": {
+        "title": "Quản lý người dùng",
+        "add": "Thêm người dùng"
+    }
+}
