@@ -46,7 +46,7 @@ export default async function LocaleLayout({
                         enableSystem
                         disableTransitionOnChange
                     >
-                        <main className="flex flex-1">{children}</main>
+                        <main className="flex flex-1 flex-col">{children}</main>
                     </ThemeProvider>
                 </NextIntlClientProvider>
             </body>
