@@ -12,7 +12,7 @@ import {
 export default function Footer() {
     return (
         <footer className="w-full border-t bg-zinc-50 dark:bg-zinc-950">
-            <div className="container mx-auto px-4 py-12 md:py-16">
+            <div className="container mx-auto px-4 py-3 md:py-4">
                 <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4">
                     <div className="space-y-4">
                         <h3 className="text-xl font-bold tracking-tighter">
@@ -128,8 +128,8 @@ export default function Footer() {
                     </div>
                 </div>
 
-                <div className="text-muted-foreground mt-12 border-t pt-8 text-center text-sm">
-                    <p>
+                <div className="text-muted-foreground mt-4 border-t text-center text-sm">
+                    <p className="mt-3">
                         © 2026 T7M Online. Built for TRAN DO KHANH MINH project
                     </p>
                 </div>

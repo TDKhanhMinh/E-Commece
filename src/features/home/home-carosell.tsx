@@ -8,46 +8,12 @@ import { Smartphone, Laptop, Watch, Headphones, Tablet } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import SimpleBar from "simplebar-react";
-export const MOCK_CAROUSEL_ITEMS = [
-    {
-        label: "iphone",
-        title: "Seamless. Secure. Simply iPhone.",
-        imgUrl: "https://www.plug.tech/cdn/shop/files/4_1f8415dc-f90e-461a-98d0-5dae5f021a60.png?v=1749051534&width=500",
-    },
-    {
-        label: "android",
-        title: "Explore Top Android Picks.",
-        imgUrl: "https://www.plug.tech/cdn/shop/files/6_649e52d3-db65-405c-a1c6-d59a189f1dba.png?v=1749051542&width=500",
-    },
-    {
-        label: "ipads",
-        title: "Work hard. Play smart",
-        imgUrl: "https://www.plug.tech/cdn/shop/files/5_c5c5586e-ab16-423a-8b3f-89f004f84143.png?v=1749051922&width=500",
-    },
-    {
-        label: "macbooks",
-        title: "Stay connected, Stay active.",
-        imgUrl: "https://www.plug.tech/cdn/shop/files/MacbookProM2Silver_Ariel_1_abf0003e-9cac-4154-a619-0a92e3045a1a.png?v=1747230954&width=500",
-    },
-    {
-        label: "audio",
-        title: "Certified beats, Everyday vibes.",
-        imgUrl: "https://www.plug.tech/cdn/shop/files/Untitled_500x500px_52_3f2ef5a5-d0cd-4554-a188-d00a2e3ac59e.png?v=1746197540&width=500",
-    },
-    {
-        label: "smartwatches",
-        title: "Stay connected, Stay active.",
-        imgUrl: "https://www.plug.tech/cdn/shop/files/Apple-Watch.png?v=1749047829&width=500",
-    },
-    {
-        label: "Plug packs",
-        title: "Ready make bundles, Curated by Plug.",
-        imgUrl: "https://www.plug.tech/cdn/shop/files/MacbookProM2Silver_Ariel_1_abf0003e-9cac-4154-a619-0a92e3045a1a.png?v=1747230954&width=500",
-    },
-];
+import { use } from "react";
+import { useRouter } from "next/navigation";
+import { MOCK_CAROUSEL_ITEMS } from "../../../mock";
 export default function HomeCarousel() {
     const t = useTranslations("HomePage");
-
+    const router = useRouter();
     return (
         <div className="flex flex-col gap-20 pb-20">
             <section className="bg-zinc-50 py-6 dark:bg-zinc-700/50">
@@ -66,6 +32,9 @@ export default function HomeCarousel() {
                             {MOCK_CAROUSEL_ITEMS.map((item) => (
                                 <Card
                                     key={item.label}
+                                    onClick={() =>
+                                        router.push("/collection/" + item.label)
+                                    }
                                     className="mb-5 flex w-2/6 shrink-0 cursor-pointer flex-col items-center gap-4 p-6 shadow-xl transition-transform hover:-translate-y-1"
                                 >
                                     <Label className="rounded-md bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 px-3 py-1 text-lg font-semibold text-white uppercase">

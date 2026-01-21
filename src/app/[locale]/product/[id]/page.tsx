@@ -16,16 +16,13 @@ import ProductAboutUs from "@/features/product/product-about-us";
 import HomeSaleProducts from "@/features/home/home-sale-products";
 import ProductReviews from "@/features/product/product-reviews";
 import { use, useState } from "react";
+import { HomeQuestions } from "@/features/home/home-questions";
+import Subscribe from "@/components/common/subscribe";
+import { MOCK_IMAGES } from "../../../../../mock";
 
 function ProductDetails() {
     const reviews = 1234;
-    const MOCK_IMAGES = [
-        "https://www.plug.tech/cdn/shop/files/iPhone15Pink_Front.png?v=1714075683&width=823",
-        "https://www.plug.tech/cdn/shop/files/iPhone_1_2c3f168a-47be-427d-b556-5da7089de057.png?v=1726846779&width=823",
-        "https://www.plug.tech/cdn/shop/files/iPhone15Pink_Dual.png?v=1714075675&width=823",
-        "https://www.plug.tech/cdn/shop/files/factoryunlockedre_ba6016ff-cc16-4f79-b1cb-bf558065efd4.jpg?v=1726846786&width=823",
-        "https://www.plug.tech/cdn/shop/files/iPhone15Pink_Back.png?v=1714075690&width=823",
-    ];
+
     const [currentImage, setCurrentImage] = useState(MOCK_IMAGES[0]);
     return (
         <>
@@ -294,6 +291,8 @@ function ProductDetails() {
             </div>
             <HomeSaleProducts />
             <ProductReviews />
+            <HomeQuestions />
+            <Subscribe />
         </>
     );
 }

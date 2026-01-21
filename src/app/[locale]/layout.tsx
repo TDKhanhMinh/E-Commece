@@ -6,7 +6,7 @@ import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import "../../app/globals.css";
 import "simplebar-react/dist/simplebar.min.css";
 
 const geistSans = Geist({
@@ -46,9 +46,7 @@ export default async function LocaleLayout({
                         enableSystem
                         disableTransitionOnChange
                     >
-                        <Header />
-                        <main className="flex-1">{children}</main>
-                        <Footer />
+                        <main className="flex flex-1">{children}</main>
                     </ThemeProvider>
                 </NextIntlClientProvider>
             </body>

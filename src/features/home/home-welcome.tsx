@@ -2,23 +2,8 @@
 import { Button } from "@/components/ui/button";
 import { ShieldCheck } from "lucide-react";
 import Image from "next/image";
-export const MOCK_CONTENT_ITEMS = [
-    {
-        title: "Certified Quality",
-        description:
-            "Each device undergoes rigorous testing to ensure it meets our high standards for performance and reliability.",
-    },
-    {
-        title: "30-Day “Love It or Return It” Guarantee",
-        description:
-            "Try it, test it, love it. If not, send it back within 30 days for a full refund. Zero stress, zero risk.",
-    },
-    {
-        title: "Certified Quality, 90+ Point Inspection",
-        description:
-            "Every device passes Plug’s rigorous testing, cleaning, and grading process for dependable performance from day one.",
-    },
-];
+import { MOCK_CONTENT_ITEMS } from "../../../mock";
+
 function HomeWelcome() {
     return (
         <>
