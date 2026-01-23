@@ -31,8 +31,7 @@ export default function Header() {
     const locale = useLocale();
     const router = useRouter();
     const pathname = usePathname();
-    // const { isAuthenticated } = useAuthStore();
-    const isAuthenticated = true;
+    const { isAuthenticated } = useAuthStore();
     const changeLocale = (nextLocale: string) => {
         const newPath = pathname.replace(`/${locale}`, `/${nextLocale}`);
         router.push(newPath);
