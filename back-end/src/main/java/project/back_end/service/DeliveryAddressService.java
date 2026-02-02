@@ -10,7 +10,7 @@ import java.util.List;
 public interface DeliveryAddressService {
     List<DeliveryAddressResponse> getUserDeliveryAddresses(String email);
 
-    DeliveryAddressResponse updateUserDeliveryAddress(Long id, AddressRequest addressRequest);
+    DeliveryAddressResponse updateUserDeliveryAddress(Long id, String userName, AddressRequest addressRequest);
 
     Boolean deleteUserDeliveryAddress(Long id);
 
