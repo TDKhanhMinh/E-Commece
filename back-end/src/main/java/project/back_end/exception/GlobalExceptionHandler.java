@@ -59,7 +59,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(PropertyReferenceException.class)
     public ResponseEntity<ApiResponse<?>> handleValidationException(PropertyReferenceException e) {
         ApiResponse<?> response = ApiResponse.builder()
-                .statusCode(ErrorCode.INVALIDATE.getCode())
+                .statusCode(ErrorCode.INVALID_REQUEST.getCode())
                 .message("Invalid sort key: " + e.getPropertyName())
                 .build();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);

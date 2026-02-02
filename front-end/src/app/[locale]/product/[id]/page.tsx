@@ -18,7 +18,7 @@ import ProductReviews from "@/features/product/product-reviews";
 import { useState } from "react";
 import { HomeQuestions } from "@/features/home/home-questions";
 import Subscribe from "@/components/common/subscribe";
-import { MOCK_IMAGES } from "../../../../../../mock";
+import { MOCK_IMAGES } from "../../../../../mock";
 
 function ProductDetails() {
     const reviews = 1234;

@@ -44,6 +44,7 @@ export function UserAvatar() {
                     className="cursor-pointer"
                     onClick={() => {
                         logout();
+                        router.push("/");
                     }}
                 >
                     <LogOutIcon /> Log out

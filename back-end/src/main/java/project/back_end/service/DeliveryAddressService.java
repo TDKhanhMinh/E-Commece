@@ -1,4 +1,4 @@
-package project.back_end.service.UserService;
+package project.back_end.service;
 
 import org.springframework.stereotype.Service;
 import project.back_end.request.UserRequest.AddressRequest;

@@ -22,17 +22,12 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { FormHelperText } from "@/components/common/help-text";
+import { loginSchema } from "@/schema/auth-shema";
 
 export default function LoginPage() {
     const { setAuth } = useAuthStore();
     const router = useRouter();
-    const loginSchema = z.object({
-        email: z
-            .string()
-            .min(1, "Vui lòng nhập email")
-            .email("Email không hợp lệ"),
-        password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
-    });
+
     type LoginFormData = z.infer<typeof loginSchema>;
     const {
         register,
@@ -49,9 +44,16 @@ export default function LoginPage() {
     const mutation = useMutation({
         mutationFn: login,
         onSuccess: (data) => {
+            console.log("Login successful:", data);
             // @ts-ignore
-            setAuth(data.accessToken, data.user);
-            router.push("/");
+            setAuth(data.token, data.user);
+            console.log(data);
+            // @ts-ignore
+            if (data.role.toString().toLocaleLowerCase() === "admin") {
+                router.push("/admin");
+            } else {
+                router.push("/");
+            }
             setTimeout(() => {
                 toast.success("Đăng nhập thành công!");
             }, 1000);

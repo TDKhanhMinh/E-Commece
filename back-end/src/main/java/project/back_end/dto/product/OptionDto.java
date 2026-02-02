@@ -1,4 +1,4 @@
-package project.back_end.response.Product;
+package project.back_end.dto.product;
 
 import lombok.Data;
 

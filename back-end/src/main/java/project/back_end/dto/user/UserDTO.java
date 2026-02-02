@@ -18,4 +18,5 @@ public class UserDTO {
     private String phone;
     private LocalDateTime createdAt;
     private String avatarUrl;
+    private String role;
 }

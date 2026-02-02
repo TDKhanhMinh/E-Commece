@@ -2,62 +2,76 @@
 
 import AddressCard from "@/components/common/address-card";
 import AddressDialog from "@/components/common/address-dialog";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { MapPin, Plus } from "lucide-react"; // Import icon từ lucide-react
-
-const addresses = [
-    {
-        id: 1,
-        name: "Trần Đỗ Khánh Minh",
-        address:
-            "UBND xã Thanh Vĩnh Đông, Tỉnh Lộ 827A, Xã Thanh Vĩnh Đông, Huyện Châu Thành, Tỉnh Long An",
-        phone: "0345738266",
-        isDefault: true,
-    },
-    {
-        id: 2,
-        name: "Trần Đỗ Khánh Minh",
-        address:
-            "Công ty TNHH Hai thành viên Thái Minh Phát, 36 Đường Số 7, Phường Bình Hưng Hòa A, Quận Bình Tân, Thành phố Hồ Chí Minh",
-        phone: "0345728356",
-        isDefault: true,
-    },
-    {
-        id: 3,
-        name: "tran minh",
-        address: "Nguyễn Huệ, Phường Lào Cai, Thành phố Lào Cai, Tỉnh Lào Cai",
-        phone: "0345738250",
-        isDefault: false,
-    },
-];
+import { useQuery } from "@tanstack/react-query";
+import { DeliveryAddress, getDeliveryAddresses } from "@/service/user-service";
 
 export default function AddressDelivery() {
+    const {
+        data: addressList,
+        isLoading,
+        isError,
+    } = useQuery({
+        queryKey: ["addresses"],
+        queryFn: getDeliveryAddresses,
+    });
+
+    const addresses = addressList || [];
+    console.log("Address", addresses);
+    if (isLoading) {
+        return (
+            <div className="mx-auto max-w-7xl p-4 text-center">
+                Đang tải danh sách địa chỉ...
+            </div>
+        );
+    }
+
+    if (isError) {
+        return (
+            <div className="mx-auto max-w-7xl p-4 text-center text-red-500">
+                Không thể tải danh sách địa chỉ.
+            </div>
+        );
+    }
+
     return (
-        <div className="mx-auto max-w-7xl space-y-0 p-4">
-            <Card className="w-full border-none bg-gray-50/30 shadow-sm">
+        <div className="mx-auto w-6xl space-y-0 p-4">
+            <Card className="w-full border-none shadow-sm">
                 <CardContent className="p-6">
                     <div className="mb-6 flex items-center justify-between">
                         <h3 className="text-lg font-bold">
-                            Bạn có <span className="">{addresses.length}</span>{" "}
+                            Bạn có{" "}
+                            <span className="text-blue-600">
+                                {addresses?.length}
+                            </span>{" "}
                             địa chỉ
                         </h3>
-                        <AddressDialog />
+                        <AddressDialog
+                            btnText={"Thêm địa chỉ"}
+                            title={"Thêm địa chỉ"}
+                            type={"add"}
+                            addressId={0}
+                        />
                     </div>
 
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2">
-                        {addresses.map((item) => (
-                            <AddressCard
-                                key={item.id}
-                                id={item.id}
-                                name={item.name}
-                                address={item.address}
-                                phone={item.phone}
-                                isDefault={item.isDefault}
-                            />
-                        ))}
-                    </div>
+                    {addresses?.length === 0 ? (
+                        <div className="py-10 text-center">
+                            Bạn chưa lưu địa chỉ nào.
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2">
+                            {addresses?.map((item: DeliveryAddress) => (
+                                <AddressCard
+                                    key={item.id}
+                                    id={item.id}
+                                    name={item.userName}
+                                    address={item.location}
+                                    phone={item.phoneNumber}
+                                    isDefault={item.isDefault}
+                                />
+                            ))}
+                        </div>
+                    )}
                 </CardContent>
             </Card>
         </div>

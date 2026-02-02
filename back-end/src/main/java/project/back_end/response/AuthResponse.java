@@ -9,9 +9,12 @@ import project.back_end.dto.user.UserDTO;
 public class AuthResponse {
     private String token;
     private UserDTO user;
+    private String role;
 
-    public AuthResponse(String jwtToken, UserDTO user) {
+    public AuthResponse(String jwtToken, UserDTO user, String role) {
+        this.role = role;
         this.token = jwtToken;
         this.user = user;
+
     }
 }

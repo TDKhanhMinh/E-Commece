@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,10 +13,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import project.back_end.dto.user.UserDTO;
 import project.back_end.request.UserRequest.AddressRequest;
+import project.back_end.request.UserRequest.UpdateUserRequest;
 import project.back_end.response.ApiResponse;
 import project.back_end.response.UserResponse.DeliveryAddressResponse;
-import project.back_end.service.UserService.DeliveryAddressService;
-import project.back_end.service.UserService.UserService;
+import project.back_end.response.UserResponse.UserResponse;
+import project.back_end.service.DeliveryAddressService;
+import project.back_end.service.UserService;
 
 import java.util.List;
 
@@ -38,14 +41,32 @@ public class UserController {
         );
     }
 
+    @PutMapping("/profile")
+    public ResponseEntity<ApiResponse<UserDTO>> updateUserProfile(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody @Validated UpdateUserRequest updateUserRequest) {
+        String username = userDetails.getUsername();
+        log.info("Updating profile for user ID: {}", username);
+        UserDTO updatedUser = userService.updateUser(updateUserRequest, username);
+        return ResponseEntity.ok(
+                new ApiResponse<>(200, "User profile updated successfully", updatedUser)
+        );
+    }
+
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/all")
-    public ResponseEntity<ApiResponse<List<UserDTO>>> getAllUsers() {
-        List<UserDTO> users = userService.getAllUsers();
-        return ResponseEntity.ok(
-                new ApiResponse<>(200, "All users fetched successfully", users)
-        );
+    public ResponseEntity<ApiResponse<Page<UserResponse>>> getAllUsers(@RequestParam(defaultValue = "0") int page,
+                                                                       @RequestParam(defaultValue = "10") int size,
+                                                                       @RequestParam(defaultValue = "id", required = false) String sortBy,
+                                                                       @RequestParam(defaultValue = "asc") String sortDir,
+                                                                       @RequestParam(required = false) String searchQuery) {
+        {
+            Page<UserResponse> users = userService.getAllUsers(page, size, sortBy, sortDir, searchQuery);
+            return ResponseEntity.ok(
+                    new ApiResponse<>(200, "All users fetched successfully", users)
+            );
+        }
     }
 
     @GetMapping("/delivery-addresses")
@@ -68,6 +89,20 @@ public class UserController {
                 new ApiResponse<>(200, "User delivery address added successfully", deliveryAddressService.addUserDeliveryAddress(username, addressRequest))
         );
     }
+
+    @PutMapping("/delivery-addresses/{id}")
+    public ResponseEntity<ApiResponse<DeliveryAddressResponse>> updateUserDeliveryAddress(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody @Validated AddressRequest addressRequest) {
+        String username = userDetails.getUsername();
+        log.info("Updating delivery address with ID: {} for user ID: {}", id, username);
+        DeliveryAddressResponse updatedAddress = deliveryAddressService.updateUserDeliveryAddress(id, username, addressRequest);
+        return ResponseEntity.ok(
+                new ApiResponse<>(200, "User delivery address updated successfully", updatedAddress)
+        );
+    }
+
 
     @DeleteMapping("/delivery-addresses/{id}")
     public ResponseEntity<ApiResponse<?>> deleteUserDeliveryAddress(@PathVariable Long id) {

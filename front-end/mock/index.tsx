@@ -1,14 +1,26 @@
 import {
-    MapPinIcon,
-    User,
-    CreditCardIcon,
+    BarChart3,
+    Bell,
+    Building2Icon,
     ClipboardListIcon,
-    LifeBuoyIcon,
-    SettingsIcon,
-    Headset,
+    CreditCard,
+    CreditCardIcon,
     Crown,
-    ShoppingCart,
+    FileText,
+    Headset,
+    Layers,
+    LayoutDashboard,
+    LifeBuoyIcon,
     LockKeyhole,
+    MapPinIcon,
+    Package,
+    Settings,
+    SettingsIcon,
+    ShieldCheck,
+    ShoppingCart,
+    Truck,
+    User,
+    Users,
 } from "lucide-react";
 
 export const MOCK_CAROUSEL_PRODUCT_ITEMS = [
@@ -387,7 +399,83 @@ export const USER_SIDEBAR_ITEMS = [
         icon: SettingsIcon,
     },
 ];
-
+export const ADMIN_SIDEBAR_ITEMS = [
+    {
+        title: "Dashboard",
+        url: "/admin/dashboard",
+        icon: LayoutDashboard,
+    },
+    {
+        title: "Users",
+        url: "/admin/users",
+        icon: Users,
+    },
+    {
+        title: "Orders",
+        url: "/admin/orders",
+        icon: ShoppingCart,
+    },
+    {
+        title: "Products",
+        url: "/admin/products",
+        icon: Package,
+    },
+    {
+        title: "Categories",
+        url: "/admin/categories",
+        icon: Layers,
+    },
+    {
+        title: "Brands",
+        url: "/admin/brands",
+        icon: Building2Icon,
+    },
+    {
+        title: "Attributes",
+        url: "/admin/attributes",
+        icon: ClipboardListIcon,
+    },
+    {
+        title: "Suppliers",
+        url: "/admin/brands",
+        icon: Building2Icon,
+    },
+    {
+        title: "Shipping",
+        url: "/admin/shipping",
+        icon: Truck,
+    },
+    {
+        title: "Payments",
+        url: "/admin/payments",
+        icon: CreditCard,
+    },
+    {
+        title: "Reports & Analytics",
+        url: "/admin/reports",
+        icon: BarChart3,
+    },
+    {
+        title: "Notifications",
+        url: "/admin/notifications",
+        icon: Bell,
+    },
+    {
+        title: "Roles & Permissions",
+        url: "/admin/roles",
+        icon: ShieldCheck,
+    },
+    {
+        title: "System Logs",
+        url: "/admin/logs",
+        icon: FileText,
+    },
+    {
+        title: "Settings",
+        url: "/admin/settings",
+        icon: Settings,
+    },
+];
 export const USER_MEMBERSHIPS_TABS = [
     {
         label: "Member",

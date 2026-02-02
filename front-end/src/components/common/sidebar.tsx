@@ -1,4 +1,4 @@
-import { ArrowRight, Command, User } from "lucide-react";
+import { User } from "lucide-react";
 import {
     Sidebar,
     SidebarContent,
@@ -16,7 +16,6 @@ import { cn } from "@/lib/utils";
 
 function SidebarUser() {
     const { toggleSidebar, state } = useSidebar();
-    const isCollapsed = state === "collapsed";
     return (
         <>
             <Sidebar collapsible="icon" className="h-screen">

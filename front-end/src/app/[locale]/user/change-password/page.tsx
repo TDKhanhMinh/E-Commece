@@ -6,9 +6,52 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, Lock } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+import { changePassword } from "@/service/auth-service";
+import { changePasswordSchema } from "@/schema/auth-shema";
+import * as z from "zod";
+import { FormHelperText } from "@/components/common/help-text";
 
+type ChangePasswordData = z.infer<typeof changePasswordSchema>;
 export default function ChangePassword() {
     const [showPassword, setShowPassword] = useState(false);
+
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors },
+    } = useForm<ChangePasswordData>({
+        resolver: zodResolver(changePasswordSchema),
+        defaultValues: {
+            currentPassword: "",
+            newPassword: "",
+            confirmPassword: "",
+        },
+    });
+
+    const mutation = useMutation({
+        mutationFn: (data: ChangePasswordData) => {
+            return changePassword(data);
+        },
+        onSuccess: () => {
+            toast.success("Đổi mật khẩu thành công!");
+            reset();
+        },
+        onError: (error) => {
+            console.error("Error updating user:", error);
+            toast.error(
+                error.message || "Đổi mật khẩu thất bại. Vui lòng thử lại."
+            );
+        },
+    });
+
+    const onSubmit = (data: ChangePasswordData) => {
+        mutation.mutate(data);
+    };
 
     return (
         <div className="flex min-h-screen items-start justify-center bg-gray-50/30 p-4 pt-10">
@@ -25,7 +68,10 @@ export default function ChangePassword() {
                 </CardHeader>
 
                 <CardContent className="pt-8">
-                    <form className="space-y-6">
+                    <form
+                        onSubmit={handleSubmit(onSubmit)}
+                        className="space-y-6"
+                    >
                         <div className="space-y-2">
                             <Label htmlFor="current-password text-gray-700">
                                 Mật khẩu hiện tại
@@ -36,6 +82,11 @@ export default function ChangePassword() {
                                     type={showPassword ? "text" : "password"}
                                     placeholder="********"
                                     className="h-11 pr-10 focus-visible:ring-blue-600"
+                                    {...register("currentPassword")}
+                                    disabled={mutation.isPending}
+                                />
+                                <FormHelperText
+                                    error={errors.currentPassword}
                                 />
                             </div>
                         </div>
@@ -53,7 +104,10 @@ export default function ChangePassword() {
                                     type={showPassword ? "text" : "password"}
                                     placeholder="********"
                                     className="h-11 pr-10 focus-visible:ring-blue-600"
+                                    {...register("newPassword")}
+                                    disabled={mutation.isPending}
                                 />
+                                <FormHelperText error={errors.newPassword} />
                             </div>
                         </div>
 
@@ -67,6 +121,11 @@ export default function ChangePassword() {
                                     type={showPassword ? "text" : "password"}
                                     placeholder="********"
                                     className="h-11 pr-10 focus-visible:ring-blue-600"
+                                    {...register("confirmPassword")}
+                                    disabled={mutation.isPending}
+                                />
+                                <FormHelperText
+                                    error={errors.confirmPassword}
                                 />
                                 <button
                                     type="button"

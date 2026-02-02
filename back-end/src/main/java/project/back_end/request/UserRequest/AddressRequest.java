@@ -17,6 +17,5 @@ public class AddressRequest {
     @NotNull(message = "PHONE_NUMBER_REQUIRED")
     @Size(min = 10, max = 10, message = "PHONE_NUMBER_SIZE_INVALID")
     private String phoneNumber;
-
     private Boolean isDefault = false;
 }

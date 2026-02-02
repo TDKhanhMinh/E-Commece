@@ -1,4 +1,4 @@
-package project.back_end.response.ProductResponse;
+package project.back_end.response.Product;
 
 import lombok.Data;
 

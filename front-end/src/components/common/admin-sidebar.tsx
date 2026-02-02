@@ -11,10 +11,10 @@ import {
     SidebarRail,
     useSidebar,
 } from "../ui/sidebar";
-import { USER_SIDEBAR_ITEMS } from "../../../mock";
+import { ADMIN_SIDEBAR_ITEMS } from "../../../mock";
 import { cn } from "@/lib/utils";
 
-function SidebarUser() {
+function AdminSidebar() {
     const { toggleSidebar, state } = useSidebar();
     return (
         <>
@@ -33,7 +33,7 @@ function SidebarUser() {
 
                                 <div className="grid flex-1 text-left text-sm leading-tight">
                                     <span className="truncate font-semibold">
-                                        User profile
+                                        Admin Dashboard
                                     </span>
                                 </div>
                             </SidebarMenuButton>
@@ -44,7 +44,7 @@ function SidebarUser() {
                     <SidebarGroup>
                         <SidebarGroupContent>
                             <SidebarMenu className="space-y-1">
-                                {USER_SIDEBAR_ITEMS.map((item) => (
+                                {ADMIN_SIDEBAR_ITEMS.map((item) => (
                                     <SidebarMenuItem key={item.title}>
                                         <SidebarMenuButton asChild>
                                             <a
@@ -71,4 +71,4 @@ function SidebarUser() {
     );
 }
 
-export default SidebarUser;
+export default AdminSidebar;

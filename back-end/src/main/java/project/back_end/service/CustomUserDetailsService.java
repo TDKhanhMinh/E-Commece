@@ -1,4 +1,4 @@
-package project.back_end.service.UserService;
+package project.back_end.service;
 
 import org.jspecify.annotations.NullMarked;
 import org.springframework.security.core.userdetails.UserDetails;
