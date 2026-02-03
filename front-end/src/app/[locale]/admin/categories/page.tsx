@@ -1,7 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { FolderTree, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+    FolderTree,
+    MoreHorizontal,
+    Pencil,
+    Plus,
+    Search,
+    Trash2,
+} from "lucide-react";
 
 import {
     Table,
@@ -12,6 +19,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -23,22 +31,61 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import { useCategories, useDeleteCategory } from "@/hooks/use-categories";
+import {
+    useAllCategories,
+    useCategories,
+    useDeleteCategory,
+} from "@/hooks/use-categories";
 import { Category } from "@/service/categories-service";
-import { CategoryDialog } from "@/components/common/category-dialog";
-import ConfirmAction from "@/components/common/confirm-action";
+import { CategoryDialog } from "@/components/common/dialog/category-dialog";
+import ConfirmAction from "@/components/common/dialog/confirm-action";
 import { flattenCategories } from "@/lib/flatten-categories";
+import useDebounce from "@/hooks/use-debounce";
+import { PageResponse } from "@/service/http";
+import { PaginationControl } from "@/components/common";
 
 export default function CategoriesPage() {
-    const { data: categories = [], isLoading } = useCategories();
-    const deleteMutation = useDeleteCategory();
+    const [keyword, setKeyword] = useState("");
+    const [currentPage, setCurrentPage] = useState(0); // Backend uses 0-based
+    const itemsPerPage = 10;
 
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [editingCategory, setEditingCategory] = useState<Category | null>(
         null
     );
 
-    const flatCategories = flattenCategories(categories);
+    // Debounce search keyword
+    const debouncedKeyword = useDebounce(keyword, 500);
+
+    // Paginated categories for table
+    const { data, isLoading } = useCategories({
+        page: currentPage,
+        size: itemsPerPage,
+        keyword: debouncedKeyword || undefined,
+    });
+
+    // All categories for dialog tree (without pagination)
+    const { data: allCategoriesData } = useAllCategories();
+
+    // Extract page response data
+    const pageData = data as PageResponse<Category> | undefined;
+    const categories = pageData?.content || [];
+    const totalPages = pageData?.totalPages || 0;
+
+    // Extract all categories for dialog
+    const allCategoriesPageData = allCategoriesData as
+        | PageResponse<Category>
+        | undefined;
+    const allCategories = allCategoriesPageData?.content || [];
+
+    const deleteMutation = useDeleteCategory();
+
+    const flatCategories = flattenCategories(categories as any);
+
+    // Reset to first page when search keyword changes
+    useEffect(() => {
+        setCurrentPage(0);
+    }, [debouncedKeyword]);
 
     const handleCreate = () => {
         setEditingCategory(null);
@@ -52,6 +99,14 @@ export default function CategoriesPage() {
 
     const handleDelete = (id: number) => {
         deleteMutation.mutate(id);
+    };
+
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page - 1);
+    };
+
+    const handleSearchChange = (value: string) => {
+        setKeyword(value);
     };
 
     return (
@@ -70,6 +125,17 @@ export default function CategoriesPage() {
                     <Plus className="h-4 w-4" />
                     Thêm danh mục
                 </Button>
+            </div>
+
+            {/* Search Input */}
+            <div className="flex max-w-sm items-center space-x-2 rounded-md border bg-white px-2 shadow-sm">
+                <Search className="ml-2 h-4 w-4 text-gray-500" />
+                <Input
+                    placeholder="Tìm theo tên danh mục..."
+                    value={keyword}
+                    onChange={(e) => handleSearchChange(e.target.value)}
+                    className="border-none shadow-none focus-visible:ring-0"
+                />
             </div>
 
             <Card className="border-muted shadow-sm">
@@ -208,11 +274,22 @@ export default function CategoriesPage() {
                 </CardContent>
             </Card>
 
+            {/* Pagination */}
+            {!isLoading && totalPages > 1 && (
+                <div className="flex justify-center">
+                    <PaginationControl
+                        currentPage={currentPage + 1}
+                        totalPages={totalPages}
+                        onPageChange={handlePageChange}
+                    />
+                </div>
+            )}
+
             <CategoryDialog
                 open={isDialogOpen}
                 onOpenChange={setIsDialogOpen}
                 categoryToEdit={editingCategory}
-                categoriesTree={categories}
+                categoriesTree={allCategories}
             />
         </div>
     );

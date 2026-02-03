@@ -1,4 +1,4 @@
-import ProductForm from "@/components/common/product-form";
+import ProductForm from "@/components/common/product/product-form";
 
 interface PageProps {
     params: Promise<{ id: string }>;

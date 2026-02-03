@@ -50,8 +50,8 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
-import PaginationControl from "@/components/common/pagination-control";
 import useDebounce from "@/hooks/use-debounce";
+import { PaginationControl } from "@/components/common";
 
 export default function AdminUsersPage() {
     const [pageIndex, setPageIndex] = useState(1);

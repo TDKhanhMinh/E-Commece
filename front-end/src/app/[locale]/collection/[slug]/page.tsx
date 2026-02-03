@@ -1,5 +1,5 @@
-import ProductItem from "@/components/common/product-item";
 import { MOCK_CAROUSEL_PRODUCT_ITEMS } from "../../../../../mock";
+import ProductItem from "@/components/common/product/product-item";
 
 function Collection() {
     return (

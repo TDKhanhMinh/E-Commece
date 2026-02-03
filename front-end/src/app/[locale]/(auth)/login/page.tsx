@@ -21,8 +21,8 @@ import { useForm } from "react-hook-form";
 import { useAuthStore } from "@/store/useAuthStore";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { FormHelperText } from "@/components/common/help-text";
 import { loginSchema } from "@/schema/auth-shema";
+import { FormHelperText } from "@/components/common";
 
 export default function LoginPage() {
     const { setAuth } = useAuthStore();

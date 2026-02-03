@@ -1,6 +1,8 @@
 package project.back_end.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.back_end.entity.product.Attribute;
@@ -12,9 +14,6 @@ import project.back_end.request.Product.AttributeRequest;
 import project.back_end.response.Product.AttributeResponse;
 import project.back_end.service.AttributeService;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 public class AttributeServiceImpl implements AttributeService {
@@ -24,10 +23,9 @@ public class AttributeServiceImpl implements AttributeService {
     private final AttributeMapper attributeMapper;
 
     @Override
-    public List<AttributeResponse> getAllAttributes() {
-        return attributeRepository.findAll().stream()
-                .map(attributeMapper::toResponse)
-                .collect(Collectors.toList());
+    public Page<AttributeResponse> getAllAttributes(String keyword, Pageable pageable) {
+        return attributeRepository.searchAttributes(keyword, pageable)
+                .map(attributeMapper::toResponse);
     }
 
     @Override

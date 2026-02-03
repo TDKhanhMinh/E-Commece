@@ -2,6 +2,10 @@ package project.back_end.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -11,8 +15,6 @@ import project.back_end.response.ApiResponse;
 import project.back_end.response.Product.AttributeResponse;
 import project.back_end.service.AttributeService;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/attributes")
 @RequiredArgsConstructor
@@ -21,8 +23,17 @@ public class AttributeController {
     private final AttributeService attributeService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<AttributeResponse>>> getAllAttributes() {
-        return ResponseEntity.ok(new ApiResponse<>(200, "Success", attributeService.getAllAttributes()));
+    public ResponseEntity<ApiResponse<Page<AttributeResponse>>> getAllAttributes(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "ASC") String sortDirection) {
+
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("DESC") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+
+        return ResponseEntity.ok(new ApiResponse<>(200, "Success", attributeService.getAllAttributes(keyword, pageable)));
     }
 
     @GetMapping("/{id}")

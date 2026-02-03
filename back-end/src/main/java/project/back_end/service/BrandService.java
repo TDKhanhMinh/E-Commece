@@ -1,12 +1,12 @@
 package project.back_end.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import project.back_end.request.Product.BrandRequest;
 import project.back_end.response.Product.BrandResponse;
 
-import java.util.List;
-
 public interface BrandService {
-    List<BrandResponse> getAllBrands();
+    Page<BrandResponse> getAllBrands(String keyword, Pageable pageable);
 
     BrandResponse getBrandById(Long id);
 

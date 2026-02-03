@@ -3,7 +3,7 @@ package project.back_end.service;
 
 import project.back_end.request.Product.AutoGenerateSkuRequest;
 import project.back_end.request.Product.SkuRequest;
-import project.back_end.request.Product.UpdateSkuPriceStockRequest;
+import project.back_end.request.Product.UpdateSkuRequest;
 
 import java.util.List;
 
@@ -24,9 +24,9 @@ public interface SkuService {
     void autoGenerateSku(Long productId, AutoGenerateSkuRequest request);
 
     // Cập nhật giá và tồn kho của SKU
-    void updateSkuPriceAndStock(
+    void updateSkuDetails(
             Long productId,
             Long skuId,
-            UpdateSkuPriceStockRequest request
+            UpdateSkuRequest request
     );
 }

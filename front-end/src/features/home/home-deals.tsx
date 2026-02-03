@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import DealItem from "@/components/common/deal-item";
 import { MOCK_CAROUSEL_PRODUCT_ITEMS } from "../../../mock";
+import { DealItem } from "@/components/common";
+
 export default function HomeDeals() {
     const t = useTranslations("HomePage");
 

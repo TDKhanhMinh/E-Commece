@@ -1,9 +1,9 @@
 "use client";
 
-import UserOrderItem from "@/components/common/user-order-item";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search } from "lucide-react";
+import { UserOrderItem } from "@/components/common";
 
 const ORDERS = [
     {

@@ -24,7 +24,7 @@ import {
 } from "../ui/navigation-menu";
 import Image from "next/image";
 import { useAuthStore } from "@/store/useAuthStore";
-import { UserAvatar } from "../common/user-avatar";
+import { UserAvatar } from "@/components/common";
 
 export default function Header() {
     const { setTheme } = useTheme();

@@ -2,7 +2,7 @@
 import { SidebarProvider } from "@/components/ui/sidebar";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
-import SidebarUser from "@/components/common/sidebar";
+import SidebarUser from "@/components/common/admin/sidebar";
 
 function UserLayout({ children }: { children: React.ReactNode }) {
     return (

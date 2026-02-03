@@ -1,6 +1,8 @@
 package project.back_end.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.back_end.entity.product.Attribute;
@@ -69,13 +71,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryResponse> getAllCategories() {
-        List<Category> rootCategories =
-                categoryRepository.findByParentIsNull();
-
-        return rootCategories.stream()
-                .map(categoryMapper::toResponse)
-                .toList();
+    public Page<CategoryResponse> getAllCategories(String keyword, Pageable pageable) {
+        return categoryRepository.searchRootCategories(keyword, pageable)
+                .map(categoryMapper::toResponse);
     }
 
 
@@ -113,32 +111,6 @@ public class CategoryServiceImpl implements CategoryService {
 
     // ================= HELPER METHODS =================
 
-    /**
-     * Hàm Map Entity sang DTO (Có đệ quy để lấy cây thư mục con)
-     */
-    private CategoryResponse mapToResponse(Category category) {
-        CategoryResponse response = new CategoryResponse();
-        response.setId(category.getId());
-        response.setName(category.getName());
-        response.setSlug(category.getSlug());
-
-        int level = 0;
-        Category current = category;
-        while (current.getParent() != null) {
-            level++;
-            current = current.getParent();
-        }
-        response.setLevel(level);
-
-        if (category.getChildren() != null && !category.getChildren().isEmpty()) {
-            List<CategoryResponse> childrenDtos = category.getChildren().stream()
-                    .map(categoryMapper::toResponse)
-                    .collect(Collectors.toList());
-            response.setChildren(childrenDtos);
-        }
-
-        return response;
-    }
 
     /**
      * Hàm tạo Slug từ tiếng Việt (Ví dụ: "Điện Thoại" -> "dien-thoai")

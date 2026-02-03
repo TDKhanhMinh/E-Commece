@@ -1,6 +1,8 @@
 package project.back_end.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.back_end.entity.product.Brand;
@@ -13,10 +15,8 @@ import project.back_end.response.Product.BrandResponse;
 import project.back_end.service.BrandService;
 
 import java.text.Normalizer;
-import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Implementation of BrandService.
@@ -32,16 +32,16 @@ public class BrandServiceImpl implements BrandService {
     private final BrandMapper brandMapper;
 
     /**
-     * Retrieve all brands from database.
+     * Retrieve all brands from database with pagination and search.
      *
-     * @return list of BrandResponse
+     * @param keyword  search keyword (optional)
+     * @param pageable pagination parameters
+     * @return page of BrandResponse
      */
     @Override
-    public List<BrandResponse> getAllBrands() {
-        return brandRepository.findAll()
-                .stream()
-                .map(brandMapper::toResponse)
-                .collect(Collectors.toList());
+    public Page<BrandResponse> getAllBrands(String keyword, Pageable pageable) {
+        return brandRepository.searchBrands(keyword, pageable)
+                .map(brandMapper::toResponse);
     }
 
     /**

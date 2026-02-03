@@ -17,8 +17,12 @@ export interface SkuDto {
     skuCode: string;
     price: number;
     stock: number;
+    discountPercent?: number; // Phần trăm giảm giá (0-100)
+    salePrice?: number; // Giá sau khi giảm
+    finalPrice?: number; // Giá cuối cùng (alias của salePrice)
     image: string;
-    attributes: Record<string, string>; // Map<String, String> từ BE
+    imagesDetails?: string[];
+    attributes: Record<string, string>;
 }
 
 export interface ProductDetail {
@@ -27,7 +31,7 @@ export interface ProductDetail {
     description: string;
     specifications: SpecDto[];
     variants: SkuDto[];
-    configurableOptions: any[]; // Dùng để render nút bấm (nếu cần)
+    configurableOptions: any[];
 }
 
 export interface ProductList {
@@ -54,13 +58,22 @@ export interface SkuRequest {
     skuCode: string;
     price: number;
     stock: number;
+    discountPercent?: number; // Phần trăm giảm giá (0-100)
     image: string;
     attributes: { attributeId: number; value: string }[];
+}
+
+export interface UpdateSkuRequest {
+    price: number;
+    stock: number;
+    discountPercent?: number; // Phần trăm giảm giá (0-100)
+    imageUrls?: string[];
 }
 
 export interface UpdateStockAndPriceSkuRequest {
     price: number;
     stock: number;
+    discountPercent?: number; // Phần trăm giảm giá (0-100)
     images?: string[];
 }
 export interface AutoGenerateSkuRequest {

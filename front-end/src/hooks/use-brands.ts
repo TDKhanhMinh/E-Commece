@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+    BrandSearchParams,
     createBrand,
     deleteBrand,
     getBrands,
@@ -10,11 +11,12 @@ import {
 import { toast } from "sonner";
 import { BrandRequest } from "@/type/brand-type";
 
-export const useBrands = () => {
+// 1. Hook lấy danh sách với phân trang
+export const useBrands = (params?: BrandSearchParams) => {
     return useQuery({
-        queryKey: ["brands"],
+        queryKey: ["brands", params],
         queryFn: async () => {
-            return await getBrands();
+            return await getBrands(params);
         },
         staleTime: 1000 * 60 * 5,
         retry: 1,

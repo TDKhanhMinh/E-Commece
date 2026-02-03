@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
     MoreHorizontal,
     Pencil,
@@ -41,7 +41,10 @@ import {
 
 import { useAttributes, useDeleteAttribute } from "@/hooks/use-attributes";
 import { Attribute } from "@/type/attribute-type";
-import { AttributeDialog } from "@/components/common/attribute-dialog";
+import { AttributeDialog } from "@/components/common/dialog/attribute-dialog";
+import useDebounce from "@/hooks/use-debounce";
+import { PageResponse } from "@/service/http";
+import { PaginationControl } from "@/components/common";
 
 /* =========================
  * COMPONENT
@@ -56,23 +59,35 @@ export default function AttributesPage() {
         null
     );
     const [deletingId, setDeletingId] = useState<number | null>(null);
+    const [currentPage, setCurrentPage] = useState(0); // Backend uses 0-based page
+    const itemsPerPage = 10;
+
+    // Debounce search keyword
+    const debouncedKeyword = useDebounce(keyword, 500);
 
     /* =========================
      * DATA FETCHING
      * ========================= */
-    const { data: attributes = [], isLoading } = useAttributes();
+    const { data, isLoading } = useAttributes({
+        page: currentPage,
+        size: itemsPerPage,
+        keyword: debouncedKeyword || undefined,
+    });
+
+    // Extract page response data
+    const pageData = data as PageResponse<Attribute> | undefined;
+    const attributes = pageData?.content || [];
+    const totalPages = pageData?.totalPages || 0;
+
     const deleteMutation = useDeleteAttribute();
 
     /* =========================
-     * DERIVED DATA
+     * EFFECTS
      * ========================= */
-    const filteredData = useMemo(() => {
-        return attributes.filter(
-            (item) =>
-                item.name.toLowerCase().includes(keyword.toLowerCase()) ||
-                item.code.toLowerCase().includes(keyword.toLowerCase())
-        );
-    }, [attributes, keyword]);
+    // Reset to first page when search keyword changes
+    useEffect(() => {
+        setCurrentPage(0);
+    }, [debouncedKeyword]);
 
     /* =========================
      * HANDLERS
@@ -93,6 +108,16 @@ export default function AttributesPage() {
         deleteMutation.mutate(deletingId, {
             onSuccess: () => setDeletingId(null),
         });
+    };
+
+    const handlePageChange = (page: number) => {
+        // Convert from 1-based (UI) to 0-based (backend)
+        setCurrentPage(page - 1);
+    };
+
+    const handleSearchChange = (value: string) => {
+        setKeyword(value);
+        // No need to reset page here, useEffect will handle it
     };
 
     /* =========================
@@ -140,7 +165,7 @@ export default function AttributesPage() {
                     <Input
                         placeholder="Tìm theo tên hoặc mã..."
                         value={keyword}
-                        onChange={(e) => setKeyword(e.target.value)}
+                        onChange={(e) => handleSearchChange(e.target.value)}
                         className="border-none shadow-none focus-visible:ring-0"
                     />
                 </div>
@@ -172,7 +197,7 @@ export default function AttributesPage() {
                                 </TableRow>
                             )}
 
-                            {!isLoading && filteredData.length === 0 && (
+                            {!isLoading && attributes.length === 0 && (
                                 <TableRow>
                                     <TableCell
                                         colSpan={5}
@@ -183,59 +208,73 @@ export default function AttributesPage() {
                                 </TableRow>
                             )}
 
-                            {filteredData.map((attr) => (
-                                <TableRow key={attr.id}>
-                                    <TableCell>
-                                        <Settings2 className="h-5 w-5 text-gray-400" />
-                                    </TableCell>
-                                    <TableCell className="font-medium">
-                                        {attr.name}
-                                    </TableCell>
-                                    <TableCell className="font-mono text-xs text-gray-500">
-                                        {attr.code}
-                                    </TableCell>
-                                    <TableCell>
-                                        {renderTypeBadge(attr.type)}
-                                    </TableCell>
-                                    <TableCell className="text-right">
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button
-                                                    variant="ghost"
-                                                    className="h-8 w-8 cursor-pointer p-0"
-                                                >
-                                                    <MoreHorizontal className="h-4 w-4" />
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end">
-                                                <DropdownMenuLabel>
-                                                    Thao tác
-                                                </DropdownMenuLabel>
-                                                <DropdownMenuItem
-                                                    onClick={() =>
-                                                        handleEdit(attr)
-                                                    }
-                                                >
-                                                    <Pencil className="mr-2 h-4 w-4" />{" "}
-                                                    Chỉnh sửa
-                                                </DropdownMenuItem>
-                                                <DropdownMenuItem
-                                                    className="text-red-600"
-                                                    onClick={() =>
-                                                        setDeletingId(attr.id)
-                                                    }
-                                                >
-                                                    <Trash2 className="mr-2 h-4 w-4" />{" "}
-                                                    Xóa
-                                                </DropdownMenuItem>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
+                            {!isLoading &&
+                                attributes.map((attr: Attribute) => (
+                                    <TableRow key={attr.id}>
+                                        <TableCell>
+                                            <Settings2 className="h-5 w-5 text-gray-400" />
+                                        </TableCell>
+                                        <TableCell className="font-medium">
+                                            {attr.name}
+                                        </TableCell>
+                                        <TableCell className="font-mono text-xs text-gray-500">
+                                            {attr.code}
+                                        </TableCell>
+                                        <TableCell>
+                                            {renderTypeBadge(attr.type)}
+                                        </TableCell>
+                                        <TableCell className="text-right">
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button
+                                                        variant="ghost"
+                                                        className="h-8 w-8 cursor-pointer p-0"
+                                                    >
+                                                        <MoreHorizontal className="h-4 w-4" />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="end">
+                                                    <DropdownMenuLabel>
+                                                        Thao tác
+                                                    </DropdownMenuLabel>
+                                                    <DropdownMenuItem
+                                                        onClick={() =>
+                                                            handleEdit(attr)
+                                                        }
+                                                    >
+                                                        <Pencil className="mr-2 h-4 w-4" />{" "}
+                                                        Chỉnh sửa
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem
+                                                        className="text-red-600"
+                                                        onClick={() =>
+                                                            setDeletingId(
+                                                                attr.id
+                                                            )
+                                                        }
+                                                    >
+                                                        <Trash2 className="mr-2 h-4 w-4" />{" "}
+                                                        Xóa
+                                                    </DropdownMenuItem>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
                         </TableBody>
                     </Table>
                 </div>
+
+                {/* PAGINATION */}
+                {!isLoading && totalPages > 1 && (
+                    <div className="flex justify-center">
+                        <PaginationControl
+                            currentPage={currentPage + 1}
+                            totalPages={totalPages}
+                            onPageChange={handlePageChange}
+                        />
+                    </div>
+                )}
             </div>
 
             {/* CREATE / EDIT DIALOG */}

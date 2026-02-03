@@ -3,6 +3,10 @@ package project.back_end.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -10,8 +14,6 @@ import project.back_end.request.Product.CategoryRequest;
 import project.back_end.response.ApiResponse;
 import project.back_end.response.Product.CategoryResponse;
 import project.back_end.service.CategoryService;
-
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -24,12 +26,22 @@ public class CategoryController {
     // ================== PUBLIC ENDPOINTS ==================
 
     /**
-     * Lấy cây danh mục (Category Tree)
+     * Lấy cây danh mục (Category Tree) với phân trang và tìm kiếm
      * GET /api/categories
      */
     @GetMapping
-    public ResponseEntity<ApiResponse<List<CategoryResponse>>> getAllCategories() {
-        List<CategoryResponse> categories = categoryService.getAllCategories();
+    public ResponseEntity<ApiResponse<Page<CategoryResponse>>> getAllCategories(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "ASC") String sortDirection) {
+
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("DESC")
+                ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+
+        Page<CategoryResponse> categories = categoryService.getAllCategories(keyword, pageable);
         return ResponseEntity.ok(
                 new ApiResponse<>(200, "Lấy danh sách danh mục thành công", categories)
         );

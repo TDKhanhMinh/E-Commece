@@ -1,7 +1,7 @@
 "use client";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import Footer from "@/components/layout/footer";
-import AdminSidebar from "@/components/common/admin-sidebar";
+import AdminSidebar from "@/components/common/admin/admin-sidebar";
 
 function UserLayout({ children }: { children: React.ReactNode }) {
     return (

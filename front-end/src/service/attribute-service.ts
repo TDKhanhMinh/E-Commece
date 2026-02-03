@@ -1,8 +1,34 @@
 import { Attribute, AttributeRequest } from "@/type/attribute-type";
-import http, { ApiResponse } from "@/service/http";
+import http, { ApiResponse, PageResponse } from "@/service/http";
 
-export const getAttributes = async () =>
-    http.get<ApiResponse<Attribute[]>>("/attributes");
+export interface AttributeSearchParams {
+    page?: number;
+    size?: number;
+    keyword?: string;
+    code?: string;
+}
+
+export const getAttributes = async (params?: AttributeSearchParams) => {
+    const queryParams = new URLSearchParams();
+
+    if (params?.page !== undefined) {
+        queryParams.append("page", params.page.toString());
+    }
+    if (params?.size !== undefined) {
+        queryParams.append("size", params.size.toString());
+    }
+    if (params?.keyword) {
+        queryParams.append("keyword", params.keyword);
+    }
+    if (params?.code) {
+        queryParams.append("code", params.code);
+    }
+
+    const queryString = queryParams.toString();
+    const url = queryString ? `/attributes?${queryString}` : "/attributes";
+
+    return http.get<ApiResponse<PageResponse<Attribute>>>(url);
+};
 
 export const createAttribute = async (data: AttributeRequest) =>
     http.post<ApiResponse<Attribute>>("/attributes", data);

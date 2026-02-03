@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     Hexagon,
     MoreHorizontal,
@@ -30,23 +30,41 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { useBrands, useDeleteBrand } from "@/hooks/use-brands";
 import { Brand } from "@/type/brand-type";
-import { BrandDialog } from "@/components/common/brand-dialog";
-import ConfirmAction from "@/components/common/confirm-action";
+import { BrandDialog } from "@/components/common";
+import ConfirmAction from "@/components/common/dialog/confirm-action";
+import { PaginationControl } from "@/components/common/ui";
+import useDebounce from "@/hooks/use-debounce";
+import { PageResponse } from "@/service/http";
 
 export default function BrandsPage() {
-    const { data: brands = [], isLoading } = useBrands();
-    const deleteMutation = useDeleteBrand();
-
     const [keyword, setKeyword] = useState("");
+    const [currentPage, setCurrentPage] = useState(0); // Backend uses 0-based
+    const itemsPerPage = 10;
+
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [editingBrand, setEditingBrand] = useState<Brand | null>(null);
-    const [deletingId, setDeletingId] = useState<number | null>(null);
 
-    // Filter local (Vì BE bài Brand chưa làm filter server-side, nên ta lọc client cho nhanh)
-    // @ts-ignore
-    const filteredBrands = brands.filter((b: { name: string }) =>
-        b.name.toLowerCase().includes(keyword.toLowerCase())
-    );
+    // Debounce search keyword
+    const debouncedKeyword = useDebounce(keyword, 500);
+
+    // Fetch brands with pagination
+    const { data, isLoading } = useBrands({
+        page: currentPage,
+        size: itemsPerPage,
+        keyword: debouncedKeyword || undefined,
+    });
+
+    const deleteMutation = useDeleteBrand();
+
+    // Extract page response data
+    const pageData = data as PageResponse<Brand> | undefined;
+    const brands = pageData?.content || [];
+    const totalPages = pageData?.totalPages || 0;
+
+    // Reset to first page when search keyword changes
+    useEffect(() => {
+        setCurrentPage(0);
+    }, [debouncedKeyword]);
 
     const handleCreate = () => {
         setEditingBrand(null);
@@ -60,6 +78,15 @@ export default function BrandsPage() {
 
     const handleDelete = (deletingId: number) => {
         deleteMutation.mutate(deletingId);
+    };
+
+    const handlePageChange = (page: number) => {
+        // Convert from 1-based (UI) to 0-based (backend)
+        setCurrentPage(page - 1);
+    };
+
+    const handleSearchChange = (value: string) => {
+        setKeyword(value);
     };
 
     return (
@@ -86,7 +113,7 @@ export default function BrandsPage() {
                 <Input
                     placeholder="Tìm kiếm..."
                     value={keyword}
-                    onChange={(e) => setKeyword(e.target.value)}
+                    onChange={(e) => handleSearchChange(e.target.value)}
                     className="border-none shadow-none focus-visible:ring-0"
                 />
             </div>
@@ -116,7 +143,7 @@ export default function BrandsPage() {
                                     Đang tải...
                                 </TableCell>
                             </TableRow>
-                        ) : filteredBrands.length === 0 ? (
+                        ) : brands.length === 0 ? (
                             <TableRow>
                                 <TableCell
                                     colSpan={5}
@@ -126,7 +153,7 @@ export default function BrandsPage() {
                                 </TableCell>
                             </TableRow>
                         ) : (
-                            filteredBrands.map((brand: Brand) => (
+                            brands.map((brand: Brand) => (
                                 <TableRow key={brand.id}>
                                     <TableCell>
                                         <Avatar className="h-10 w-10 rounded-lg border">
@@ -203,6 +230,17 @@ export default function BrandsPage() {
                     </TableBody>
                 </Table>
             </div>
+
+            {/* Pagination */}
+            {!isLoading && totalPages > 1 && (
+                <div className="flex justify-center">
+                    <PaginationControl
+                        currentPage={currentPage + 1}
+                        totalPages={totalPages}
+                        onPageChange={handlePageChange}
+                    />
+                </div>
+            )}
 
             <BrandDialog
                 open={isDialogOpen}

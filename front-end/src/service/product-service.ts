@@ -2,7 +2,7 @@ import {
     ProductDetail,
     ProductRequest,
     SkuRequest,
-    UpdateStockAndPriceSkuRequest,
+    UpdateSkuRequest,
 } from "@/type/product-type";
 import http, { ApiResponse } from "@/service/http";
 
@@ -52,10 +52,10 @@ export const autoCreateSku = async (
 export const updateSku = async (skuId: number, data: SkuRequest) =>
     http.put<ApiResponse<void>>(`/skus/${skuId}`, data);
 
-export const updateStockAndPriceSku = async (
+export const updateSkuDetails = async (
     productId: number,
     skuId: number,
-    data: UpdateStockAndPriceSkuRequest
+    data: UpdateSkuRequest
 ) => http.put<ApiResponse<void>>(`/products/${productId}/sku/${skuId}`, data);
 
 export const deleteSku = async (skuId: number) =>

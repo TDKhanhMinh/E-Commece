@@ -1,5 +1,6 @@
 import Providers from "@/app/provider";
 import { Toaster } from "@/components/ui/sonner";
+import React from "react";
 
 export default function RootLayout({
     children,

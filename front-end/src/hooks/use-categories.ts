@@ -4,20 +4,31 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
     CategoryRequest,
+    CategorySearchParams,
     createCategory,
     deleteCategory,
     getAllCategories,
     updateCategory,
 } from "@/service/categories-service";
 
-// 1. Hook lấy danh sách
-export const useCategories = () => {
+// 1. Hook lấy danh sách với phân trang
+export const useCategories = (params?: CategorySearchParams) => {
     return useQuery({
-        queryKey: ["categories"],
+        queryKey: ["categories", params],
         queryFn: async () => {
-            const response = await getAllCategories();
-            console.log("Fetched categories:", response);
-            return response;
+            return await getAllCategories(params);
+        },
+        staleTime: 1000 * 60 * 5,
+    });
+};
+
+// 1.1 Hook lấy tất cả categories (không phân trang) cho dropdown/tree
+export const useAllCategories = () => {
+    return useQuery({
+        queryKey: ["categories", "all"],
+        queryFn: async () => {
+            // Lấy với size lớn để có tất cả categories
+            return await getAllCategories({ size: 1000 });
         },
         staleTime: 1000 * 60 * 5,
     });

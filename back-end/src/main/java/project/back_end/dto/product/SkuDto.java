@@ -15,6 +15,9 @@ public class SkuDto {
     private Integer stock;
     private String image;
     private List<String> imagesDetails = new ArrayList<>();
+    private BigDecimal salePrice;
+    private BigDecimal finalPrice;
 
+    private Integer discountPercent;
     private Map<String, String> attributes;
 }

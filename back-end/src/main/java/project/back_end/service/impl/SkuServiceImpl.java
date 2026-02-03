@@ -1,6 +1,7 @@
 package project.back_end.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.back_end.entity.product.Attribute;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
  * Service xử lý nghiệp vụ liên quan đến SKU (Stock Keeping Unit)
  * Bao gồm: tạo, cập nhật và xóa SKU cho sản phẩm
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SkuServiceImpl implements SkuService {
@@ -195,10 +197,10 @@ public class SkuServiceImpl implements SkuService {
 
     @Override
     @Transactional
-    public void updateSkuPriceAndStock(
+    public void updateSkuDetails(
             Long productId,
             Long skuId,
-            UpdateSkuPriceStockRequest request
+            UpdateSkuRequest request
     ) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
@@ -210,9 +212,25 @@ public class SkuServiceImpl implements SkuService {
             throw new AppException(ErrorCode.SKU_NOT_BELONG_TO_PRODUCT);
         }
 
-        sku.setPrice(BigDecimal.valueOf(request.getPrice()));
+        sku.setPrice(request.getPrice());
+
+        Integer discountPercent = request.getDiscountPercent();
+        sku.setDiscountPercent(discountPercent);
+
+        if (discountPercent != null) {
+            BigDecimal salePrice = request.getPrice()
+                    .multiply(BigDecimal.valueOf(100 - discountPercent))
+                    .divide(BigDecimal.valueOf(100));
+            sku.setSalePrice(salePrice);
+        } else {
+            sku.setSalePrice(null);
+        }
         sku.setStock(request.getStock());
 
+        if (request.getImages() != null) {
+            log.info("Updating SKU images for SKU ID {}: {}", skuId, request.getImages());
+            sku.setImages(request.getImages());
+        }
         skuRepository.save(sku);
     }
 

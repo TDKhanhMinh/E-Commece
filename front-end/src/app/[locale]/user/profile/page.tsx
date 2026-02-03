@@ -11,7 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { updateUserSchema } from "@/schema/user-schema";
 import * as z from "zod";
 import { toast } from "sonner";
-import { FormHelperText } from "@/components/common/help-text";
+import { FormHelperText } from "@/components/common/ui/help-text";
 
 type UpdateUserFormData = z.infer<typeof updateUserSchema>;
 

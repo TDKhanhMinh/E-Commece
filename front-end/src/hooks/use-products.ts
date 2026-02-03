@@ -16,7 +16,7 @@ import {
     getProductById,
     updateProduct,
     updateSku,
-    updateStockAndPriceSku,
+    updateSkuDetails,
 } from "@/service/product-service";
 import {
     AutoGenerateSkuRequest,
@@ -208,12 +208,14 @@ export const useAutoGenerateProductSku = (productId: number) => {
         isAutoGenerating: autoGenerateSkuMutation.isPending,
     };
 };
-export const useUpdateSkuPriceStock = (productId: number, skuId: number) => {
+export const useUpdateSkuDetails = (productId: number, skuId: number) => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (payload: UpdateStockAndPriceSkuRequest) =>
-            updateStockAndPriceSku(productId, skuId, payload),
+        mutationFn: (payload: UpdateStockAndPriceSkuRequest) => {
+            console.log("Updating SKU with payload:", payload);
+            return updateSkuDetails(productId, skuId, payload);
+        },
 
         onSuccess: () => {
             toast.success("Cập nhật giá và tồn kho SKU thành công");

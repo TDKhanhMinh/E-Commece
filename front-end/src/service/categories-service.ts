@@ -11,50 +11,50 @@ export interface CategoryRequest {
     parentId?: number | null;
 }
 
-import { AxiosResponse } from "axios";
-import http, { ApiResponse } from "@/service/http";
+export interface CategorySearchParams {
+    page?: number;
+    size?: number;
+    keyword?: string;
+}
 
-// 1. Lấy tất cả danh mục
-export const getAllCategories: () => Promise<
-    AxiosResponse<ApiResponse<Category[]>>
-> = async (): Promise<AxiosResponse<ApiResponse<Category[]>>> => {
-    return http.get<ApiResponse<Category[]>>("/categories");
+import http, { ApiResponse, PageResponse } from "@/service/http";
+
+// 1. Lấy tất cả danh mục với phân trang
+export const getAllCategories = async (params?: CategorySearchParams) => {
+    const queryParams = new URLSearchParams();
+
+    if (params?.page !== undefined) {
+        queryParams.append("page", params.page.toString());
+    }
+    if (params?.size !== undefined) {
+        queryParams.append("size", params.size.toString());
+    }
+    if (params?.keyword) {
+        queryParams.append("keyword", params.keyword);
+    }
+
+    const queryString = queryParams.toString();
+    const url = queryString ? `/categories?${queryString}` : "/categories";
+
+    return http.get<ApiResponse<PageResponse<Category>>>(url);
 };
 
 // 2. Lấy chi tiết 1 danh mục
-export const getCategoryById: (
-    id: number
-) => Promise<AxiosResponse<ApiResponse<Category>>> = async (
-    id: number
-): Promise<AxiosResponse<ApiResponse<Category>>> => {
+export const getCategoryById = async (id: number) => {
     return http.get<ApiResponse<Category>>(`/categories/${id}`);
 };
 
 // 3. Tạo mới danh mục
-export const createCategory: (
-    data: CategoryRequest
-) => Promise<AxiosResponse<ApiResponse<Category>>> = async (
-    data: CategoryRequest
-): Promise<AxiosResponse<ApiResponse<Category>>> => {
+export const createCategory = async (data: CategoryRequest) => {
     return http.post<ApiResponse<Category>>("/categories", data);
 };
 
 // 4. Cập nhật danh mục
-export const updateCategory: (
-    id: number,
-    data: CategoryRequest
-) => Promise<AxiosResponse<ApiResponse<Category>>> = async (
-    id: number,
-    data: CategoryRequest
-): Promise<AxiosResponse<ApiResponse<Category>>> => {
+export const updateCategory = async (id: number, data: CategoryRequest) => {
     return http.put<ApiResponse<Category>>(`/categories/${id}`, data);
 };
 
 // 5. Xóa danh mục
-export const deleteCategory: (
-    id: number
-) => Promise<AxiosResponse<ApiResponse<void>>> = async (
-    id: number
-): Promise<AxiosResponse<ApiResponse<void>>> => {
+export const deleteCategory = async (id: number) => {
     return http.delete<ApiResponse<void>>(`/categories/${id}`);
 };

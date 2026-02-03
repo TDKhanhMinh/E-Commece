@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { changePassword } from "@/service/auth-service";
 import { changePasswordSchema } from "@/schema/auth-shema";
 import * as z from "zod";
-import { FormHelperText } from "@/components/common/help-text";
+import { FormHelperText } from "@/components/common/ui/help-text";
 
 type ChangePasswordData = z.infer<typeof changePasswordSchema>;
 export default function ChangePassword() {

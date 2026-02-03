@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import project.back_end.request.Product.AutoGenerateSkuRequest;
 import project.back_end.request.Product.ProductRequest;
 import project.back_end.request.Product.SkuRequest;
-import project.back_end.request.Product.UpdateSkuPriceStockRequest;
+import project.back_end.request.Product.UpdateSkuRequest;
 import project.back_end.response.ApiResponse;
 import project.back_end.response.Product.ProductDetailResponse;
 import project.back_end.response.Product.ProductListResponse;
@@ -141,12 +141,13 @@ public class ProductController {
     }
 
     @PutMapping("/{productId}/sku/{skuId}")
-    public ResponseEntity<ApiResponse<Void>> updateSkuPriceAndStock(
+    public ResponseEntity<ApiResponse<Void>> updateSku(
             @PathVariable Long productId,
             @PathVariable Long skuId,
-            @RequestBody @Valid UpdateSkuPriceStockRequest request
+            @RequestBody @Valid UpdateSkuRequest request
     ) {
-        skuService.updateSkuPriceAndStock(productId, skuId, request);
+        log.info("Received update SKU price/stock request for product {}, SKU {}: {}", productId, skuId, request);
+        skuService.updateSkuDetails(productId, skuId, request);
         return ResponseEntity.ok(
                 new ApiResponse<>(200, "Cập nhật giá và tồn kho SKU thành công", null)
         );

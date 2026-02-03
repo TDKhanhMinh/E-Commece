@@ -19,9 +19,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { FormHelperText } from "@/components/common/help-text";
 import { registerApi } from "@/service/auth-service";
 import { registerSchema } from "@/schema/auth-shema";
+import { FormHelperText } from "@/components/common";
 
 export default function RegisterPage() {
     const router = useRouter();

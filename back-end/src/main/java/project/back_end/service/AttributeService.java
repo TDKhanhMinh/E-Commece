@@ -1,12 +1,12 @@
 package project.back_end.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import project.back_end.request.Product.AttributeRequest;
 import project.back_end.response.Product.AttributeResponse;
 
-import java.util.List;
-
 public interface AttributeService {
-    List<AttributeResponse> getAllAttributes();
+    Page<AttributeResponse> getAllAttributes(String keyword, Pageable pageable);
 
     AttributeResponse getAttributeById(Long id);
 

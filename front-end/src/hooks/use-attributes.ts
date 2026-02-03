@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+    AttributeSearchParams,
     createAttribute,
     deleteAttribute,
     getAttributes,
@@ -10,12 +11,12 @@ import {
 import { AttributeRequest } from "@/type/attribute-type";
 import { toast } from "sonner";
 
-// 1. Get List
-export const useAttributes = () => {
+// 1. Get List with Pagination
+export const useAttributes = (params?: AttributeSearchParams) => {
     return useQuery({
-        queryKey: ["attributes"],
+        queryKey: ["attributes", params],
         queryFn: async () => {
-            return await getAttributes();
+            return await getAttributes(params);
         },
         staleTime: 1000 * 60 * 5,
     });

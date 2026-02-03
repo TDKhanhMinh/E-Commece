@@ -1,5 +1,4 @@
 "use client";
-import Subscribe from "@/components/common/subscribe";
 import Footer from "@/components/layout/footer";
 import Header from "@/components/layout/header";
 import {
@@ -12,6 +11,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Subscribe } from "@/components/common";
 
 function CollectionLayout({ children }: { children: React.ReactNode }) {
     return (

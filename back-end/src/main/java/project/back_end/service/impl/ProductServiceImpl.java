@@ -75,7 +75,6 @@ public class ProductServiceImpl implements ProductService {
     public Page<ProductListResponse> getAllProducts(String keyword, Long categoryId, Long brandId, Pageable pageable) {
         Page<Product> products = productRepository.searchProducts(keyword, categoryId, brandId, pageable);
 
-        // 2. Map Entity sang DTO
         return products.map(this::mapToListResponse);
     }
 
@@ -127,20 +126,40 @@ public class ProductServiceImpl implements ProductService {
 
     private ProductListResponse mapToListResponse(Product product) {
         ProductListResponse res = new ProductListResponse();
+
+        // Thông tin cơ bản
         res.setId(product.getId());
         res.setName(product.getName());
         res.setSlug(product.getSlug());
         res.setBrandName(product.getBrand().getName());
         res.setCategoryName(product.getCategory().getName());
 
-        // Lấy giá min từ list SKU
+        // Xử lý SKU và giá
         if (product.getSkus() != null && !product.getSkus().isEmpty()) {
+            // Lấy giá min và max từ list SKU
             double minPrice = product.getSkus().stream()
                     .mapToDouble(sku -> sku.getPrice().doubleValue())
-                    .min().orElse(0);
-            res.setMinPrice(minPrice);
-            String defaultImage = "https://th.bing.com/th/id/R.5fa32d0f91bb6befd88027725b4f2e0d?rik=6PlumKuW4AsJxQ&pid=ImgRaw&r=0";
+                    .min()
+                    .orElse(0.0);
 
+            double maxPrice = product.getSkus().stream()
+                    .mapToDouble(sku -> sku.getPrice().doubleValue())
+                    .max()
+                    .orElse(0.0);
+
+            res.setMinPrice(minPrice);
+            res.setMaxPrice(maxPrice);
+
+            // Số lượng biến thể
+            res.setVariantCount(product.getSkus().size());
+
+            // Kiểm tra tồn kho (có ít nhất 1 SKU còn hàng)
+            boolean inStock = product.getSkus().stream()
+                    .anyMatch(sku -> sku.getStock() != null && sku.getStock() > 0);
+            res.setInStock(inStock);
+
+            // Lấy hình ảnh đại diện từ SKU đầu tiên
+            String defaultImage = "https://th.bing.com/th/id/R.5fa32d0f91bb6befd88027725b4f2e0d?rik=6PlumKuW4AsJxQ&pid=ImgRaw&r=0";
             String imageUrl = Optional.ofNullable(product.getSkus())
                     .filter(skus -> !skus.isEmpty())
                     .map(skus -> skus.get(0))
@@ -148,9 +167,30 @@ public class ProductServiceImpl implements ProductService {
                     .filter(images -> !images.isEmpty())
                     .map(images -> images.get(0))
                     .orElse(defaultImage);
-
             res.setImage(imageUrl);
+        } else {
+            // Không có SKU
+            res.setMinPrice(0.0);
+            res.setMaxPrice(0.0);
+            res.setVariantCount(0);
+            res.setInStock(false);
+            res.setImage("https://th.bing.com/th/id/R.5fa32d0f91bb6befd88027725b4f2e0d?rik=6PlumKuW4AsJxQ&pid=ImgRaw&r=0");
         }
+
+        // Tính discount percent (nếu có sự chênh lệch giá)
+        if (res.getMaxPrice() != null && res.getMinPrice() != null &&
+                res.getMaxPrice() > res.getMinPrice() && res.getMaxPrice() > 0) {
+            int discountPercent = (int) (((res.getMaxPrice() - res.getMinPrice()) / res.getMaxPrice()) * 100);
+            res.setDiscountPercent(discountPercent);
+        } else {
+            res.setDiscountPercent(0);
+        }
+
+        // TODO: Tích hợp rating và reviewCount từ hệ thống đánh giá khi có
+        // Tạm thời set giá trị mặc định
+        res.setRating(0.0);
+        res.setReviewCount(0);
+
         return res;
     }
 

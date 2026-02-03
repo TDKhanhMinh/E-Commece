@@ -17,8 +17,8 @@ import HomeSaleProducts from "@/features/home/home-sale-products";
 import ProductReviews from "@/features/product/product-reviews";
 import { useState } from "react";
 import { HomeQuestions } from "@/features/home/home-questions";
-import Subscribe from "@/components/common/subscribe";
 import { MOCK_IMAGES } from "../../../../../mock";
+import { Subscribe } from "@/components/common";
 
 function ProductDetails() {
     const reviews = 1234;

@@ -1,10 +1,9 @@
 "use client";
 
-import AddressCard from "@/components/common/address-card";
-import AddressDialog from "@/components/common/address-dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { DeliveryAddress, getDeliveryAddresses } from "@/service/user-service";
+import { AddressCard, AddressDialog } from "@/components/common";
 
 export default function AddressDelivery() {
     const {

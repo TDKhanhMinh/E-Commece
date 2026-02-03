@@ -1,9 +1,7 @@
-import Subscribe from "@/components/common/subscribe";
 import Footer from "@/components/layout/footer";
 import Header from "@/components/layout/header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import HomeCarousel from "@/features/home/home-carosell";
 import HomeDeals from "@/features/home/home-deals";
 import HomeFeedBack from "@/features/home/home-feedback";
@@ -11,6 +9,7 @@ import { HomeQuestions } from "@/features/home/home-questions";
 import HomeSaleProducts from "@/features/home/home-sale-products";
 import HomeWelcome from "@/features/home/home-welcome";
 import Image from "next/image";
+import { Subscribe } from "@/components/common";
 
 const PRODUCTS = [
     {

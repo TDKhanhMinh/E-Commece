@@ -34,7 +34,12 @@ public interface ProductMapper {
     SpecDto toSpecDto(ProductAttributeValue entity);
 
     @Mapping(target = "skuCode", source = "code")
+    @Mapping(target = "price", source = "price")
+    @Mapping(target = "salePrice", source = "salePrice")
+    @Mapping(target = "finalPrice", expression = "java(sku.getFinalPrice())")
+    @Mapping(target = "discountPercent", source = "discountPercent")
     @Mapping(target = "image", expression = "java(getFirstImage(sku))")
+    @Mapping(target = "imagesDetails", source = "images")
     @Mapping(target = "attributes", source = "attributeValues", qualifiedByName = "mapSkuAttributes")
     SkuDto toSkuDto(Sku sku);
 
