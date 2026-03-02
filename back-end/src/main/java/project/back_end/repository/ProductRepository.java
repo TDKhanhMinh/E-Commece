@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import project.back_end.entity.product.Product;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
@@ -39,4 +40,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     // 5. Query nâng cao (Ví dụ: Tìm sản phẩm có thuộc tính là "Màn hình 15 inch")
     @Query("SELECT p FROM Product p JOIN p.specs s WHERE s.attribute.code = :attrCode AND s.value LIKE %:value%")
     List<Product> findBySpec(@Param("attrCode") String attrCode, @Param("value") String value);
+
+    Optional<Object> findBySlug(String slug);
 }

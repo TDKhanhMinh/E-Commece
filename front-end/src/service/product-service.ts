@@ -20,6 +20,8 @@ export const getAllProducts = async (params: any) =>
 
 export const getProductById = async (id: number) =>
     http.get<ApiResponse<ProductDetail>>(`/products/${id}`);
+export const getProductDetailsBySlug = async (slug: string) =>
+    http.get<ApiResponse<ProductDetail>>(`/products/slug/${slug}`);
 
 export const createProduct = async (data: ProductRequest) =>
     http.post<ApiResponse<ProductDetail>>("/products", data);
@@ -57,6 +59,11 @@ export const updateSkuDetails = async (
     skuId: number,
     data: UpdateSkuRequest
 ) => http.put<ApiResponse<void>>(`/products/${productId}/sku/${skuId}`, data);
+
+export const toggleSkuStatus = async (skuId: number, isActive: boolean) =>
+    http.patch<ApiResponse<void>>(`/skus/${skuId}/status`, null, {
+        params: { isActive },
+    });
 
 export const deleteSku = async (skuId: number) =>
     http.delete<ApiResponse<void>>(`/skus/${skuId}`);

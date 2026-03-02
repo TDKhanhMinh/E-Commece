@@ -339,7 +339,7 @@ public class SkuServiceImpl implements SkuService {
         sku.setPrice(request.getPrice());
         sku.setStock(request.getStock());
         sku.setCode(generateSkuCode(attributeValueMap.values()));
-
+        sku.setIsActive(true);
         List<SkuAttributeValue> values = new ArrayList<>();
 
         for (Map.Entry<Long, String> entry : attributeValueMap.entrySet()) {
@@ -360,5 +360,23 @@ public class SkuServiceImpl implements SkuService {
                 .map(v -> v.toLowerCase().replace(" ", ""))
                 .collect(Collectors.joining("-"))
                 .toUpperCase();
+    }
+
+    /**
+     * Điều chỉnh trạng thái active/inactive của SKU
+     *
+     * @param skuId    id của SKU cần cập nhật
+     * @param isActive trạng thái mới (true = active, false = inactive)
+     */
+    @Override
+    @Transactional
+    public void toggleSkuStatus(Long skuId, Boolean isActive) {
+        Sku sku = skuRepository.findById(skuId)
+                .orElseThrow(() -> new AppException(ErrorCode.SKU_NOT_FOUND));
+
+        sku.setIsActive(isActive);
+        skuRepository.save(sku);
+
+        log.info("Updated SKU {} status to: {}", skuId, isActive ? "ACTIVE" : "INACTIVE");
     }
 }

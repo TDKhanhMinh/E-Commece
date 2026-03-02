@@ -17,7 +17,7 @@ public class SkuDto {
     private List<String> imagesDetails = new ArrayList<>();
     private BigDecimal salePrice;
     private BigDecimal finalPrice;
-
+    private Boolean isActive;
     private Integer discountPercent;
     private Map<String, String> attributes;
 }

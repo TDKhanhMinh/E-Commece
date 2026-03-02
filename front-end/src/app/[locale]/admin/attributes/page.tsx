@@ -41,10 +41,10 @@ import {
 
 import { useAttributes, useDeleteAttribute } from "@/hooks/use-attributes";
 import { Attribute } from "@/type/attribute-type";
-import { AttributeDialog } from "@/components/common/dialog/attribute-dialog";
+import { AttributeDialog } from "@/components/common/attribute-dialog";
+import PaginationControl from "@/components/common/pagination-control";
 import useDebounce from "@/hooks/use-debounce";
 import { PageResponse } from "@/service/http";
-import { PaginationControl } from "@/components/common";
 
 /* =========================
  * COMPONENT

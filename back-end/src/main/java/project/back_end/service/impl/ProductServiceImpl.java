@@ -22,9 +22,11 @@ import project.back_end.service.ProductService;
 
 import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -36,6 +38,18 @@ public class ProductServiceImpl implements ProductService {
     private final BrandRepository brandRepository;
     private final AttributeRepository attributeRepository;
     private final ProductMapper productMapper;
+
+    @Override
+    public ProductDetailResponse getProductBySlug(String slug) {
+        Product product = (Product) productRepository.findBySlug(slug)
+                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+        List<Sku> activeSkus = product.getSkus().stream()
+                .filter(sku -> Boolean.TRUE.equals(sku.getIsActive()))
+                .collect(Collectors.toList());
+
+        product.setSkus(activeSkus);
+        return productMapper.toDetailResponse(product);
+    }
 
     @Override
     @Transactional

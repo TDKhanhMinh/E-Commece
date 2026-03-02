@@ -40,9 +40,9 @@ import { Category } from "@/service/categories-service";
 import { CategoryDialog } from "@/components/common/dialog/category-dialog";
 import ConfirmAction from "@/components/common/dialog/confirm-action";
 import { flattenCategories } from "@/lib/flatten-categories";
+import { PaginationControl } from "@/components/common/ui/pagination-control";
 import useDebounce from "@/hooks/use-debounce";
 import { PageResponse } from "@/service/http";
-import { PaginationControl } from "@/components/common";
 
 export default function CategoriesPage() {
     const [keyword, setKeyword] = useState("");
@@ -102,6 +102,7 @@ export default function CategoriesPage() {
     };
 
     const handlePageChange = (page: number) => {
+        // Convert from 1-based (UI) to 0-based (backend)
         setCurrentPage(page - 1);
     };
 

@@ -7,6 +7,9 @@ import project.back_end.response.Product.ProductDetailResponse;
 import project.back_end.response.Product.ProductListResponse;
 
 public interface ProductService {
+    // Lấy sản phẩm theo slug (Public – FE / SEO)
+    ProductDetailResponse getProductBySlug(String slug);
+
     // Tạo sản phẩm mới kèm thông số specs
     ProductDetailResponse createProduct(ProductRequest request);
 

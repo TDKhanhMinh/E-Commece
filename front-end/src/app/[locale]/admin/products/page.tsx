@@ -105,6 +105,7 @@ const ProductTableHeader = memo(function ProductTableHeader() {
                 <TableHead>Danh mục</TableHead>
                 <TableHead>Thương hiệu</TableHead>
                 <TableHead className="text-right">Giá Min</TableHead>
+                <TableHead className="text-right">Giá Max</TableHead>
                 <TableHead className="text-right">Hành động</TableHead>
             </TableRow>
         </TableHeader>
@@ -154,7 +155,9 @@ const ProductTableRow = memo(function ProductTableRow({
             <TableCell className="text-right font-medium text-red-600">
                 {formatCurrency(product.minPrice)}
             </TableCell>
-
+            <TableCell className="text-right font-medium text-red-600">
+                {formatCurrency(product.maxPrice)}
+            </TableCell>
             <TableCell className="text-right">
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>

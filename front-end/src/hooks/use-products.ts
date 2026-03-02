@@ -14,6 +14,8 @@ import {
     deleteSku,
     getAllProducts,
     getProductById,
+    getProductDetailsBySlug,
+    toggleSkuStatus,
     updateProduct,
     updateSku,
     updateSkuDetails,
@@ -58,6 +60,22 @@ export const useProductDetail = (id: number | null) => {
             return await getProductById(id);
         },
         enabled: !!id,
+    });
+};
+
+/**
+ * Hook lấy chi tiết sản phẩm (Bao gồm Specs và SKUs)
+ * @param slug sản phẩm
+ */
+export const useProductDetailBySlug = (slug: string | null) => {
+    return useQuery({
+        queryKey: ["product", slug],
+        queryFn: async () => {
+            if (!slug) return null;
+
+            return await getProductDetailsBySlug(slug);
+        },
+        enabled: !!slug,
     });
 };
 
@@ -228,6 +246,33 @@ export const useUpdateSkuDetails = (productId: number, skuId: number) => {
             toast.error(
                 error?.message || "Cập nhật giá và tồn kho SKU thất bại"
             );
+        },
+    });
+};
+
+export const useToggleSkuStatus = (productId: number) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({
+            skuId,
+            isActive,
+        }: {
+            skuId: number;
+            isActive: boolean;
+        }) => {
+            return toggleSkuStatus(skuId, isActive);
+        },
+
+        onSuccess: () => {
+            toast.success("Cập nhật trạng thái SKU thành công");
+            queryClient.invalidateQueries({ queryKey: ["product", productId] });
+            queryClient.invalidateQueries({
+                queryKey: ["skus", productId],
+            });
+        },
+        onError: (error: any) => {
+            toast.error(error?.message || "Cập nhật trạng thái SKU thất bại");
         },
     });
 };

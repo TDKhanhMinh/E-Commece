@@ -42,6 +42,9 @@ public class Sku extends BaseProduct {
 
     private Integer stock;
 
+    @Column(name = "is_active")
+    private Boolean isActive = true;
+
     @ElementCollection
     @CollectionTable(name = "sku_images", joinColumns = @JoinColumn(name = "sku_id"))
     @Column(name = "image_url")

@@ -51,6 +51,21 @@ public class ProductController {
     }
 
     /**
+     * PUBLIC – FE / SEO
+     * GET /api/products/slug/{slug}
+     */
+    @GetMapping("/slug/{slug}")
+    public ResponseEntity<ApiResponse<ProductDetailResponse>> getBySlug(
+            @PathVariable String slug
+    ) {
+        ProductDetailResponse product = productService.getProductBySlug(slug);
+        return ResponseEntity.ok(
+                new ApiResponse<>(200, "Lấy chi tiết sản phẩm thành công", product)
+        );
+    }
+
+
+    /**
      * Lấy chi tiết sản phẩm (Bao gồm Specs và SKUs)
      * GET /api/products/{id}
      */
@@ -141,6 +156,7 @@ public class ProductController {
     }
 
     @PutMapping("/{productId}/sku/{skuId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<Void>> updateSku(
             @PathVariable Long productId,
             @PathVariable Long skuId,

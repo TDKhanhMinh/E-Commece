@@ -8,9 +8,13 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     return (
-        <Providers>
-            <Toaster richColors position="top-right" />
-            {children}
-        </Providers>
+        <html suppressHydrationWarning>
+            <body>
+                <Providers>
+                    <Toaster richColors position="top-right" />
+                    {children}
+                </Providers>
+            </body>
+        </html>
     );
 }

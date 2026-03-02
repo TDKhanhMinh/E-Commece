@@ -13,7 +13,7 @@ import {
 import { Menu, Moon, Search, ShoppingCart, Sun, User } from "lucide-react";
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "../ui/sheet";
+import { Sheet, SheetTrigger } from "../ui/sheet";
 import {
     NavigationMenu,
     NavigationMenuContent,
@@ -25,6 +25,8 @@ import {
 import Image from "next/image";
 import { useAuthStore } from "@/store/useAuthStore";
 import { UserAvatar } from "@/components/common";
+import { CartSheet } from "../common/cart/cart-sheet";
+import { useCartSummary } from "@/hooks/use-cart";
 
 export default function Header() {
     const { setTheme } = useTheme();
@@ -32,6 +34,8 @@ export default function Header() {
     const router = useRouter();
     const pathname = usePathname();
     const { isAuthenticated } = useAuthStore();
+    const { itemCount } = useCartSummary();
+
     const changeLocale = (nextLocale: string) => {
         const newPath = pathname.replace(`/${locale}`, `/${nextLocale}`);
         router.push(newPath);
@@ -219,9 +223,11 @@ export default function Header() {
                                 className="relative rounded-full"
                             >
                                 <ShoppingCart className="h-5 w-5" />
-                                <span className="bg-primary text-primary-foreground absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full text-[10px]">
-                                    0
-                                </span>
+                                {itemCount > 0 && (
+                                    <span className="bg-primary text-primary-foreground absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full text-[10px]">
+                                        {itemCount > 99 ? "99+" : itemCount}
+                                    </span>
+                                )}
                             </Button>
                         </SheetTrigger>
 
@@ -249,24 +255,7 @@ export default function Header() {
                         </Button>
                     </div>
                 </div>
-                <SheetContent className="h-full w-full p-4">
-                    <SheetTitle>Your Cart</SheetTitle>
-                    <div className="flex h-full flex-col items-center justify-center">
-                        <div className="flex flex-col items-center justify-center p-4">
-                            <ShoppingCart className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
-                            <span className="text-muted-foreground text-sm">
-                                No item in your cart.
-                            </span>
-                            <p className="text-center">
-                                Your cart's still waiting for its first gadget.
-                                Find your next device in just a few clicks.
-                            </p>
-                            <Button className="bg-info-darker hover:bg-info mt-4 rounded-2xl">
-                                Shop now
-                            </Button>
-                        </div>
-                    </div>
-                </SheetContent>
+                <CartSheet />
             </Sheet>
         </header>
     );

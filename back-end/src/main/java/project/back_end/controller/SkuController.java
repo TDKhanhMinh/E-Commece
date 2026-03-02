@@ -45,4 +45,22 @@ public class SkuController {
                 new ApiResponse<>(200, "Xóa SKU thành công", null)
         );
     }
+
+    /**
+     * Cập nhật trạng thái active/inactive của SKU
+     * PATCH /api/skus/{id}/status?isActive=true
+     */
+    @PatchMapping("/{id}/status")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<ApiResponse<Void>> toggleSkuStatus(
+            @PathVariable Long id,
+            @RequestParam Boolean isActive
+    ) {
+        skuService.toggleSkuStatus(id, isActive);
+        String message = isActive ? "Kích hoạt SKU thành công" : "Vô hiệu hóa SKU thành công";
+        return ResponseEntity.ok(
+                new ApiResponse<>(200, message, null)
+        );
+    }
 }
+

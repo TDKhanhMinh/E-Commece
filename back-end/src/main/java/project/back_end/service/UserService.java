@@ -3,6 +3,7 @@ package project.back_end.service;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import project.back_end.dto.user.UserDTO;
+import project.back_end.entity.User;
 import project.back_end.request.AuthRequest.ChangePasswordRequest;
 import project.back_end.request.AuthRequest.LoginRequest;
 import project.back_end.request.AuthRequest.RegisterRequest;
@@ -30,5 +31,5 @@ public interface UserService {
 
     void changeUserPassword(String email, ChangePasswordRequest changePasswordRequest);
 
-
+    User getCurrentUser();
 }

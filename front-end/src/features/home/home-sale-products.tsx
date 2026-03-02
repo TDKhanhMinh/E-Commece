@@ -22,7 +22,6 @@ export default function HomeSaleProducts() {
     // Extract products from PageResponse
     const pageData = data as PageResponse<any> | undefined;
     const products = pageData?.content || [];
-    console.log("Fetched Products:", products);
 
     // Categories
     const categories = ["All", "iPhone", "MacBook", "iPad", "Watch", "Audio"];

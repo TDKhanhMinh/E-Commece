@@ -45,6 +45,8 @@ public enum ErrorCode {
      * ========================= */
     SKU_NOT_FOUND(404, "SKU was not found"),
     SKU_CODE_EXISTS(409, "SKU code already exists"),
+    SKU_INACTIVE(400, "SKU is not active or available for purchase"),
+    OUT_OF_STOCK(400, "SKU is out of stock or insufficient quantity available"),
     TOO_MANY_SKU(400, "Too many SKUs for the product. Maximum allowed is 50"),
     SKU_NOT_BELONG_TO_PRODUCT(400, "The SKU does not belong to the specified product"),
 
@@ -54,6 +56,8 @@ public enum ErrorCode {
     CART_ITEM_NOT_FOUND(404, "Cart item was not found"),
     ORDER_NOT_FOUND(404, "Order was not found"),
     DELIVERY_ADDRESS_NOT_FOUND(404, "Delivery address was not found"),
+    INVALID_QUANTITY(400, "Quantity must be greater than zero"),
+    INSUFFICIENT_STOCK(400, "Insufficient stock for the requested SKU"),
 
     /* =========================
      * PAYMENT

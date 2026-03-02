@@ -29,4 +29,7 @@ public interface SkuService {
             Long skuId,
             UpdateSkuRequest request
     );
+
+    // Điều chỉnh trạng thái active/inactive của SKU
+    void toggleSkuStatus(Long skuId, Boolean isActive);
 }

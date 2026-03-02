@@ -35,6 +35,8 @@ public interface ProductMapper {
 
     @Mapping(target = "skuCode", source = "code")
     @Mapping(target = "price", source = "price")
+    @Mapping(target = "stock", source = "stock")
+    @Mapping(target = "isActive", source = "isActive")
     @Mapping(target = "salePrice", source = "salePrice")
     @Mapping(target = "finalPrice", expression = "java(sku.getFinalPrice())")
     @Mapping(target = "discountPercent", source = "discountPercent")

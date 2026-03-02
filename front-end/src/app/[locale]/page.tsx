@@ -11,41 +11,6 @@ import HomeWelcome from "@/features/home/home-welcome";
 import Image from "next/image";
 import { Subscribe } from "@/components/common";
 
-const PRODUCTS = [
-    {
-        id: 1,
-        name: "Premium Wireless Headphones",
-        price: 299,
-        image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80",
-        category: "Electronics",
-        rating: 4.8,
-    },
-    {
-        id: 2,
-        name: "Minimalist Leather Watch",
-        price: 150,
-        image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&q=80",
-        category: "Accessories",
-        rating: 4.5,
-    },
-    {
-        id: 3,
-        name: "Smart Fitness Tracker",
-        price: 89,
-        image: "https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?w=500&q=80",
-        category: "Health",
-        rating: 4.2,
-    },
-    {
-        id: 4,
-        name: "Portable Bluetooth Speaker",
-        price: 120,
-        image: "https://images.unsplash.com/photo-1608156639585-34052e85a491?w=500&q=80",
-        category: "Electronics",
-        rating: 4.7,
-    },
-];
-
 export default function Home() {
     return (
         <>
