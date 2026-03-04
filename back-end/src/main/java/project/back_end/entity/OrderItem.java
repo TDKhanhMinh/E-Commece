@@ -43,13 +43,17 @@ public class OrderItem {
 
 
     @Column(nullable = false)
-    private BigDecimal price;       // giá gốc
+    private BigDecimal price;
+    
+    private BigDecimal salePrice;
 
-    private BigDecimal salePrice;   // giá sau giảm (nullable)
+    private String image;
+
+    private String sku;
 
     @Column(nullable = false)
     private Integer quantity;
 
     @Column(nullable = false)
-    private BigDecimal totalPrice;  // (salePrice ?? price) * quantity
+    private BigDecimal totalPrice;
 }

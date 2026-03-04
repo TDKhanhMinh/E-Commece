@@ -1,11 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { CartItemResponse } from "@/type/cart-type";
 import { formatCurrency } from "@/lib/format-price";
 
 interface CartItemCardProps {
     item: CartItemResponse;
+    isSelected: boolean;
+    onSelect: (skuId: number, checked: boolean) => void;
     onUpdateQuantity: (
         skuId: number,
         currentQuantity: number,
@@ -19,6 +22,8 @@ interface CartItemCardProps {
 
 export function CartItemCard({
     item,
+    isSelected,
+    onSelect,
     onUpdateQuantity,
     onRemove,
     isUpdating,
@@ -28,20 +33,32 @@ export function CartItemCard({
     const totalPrice = item.salePrice
         ? item.salePrice * item.quantity
         : item.price * item.quantity;
-    const inStock = item.quantity <= item.stock;
+
+    const outOfStock = item.quantity > item.stock;
+
     return (
         <Card className="overflow-hidden border-none bg-slate-50/50 shadow-sm">
             <CardContent className="p-4">
-                <div className="flex gap-4">
+                <div className="flex items-start gap-4">
+                    <div className="flex shrink-0 items-start">
+                        <Checkbox
+                            checked={isSelected}
+                            onCheckedChange={(checked) =>
+                                onSelect(item.skuId, checked as boolean)
+                            }
+                            disabled={outOfStock}
+                        />
+                    </div>
+
                     <div className="h-24 w-24 shrink-0 rounded-lg border bg-white p-2">
                         <img
-                            src={item.productImage || "/placeholder.png"}
+                            src={item.image || "/placeholder.png"}
                             alt={item.productName}
                             className="h-full w-full object-contain"
                         />
                     </div>
 
-                    <div className="flex flex-1 flex-col justify-between">
+                    <div className="flex flex-1 flex-col justify-between self-stretch">
                         <div>
                             <div className="flex justify-between">
                                 <div>
@@ -76,9 +93,9 @@ export function CartItemCard({
                                     )
                                 )}
                             </div>
-                            {inStock && (
+                            {outOfStock && (
                                 <p className="text-destructive mt-2 text-sm">
-                                    Sản phẩm tạm hết hàng
+                                    Sản phẩm tạm hết hàng / Không đủ số lượng
                                 </p>
                             )}
                         </div>
@@ -109,14 +126,6 @@ export function CartItemCard({
                                     size="icon"
                                     className="h-8 w-8 rounded-none border-l"
                                     onClick={() => {
-                                        console.log(
-                                            "Attempting to increase quantity for SKU:",
-                                            item.skuId,
-                                            "Current quantity:",
-                                            item.quantity,
-                                            "Item details:",
-                                            item.stock
-                                        );
                                         onUpdateQuantity(
                                             item.skuId,
                                             item.quantity,

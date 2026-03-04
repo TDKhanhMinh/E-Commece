@@ -9,6 +9,7 @@ import {
     removeCartItem,
     updateCartItem,
 } from "@/service/cart-service";
+
 import { CartItemRequest } from "@/type/cart-type";
 import { toast } from "sonner";
 
@@ -25,7 +26,7 @@ export const useCart = () => {
     return useQuery({
         queryKey: ["cart"],
         queryFn: async () => {
-            return await getCurrentCart(); // Extract CartResponse from AxiosResponse
+            return await getCurrentCart();
         },
         staleTime: 1000 * 30,
         retry: 1,
@@ -60,16 +61,16 @@ export const useAddToCart = () => {
  * Hook cập nhật số lượng sản phẩm trong giỏ hàng
  * - Cập nhật dựa trên SKU ID
  */
+/**
+ * Hook cập nhật số lượng sản phẩm trong giỏ hàng
+ */
 export const useUpdateCartItem = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: ({
-            skuId,
-            quantity,
-        }: {
-            skuId: number;
-            quantity: number;
-        }) => updateCartItem(skuId, quantity),
+        // Thay vì viết: ({ skuId, quantity }: { skuId: number; quantity: number; })
+        // Bạn có thể rút gọn lại bằng CartItemRequest như sau:
+        mutationFn: (data: CartItemRequest) =>
+            updateCartItem(data.skuId, data.quantity),
         onSuccess: () => {
             toast.success("Cập nhật giỏ hàng thành công!");
             queryClient.invalidateQueries({ queryKey: ["cart"] });
@@ -150,6 +151,7 @@ export const useClearCart = () => {
  */
 export const useCartSummary = () => {
     const { data: cart, isLoading } = useCart();
+
     if (isLoading || !cart) {
         return {
             totalItems: 0,

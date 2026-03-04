@@ -2,53 +2,79 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { ChevronLeft, MapPin, ShoppingBag } from "lucide-react";
-import Image from "next/image";
+import { ChevronLeft, Loader2, MapPin, ShoppingBag } from "lucide-react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
+import { useOrderDetail } from "@/hooks/use-order";
+import { fDateTime } from "@/lib/format-date-time";
+import { formatCurrency } from "@/lib/format-price";
+
+import { OrderDetailResponse, OrderItem } from "@/type/order-type";
+import Image from "next/image";
+import { getStatusBadge } from "@/lib/get-order-status";
 
 export default function OrderDetail() {
-    const orderInfo = {
-        id: "68da9d1fc874436fd35a8463",
-        customerName: "Trần Đỗ Khánh Minh",
-        phone: "0345738266",
-        address:
-            "UBND xã Thanh Vĩnh Đông, Tỉnh Lộ 827A, Xã Thanh Vĩnh Đông, Huyện Châu Thành, Tỉnh Long An",
-        status: "Đã hủy",
-        paymentMethod: "COD(Cash on Delivery)",
-        shippingMethod: "Mặc định",
-        orderDate: "2025-09-29: 21:52",
-        deliveryDate: "2026-01-21: 14:48",
-    };
+    const params = useParams();
+    const orderId = params?.id as string;
 
-    const priceInfo = {
-        subtotal: "22.000.000 đ",
-        memberDiscount: "0 đ",
-        productDiscount: "2.000.000 đ",
-        shippingFee: "30.000 đ",
-        voucherDiscount: "0 đ",
-        total: "20.030.000 đ",
-    };
+    const { data, isLoading } = useOrderDetail(orderId);
+    const orderDetails = data as OrderDetailResponse | undefined;
 
-    const products = [
-        {
-            name: "Laptop Lenovo IdeaPad Slim 3 15IRH10 - 83K1000JVN (i7-13620H...",
-            sku: "i7-13620H/ Onboard graphics/ 16GB/ 512GB/ Windows 11",
-            price: "20.000.000 đ",
-            originalPrice: "22.000.000 đ",
-            quantity: 1,
-            image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca4?w=200&h=200&fit=crop",
-        },
-    ];
+    const products: OrderItem[] = orderDetails?.items || [];
+    const getShippingMethodLabel = (method?: string) => {
+        if (!method) return "Chưa xác định";
+
+        switch (method.toLowerCase()) {
+            case "standard":
+                return "Giao hàng tiêu chuẩn";
+            case "express":
+                return "Giao hàng hỏa tốc";
+            default:
+                return method; // Trả về nguyên bản nếu không khớp
+        }
+    };
+    console.log("Order detail data:", orderDetails);
+
+    if (isLoading) {
+        return (
+            <div className="mx-auto flex min-h-screen max-w-7xl items-center justify-center p-4">
+                <div className="text-muted-foreground flex flex-col items-center gap-2">
+                    <Loader2 className="h-8 w-8 animate-spin" />
+                    <p>Đang tải thông tin đơn hàng...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if ((!orderDetails || !products.length) && orderId) {
+        return (
+            <div className="mx-auto min-h-screen max-w-7xl p-4 md:p-6">
+                <div className="mt-4 rounded-lg border bg-white p-6 text-center shadow-sm">
+                    <p className="text-secondary-dark text-lg font-medium">
+                        Không tìm thấy đơn hàng với ID: {orderId}
+                    </p>
+                    <Link
+                        href="/user/orders"
+                        className="mt-4 inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+                    >
+                        <ChevronLeft className="size-4" />
+                        Quay lại danh sách đơn hàng
+                    </Link>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="mx-auto min-h-screen max-w-7xl p-4 md:p-6">
             <div className="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-3">
+                {/* CỘT TRÁI: THÔNG TIN ĐƠN HÀNG */}
                 <Card className="border-none shadow-sm lg:col-span-2">
                     <CardHeader className="pb-4">
                         <div className="mb-4 flex items-center gap-2">
                             <Link
                                 href="/user/orders"
-                                className="text-secondary-dark 00 hover:text-info cursor-pointer transition-colors"
+                                className="text-secondary-dark hover:text-info cursor-pointer transition-colors"
                             >
                                 <ChevronLeft className="size-5" />
                             </Link>
@@ -59,17 +85,28 @@ export default function OrderDetail() {
 
                         <div className="space-y-1">
                             <p className="text-secondary-dark text-lg font-bold">
-                                Mã đơn hàng: {orderInfo.id}
+                                Mã đơn hàng: {orderDetails?.orderId || "N/A"}
                             </p>
                             <div className="text-secondary-dark mt-2 flex items-start gap-2 text-sm">
                                 <MapPin className="mt-0.5 size-4 shrink-0 text-blue-600" />
                                 <div>
                                     <span className="font-semibold">
-                                        {orderInfo.customerName} -{" "}
-                                        {orderInfo.phone}
+                                        {
+                                            orderDetails?.deliveryAddress
+                                                ?.userName
+                                        }{" "}
+                                        -{" "}
+                                        {
+                                            orderDetails?.deliveryAddress
+                                                ?.phoneNumber
+                                        }
                                     </span>
                                     <p className="text-secondary-dark mt-1 leading-relaxed">
-                                        Địa chỉ: {orderInfo.address}
+                                        Địa chỉ:{" "}
+                                        {
+                                            orderDetails?.deliveryAddress
+                                                ?.location
+                                        }
                                     </p>
                                 </div>
                             </div>
@@ -83,7 +120,7 @@ export default function OrderDetail() {
                                     Trạng thái đơn hàng
                                 </span>
                                 <span className="font-medium text-red-500">
-                                    {orderInfo.status}
+                                    {getStatusBadge(orderDetails?.status)}
                                 </span>
                             </div>
                             <div className="flex items-center justify-between">
@@ -91,7 +128,7 @@ export default function OrderDetail() {
                                     Phương thức thanh toán
                                 </span>
                                 <span className="text-secondary-dark">
-                                    {orderInfo.paymentMethod}
+                                    {orderDetails?.paymentMethod}
                                 </span>
                             </div>
                             <div className="flex items-center justify-between">
@@ -99,7 +136,9 @@ export default function OrderDetail() {
                                     Phương thức vận chuyển
                                 </span>
                                 <span className="text-secondary-dark">
-                                    {orderInfo.shippingMethod}
+                                    {getShippingMethodLabel(
+                                        orderDetails?.shippingMethod
+                                    )}
                                 </span>
                             </div>
                         </div>
@@ -110,33 +149,45 @@ export default function OrderDetail() {
                             <div className="text-secondary-dark flex justify-between">
                                 <span>Tổng tiền sản phẩm</span>
                                 <span className="text-secondary-dark">
-                                    {priceInfo.subtotal}
+                                    {formatCurrency(
+                                        orderDetails?.totalAmount || 0
+                                    )}
                                 </span>
                             </div>
                             <div className="text-secondary-dark flex justify-between">
                                 <span>Ưu đãi thành viên (đã giảm)</span>
                                 <span className="text-secondary-dark">
-                                    {priceInfo.memberDiscount}
+                                    {/*{priceInfo.memberDiscount}*/}
                                 </span>
                             </div>
                             <div className="text-secondary-dark flex justify-between">
                                 <span>Ưu đãi sản phẩm (đã giảm)</span>
                                 <span className="text-secondary-dark">
-                                    {priceInfo.productDiscount}
+                                    {formatCurrency(
+                                        orderDetails?.totalDiscount
+                                    )}
                                 </span>
                             </div>
                             <div className="text-secondary-dark flex justify-between">
                                 <span>Phí vận chuyển</span>
-                                <span className="text-secondary-dark">
-                                    {priceInfo.shippingFee}
-                                </span>
+                                {orderDetails?.shippingCost === 0 ? (
+                                    <span className="text-secondary-dark text-xs">
+                                        Miễn phí
+                                    </span>
+                                ) : (
+                                    <span className="text-secondary-dark">
+                                        {formatCurrency(
+                                            orderDetails?.shippingCost
+                                        )}
+                                    </span>
+                                )}
                             </div>
-                            <div className="text-secondary-dark flex justify-between">
-                                <span>Giảm giá</span>
-                                <span className="text-secondary-dark">
-                                    {priceInfo.voucherDiscount}
-                                </span>
-                            </div>
+                            {/*<div className="text-secondary-dark flex justify-between">*/}
+                            {/*    <span>Giảm giá</span>*/}
+                            {/*    <span className="text-secondary-dark">*/}
+                            {/*        /!*{priceInfo.voucherDiscount}*!/*/}
+                            {/*    </span>*/}
+                            {/*</div>*/}
                         </div>
 
                         <Separator />
@@ -146,19 +197,66 @@ export default function OrderDetail() {
                                 Tổng tiền thanh toán
                             </span>
                             <span className="text-secondary-dark text-xl font-bold">
-                                {priceInfo.total}
+                                {formatCurrency(orderDetails?.finalAmount || 0)}
                             </span>
                         </div>
 
-                        <div className="text-secondary-dark space-y-1 pt-2 text-right text-xs">
-                            <p>Thời gian đặt hàng: {orderInfo.orderDate}</p>
-                            <p>Ngày giao hàng: {orderInfo.deliveryDate}</p>
+                        <div className="flex items-center justify-between">
+                            <span className="text-secondary-dark text-xs font-light">
+                                Thời gian đặt hàng
+                            </span>
+                            <span className="text-secondary-dark text-xs font-light">
+                                {fDateTime(
+                                    orderDetails?.createdAt,
+                                    "HH:mm dd/MM/yyyy"
+                                )}
+                            </span>
                         </div>
+                        {orderDetails?.cancelledAt && (
+                            <div className="flex items-center justify-between">
+                                <span className="text-secondary-dark text-xs font-light">
+                                    Thời gian hủy đơn
+                                </span>
+                                <span className="text-secondary-dark text-xs font-light">
+                                    {fDateTime(
+                                        orderDetails?.cancelledAt,
+                                        "HH:mm dd/MM/yyyy"
+                                    )}
+                                </span>
+                            </div>
+                        )}
+                        {orderDetails?.confirmedAt && (
+                            <div className="flex items-center justify-between">
+                                <span className="text-secondary-dark text-xs font-light">
+                                    Thời gian xác nhận đơn
+                                </span>
+                                <span className="text-secondary-dark text-xs font-light">
+                                    {fDateTime(
+                                        orderDetails?.confirmedAt,
+                                        "HH:mm dd/MM/yyyy"
+                                    )}
+                                </span>
+                            </div>
+                        )}
+                        {orderDetails?.deliveredAt && (
+                            <div className="flex items-center justify-between">
+                                <span className="text-secondary-dark text-xs font-light">
+                                    Thời gian giao hàng
+                                </span>
+                                <span className="text-secondary-dark text-xs font-light">
+                                    {fDateTime(
+                                        orderDetails?.updatedAt,
+                                        "HH:mm dd/MM/yyyy"
+                                    )}
+                                </span>
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
 
+                {/* CỘT PHẢI: DANH SÁCH SẢN PHẨM */}
                 <Card className="h-fit border-none shadow-sm">
-                    <CardHeader className="pb-2">
+                    <CardHeader className="pb-4">
                         <CardTitle className="flex items-center gap-2 text-lg font-bold">
                             <ShoppingBag className="size-5" />
                             Danh sách sản phẩm
@@ -168,11 +266,11 @@ export default function OrderDetail() {
                         </p>
                     </CardHeader>
 
-                    <CardContent className="min-h-screen">
-                        {products.map((product, index) => (
+                    <CardContent className="flex flex-col gap-4">
+                        {products.map((product: OrderItem, index: number) => (
                             <div
-                                key={index}
-                                className="flex gap-4 rounded-xl border bg-white p-4"
+                                key={product.skuCode || index}
+                                className="flex gap-4 rounded-xl border bg-slate-50 p-4"
                             >
                                 <div className="relative h-20 w-20 shrink-0">
                                     <Image
@@ -186,7 +284,7 @@ export default function OrderDetail() {
                                 <div className="flex-1 space-y-1">
                                     <div className="flex items-start justify-between gap-2">
                                         <h4 className="text-secondary-dark line-clamp-2 text-sm font-medium">
-                                            {product.name}
+                                            {product.productName}
                                         </h4>
 
                                         <span className="shrink-0 rounded-md bg-green-700 px-2 py-1 text-xs font-bold text-white">
@@ -195,15 +293,15 @@ export default function OrderDetail() {
                                     </div>
 
                                     <p className="text-secondary-dark line-clamp-1 text-xs">
-                                        SKU: {product.sku}
+                                        SKU: {product.skuCode}
                                     </p>
 
                                     <div className="flex items-center gap-2 pt-1">
                                         <span className="text-sm font-bold text-red-500">
-                                            {product.price}
+                                            {formatCurrency(product.salePrice)}
                                         </span>
                                         <span className="text-secondary-dark text-xs line-through decoration-gray-400">
-                                            {product.originalPrice}
+                                            {formatCurrency(product.price)}
                                         </span>
                                     </div>
                                 </div>

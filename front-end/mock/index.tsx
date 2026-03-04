@@ -255,11 +255,11 @@ export const MOCK_FAQ = [
         answer: "Yes, most devices come with high-quality charging cables and necessary accessories. Please check the specific product description for details.",
     },
     {
-        question: "What if I'm not happy with my order?",
+        question: "What if I'm not happy with my orders?",
         answer: "We offer a hassle-free return policy. If you're not satisfied, you can return your device within the specified timeframe for a refund or exchange.",
     },
     {
-        question: "How fast will my order ship?",
+        question: "How fast will my orders ship?",
         answer: "Orders are typically processed within 24 hours and shipped via standard or expedited methods depending on your choice at checkout.",
     },
     {

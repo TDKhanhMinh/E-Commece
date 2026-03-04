@@ -16,21 +16,10 @@ import {
     CartLoading,
     CartSummary,
 } from "@/components/common/cart";
-import { useCheckout } from "@/hooks/use-order";
 import { useAuthStore } from "@/store/useAuthStore";
-import { CheckoutItemRequest, CheckoutResponse } from "@/type/order-type";
 import { CartResponse } from "@/type/cart-type";
 import { toast } from "sonner";
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { CheckoutData } from "@/components/common/checkout/types";
 
 export default function CartPage() {
     const router = useRouter();
@@ -41,12 +30,8 @@ export default function CartPage() {
     const removeItem = useRemoveCartItem();
     const clearCart = useClearCart();
     const [checkedItems, setCheckedItems] = useState<number[]>([]);
-    const [showCheckoutDialog, setShowCheckoutDialog] = useState(false);
 
-    // Auth state
     const { user, isAuthenticated } = useAuthStore();
-    const userId = user?.id ? parseInt(user.id) : 0;
-    const checkoutMutation = useCheckout(userId);
 
     const handleToggleSelected = (skuId: number, checked: boolean) => {
         setCheckedItems((prev) =>
@@ -54,17 +39,14 @@ export default function CartPage() {
         );
     };
 
-    // Handle loading state
     if (isLoading) {
         return <CartLoading />;
     }
 
-    // Handle error state
     if (error) {
         return <CartError onBack={() => router.back()} />;
     }
 
-    // Handle empty cart
     if (!cart || !cart.items || cart.items.length === 0) {
         return (
             <CartEmpty
@@ -74,7 +56,6 @@ export default function CartPage() {
         );
     }
 
-    // Handle quantity update
     const handleUpdateQuantity = (
         skuId: number,
         currentQuantity: number,
@@ -103,22 +84,18 @@ export default function CartPage() {
         clearCart.mutate();
     };
 
-    // Handle checkout
     const handleCheckout = () => {
-        // Kiểm tra đăng nhập
         if (!isAuthenticated || !user) {
             toast.error("Vui lòng đăng nhập để tiếp tục đặt hàng");
             router.push("/login?redirect=/cart");
             return;
         }
 
-        // Kiểm tra có sản phẩm được chọn không
         if (checkedItems.length === 0) {
             toast.error("Vui lòng chọn ít nhất một sản phẩm để đặt hàng");
             return;
         }
 
-        // Kiểm tra tồn kho
         const selectedItems = cart?.items.filter((item) =>
             checkedItems.includes(item.skuId)
         );
@@ -131,58 +108,33 @@ export default function CartPage() {
             return;
         }
 
-        // Hiển thị dialog xác nhận
-        setShowCheckoutDialog(true);
-    };
-
-    // Xác nhận checkout
-    const handleConfirmCheckout = async () => {
-        if (!user?.id) return;
-
-        // Chuyển đổi cart items thành checkout items
-        const selectedItems = cart?.items.filter((item) =>
-            checkedItems.includes(item.skuId)
-        );
-
-        const checkoutItems: CheckoutItemRequest[] =
+        const checkoutItems =
             selectedItems?.map((item) => ({
                 skuId: item.skuId,
+                skuCode: item.skuCode,
+                productName: item.productName,
+                image: item.image,
+                attributes: item.attributes,
+                price: item.price,
+                salePrice: item.salePrice,
+                discountPercent: item.discountPercent,
                 quantity: item.quantity,
+                subtotal: (item.salePrice ?? item.price) * item.quantity,
             })) || [];
 
-        // TODO: Trong tương lai, cần thêm logic chọn địa chỉ giao hàng
-        // Hiện tại hardcode deliveryAddressId = 1
-        const deliveryAddressId = 1;
-
-        const checkoutData = {
-            deliveryAddressId,
+        const checkoutData: CheckoutData = {
             items: checkoutItems,
+            summary: {
+                totalAmount: selectedSummary.totalAmount,
+                totalDiscount: selectedSummary.totalDiscount,
+                finalAmount: selectedSummary.finalAmount,
+                totalItems: selectedSummary.totalItems,
+            },
         };
 
-        try {
-            const response = (await checkoutMutation.mutateAsync(
-                checkoutData
-            )) as unknown as CheckoutResponse;
+        sessionStorage.setItem("checkoutData", JSON.stringify(checkoutData));
 
-            // Đóng dialog
-            setShowCheckoutDialog(false);
-
-            // Reset selected items
-            setCheckedItems([]);
-
-            // Navigate đến trang order detail hoặc order success
-            if (response?.orderId) {
-                toast.success(
-                    `Đặt hàng thành công! Mã đơn hàng: #${response.orderId}`
-                );
-                router.push(`/user/orders/${response.orderId}`);
-            } else {
-                router.push("/user/orders");
-            }
-        } catch (error: any) {
-            console.error("Checkout error:", error);
-            // Toast error đã được handle trong hook
-        }
+        router.push("/checkout");
     };
     const selectedItems = cart.items.filter((item) =>
         checkedItems.includes(item.skuId)
@@ -235,81 +187,10 @@ export default function CartPage() {
                     finalAmount={selectedSummary.finalAmount}
                     totalItems={selectedSummary.totalItems}
                     onCheckout={handleCheckout}
-                    isCheckingOut={checkoutMutation.isPending}
+                    isCheckingOut={false}
                     hasSelectedItems={checkedItems.length > 0}
                 />
             </div>
-
-            {/* Checkout Confirmation Dialog */}
-            <AlertDialog
-                open={showCheckoutDialog}
-                onOpenChange={setShowCheckoutDialog}
-            >
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>Xác nhận đặt hàng</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            <div className="space-y-2">
-                                <p>
-                                    Bạn đang đặt {selectedSummary.totalItems}{" "}
-                                    sản phẩm
-                                </p>
-                                <div className="space-y-2 rounded-lg bg-gray-50 p-4">
-                                    <div className="flex justify-between text-sm">
-                                        <span>Tạm tính:</span>
-                                        <span>
-                                            {selectedSummary.totalAmount.toLocaleString(
-                                                "vi-VN"
-                                            )}{" "}
-                                            ₫
-                                        </span>
-                                    </div>
-                                    {selectedSummary.totalDiscount > 0 && (
-                                        <div className="flex justify-between text-sm text-red-600">
-                                            <span>Giảm giá:</span>
-                                            <span>
-                                                -
-                                                {selectedSummary.totalDiscount.toLocaleString(
-                                                    "vi-VN"
-                                                )}{" "}
-                                                ₫
-                                            </span>
-                                        </div>
-                                    )}
-                                    <div className="flex justify-between border-t pt-2 text-lg font-semibold">
-                                        <span>Tổng cộng:</span>
-                                        <span className="text-primary">
-                                            {selectedSummary.finalAmount.toLocaleString(
-                                                "vi-VN"
-                                            )}{" "}
-                                            ₫
-                                        </span>
-                                    </div>
-                                </div>
-                                <p className="text-muted-foreground mt-2 text-xs">
-                                    * Hiện tại sử dụng địa chỉ giao hàng mặc
-                                    định
-                                </p>
-                            </div>
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel
-                            disabled={checkoutMutation.isPending}
-                        >
-                            Hủy
-                        </AlertDialogCancel>
-                        <AlertDialogAction
-                            onClick={handleConfirmCheckout}
-                            disabled={checkoutMutation.isPending}
-                        >
-                            {checkoutMutation.isPending
-                                ? "Đang xử lý..."
-                                : "Xác nhận đặt hàng"}
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
         </div>
     );
 }

@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { SheetClose, SheetContent, SheetTitle } from "@/components/ui/sheet";
-import { ShoppingCart } from "lucide-react";
+import { Loader2, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { useCart, useCartSummary } from "@/hooks/use-cart";
 import { Separator } from "@/components/ui/separator";
@@ -11,106 +11,127 @@ import { CartItemResponse } from "@/type/cart-type";
 
 export function CartSheet() {
     const { data: cart, isLoading } = useCart();
-    console.log("Cart data:", cart);
     const summary = useCartSummary();
-    console.log("Cart summary:", summary);
 
+    // Trạng thái trống
     if (!isLoading && (!cart || !cart.items || cart.items.length === 0)) {
         return (
-            <SheetContent className="h-full w-full p-4 sm:max-w-lg">
-                <SheetTitle>Giỏ hàng của bạn</SheetTitle>
-                <div className="flex h-full flex-col items-center justify-center">
-                    <div className="flex flex-col items-center justify-center p-4">
-                        <ShoppingCart className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
-                        <span className="text-muted-foreground mb-2 text-sm font-medium">
+            <SheetContent className="flex h-full w-full flex-col p-4 sm:max-w-lg">
+                <SheetTitle className="border-b pb-4">
+                    Giỏ hàng của bạn
+                </SheetTitle>
+                <div className="flex flex-1 flex-col items-center justify-center space-y-4">
+                    <div className="bg-muted rounded-full p-6">
+                        <ShoppingCart className="text-muted-foreground h-12 w-12" />
+                    </div>
+                    <div className="text-center">
+                        <span className="block text-lg font-semibold">
                             Giỏ hàng trống
                         </span>
-                        <p className="text-muted-foreground mb-6 text-center text-sm">
-                            Giỏ hàng của bạn đang chờ sản phẩm đầu tiên. Hãy tìm
-                            sản phẩm yêu thích chỉ với vài cú click.
+                        <p className="text-muted-foreground mt-1 max-w-[280px] text-sm">
+                            Hãy tìm sản phẩm yêu thích và thêm vào giỏ hàng ngay
+                            nhé!
                         </p>
+                    </div>
+                    <SheetClose asChild>
                         <Link href="/">
-                            <Button className="rounded-2xl">
+                            <Button className="rounded-2xl px-8" size="lg">
                                 Mua sắm ngay
                             </Button>
                         </Link>
-                    </div>
+                    </SheetClose>
                 </div>
             </SheetContent>
         );
     }
 
+    // Trạng thái loading
     if (isLoading) {
         return (
             <SheetContent className="h-full w-full p-4 sm:max-w-lg">
-                <SheetTitle>Giỏ hàng của bạn</SheetTitle>
-                <div className="flex h-full items-center justify-center">
-                    <p className="text-muted-foreground">Đang tải...</p>
+                <SheetTitle className="border-b pb-4">
+                    Giỏ hàng của bạn
+                </SheetTitle>
+                <div className="flex h-full flex-col items-center justify-center gap-2">
+                    <Loader2 className="text-primary h-8 w-8 animate-spin" />
+                    <p className="text-muted-foreground text-sm font-medium">
+                        Đang cập nhật giỏ hàng...
+                    </p>
                 </div>
             </SheetContent>
         );
     }
 
-    // Cart with items
     return (
-        <SheetContent className="flex h-full w-full flex-col p-0 sm:max-w-lg">
-            <div className="border-b p-4">
-                <SheetTitle>
-                    Giỏ hàng của bạn ({summary.itemCount} sản phẩm)
+        // make container a flex column that can shrink (min-h-0) so the middle ScrollArea can scroll
+        <SheetContent className="flex h-full min-h-0 w-full flex-col overflow-hidden p-0 sm:max-w-lg">
+            <div className="shrink-0 border-b p-4 shadow-sm">
+                <SheetTitle className="text-xl font-bold">
+                    Giỏ hàng ({summary.itemCount})
                 </SheetTitle>
             </div>
 
-            <ScrollArea className="flex-1 p-4">
-                <div className="space-y-4">
+            {/* make the middle area explicitly scrollable and fill remaining space */}
+            <ScrollArea className="flex-1 overflow-auto px-4 py-2">
+                {/* add bottom padding so last items aren't hidden behind the fixed footer */}
+                <div className="my-4 space-y-4 pr-3 pb-6">
                     {cart?.items.map((item: CartItemResponse) => (
                         <div
                             key={item.id}
-                            className="bg-card flex gap-3 rounded-lg border p-3"
+                            className="group bg-card hover:border-primary/50 relative flex gap-4 rounded-xl border p-3 transition-all hover:shadow-sm"
                         >
-                            <div className="h-20 w-20 shrink-0 rounded-md border bg-white p-1">
+                            <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border bg-white p-1">
                                 <img
-                                    src={item?.image}
+                                    src={
+                                        item?.productImage || "/placeholder.png"
+                                    }
                                     alt={item.productName}
-                                    className="h-full w-full object-contain"
+                                    className="h-full w-full object-contain transition-transform group-hover:scale-105"
                                 />
                             </div>
 
-                            <div className="flex flex-1 flex-col justify-between">
+                            <div className="flex flex-1 flex-col justify-between py-0.5">
                                 <div>
-                                    <h4 className="line-clamp-2 text-sm font-semibold">
+                                    <h4 className="line-clamp-1 text-sm font-bold text-gray-900">
                                         {item.productName}
                                     </h4>
-                                    <p className="text-muted-foreground mt-1 text-xs">
-                                        {Object.entries(item.attributes)
-                                            .map(([, value]) => value)
-                                            .join(" • ")}
-                                    </p>
+                                    <div className="mt-1 flex flex-wrap gap-1">
+                                        {Object.entries(
+                                            item.attributes || {}
+                                        ).map(([key, value]) => (
+                                            <span
+                                                key={key}
+                                                className="bg-muted text-muted-foreground inline-flex items-center rounded-md px-1.5 py-0.5 text-[10px] font-medium"
+                                            >
+                                                {value}
+                                            </span>
+                                        ))}
+                                    </div>
                                 </div>
 
-                                <div className="mt-2 flex items-center justify-between">
-                                    <span className="text-xs font-medium">
-                                        x{item.quantity}
+                                <div className="mt-2 flex items-end justify-between">
+                                    <span className="text-muted-foreground rounded-full bg-slate-100 px-2 py-0.5 text-xs font-bold">
+                                        SL: {item.quantity}
                                     </span>
                                     <div className="text-right">
-                                        {item.discountPercent &&
-                                        item.discountPercent > 0 ? (
-                                            <div className="flex flex-col items-end">
-                                                <span className="text-muted-foreground text-xs line-through">
+                                        {item.salePrice &&
+                                        item.salePrice < item.price ? (
+                                            <div className="flex flex-col items-end leading-tight">
+                                                <span className="text-muted-foreground text-[10px] line-through decoration-gray-400">
                                                     {item.price.toLocaleString(
                                                         "vi-VN"
                                                     )}
                                                     đ
                                                 </span>
-                                                <span className="text-primary text-sm font-bold">
-                                                    {(
-                                                        item.salePrice ||
-                                                        item.price
-                                                    ).toLocaleString("vi-VN")}
+                                                <span className="text-primary text-sm font-black">
+                                                    {item.salePrice.toLocaleString(
+                                                        "vi-VN"
+                                                    )}
                                                     đ
                                                 </span>
                                             </div>
                                         ) : (
-                                            <span className="text-primary text-sm font-bold">
+                                            <span className="text-primary text-sm font-black">
                                                 {item.price.toLocaleString(
                                                     "vi-VN"
                                                 )}
@@ -125,43 +146,52 @@ export function CartSheet() {
                 </div>
             </ScrollArea>
 
-            <div className="bg-muted/30 border-t p-4">
+            <div className="shrink-0 border-t bg-slate-50/80 p-5 shadow-[0_-4px_10px_rgba(0,0,0,0.03)] backdrop-blur-sm">
                 <div className="space-y-3">
                     <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Tạm tính</span>
-                        <span className="font-medium">
+                        <span className="text-muted-foreground font-medium">
+                            Tạm tính ({summary.itemCount} món)
+                        </span>
+                        <span className="font-semibold text-gray-900">
                             {summary.totalAmount.toLocaleString("vi-VN")}đ
                         </span>
                     </div>
+
                     {summary.totalDiscount > 0 && (
                         <div className="flex justify-between text-sm">
-                            <span className="text-muted-foreground">
+                            <span className="text-muted-foreground font-medium">
                                 Giảm giá
                             </span>
-                            <span className="text-destructive font-medium">
+                            <span className="text-destructive font-bold">
                                 -{summary.totalDiscount.toLocaleString("vi-VN")}
                                 đ
                             </span>
                         </div>
                     )}
-                    <Separator />
-                    <div className="flex items-baseline justify-between">
-                        <span className="font-semibold">Tổng cộng</span>
-                        <span className="text-primary text-xl font-bold">
+
+                    <Separator className="bg-slate-200" />
+
+                    <div className="flex items-center justify-between pt-1">
+                        <span className="text-base font-bold text-gray-900">
+                            Tổng cộng
+                        </span>
+                        <span className="text-primary text-2xl font-black tracking-tight">
                             {summary.finalAmount.toLocaleString("vi-VN")}đ
                         </span>
                     </div>
 
-                    <SheetClose asChild>
-                        <Link href="/cart" className="block">
-                            <Button
-                                className="mt-2 h-11 w-full rounded-2xl text-base font-semibold"
-                                size="lg"
-                            >
-                                Xem giỏ hàng
-                            </Button>
-                        </Link>
-                    </SheetClose>
+                    <div className="grid grid-cols-1 gap-2 pt-2">
+                        <SheetClose asChild>
+                            <Link href="/cart">
+                                <Button
+                                    className="shadow-primary/20 h-12 w-full rounded-2xl text-base font-bold shadow-lg transition-all hover:scale-[1.01] active:scale-[0.98]"
+                                    size="lg"
+                                >
+                                    Thanh toán ngay
+                                </Button>
+                            </Link>
+                        </SheetClose>
+                    </div>
                 </div>
             </div>
         </SheetContent>

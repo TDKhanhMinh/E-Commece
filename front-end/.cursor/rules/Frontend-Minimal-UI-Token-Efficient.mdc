@@ -1,0 +1,36 @@
+---
+description: Use when working on React frontend UI, Material UI (MUI), Minimal UI kit, theme tokens (palette, spacing, typography), or when the user asks for token-efficient or minimal-context edits. Follow theme tokens; avoid scanning the whole repo.
+globs:
+    - "**/components/**/*.{tsx,jsx,ts,js}"
+    - "**/app/**/*.{tsx,jsx,ts,js}"
+    - "**/theme*.{ts,tsx,js,jsx}"
+    - "**/styles/**/*.{ts,tsx,js,jsx,css,scss}"
+alwaysApply: false
+---
+
+You are working on a React frontend using Material UI with a Minimal UI kit.
+
+Core rules:
+
+- Do NOT scan or read the entire repository by default.
+- Only read files explicitly referenced by the user or clearly required for the task.
+- Never generate README.md, documentation, or explanations unless explicitly requested.
+
+UI rules:
+
+- Assume the project uses a Minimal UI kit based on Material UI.
+- Reuse existing theme tokens (palette, spacing, typography, radius).
+- If theme details are unclear, ASK or request specific files (e.g. theme.ts) instead of guessing.
+
+Context usage:
+
+- Use Context7 selectively.
+- Prefer reading:
+    - theme.ts / theme.js
+    - existing related components
+- Avoid unrelated folders (tests, docs, configs) unless necessary.
+
+Output rules:
+
+- Focus on production-ready component code.
+- Keep explanations short and technical.

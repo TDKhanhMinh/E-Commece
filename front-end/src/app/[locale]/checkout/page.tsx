@@ -14,27 +14,31 @@ import {
     CheckoutSummaryCard,
     DeliveryAddressCard,
 } from "@/components/common/checkout";
+import { ShippingMethodCard } from "@/components/common/checkout/checkout-shipping-method";
+import { PaymentMethodCard } from "@/components/common/checkout/checkout-payment-method";
+import { VoucherSelector } from "@/components/common/checkout/checkout-voucher-select";
 
 export default function CheckoutPage() {
     const router = useRouter();
     const { user } = useAuthStore();
     const userId = user?.id ? parseInt(user.id) : 0;
     const checkoutMutation = useCheckout(userId);
-
+    const [shippingMethod, setShippingMethod] = useState("standard");
+    const [paymentMethod, setPaymentMethod] = useState("COD");
+    const [voucherCode, setVoucherCode] = useState<string>("");
+    const [checkoutData, setCheckoutData] = useState<CheckoutData | null>(null);
     const {
         defaultAddress,
         isLoading: isLoadingAddress,
         hasAddresses,
     } = useDefaultDeliveryAddress();
 
-    const [checkoutData, setCheckoutData] = useState<CheckoutData | null>(null);
-
     useEffect(() => {
-        // Lấy dữ liệu từ sessionStorage
         const data = sessionStorage.getItem("checkoutData");
         if (data) {
             try {
                 const parsed = JSON.parse(data);
+                console.log("Loaded checkout data:", parsed);
                 setCheckoutData(parsed);
             } catch (error) {
                 console.error("Error parsing checkout data:", error);
@@ -46,18 +50,20 @@ export default function CheckoutPage() {
             router.push("/cart");
         }
     }, [router]);
-
+    const handleApplyVoucher = (code: string) => {
+        setVoucherCode(code);
+        toast.success(`Đã chọn mã: ${code}`);
+        // Tại đây bạn có thể gọi API validate mã giảm giá để cập nhật lại finalAmount
+    };
     const handleConfirmOrder = async () => {
         if (!checkoutData || !user?.id) return;
 
-        // Kiểm tra địa chỉ giao hàng
         if (!defaultAddress) {
             toast.error("Vui lòng thêm địa chỉ giao hàng trước khi đặt hàng");
             router.push("/user/address-delivery");
             return;
         }
 
-        // Chuyển đổi sang format backend
         const checkoutItems: CheckoutItemRequest[] = checkoutData.items.map(
             (item) => ({
                 skuId: item.skuId,
@@ -68,6 +74,9 @@ export default function CheckoutPage() {
         const requestData = {
             deliveryAddressId: defaultAddress.id,
             items: checkoutItems,
+            shippingMethod: shippingMethod,
+            paymentMethod: paymentMethod,
+            voucherCode: voucherCode || undefined,
         };
 
         try {
@@ -75,10 +84,8 @@ export default function CheckoutPage() {
                 requestData
             )) as unknown as CheckoutResponse;
 
-            // Xóa dữ liệu checkout khỏi sessionStorage
             sessionStorage.removeItem("checkoutData");
 
-            // Navigate đến trang order detail
             if (response?.orderId) {
                 toast.success(
                     `Đặt hàng thành công! Mã đơn hàng: #${response.orderId}`
@@ -89,7 +96,6 @@ export default function CheckoutPage() {
             }
         } catch (error: any) {
             console.error("Checkout error:", error);
-            // Toast error đã được handle trong hook
         }
     };
 
@@ -105,7 +111,6 @@ export default function CheckoutPage() {
         router.push("/user/address-delivery");
     };
 
-    // Loading state
     if (!checkoutData || isLoadingAddress) {
         return <CheckoutLoading />;
     }
@@ -118,7 +123,6 @@ export default function CheckoutPage() {
             />
 
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-                {/* Cột trái: Thông tin đơn hàng */}
                 <div className="space-y-6 lg:col-span-2">
                     <DeliveryAddressCard
                         hasAddresses={hasAddresses}
@@ -128,9 +132,20 @@ export default function CheckoutPage() {
                     />
 
                     <CheckoutItemsList items={checkoutData.items} />
+                    <ShippingMethodCard
+                        value={shippingMethod}
+                        onValueChange={setShippingMethod}
+                    />
+                    <PaymentMethodCard
+                        value={paymentMethod}
+                        onValueChange={setPaymentMethod}
+                    />
+                    <VoucherSelector
+                        onApplyVoucher={handleApplyVoucher}
+                        appliedVoucher={voucherCode}
+                    />
                 </div>
 
-                {/* Cột phải: Tóm tắt đơn hàng */}
                 <div className="lg:col-span-1">
                     <CheckoutSummaryCard
                         summary={checkoutData.summary}

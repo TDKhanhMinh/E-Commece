@@ -10,10 +10,10 @@ export interface CartItemResponse {
     skuId: number;
     skuCode: string;
     productName: string;
-    productImage: string;
     attributes: Record<string, string>;
     price: number;
-    salePrice?: number;
+    image: string;
+    salePrice: number;
     discountPercent?: number;
     quantity: number;
     subtotal: number;
@@ -27,7 +27,7 @@ export interface CartResponse {
     userId?: number;
     items: CartItemResponse[];
     totalItems: number;
-    totalAmount: number;
-    totalDiscount?: number;
-    finalAmount: number;
+    subtotal: number; // Đổi từ totalAmount thành subtotal cho khớp use-cart.ts
+    discountTotal: number; // Đổi từ totalDiscount thành discountTotal
+    totalPrice: number; // Đổi từ finalAmount thành totalPrice
 }

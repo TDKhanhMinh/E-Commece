@@ -15,7 +15,7 @@ public class SkuDto {
     private Integer stock;
     private String image;
     private List<String> imagesDetails = new ArrayList<>();
-    private BigDecimal salePrice;
+    private BigDecimal salePrice = BigDecimal.valueOf(0.00);
     private BigDecimal finalPrice;
     private Boolean isActive;
     private Integer discountPercent;

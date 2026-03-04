@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Search } from "lucide-react";
 import { UserOrderItem } from "@/components/common";
-import { useOrdersByUser } from "@/hooks/use-order";
+import { useCancelOrder, useOrdersByUser } from "@/hooks/use-order";
 import { useMemo, useState } from "react";
 import { OrderPageResponse, OrderStatus } from "@/type/order-type";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,6 @@ export default function OrderHistory() {
     const [currentPage, setCurrentPage] = useState(0);
     const pageSize = 10;
 
-    // Build params based on active tab
     const params = useMemo(() => {
         const searchParams: any = {
             page: currentPage,
@@ -32,20 +31,21 @@ export default function OrderHistory() {
 
     const { data: orderPageData, isLoading, error } = useOrdersByUser(params);
 
-    // Cast to OrderPageResponse - HTTP interceptor đã extract data
     const orderPage = orderPageData as unknown as OrderPageResponse;
     const ordersList = orderPage?.content || [];
+    console.log("Fetched orders:", ordersList);
 
     const tabs = [
         { value: "all", label: "TẤT CẢ" },
-        { value: "PENDING", label: "CHỜ XÁC NHẬN" },
+        { value: "PENDING", label: "CHỜ THANH TOÁN" },
         { value: "CONFIRMED", label: "ĐÃ XÁC NHẬN" },
-        { value: "SHIPPED", label: "ĐANG GIAO" },
-        { value: "COMPLETED", label: "HOÀN THÀNH" },
+        { value: "PAID", label: "ĐÃ THANH TOÁN" },
+        { value: "SHIPPING", label: "ĐANG GIAO HÀNG" },
+        { value: "DELIVERED", label: "ĐÃ GIAO" },
         { value: "CANCELLED", label: "ĐÃ HỦY" },
+        { value: "FAILED", label: "THẤT BẠI" },
     ];
 
-    // Filter orders by search query (client-side)
     const filteredOrders = useMemo(() => {
         if (!searchQuery.trim()) return ordersList;
 
@@ -55,34 +55,35 @@ export default function OrderHistory() {
         );
     }, [ordersList, searchQuery]);
 
-    // Handle tab change
     const handleTabChange = (value: string) => {
         setActiveTab(value);
-        setCurrentPage(0); // Reset to first page
+        setCurrentPage(0);
     };
 
-    // Handle pagination
     const handlePageChange = (newPage: number) => {
         setCurrentPage(newPage);
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
+    const { mutate: cancelOrder, isPending: isCancelling } = useCancelOrder();
 
+    const handleCancelOrder = (orderId: string) => {
+        cancelOrder(Number(orderId));
+    };
     // Loading state
     if (isLoading) {
         return (
             <div className="w-full rounded-xl border bg-white p-6 shadow-sm">
-                <div className="flex min-h-[400px] items-center justify-center">
+                <div className="flex min-h-100 items-center justify-center">
                     <Loader2 className="text-primary h-8 w-8 animate-spin" />
                 </div>
             </div>
         );
     }
 
-    // Error state
     if (error) {
         return (
             <div className="w-full rounded-xl border bg-white p-6 shadow-sm">
-                <div className="flex min-h-[400px] items-center justify-center">
+                <div className="flex min-h-100 items-center justify-center">
                     <div className="text-center">
                         <p className="text-red-600">
                             Không thể tải danh sách đơn hàng
@@ -119,12 +120,12 @@ export default function OrderHistory() {
                 onValueChange={handleTabChange}
                 className="min-h-screen w-full"
             >
-                <TabsList className="mb-0 h-auto w-full justify-start gap-6 rounded-none border-b bg-transparent p-0">
+                <TabsList className="scrollbar-hide mb-0 h-auto w-full flex-nowrap justify-start gap-6 overflow-x-auto rounded-none border-b bg-transparent p-0">
                     {tabs.map((tab) => (
                         <TabsTrigger
                             key={tab.value}
                             value={tab.value}
-                            className="cursor-pointer rounded-none border-t-0 border-r-0 border-b-2 border-l-0 bg-transparent px-0 py-3 text-sm font-medium text-gray-500 uppercase data-[state=active]:border-green-600 data-[state=active]:text-green-600"
+                            className="shrink-0 cursor-pointer rounded-none border-t-0 border-r-0 border-b-2 border-l-0 bg-transparent px-0 py-3 text-sm font-medium text-gray-500 uppercase data-[state=active]:border-green-600 data-[state=active]:text-green-600"
                         >
                             {tab.label}
                         </TabsTrigger>
@@ -142,20 +143,27 @@ export default function OrderHistory() {
                                 {filteredOrders.length > 0 ? (
                                     <>
                                         {filteredOrders.map((order) => (
-                                            <UserOrderItem
+                                            <div
                                                 key={order.orderId}
-                                                id={order.orderId.toString()}
-                                                title={`Đơn hàng #${order.orderId} - ${order.totalItems} sản phẩm`}
-                                                price={`${order.finalAmount.toLocaleString("vi-VN")} đ`}
-                                                image={
-                                                    order.items[0]?.image ||
-                                                    "/placeholder.png"
-                                                }
-                                                status={order.status}
-                                            />
+                                                className="relative"
+                                            >
+                                                <UserOrderItem
+                                                    id={order.orderId.toString()}
+                                                    title={`Đơn hàng #${order.orderId} - ${order.items.length} sản phẩm`}
+                                                    price={`${order.finalAmount.toLocaleString("vi-VN")} đ`}
+                                                    image={
+                                                        order.items[0]?.image ||
+                                                        "/placeholder.png"
+                                                    }
+                                                    status={order.status}
+                                                    isCancelling={isCancelling}
+                                                    handleCancelOrder={
+                                                        handleCancelOrder
+                                                    }
+                                                />
+                                            </div>
                                         ))}
 
-                                        {/* Pagination */}
                                         {orderPage &&
                                             orderPage.totalPages > 1 && (
                                                 <div className="mt-4 flex items-center justify-between border-t pt-6">
@@ -206,7 +214,7 @@ export default function OrderHistory() {
                                                                                 i
                                                                             )
                                                                         }
-                                                                        className="min-w-[40px]"
+                                                                        className="min-w-10"
                                                                     >
                                                                         {i + 1}
                                                                     </Button>

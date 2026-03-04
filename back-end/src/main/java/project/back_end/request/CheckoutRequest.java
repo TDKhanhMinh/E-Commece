@@ -18,7 +18,8 @@ public class CheckoutRequest {
     @NotNull(message = "Địa chỉ giao hàng không được rỗng")
     private Long deliveryAddressId;
 
-    // COD, VNPAY, MOMO...
     private String paymentMethod;
+
+    private String shippingMethod;
 }
 

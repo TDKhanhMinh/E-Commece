@@ -44,8 +44,14 @@ public class Order {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_address_id", nullable = false)
     private OrderDeliveryAddress deliveryAddress;
+    private String paymentMethod;
+    private String shippingMethod;
+    private BigDecimal shippingCost;
 
     private LocalDateTime createdAt;
+    private LocalDateTime deliveredAt;
+    private LocalDateTime cancelledAt;
+    private LocalDateTime confirmedAt;
     private LocalDateTime updatedAt;
 }
 

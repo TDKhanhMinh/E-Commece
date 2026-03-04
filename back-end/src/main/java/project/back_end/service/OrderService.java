@@ -9,7 +9,7 @@ import project.back_end.response.OrderResponse;
 
 public interface OrderService {
 
-    OrderResponse checkout(Long userId, CheckoutRequest request);
+    OrderResponse checkout(String email, CheckoutRequest request);
 
     OrderResponse getOrderDetail(Long orderId);
 

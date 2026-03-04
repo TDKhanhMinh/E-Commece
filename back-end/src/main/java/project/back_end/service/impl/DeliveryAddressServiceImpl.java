@@ -35,7 +35,6 @@ public class DeliveryAddressServiceImpl implements DeliveryAddressService {
     public List<DeliveryAddressResponse> getUserDeliveryAddresses(String email) {
         User user = userRepository.getUserByEmail(email);
         List<DeliveryAddress> addresses = deliveryAddressRepository.findByUserId(user.getId());
-        addresses.forEach(address -> log.error("User address found: {}", address.getIsDefault()));
         return addresses.stream()
                 .map(addressMapper::toDeliveryAddressResponse)
                 .toList();

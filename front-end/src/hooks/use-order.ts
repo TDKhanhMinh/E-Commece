@@ -19,14 +19,14 @@ import { toast } from "sonner";
  * Hook lấy chi tiết đơn hàng theo ID
  * @param orderId ID đơn hàng
  */
-export const useOrderDetail = (orderId: number) => {
+export const useOrderDetail = (orderId: string | Array<string> | undefined) => {
     return useQuery({
         queryKey: ["order", orderId],
         queryFn: async () => {
             return await getOrderById(orderId);
         },
         enabled: !!orderId,
-        staleTime: 1000 * 60, // 1 phút
+        staleTime: 1000 * 60,
     });
 };
 
@@ -89,9 +89,15 @@ export const useUpdateOrderStatus = () => {
         }) => updateOrderStatus(orderId, status),
         onSuccess: (data, variables) => {
             toast.success("Cập nhật trạng thái đơn hàng thành công!");
+            // Invalidate user orders list
             queryClient.invalidateQueries({
                 queryKey: ["orders", "user"],
             });
+            // Invalidate admin orders list
+            queryClient.invalidateQueries({
+                queryKey: ["admin-orders"],
+            });
+            // Invalidate specific order detail
             queryClient.invalidateQueries({
                 queryKey: ["order", variables.orderId],
             });

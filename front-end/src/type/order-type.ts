@@ -96,3 +96,56 @@ export interface OrderSearchParams {
     size?: number;
     sort?: string;
 }
+// Định nghĩa thông tin địa chỉ giao hàng
+export interface OrderDeliveryAddress {
+    userName: string;
+    phoneNumber: string;
+    location: string;
+}
+
+// Định nghĩa thông tin từng sản phẩm trong đơn hàng
+export interface OrderItem {
+    skuCode: string | number;
+    productName: string;
+    quantity: number;
+    price: number;
+    salePrice: number;
+    image: string;
+}
+
+// Định nghĩa thông tin tổng thể của một chi tiết đơn hàng
+export interface OrderDetailResponse {
+    orderId: string | number;
+    status: string; // VD: "PENDING", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED"
+    deliveryAddress: OrderDeliveryAddress;
+    items: OrderItem[];
+
+    totalAmount: number;
+    finalAmount: number;
+    totalDiscount: number;
+    shippingCost: number;
+
+    createdAt: string;
+    updatedAt: string;
+    confirmedAt: string;
+    cancelledAt: string;
+    deliveredAt: string;
+
+    paymentMethod?: string;
+    shippingMethod?: string;
+    deliveryDate?: string;
+}
+export interface OrderItemData {
+    id?: number | string;
+    orderId?: string;
+    deliveryAddress?: {
+        userName?: string;
+    };
+    createdAt: string;
+    finalAmount?: number;
+    totalAmount?: number;
+    status: string;
+    content: [];
+    numberOfElements: number;
+    totalPages: number;
+}

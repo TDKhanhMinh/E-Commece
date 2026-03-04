@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import project.back_end.entity.OrderStatus;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,13 +18,23 @@ public class OrderResponse {
     private Long orderId;
     private OrderStatus status;
 
-    private Long totalAmount;
-    private Long totalDiscount;
-    private Long finalAmount;
+    private BigDecimal totalAmount;
+    private BigDecimal totalDiscount;
+    private BigDecimal finalAmount;
 
     private DeliveryAddressResponse deliveryAddress;
     private List<CheckoutItemResponse> items;
 
+    private String shippingMethod;
+    private String paymentMethod;
+    private BigDecimal shippingCost;
+
     private LocalDateTime createdAt;
+    private LocalDateTime deliveredAt;
+    private LocalDateTime cancelledAt;
+    private LocalDateTime confirmedAt;
+    private LocalDateTime updatedAt;
+
+
 }
 

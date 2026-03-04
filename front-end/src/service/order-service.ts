@@ -14,7 +14,7 @@ import http, { ApiResponse } from "@/service/http";
 
 // Tạo đơn hàng (Checkout)
 export const checkout = async (userId: number, data: CheckoutRequest) => {
-    console.log("Checkout order:", data);
+    console.log("Checkout orders:", data);
     return http.post<ApiResponse<CheckoutResponse>>(
         `/orders/checkout?userId=${userId}`,
         data
@@ -22,11 +22,14 @@ export const checkout = async (userId: number, data: CheckoutRequest) => {
 };
 
 // Lấy chi tiết đơn hàng theo ID
-export const getOrderById = async (orderId: number) =>
-    http.get<ApiResponse<OrderResponse>>(`/orders/${orderId}`);
+export const getOrderById = async (
+    orderId: string | Array<string> | undefined
+) => http.get<ApiResponse<OrderResponse>>(`/orders/${orderId}`);
 
 // Lấy danh sách đơn hàng theo user với pagination
-export const getOrdersByUser = async (params?: OrderSearchParams) => {
+export const getOrdersByUser: (
+    arg0: OrderSearchParams | undefined
+) => any = async (params?: OrderSearchParams) => {
     const queryParams = new URLSearchParams();
 
     if (params?.status) {
@@ -49,7 +52,7 @@ export const getOrdersByUser = async (params?: OrderSearchParams) => {
 
 // Cập nhật trạng thái đơn hàng
 export const updateOrderStatus = async (orderId: number, status: string) => {
-    console.log("Updating order status:", orderId, status);
+    console.log("Updating orders status:", orderId, status);
     return http.put<ApiResponse<null>>(
         `/orders/${orderId}/status?status=${status}`
     );
@@ -57,6 +60,6 @@ export const updateOrderStatus = async (orderId: number, status: string) => {
 
 // Hủy đơn hàng
 export const cancelOrder = async (orderId: number) => {
-    console.log("Cancelling order:", orderId);
+    console.log("Cancelling orders:", orderId);
     return http.delete<ApiResponse<null>>(`/orders/${orderId}`);
 };

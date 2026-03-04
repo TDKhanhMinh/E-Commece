@@ -4,8 +4,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { DeliveryAddress, getDeliveryAddresses } from "@/service/user-service";
 import { AddressCard, AddressDialog } from "@/components/common";
+import { ChevronLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function AddressDelivery() {
+    const router = useRouter();
+
     const {
         data: addressList,
         isLoading,
@@ -16,25 +21,44 @@ export default function AddressDelivery() {
     });
 
     const addresses = addressList || [];
-    console.log("Address", addresses);
+
+    const BackButton = () => (
+        <Button
+            variant="ghost"
+            onClick={() => router.back()}
+            className="text-muted-foreground hover:text-primary mb-4 flex items-center gap-1 pl-0 transition-colors"
+        >
+            <ChevronLeft className="h-5 w-5" />
+            Quay lại trang trước
+        </Button>
+    );
+
     if (isLoading) {
         return (
-            <div className="mx-auto max-w-7xl p-4 text-center">
-                Đang tải danh sách địa chỉ...
+            <div className="mx-auto w-full max-w-6xl p-4">
+                <BackButton />
+                <div className="text-muted-foreground py-10 text-center">
+                    Đang tải danh sách địa chỉ...
+                </div>
             </div>
         );
     }
 
     if (isError) {
         return (
-            <div className="mx-auto max-w-7xl p-4 text-center text-red-500">
-                Không thể tải danh sách địa chỉ.
+            <div className="mx-auto w-full max-w-6xl p-4">
+                <BackButton />
+                <div className="text-destructive py-10 text-center">
+                    Không thể tải danh sách địa chỉ. Vui lòng thử lại sau.
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="mx-auto w-6xl space-y-0 p-4">
+        <div className="mx-auto w-full max-w-6xl space-y-0 p-4">
+            <BackButton />
+
             <Card className="w-full border-none shadow-sm">
                 <CardContent className="p-6">
                     <div className="mb-6 flex items-center justify-between">
@@ -46,15 +70,15 @@ export default function AddressDelivery() {
                             địa chỉ
                         </h3>
                         <AddressDialog
-                            btnText={"Thêm địa chỉ"}
-                            title={"Thêm địa chỉ"}
-                            type={"add"}
+                            btnText="Thêm địa chỉ"
+                            title="Thêm địa chỉ"
+                            type="add"
                             addressId={0}
                         />
                     </div>
 
                     {addresses?.length === 0 ? (
-                        <div className="py-10 text-center">
+                        <div className="text-muted-foreground py-10 text-center">
                             Bạn chưa lưu địa chỉ nào.
                         </div>
                     ) : (

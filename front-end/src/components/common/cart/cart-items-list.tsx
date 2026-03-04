@@ -12,8 +12,8 @@ interface CartItemsListProps {
     onRemove: (skuId: number, productName: string) => void;
     isUpdating: boolean;
     isRemoving: boolean;
-    checkedItems?: number[];
-    onToggleSelected?: (skuId: number, checked: boolean) => void;
+    checkedItems: number[];
+    onToggleSelected: (skuId: number, checked: boolean) => void;
 }
 
 export function CartItemsList({
@@ -22,15 +22,18 @@ export function CartItemsList({
     onRemove,
     isUpdating,
     isRemoving,
-    checkedItems,
+    checkedItems = [],
     onToggleSelected,
 }: CartItemsListProps) {
+    console.log("Rendering CartItemsList with items:", items);
     return (
         <div className="space-y-4 lg:col-span-2">
             {items.map((item) => (
                 <CartItemCard
-                    key={item.id}
+                    key={item.skuId}
                     item={item}
+                    isSelected={checkedItems.includes(item.skuId)}
+                    onSelect={onToggleSelected}
                     onUpdateQuantity={onUpdateQuantity}
                     onRemove={onRemove}
                     isUpdating={isUpdating}

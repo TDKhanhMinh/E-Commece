@@ -5,17 +5,18 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @Builder
 public class CheckoutItemResponse {
-
     private Long skuId;
     private String productName;
-
-    private Long price;       // giá gốc
-    private Long salePrice;   // giá sau giảm (nếu có)
-
+    private String skuCode;
+    private String image;
+    private BigDecimal price;
+    private BigDecimal salePrice;
     private Integer quantity;
-    private Long totalPrice;
+    private BigDecimal totalPrice;
 }
