@@ -1,12 +1,10 @@
-import { Attribute, AttributeRequest } from "@/type/attribute-type";
-import http, { ApiResponse, PageResponse } from "@/service/http";
-
-export interface AttributeSearchParams {
-    page?: number;
-    size?: number;
-    keyword?: string;
-    code?: string;
-}
+import {
+    Attribute,
+    AttributeRequest,
+    AttributeSearchParams,
+} from "@/type/attribute-type";
+import http from "@/service/http";
+import { ApiResponse, PageResponse } from "@/type/api-type";
 
 export const getAttributes = async (params?: AttributeSearchParams) => {
     const queryParams = new URLSearchParams();

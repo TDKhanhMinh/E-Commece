@@ -1,13 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-
-interface ProductVariantSelectorProps {
-    attributeGroups: Record<string, Set<string>>;
-    selectedAttributes: Record<string, string>;
-    onAttributeChange: (attributeName: string, value: string) => void;
-    variants: any[];
-}
+import { ProductVariantSelectorProps } from "@/type/product-type";
 
 export function ProductVariantSelector({
     attributeGroups,

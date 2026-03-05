@@ -5,7 +5,8 @@ import {
     OrderResponse,
     OrderSearchParams,
 } from "@/type/order-type";
-import http, { ApiResponse } from "@/service/http";
+import http from "@/service/http";
+import { ApiResponse } from "@/type/api-type";
 
 /**
  * Order Service - Quản lý đơn hàng

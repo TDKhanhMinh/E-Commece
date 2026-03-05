@@ -1,22 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-
-interface User {
-    id: string;
-    name: string;
-    email: string;
-    phone: string;
-    createdAt: string;
-    avatarUrl?: string;
-}
-
-interface AuthState {
-    user: User | null;
-    token: string | null;
-    isAuthenticated: boolean;
-    setAuth: (token: string, user: User) => void;
-    logout: () => void;
-}
+import { AuthState } from "@/type/user-type";
 
 export const useAuthStore = create<AuthState>()(
     persist(

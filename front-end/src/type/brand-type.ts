@@ -11,3 +11,9 @@ export interface BrandRequest {
     description?: string;
     logo?: string;
 }
+
+export interface BrandSearchParams {
+    page?: number;
+    size?: number;
+    keyword?: string;
+}

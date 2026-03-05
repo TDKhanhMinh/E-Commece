@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import SimpleBar from "simplebar-react";
 import ProductItem from "@/components/common/product/product-item";
 import { useProducts } from "@/hooks/use-products";
-import { PageResponse } from "@/service/http";
+import { PageResponse } from "@/type/api-type";
 
 export default function HomeSaleProducts() {
     const t = useTranslations("HomePage");

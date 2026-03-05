@@ -84,3 +84,74 @@ export interface AutoGenerateSkuRequest {
         values: string[];
     }[];
 }
+export interface AutoGenerateSkuRequest {
+    price: number;
+    stock: number;
+    attributes: {
+        attributeId: number;
+        values: string[];
+    }[];
+}
+export interface ProductImageGalleryProps {
+    images: string[];
+    currentImageIndex: number;
+    onImageChange: (index: number) => void;
+    productName: string;
+    discountPercent: number;
+}
+export interface ProductInfoProps {
+    product: any;
+    selectedSku: any;
+    discountPercent: number;
+    salePrice: number;
+    originalPrice: number;
+    attributeGroups: Record<string, Set<string>>;
+    selectedAttributes: Record<string, string>;
+    onAttributeChange: (attributeName: string, value: string) => void;
+    formatPrice: (price: number) => string;
+}
+export interface ProductPriceProps {
+    salePrice: number;
+    originalPrice: number;
+    discountPercent: number;
+    className?: string;
+}
+export interface ProductSkuInfoProps {
+    sku: {
+        skuCode: string;
+        stock: number;
+    } | null;
+}
+export interface Specification {
+    attributeName: string;
+    value: string;
+}
+
+export interface ProductSpecificationsProps {
+    specifications: Specification[];
+}
+
+export interface ProductStructuredDataProps {
+    product: {
+        name: string;
+        description: string;
+        image: string;
+        brand?: string;
+        rating?: number;
+        reviewCount?: number;
+    };
+    sku: {
+        skuCode: string;
+        price: number;
+        salePrice: number;
+        stock: number;
+    } | null;
+    slug: string;
+}
+
+export interface ProductVariantSelectorProps {
+    attributeGroups: Record<string, Set<string>>;
+    selectedAttributes: Record<string, string>;
+    onAttributeChange: (attributeName: string, value: string) => void;
+    variants: any[];
+}

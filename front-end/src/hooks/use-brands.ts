@@ -2,14 +2,13 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-    BrandSearchParams,
     createBrand,
     deleteBrand,
     getBrands,
     updateBrand,
 } from "@/service/brand-service";
 import { toast } from "sonner";
-import { BrandRequest } from "@/type/brand-type";
+import { BrandRequest, BrandSearchParams } from "@/type/brand-type";
 
 // 1. Hook lấy danh sách với phân trang
 export const useBrands = (params?: BrandSearchParams) => {

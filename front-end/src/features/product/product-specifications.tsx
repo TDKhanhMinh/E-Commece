@@ -1,15 +1,7 @@
 "use client";
 
 import { Separator } from "@/components/ui/separator";
-
-interface Specification {
-    attributeName: string;
-    value: string;
-}
-
-interface ProductSpecificationsProps {
-    specifications: Specification[];
-}
+import { ProductSpecificationsProps } from "@/type/product-type";
 
 export function ProductSpecifications({
     specifications,

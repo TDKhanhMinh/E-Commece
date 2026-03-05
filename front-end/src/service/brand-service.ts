@@ -1,18 +1,7 @@
-import http, { ApiResponse, PageResponse } from "@/service/http";
-import { Brand, BrandRequest } from "@/type/brand-type";
-
-export interface Attribute {
-    id: number;
-    name: string;
-    code: string;
-    type: "TEXT" | "SELECT" | "NUMBER";
-}
-
-export interface BrandSearchParams {
-    page?: number;
-    size?: number;
-    keyword?: string;
-}
+import http from "@/service/http";
+import { Brand, BrandRequest, BrandSearchParams } from "@/type/brand-type";
+import { Attribute } from "next-themes";
+import { ApiResponse, PageResponse } from "@/type/api-type";
 
 export const getAttributes = async () =>
     http.get<ApiResponse<Attribute[]>>("/attributes");

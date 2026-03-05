@@ -19,18 +19,7 @@ import { ProductSpecifications } from "./product-specifications";
 import { useAddToCart } from "@/hooks/use-cart";
 import { toast } from "sonner";
 import { formatCurrency } from "@/lib/format-price";
-
-interface ProductInfoProps {
-    product: any;
-    selectedSku: any;
-    discountPercent: number;
-    salePrice: number;
-    originalPrice: number;
-    attributeGroups: Record<string, Set<string>>;
-    selectedAttributes: Record<string, string>;
-    onAttributeChange: (attributeName: string, value: string) => void;
-    formatPrice: (price: number) => string;
-}
+import { ProductInfoProps } from "@/type/product-type";
 
 export function ProductInfo({
     product,

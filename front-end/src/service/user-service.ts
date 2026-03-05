@@ -1,30 +1,13 @@
 import { AxiosResponse } from "axios";
-import http, { PageResponse } from "@/service/http";
+import http from "@/service/http";
+import {
+    AddDeliveryAddress,
+    DeliveryAddress,
+    UserProfile,
+    UserRequest,
+} from "@/type/user-type";
+import { PageResponse } from "@/type/api-type";
 
-interface UserProfile {
-    id: number;
-    name: string;
-    phone: string;
-    email: string;
-    avatarUrl: string;
-    role: string;
-}
-interface UserRequest {
-    name?: string | undefined;
-    phone?: string | undefined;
-}
-interface DeliveryAddress {
-    id: number;
-    location: string;
-    userName: string;
-    phoneNumber: string;
-    isDefault: boolean;
-}
-interface AddDeliveryAddress {
-    location: string;
-    userName: string;
-    phoneNumber: string;
-}
 export const getProfile: () => Promise<
     AxiosResponse<UserProfile>
 > = async (): Promise<AxiosResponse<UserProfile>> => {

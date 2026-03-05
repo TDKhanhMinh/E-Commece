@@ -14,16 +14,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { getStatusBadge } from "@/lib/get-order-status";
-
-interface UserOrderItemProps {
-    id: string;
-    title: string;
-    price: string;
-    image: string;
-    status?: string;
-    isCancelling: boolean;
-    handleCancelOrder: (orderId: string) => void;
-}
+import { UserOrderItemProps } from "@/type/order-type";
 
 export function UserOrderItem({
     id,

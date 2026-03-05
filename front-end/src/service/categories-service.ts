@@ -1,23 +1,10 @@
-export interface Category {
-    id: number;
-    name: string;
-    slug: string;
-    level: number;
-    children?: Category[];
-}
-
-export interface CategoryRequest {
-    name: string;
-    parentId?: number | null;
-}
-
-export interface CategorySearchParams {
-    page?: number;
-    size?: number;
-    keyword?: string;
-}
-
-import http, { ApiResponse, PageResponse } from "@/service/http";
+import http from "@/service/http";
+import {
+    Category,
+    CategoryRequest,
+    CategorySearchParams,
+} from "@/type/category-type";
+import { ApiResponse, PageResponse } from "@/type/api-type";
 
 // 1. Lấy tất cả danh mục với phân trang
 export const getAllCategories = async (params?: CategorySearchParams) => {

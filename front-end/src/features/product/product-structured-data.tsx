@@ -1,22 +1,6 @@
 "use client";
 
-interface ProductStructuredDataProps {
-    product: {
-        name: string;
-        description: string;
-        image: string;
-        brand?: string;
-        rating?: number;
-        reviewCount?: number;
-    };
-    sku: {
-        skuCode: string;
-        price: number;
-        salePrice: number;
-        stock: number;
-    } | null;
-    slug: string;
-}
+import { ProductStructuredDataProps } from "@/type/product-type";
 
 export function ProductStructuredData({
     product,

@@ -1,11 +1,6 @@
 "use client";
 
-interface ProductSkuInfoProps {
-    sku: {
-        skuCode: string;
-        stock: number;
-    } | null;
-}
+import { ProductSkuInfoProps } from "@/type/product-type";
 
 export function ProductSkuInfo({ sku }: ProductSkuInfoProps) {
     if (!sku) return null;

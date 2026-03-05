@@ -7,14 +7,7 @@ import { deleteDeliveryAddress } from "@/service/user-service";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { AddressDialog } from "@/components/common";
-
-interface AddressCardProps {
-    id: number;
-    name: string;
-    address: string;
-    phone: string;
-    isDefault: boolean;
-}
+import { AddressCardProps } from "@/type/user-type";
 
 export function AddressCard({
     id,

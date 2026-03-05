@@ -3,14 +3,7 @@
 import Image from "next/image";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-
-interface ProductImageGalleryProps {
-    images: string[];
-    currentImageIndex: number;
-    onImageChange: (index: number) => void;
-    productName: string;
-    discountPercent: number;
-}
+import { ProductImageGalleryProps } from "@/type/product-type";
 
 export function ProductImageGallery({
     images,

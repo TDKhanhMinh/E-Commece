@@ -1,5 +1,6 @@
 import { CartItemRequest, CartResponse } from "@/type/cart-type";
-import http, { ApiResponse } from "@/service/http";
+import http from "@/service/http";
+import { ApiResponse } from "@/type/api-type";
 
 /**
  * Cart Service - Quản lý giỏ hàng

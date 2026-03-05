@@ -2,13 +2,12 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-    AttributeSearchParams,
     createAttribute,
     deleteAttribute,
     getAttributes,
     updateAttribute,
 } from "@/service/attribute-service";
-import { AttributeRequest } from "@/type/attribute-type";
+import { AttributeRequest, AttributeSearchParams } from "@/type/attribute-type";
 import { toast } from "sonner";
 
 // 1. Get List with Pagination

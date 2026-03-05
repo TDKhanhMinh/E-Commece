@@ -1,34 +1,13 @@
 import http from "@/service/http";
+import {
+    ChangePasswordRequest,
+    LoginRequest,
+    LoginResponse,
+    RegisterRequest,
+    RegisterResponse,
+} from "@/type/auth-type";
 import { AxiosResponse } from "axios";
 
-interface LoginResponse {
-    accessToken: string;
-}
-interface LoginRequest {
-    email: string;
-    password: string;
-}
-interface RegisterRequest {
-    phone: string;
-    password: string;
-    email: string;
-    name: string;
-}
-interface RegisterResponse {
-    id: number;
-    phone: string;
-    email: string;
-    name: string;
-    role: string;
-    isActive: boolean;
-    avatarUrl: string;
-    createdAt: string;
-}
-interface ChangePasswordRequest {
-    currentPassword: string;
-    newPassword: string;
-    confirmPassword: string;
-}
 export const registerApi = async (
     payload: RegisterRequest
 ): Promise<AxiosResponse<RegisterResponse>> => {
@@ -67,12 +46,4 @@ export const resetPassword = async (
     return http.post<boolean>("/auth/reset-password", null, {
         params: { email: email, newPassword: newPassword },
     });
-};
-
-export type {
-    LoginRequest,
-    RegisterRequest,
-    LoginResponse,
-    RegisterResponse,
-    ChangePasswordRequest,
 };

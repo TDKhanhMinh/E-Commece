@@ -149,3 +149,12 @@ export interface OrderItemData {
     numberOfElements: number;
     totalPages: number;
 }
+export interface UserOrderItemProps {
+    id: string;
+    title: string;
+    price: string;
+    image: string;
+    status?: string;
+    isCancelling: boolean;
+    handleCancelOrder: (orderId: string) => void;
+}

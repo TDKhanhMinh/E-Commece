@@ -80,6 +80,31 @@ public enum ErrorCode {
     IMAGE_DELETE_FAILED(500, "Failed to delete image"),
 
     /* =========================
+     * VOUCHER / PROMOTION
+     * ========================= */
+    VOUCHER_NOT_FOUND(404, "Voucher was not found"),
+    VOUCHER_EXPIRED(400, "Voucher is expired"),
+    MIN_ORDER_NOT_MET(400, "Order amount does not meet the minimum required for this voucher"),
+    VOUCHER_NOT_AVAILABLE(400, "Voucher is not available for this user or has already been used"),
+    VOUCHER_ALREADY_OWNED(409, "User has already collected this voucher"),
+    VOUCHER_NOT_IN_WALLET(400, "User does not have this voucher in their wallet"),
+    VOUCHER_USAGE_LIMIT_REACHED(400, "This voucher has reached its usage limit"),
+    VOUCHER_MAX_DISCOUNT_EXCEEDED(400, "The discount amount exceeds the maximum allowed for this voucher"),
+    VOUCHER_INVALID_DISCOUNT_TYPE(400, "Invalid discount type for this voucher"),
+    VOUCHER_INVALID(400, "The voucher code is invalid or cannot be applied"),
+    VOUCHER_NOT_APPLICABLE(400, "This voucher cannot be applied to the current order"),
+    VOUCHER_ALREADY_USED(400, "This voucher has already been used by the user"),
+    VOUCHER_NOT_OWNED(400, "User does not own this voucher"),
+    VOUCHER_INACTIVE(400, "This voucher is not active or has been deactivated"),
+    VOUCHER_USAGE_LIMIT_PER_USER_REACHED(400, "You have reached the usage limit for this voucher"),
+    VOUCHER_NOT_YET_ACTIVE(400, "This voucher is not yet active. Please wait until the start date"),
+    VOUCHER_EXPIRED_FOR_USER(400, "This voucher has expired for you and can no longer be used"),
+    VOUCHER_INVALID_FOR_ORDER(400, "This voucher cannot be applied to your current order. Please check the conditions and try again"),
+    VOUCHER_ALREADY_COLLECTED(400, "You have already collected this voucher. Please check your voucher wallet"),
+    VOUCHER_NOT_COLLECTIBLE(400, "This voucher cannot be collected at this time. Please check the conditions and try again"),
+    VOUCHER_ALREADY_EXISTS(409, "A voucher with this code already exists. Please choose a different code"),
+
+    /* =========================
      * COMMON / SYSTEM
      * ========================= */
     INVALID_REQUEST(400, "The request parameters are invalid"),

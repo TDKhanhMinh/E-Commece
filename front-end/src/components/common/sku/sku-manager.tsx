@@ -31,15 +31,6 @@ export function SkuManager({ product }: SkuManagerProps) {
         // Toggle the current status
         const newStatus = !sku.isActive;
 
-        console.log(
-            "Toggle SKU:",
-            sku.id,
-            "From:",
-            sku.isActive,
-            "To:",
-            newStatus
-        );
-
         // Call the mutation with skuId and new status
         toggleSkuStatus.mutate({
             skuId: sku.id,

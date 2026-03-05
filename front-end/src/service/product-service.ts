@@ -1,19 +1,13 @@
 import {
+    AutoGenerateSkuRequest,
     ProductDetail,
     ProductRequest,
     SkuRequest,
     UpdateSkuRequest,
 } from "@/type/product-type";
-import http, { ApiResponse } from "@/service/http";
+import http from "@/service/http";
+import { ApiResponse } from "@/type/api-type";
 
-export interface AutoGenerateSkuRequest {
-    price: number;
-    stock: number;
-    attributes: {
-        attributeId: number;
-        values: string[];
-    }[];
-}
 // PRODUCT CRUD
 export const getAllProducts = async (params: any) =>
     http.get<ApiResponse<any>>("/products", { params });

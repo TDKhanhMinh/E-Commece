@@ -1,13 +1,7 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
-
-interface ProductPriceProps {
-    salePrice: number;
-    originalPrice: number;
-    discountPercent: number;
-    className?: string;
-}
+import { ProductPriceProps } from "@/type/product-type";
 
 export function ProductPrice({
     salePrice,

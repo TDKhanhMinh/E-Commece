@@ -3,13 +3,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
-    CategoryRequest,
-    CategorySearchParams,
     createCategory,
     deleteCategory,
     getAllCategories,
     updateCategory,
 } from "@/service/categories-service";
+import { CategoryRequest, CategorySearchParams } from "@/type/category-type";
 
 // 1. Hook lấy danh sách với phân trang
 export const useCategories = (params?: CategorySearchParams) => {
