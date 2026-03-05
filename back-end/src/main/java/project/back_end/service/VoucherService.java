@@ -1,17 +1,17 @@
 package project.back_end.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import project.back_end.request.VoucherRequest.VoucherRequest;
 import project.back_end.response.UserVoucherResponse;
 import project.back_end.response.VoucherResponse;
-
-import java.util.List;
 
 public interface VoucherService {
     // Lưu voucher vào kho của người dùng khi họ nhấn "Lưu" hoặc "Thu thập"
     void collectVoucher(Long userId, String voucherCode);
 
     /// Lấy danh sách voucher chưa sử dụng để hiển thị lên Popover ở FE
-    List<UserVoucherResponse> getUserVoucherWallet(Long userId);
+    Page<UserVoucherResponse> getUserVoucherWallet(Long userId, Pageable pageable);
 
     // Kiểm tra và trả về thông tin Voucher nếu hợp lệ với đơn hàng hiện tại
     VoucherResponse validateVoucher(Long userId, String code, Double orderAmount);
@@ -23,7 +23,7 @@ public interface VoucherService {
     VoucherResponse createVoucher(VoucherRequest request);
 
     // Lấy danh sách tất cả voucher trong hệ thống
-    List<VoucherResponse> getAllVouchers();
+    Page<VoucherResponse> getAllVouchers(Pageable pageable);
 
     // Lấy chi tiết một voucher theo ID
     VoucherResponse getVoucherById(Long id);
@@ -32,5 +32,5 @@ public interface VoucherService {
     VoucherResponse updateVoucher(Long id, VoucherRequest request);
 
     // Xóa voucher (Soft Delete)
-    void disableVoucher(Long id);
+    void disableVoucher(Long id, Boolean action);
 }

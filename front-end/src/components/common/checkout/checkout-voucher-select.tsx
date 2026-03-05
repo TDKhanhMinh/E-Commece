@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Check, ChevronRight, Ticket } from "lucide-react";
+import { Check, ChevronRight, Loader2, Ticket } from "lucide-react";
 import {
     Popover,
     PopoverContent,
@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
+import { useVoucher } from "@/hooks/use-voucher";
 
 interface VoucherSelectorProps {
     onApplyVoucher: (code: string) => void;
@@ -25,26 +26,10 @@ export function VoucherSelector({
     const [inputValue, setInputValue] = useState("");
     const [open, setOpen] = useState(false);
 
-    const myVouchers = [
-        {
-            id: 1,
-            code: "FREESHIP",
-            description: "Miễn phí vận chuyển",
-            minOrder: 500000,
-        },
-        {
-            id: 2,
-            code: "GIAM20K",
-            description: "Giảm 20.000đ cho đơn từ 200k",
-            minOrder: 200000,
-        },
-        {
-            id: 3,
-            code: "UUDAI10",
-            description: "Giảm 10% tổng hóa đơn",
-            minOrder: 0,
-        },
-    ];
+    const { useMyVouchers } = useVoucher();
+    const { data: voucherPage, isLoading } = useMyVouchers();
+
+    const myVouchers = voucherPage?.content || [];
 
     const handleSelectVoucher = (code: string) => {
         onApplyVoucher(code);
@@ -95,70 +80,90 @@ export function VoucherSelector({
                             />
                         </div>
                     </PopoverTrigger>
+
                     <PopoverContent
-                        className="w-[--radix-popover-trigger-width] min-w-(--radix-popover-trigger-width) border-red-100 p-0 shadow-xl"
+                        className="border-red-100 p-0 shadow-xl"
                         align="start"
+                        style={{ width: "var(--radix-popover-trigger-width)" }}
                     >
                         <div className="border-b bg-red-50/50 p-3">
                             <p className="text-sm font-bold text-red-800">
                                 Kho Voucher của bạn
                             </p>
                         </div>
+
                         <ScrollArea className="h-72 w-full">
-                            <div className="space-y-3 p-3">
-                                {myVouchers.map((v) => (
-                                    <div
-                                        key={v.id}
-                                        className={`relative flex cursor-pointer flex-col gap-1 rounded-xl border p-4 transition-all ${
-                                            appliedVoucher === v.code
-                                                ? "border-red-500 bg-red-50 ring-1 ring-red-500/20"
-                                                : "border-slate-100 hover:border-red-200 hover:bg-slate-50"
-                                        }`}
-                                        onClick={() =>
-                                            handleSelectVoucher(v.code)
-                                        }
-                                    >
-                                        <div className="flex items-center justify-between">
-                                            <Badge
-                                                variant="outline"
-                                                className={`font-bold ${
+                            {isLoading ? (
+                                <div className="flex h-full items-center justify-center p-6 text-slate-500">
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Đang tải kho voucher...
+                                </div>
+                            ) : (
+                                <div className="space-y-3 p-3">
+                                    {/* Map dữ liệu từ API */}
+                                    {myVouchers.map((uv: any) => {
+                                        // Thông tin chi tiết nằm trong object voucher lồng bên trong
+                                        const v = uv.voucher;
+                                        if (!v) return null;
+
+                                        return (
+                                            <div
+                                                key={uv.id}
+                                                className={`relative flex cursor-pointer flex-col gap-1 rounded-xl border p-4 transition-all ${
                                                     appliedVoucher === v.code
-                                                        ? "border-red-500 bg-red-500 text-white"
-                                                        : "border-red-500 text-red-500"
+                                                        ? "border-red-500 bg-red-50 ring-1 ring-red-500/20"
+                                                        : "border-slate-100 hover:border-red-200 hover:bg-slate-50"
                                                 }`}
+                                                onClick={() =>
+                                                    handleSelectVoucher(v.code)
+                                                }
                                             >
-                                                {v.code}
-                                            </Badge>
-                                            {appliedVoucher === v.code && (
-                                                <div className="rounded-full bg-red-500 p-0.5">
-                                                    <Check className="h-3 w-3 text-white" />
-                                                </div>
-                                            )}
-                                        </div>
-                                        <p className="mt-2 text-sm font-bold text-slate-800">
-                                            {v.description}
-                                        </p>
-                                        <div className="mt-1 flex items-center justify-between">
-                                            <p className="text-muted-foreground text-[11px]">
-                                                Đơn tối thiểu:{" "}
-                                                <span className="font-semibold">
-                                                    {v.minOrder.toLocaleString(
-                                                        "vi-VN"
+                                                <div className="flex items-center justify-between">
+                                                    <Badge
+                                                        variant="outline"
+                                                        className={`font-bold ${
+                                                            appliedVoucher ===
+                                                            v.code
+                                                                ? "border-red-500 bg-red-500 text-white"
+                                                                : "border-red-500 text-red-500"
+                                                        }`}
+                                                    >
+                                                        {v.code}
+                                                    </Badge>
+                                                    {appliedVoucher ===
+                                                        v.code && (
+                                                        <div className="rounded-full bg-red-500 p-0.5">
+                                                            <Check className="h-3 w-3 text-white" />
+                                                        </div>
                                                     )}
-                                                    đ
-                                                </span>
+                                                </div>
+                                                <p className="mt-2 text-sm font-bold text-slate-800">
+                                                    {v.description}
+                                                </p>
+                                                <div className="mt-1 flex items-center justify-between">
+                                                    <p className="text-muted-foreground text-[11px]">
+                                                        Đơn tối thiểu:{" "}
+                                                        <span className="font-semibold">
+                                                            {v.minOrder.toLocaleString(
+                                                                "vi-VN"
+                                                            )}
+                                                            đ
+                                                        </span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+
+                                    {myVouchers.length === 0 && (
+                                        <div className="py-10 text-center">
+                                            <p className="text-sm text-slate-400">
+                                                Bạn chưa có mã giảm giá nào
                                             </p>
                                         </div>
-                                    </div>
-                                ))}
-                                {myVouchers.length === 0 && (
-                                    <div className="py-10 text-center">
-                                        <p className="text-sm text-slate-400">
-                                            Bạn chưa có mã giảm giá nào
-                                        </p>
-                                    </div>
-                                )}
-                            </div>
+                                    )}
+                                </div>
+                            )}
                         </ScrollArea>
                     </PopoverContent>
                 </Popover>

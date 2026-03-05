@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 import { ADMIN_SIDEBAR_ITEMS } from "../../../../mock";
 
 function AdminSidebar() {
-    const { toggleSidebar, state } = useSidebar();
+    const { toggleSidebar } = useSidebar();
     return (
         <>
             <Sidebar collapsible="icon" className="h-screen">

@@ -15,7 +15,10 @@ import project.back_end.repository.*;
 import project.back_end.request.CheckoutItemRequest;
 import project.back_end.request.CheckoutRequest;
 import project.back_end.response.OrderResponse;
+import project.back_end.response.VoucherResponse;
+import project.back_end.service.MemberShipPointService;
 import project.back_end.service.OrderService;
+import project.back_end.service.VoucherService;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -38,33 +41,35 @@ public class OrderServiceImpl implements OrderService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final ShippingService shippingService;
+    private final VoucherService voucherService;
+    private final MemberShipPointService memberShipPointService;
 
     @Transactional
     public OrderResponse checkout(String email, CheckoutRequest request) {
 
         // ======================
-        // Validate User & Address
+        // 1. Validate User & Address
         // ======================
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-        log.info("Checkout request addressId: {}", request.getDeliveryAddressId());
-        log.info("Checkout request items: {}", request.getItems());
-        log.info("Checkout request user: {}", user.getId());
 
         DeliveryAddress addressRequest = deliveryAddressRepository
                 .findById(request.getDeliveryAddressId())
                 .orElseThrow(() -> new AppException(ErrorCode.DELIVERY_ADDRESS_NOT_FOUND));
 
         // ======================
-        // Init totals
+        // 2. Init totals
         // ======================
-        BigDecimal totalAmount = BigDecimal.ZERO;     // tổng giá gốc
-        BigDecimal totalDiscount = BigDecimal.ZERO;   // tổng giảm
-        BigDecimal finalAmount = BigDecimal.ZERO;     // tổng phải trả
+        BigDecimal totalAmount = BigDecimal.ZERO;     // Tổng giá niêm yết (Price)
+        BigDecimal finalAmount = BigDecimal.ZERO;     // Tổng giá sau sale của SKU (SalePrice)
+        BigDecimal totalDiscount = BigDecimal.ZERO;   // Tổng giảm giá từ SKU sale
+        BigDecimal voucherDiscount = BigDecimal.ZERO; // Tổng giảm giá từ Voucher
+        BigDecimal pointDiscount = BigDecimal.ZERO; // Tổng giảm giá từ điểm thưởng
+
         int totalItems = 0;
 
         // ======================
-        // Create Order (no totals yet)
+        // 3. Create Order Entity
         // ======================
         Order order = new Order();
         order.setUser(user);
@@ -72,124 +77,140 @@ public class OrderServiceImpl implements OrderService {
         order.setCreatedAt(LocalDateTime.now());
         order.setShippingMethod(request.getShippingMethod());
         order.setPaymentMethod(request.getPaymentMethod());
-        // ======================
-        // Delivery Address Snapshot
-        // ======================
+
+        // Lưu thông tin địa chỉ snapshot
         OrderDeliveryAddress address = new OrderDeliveryAddress();
         address.setLocation(addressRequest.getLocation());
         address.setUserName(addressRequest.getUserName());
         address.setPhoneNumber(addressRequest.getPhoneNumber());
-
         orderDeliveryAddressRepository.save(address);
         order.setDeliveryAddress(address);
         orderRepository.save(order);
 
         // ======================
-        // Create Order Items + Calculate totals
+        // 4. Create Order Items & Calculate SKU Totals
         // ======================
         List<OrderItem> orderItems = new ArrayList<>();
-        List<Long> skuIdsToRemove = new ArrayList<>();
 
         for (CheckoutItemRequest item : request.getItems()) {
-
             Sku sku = skuRepository.findById(item.getSkuId())
                     .orElseThrow(() -> new AppException(ErrorCode.SKU_NOT_FOUND));
 
-            // ======================
-            // Validate stock availability
-            // ======================
+            // Kiểm tra kho và trừ kho
             if (sku.getStock() == null || sku.getStock() < item.getQuantity()) {
                 throw new AppException(ErrorCode.INSUFFICIENT_STOCK);
             }
-
-            // ======================
-            // Deduct stock
-            // ======================
             sku.setStock(sku.getStock() - item.getQuantity());
             skuRepository.save(sku);
-            log.info("Deducted {} units from SKU {} (remaining: {})",
-                    item.getQuantity(), sku.getCode(), sku.getStock());
 
+            BigDecimal qty = BigDecimal.valueOf(item.getQuantity());
+            BigDecimal itemOriginTotal = sku.getPrice().multiply(qty);
+            BigDecimal itemSaleTotal = (sku.getSalePrice() != null ? sku.getSalePrice() : sku.getPrice()).multiply(qty);
 
-            log.info("Processing item: SKU {}, quantity {}, price {}, salePrice {}",
-                    sku.getCode(), item.getQuantity(), sku.getPrice(), sku.getSalePrice());
-
-            BigDecimal quantity = BigDecimal.valueOf(item.getQuantity());
-            BigDecimal originTotal = sku.getPrice().multiply(quantity); // Tổng giá gốc
-
-            BigDecimal saleTotal;
-            BigDecimal discount;
-
-            // 1. Xử lý an toàn: Kiểm tra nếu có giá sale thì dùng giá sale, không thì dùng giá gốc
-            if (sku.getSalePrice() != null) {
-                saleTotal = sku.getSalePrice().multiply(quantity);
-                discount = originTotal.subtract(saleTotal);
-            } else {
-                saleTotal = originTotal; // Không có sale thì tổng trả = tổng gốc
-                discount = BigDecimal.ZERO; // Không có sale thì giảm giá = 0
-            }
-
-            // 2. Tạo OrderItem
+            // ==========================================
+            // TẠO ORDER ITEM - BỔ SUNG ĐẦY ĐỦ CÁC TRƯỜNG
+            // ==========================================
             OrderItem orderItem = new OrderItem();
             orderItem.setOrder(order);
             orderItem.setSkuId(item.getSkuId());
-            orderItem.setSkuCode(sku.getCode());
-            orderItem.setProductName(
-                    sku.getProduct().getName()
-            );
 
-            // Xử lý image an toàn
+            // Đảm bảo gán giá trị cho sku_code để tránh lỗi SQL State 23000
+            orderItem.setSkuCode(sku.getCode());
+
+            orderItem.setProductName(sku.getProduct().getName());
+            orderItem.setPrice(sku.getPrice());
+            orderItem.setSalePrice(sku.getSalePrice() != null ? sku.getSalePrice() : sku.getPrice());
+            orderItem.setQuantity(item.getQuantity());
+            orderItem.setTotalPrice(itemSaleTotal);
+
+            // Xử lý ảnh sản phẩm
             String imageUrl = "https://th.bing.com/th/id/R.5fa32d0f91bb6befd88027725b4f2e0d?rik=6PlumKuW4AsJxQ&pid=ImgRaw&r=0";
             if (sku.getImages() != null && !sku.getImages().isEmpty()) {
                 imageUrl = sku.getImages().get(0);
             }
             orderItem.setImage(imageUrl);
+
             orderItem.setSku(sku.getCode());
-            orderItem.setPrice(sku.getPrice());
-
-            if (sku.getSalePrice() != null) {
-                orderItem.setSalePrice(sku.getSalePrice());
-            } else {
-                orderItem.setSalePrice(sku.getPrice());
-            }
-
-            orderItem.setQuantity(item.getQuantity());
-            orderItem.setTotalPrice(saleTotal);
 
             orderItems.add(orderItem);
-            skuIdsToRemove.add(item.getSkuId());
 
-            // Cộng dồn vào tổng đơn hàng
-            totalAmount = totalAmount.add(originTotal);
-            finalAmount = finalAmount.add(saleTotal);
-            totalDiscount = totalDiscount.add(discount);
+            // Cộng dồn tổng đơn hàng
+            totalAmount = totalAmount.add(itemOriginTotal);
+            finalAmount = finalAmount.add(itemSaleTotal);
+            totalDiscount = totalDiscount.add(itemOriginTotal.subtract(itemSaleTotal));
             totalItems += item.getQuantity();
         }
-        double shippingFeeValue = shippingService.calculateShippingFee(
-                request.getShippingMethod(),
-                totalAmount.doubleValue()
-        );
 
+        // ======================
+        // 5. TÍCH HỢP VOUCHER
+        // ======================
+        if (request.getVoucherCode() != null && !request.getVoucherCode().isEmpty()) {
+            VoucherResponse voucher = voucherService.validateVoucher(
+                    user.getId(),
+                    request.getVoucherCode(),
+                    finalAmount.doubleValue()
+            );
+
+            // Tính toán số tiền giảm từ Voucher
+            if ("PERCENTAGE".equals(voucher.getDiscountType())) {
+                BigDecimal percentDiscount = finalAmount.multiply(BigDecimal.valueOf(voucher.getDiscountValue()))
+                        .divide(BigDecimal.valueOf(100));
+
+                // Giới hạn giảm giá tối đa (nếu có)
+                if (voucher.getMaxDiscount() != null) {
+                    percentDiscount = percentDiscount.min(BigDecimal.valueOf(voucher.getMaxDiscount()));
+                }
+                voucherDiscount = percentDiscount;
+            } else {
+                // Loại FIXED (giảm tiền mặt)
+                voucherDiscount = BigDecimal.valueOf(voucher.getDiscountValue());
+            }
+
+            // Cập nhật trạng thái voucher đã sử dụng trong ví người dùng
+            voucherService.markVoucherAsUsed(user.getId(), request.getVoucherCode());
+
+            // Lưu mã voucher vào order để đối soát
+            order.setVoucherCode(request.getVoucherCode());
+            order.setVoucherDiscount(voucherDiscount);
+        }
+
+        // ======================
+        // 6. Tích hợp sử dụng điểm thưởng
+        // ======================
+        double pointsToRedeem = request.getPointsUsed() != null ? request.getPointsUsed() : 0.0;
+        if (pointsToRedeem > 0) {
+            long pointsToRedeemLong = (long) pointsToRedeem;
+            memberShipPointService.redeemPoints(user.getId(), pointsToRedeemLong, order.getId(), "Đổi điểm để giảm giá đơn hàng #" + order.getId());
+            // Ví dụ: 1 điểm = 100 VND
+            pointDiscount = pointDiscount.add(BigDecimal.valueOf(pointsToRedeemLong * 100));
+        }
+
+        // ======================
+        // 6. Calculate Final Grand Total
+        // ======================
+        double shippingFeeValue = shippingService.calculateShippingFee(request.getShippingMethod(), totalAmount.doubleValue());
         BigDecimal shippingFee = BigDecimal.valueOf(shippingFeeValue);
 
-        BigDecimal grandTotal = finalAmount.add(shippingFee);
-
+        // Tổng cuối cùng = (Tổng sau sale SKU - Giảm giá Voucher) + Phí ship
+        BigDecimal grandTotal = finalAmount.subtract(voucherDiscount).subtract(pointDiscount).add(shippingFee);
         order.setShippingCost(shippingFee);
         order.setTotalAmount(totalAmount);
-        order.setTotalDiscount(totalDiscount);
+        // Tổng giảm giá = (Giảm từ SKU sale) + (Giảm từ Voucher) + (Giảm từ điểm thưởng)
+        order.setProductDiscount(totalDiscount);
+        order.setPointDiscount(pointDiscount);
+        order.setTotalDiscount(totalDiscount.add(voucherDiscount).add(pointDiscount));
         order.setFinalAmount(grandTotal);
         order.setTotalItems(totalItems);
 
         orderRepository.save(order);
         orderItemRepository.saveAll(orderItems);
 
-        Cart cart = cartRepository.findByUserId(user.getId()).orElse(null);
-        if (cart != null) {
-            for (Long skuId : skuIdsToRemove) {
-                cartItemRepository.deleteByCartIdAndSkuId(cart.getId(), skuId);
+        // Dọn dẹp giỏ hàng
+        cartRepository.findByUserId(user.getId()).ifPresent(cart -> {
+            for (CheckoutItemRequest item : request.getItems()) {
+                cartItemRepository.deleteByCartIdAndSkuId(cart.getId(), item.getSkuId());
             }
-            log.info("Removed {} items from cart for user {}", skuIdsToRemove.size(), user.getId());
-        }
+        });
 
         return checkoutMapper.toOrderResponse(order);
     }
@@ -253,28 +274,55 @@ public class OrderServiceImpl implements OrderService {
                     throw new AppException(ErrorCode.INVALID_REQUEST);
                 }
                 order.setConfirmedAt(now);
+                order.setUpdatedAt(now);
+
                 break;
 
             case PAID:
+                order.setUpdatedAt(now);
+
                 if (currentStatus != OrderStatus.PENDING && currentStatus != OrderStatus.CONFIRMED) {
                     throw new AppException(ErrorCode.INVALID_REQUEST);
+
                 }
                 break;
 
             case SHIPPING:
+                order.setUpdatedAt(now);
+
                 if (currentStatus != OrderStatus.CONFIRMED && currentStatus != OrderStatus.PAID) {
                     throw new AppException(ErrorCode.INVALID_REQUEST);
                 }
                 break;
 
             case DELIVERED:
+                order.setUpdatedAt(now);
+
                 if (currentStatus != OrderStatus.SHIPPING) {
                     throw new AppException(ErrorCode.INVALID_REQUEST);
                 }
                 order.setDeliveredAt(now);
+
+                // LOGIC TÍCH ĐIỂM SAU KHI GIAO HÀNG THÀNH CÔNG
+                if (order.getFinalAmount() != null && order.getFinalAmount().compareTo(BigDecimal.ZERO) > 0) {
+                    long earnedPoints = order.getFinalAmount().longValue() / 100000; // Ví dụ: 1 điểm cho mỗi 100,000 VND chi tiêu
+
+                    if (earnedPoints > 0) {
+                        memberShipPointService.managePoints(
+                                order.getUser().getId(),
+                                earnedPoints,
+                                PointTransactionType.EARN,
+                                order.getId(),
+                                "Tích điểm từ đơn hàng #" + order.getId()
+                        );
+                        log.info("Awarded {} points to user {} for order {}", earnedPoints, order.getUser().getId(), orderId);
+                    }
+                }
                 break;
 
             case CANCELLED:
+                order.setUpdatedAt(now);
+
                 if (currentStatus == OrderStatus.SHIPPING) {
                     throw new AppException(ErrorCode.INVALID_REQUEST);
                 }
@@ -285,6 +333,8 @@ public class OrderServiceImpl implements OrderService {
                 break;
 
             case FAILED:
+                order.setUpdatedAt(now);
+
                 if (currentStatus == OrderStatus.SHIPPING) {
                     throw new AppException(ErrorCode.INVALID_REQUEST);
                 }

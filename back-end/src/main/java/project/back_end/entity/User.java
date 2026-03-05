@@ -49,6 +49,15 @@ public class User {
         USER, ADMIN
     }
 
+    @Column(name = "current_points")
+    private Long currentPoints = 0L;
+
+    @Column(name = "total_accumulated_points")
+    private Long totalAccumulatedPoints = 0L;
+
+    @Column(name = "membership_tier")
+    private String membershipTier = "MEMBER";
+    
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<DeliveryAddress> addresses = new ArrayList<>();
 

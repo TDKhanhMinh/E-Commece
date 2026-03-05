@@ -13,6 +13,7 @@ export interface SpecDto {
 }
 
 export interface SkuDto {
+    isActive: boolean;
     id: number;
     skuCode: string;
     price: number;

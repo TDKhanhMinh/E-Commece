@@ -18,6 +18,11 @@ public class OrderResponse {
     private Long orderId;
     private OrderStatus status;
 
+    private BigDecimal voucherDiscount;
+    private BigDecimal productDiscount;
+    private String voucherCode;
+    private BigDecimal pointDiscount;
+
     private BigDecimal totalAmount;
     private BigDecimal totalDiscount;
     private BigDecimal finalAmount;

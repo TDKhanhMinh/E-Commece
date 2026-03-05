@@ -124,6 +124,11 @@ export interface OrderDetailResponse {
     finalAmount: number;
     totalDiscount: number;
     shippingCost: number;
+    voucherCode?: string;
+    voucherDiscount: number;
+    productDiscount: number;
+    pointsUsed: number;
+    pointDiscount: number;
 
     createdAt: string;
     updatedAt: string;

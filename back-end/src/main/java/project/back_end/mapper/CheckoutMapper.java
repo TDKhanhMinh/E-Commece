@@ -30,5 +30,9 @@ public interface CheckoutMapper {
     @Mapping(source = "totalDiscount", target = "totalDiscount")
     @Mapping(source = "finalAmount", target = "finalAmount")
     @Mapping(source = "shippingCost", target = "shippingCost")
+    @Mapping(source = "voucherDiscount", target = "voucherDiscount")
+    @Mapping(source = "productDiscount", target = "productDiscount")
+    @Mapping(source = "voucherCode", target = "voucherCode")
+    @Mapping(source = "pointDiscount", target = "pointDiscount")
     OrderResponse toOrderResponse(Order order);
 }

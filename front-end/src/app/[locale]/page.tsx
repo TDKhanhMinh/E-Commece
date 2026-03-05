@@ -10,6 +10,7 @@ import HomeSaleProducts from "@/features/home/home-sale-products";
 import HomeWelcome from "@/features/home/home-welcome";
 import Image from "next/image";
 import { Subscribe } from "@/components/common";
+import { VoucherBanner } from "@/features/home/home-banner-voucher";
 
 export default function Home() {
     return (
@@ -50,6 +51,7 @@ export default function Home() {
                 </section>
 
                 <main className="container mx-auto px-4 py-20">
+                    <VoucherBanner />
                     <HomeCarousel />
                     <HomeSaleProducts />
                     <HomeDeals />

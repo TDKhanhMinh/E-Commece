@@ -14,6 +14,8 @@ export interface CheckoutItem {
 
 export interface CheckoutData {
     items: CheckoutItem[];
+    pointsDiscount: number;
+    pointsUsed: number;
     summary: {
         totalAmount: number;
         totalDiscount: number;

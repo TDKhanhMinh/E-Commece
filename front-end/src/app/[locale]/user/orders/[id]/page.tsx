@@ -30,7 +30,7 @@ export default function OrderDetail() {
             case "express":
                 return "Giao hàng hỏa tốc";
             default:
-                return method; // Trả về nguyên bản nếu không khớp
+                return method;
         }
     };
     console.log("Order detail data:", orderDetails);
@@ -157,14 +157,24 @@ export default function OrderDetail() {
                             <div className="text-secondary-dark flex justify-between">
                                 <span>Ưu đãi thành viên (đã giảm)</span>
                                 <span className="text-secondary-dark">
-                                    {/*{priceInfo.memberDiscount}*/}
+                                    {formatCurrency(
+                                        orderDetails?.pointDiscount
+                                    )}
                                 </span>
                             </div>
                             <div className="text-secondary-dark flex justify-between">
                                 <span>Ưu đãi sản phẩm (đã giảm)</span>
                                 <span className="text-secondary-dark">
                                     {formatCurrency(
-                                        orderDetails?.totalDiscount
+                                        orderDetails?.productDiscount
+                                    )}
+                                </span>
+                            </div>
+                            <div className="text-secondary-dark flex justify-between">
+                                <span>Giảm giá voucher</span>
+                                <span className="text-secondary-dark">
+                                    {formatCurrency(
+                                        orderDetails?.voucherDiscount
                                     )}
                                 </span>
                             </div>
@@ -182,75 +192,83 @@ export default function OrderDetail() {
                                     </span>
                                 )}
                             </div>
-                            {/*<div className="text-secondary-dark flex justify-between">*/}
-                            {/*    <span>Giảm giá</span>*/}
-                            {/*    <span className="text-secondary-dark">*/}
-                            {/*        /!*{priceInfo.voucherDiscount}*!/*/}
-                            {/*    </span>*/}
-                            {/*</div>*/}
                         </div>
 
                         <Separator />
 
-                        <div className="flex items-center justify-between">
-                            <span className="text-secondary-dark text-base font-bold">
-                                Tổng tiền thanh toán
-                            </span>
-                            <span className="text-secondary-dark text-xl font-bold">
-                                {formatCurrency(orderDetails?.finalAmount || 0)}
-                            </span>
-                        </div>
+                        <div className="space-y-2 text-sm">
+                            <div className="flex items-center justify-between">
+                                <span className="text-secondary-dark text-base font-light">
+                                    Tổng tiền giảm giá
+                                </span>
+                                <span className="text-secondary-dark text-base font-light">
+                                    {formatCurrency(
+                                        orderDetails?.totalDiscount || 0
+                                    )}
+                                </span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                                <span className="text-secondary-dark text-base font-bold">
+                                    Tổng tiền thanh toán
+                                </span>
+                                <span className="text-secondary-dark text-xl font-bold">
+                                    {formatCurrency(
+                                        orderDetails?.finalAmount || 0
+                                    )}
+                                </span>
+                            </div>
 
-                        <div className="flex items-center justify-between">
-                            <span className="text-secondary-dark text-xs font-light">
-                                Thời gian đặt hàng
-                            </span>
-                            <span className="text-secondary-dark text-xs font-light">
-                                {fDateTime(
-                                    orderDetails?.createdAt,
-                                    "HH:mm dd/MM/yyyy"
-                                )}
-                            </span>
+                            <div className="flex items-center justify-between">
+                                <span className="text-secondary-dark text-xs font-light">
+                                    Thời gian đặt hàng
+                                </span>
+                                <span className="text-secondary-dark text-xs font-light">
+                                    {fDateTime(
+                                        orderDetails?.createdAt,
+                                        "HH:mm dd/MM/yyyy"
+                                    )}
+                                </span>
+                            </div>
+                            {orderDetails?.cancelledAt && (
+                                <div className="flex items-center justify-between">
+                                    <span className="text-secondary-dark text-xs font-light">
+                                        Thời gian hủy đơn
+                                    </span>
+                                    <span className="text-secondary-dark text-xs font-light">
+                                        {fDateTime(
+                                            orderDetails?.cancelledAt,
+                                            "HH:mm dd/MM/yyyy"
+                                        )}
+                                    </span>
+                                </div>
+                            )}
+                            {orderDetails?.confirmedAt && (
+                                <div className="flex items-center justify-between">
+                                    <span className="text-secondary-dark text-xs font-light">
+                                        Thời gian xác nhận đơn
+                                    </span>
+                                    <span className="text-secondary-dark text-xs font-light">
+                                        {fDateTime(
+                                            orderDetails?.confirmedAt,
+                                            "HH:mm dd/MM/yyyy"
+                                        )}
+                                    </span>
+                                </div>
+                            )}
+                            {orderDetails?.deliveredAt && (
+                                <div className="flex items-center justify-between">
+                                    <span className="text-secondary-dark text-xs font-light">
+                                        Thời gian giao hàng
+                                    </span>
+                                    <span className="text-secondary-dark text-xs font-light">
+                                        {fDateTime(
+                                            orderDetails?.updatedAt,
+                                            "HH:mm dd/MM/yyyy"
+                                        )}
+                                    </span>
+                                </div>
+                            )}
                         </div>
-                        {orderDetails?.cancelledAt && (
-                            <div className="flex items-center justify-between">
-                                <span className="text-secondary-dark text-xs font-light">
-                                    Thời gian hủy đơn
-                                </span>
-                                <span className="text-secondary-dark text-xs font-light">
-                                    {fDateTime(
-                                        orderDetails?.cancelledAt,
-                                        "HH:mm dd/MM/yyyy"
-                                    )}
-                                </span>
-                            </div>
-                        )}
-                        {orderDetails?.confirmedAt && (
-                            <div className="flex items-center justify-between">
-                                <span className="text-secondary-dark text-xs font-light">
-                                    Thời gian xác nhận đơn
-                                </span>
-                                <span className="text-secondary-dark text-xs font-light">
-                                    {fDateTime(
-                                        orderDetails?.confirmedAt,
-                                        "HH:mm dd/MM/yyyy"
-                                    )}
-                                </span>
-                            </div>
-                        )}
-                        {orderDetails?.deliveredAt && (
-                            <div className="flex items-center justify-between">
-                                <span className="text-secondary-dark text-xs font-light">
-                                    Thời gian giao hàng
-                                </span>
-                                <span className="text-secondary-dark text-xs font-light">
-                                    {fDateTime(
-                                        orderDetails?.updatedAt,
-                                        "HH:mm dd/MM/yyyy"
-                                    )}
-                                </span>
-                            </div>
-                        )}
                     </CardContent>
                 </Card>
 

@@ -3,6 +3,9 @@ package project.back_end.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,8 +17,6 @@ import project.back_end.response.ApiResponse;
 import project.back_end.response.VoucherResponse;
 import project.back_end.service.UserService;
 import project.back_end.service.VoucherService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/vouchers")
@@ -54,15 +55,20 @@ public class VoucherController {
         log.info("Admin creating new voucher: {}", request.getCode());
         VoucherResponse response = voucherService.createVoucher(request);
         return ResponseEntity.ok(
-                new ApiResponse<>(201, "Voucher created successfully", response)
+                new ApiResponse<>(200, "Voucher created successfully", response)
         );
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping
-    public ResponseEntity<ApiResponse<List<VoucherResponse>>> getAllVouchers() {
-        log.info("Fetching all vouchers");
-        List<VoucherResponse> responses = voucherService.getAllVouchers();
+    public ResponseEntity<ApiResponse<Page<VoucherResponse>>> getAllVouchers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        log.info("Fetching all vouchers - Page: {}, Size: {}", page, size);
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<VoucherResponse> responses = voucherService.getAllVouchers(pageable);
         return ResponseEntity.ok(
                 new ApiResponse<>(200, "Fetched all vouchers successfully", responses)
         );
@@ -93,9 +99,9 @@ public class VoucherController {
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> disableVoucher(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> disableVoucher(@PathVariable Long id, @RequestParam Boolean action) {
         log.info("Admin disabling voucher with ID: {}", id);
-        voucherService.disableVoucher(id);
+        voucherService.disableVoucher(id, action);
         return ResponseEntity.ok(
                 new ApiResponse<>(200, "Voucher disabled successfully", null)
         );

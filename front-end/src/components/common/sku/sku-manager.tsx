@@ -21,7 +21,6 @@ export function SkuManager({ product }: SkuManagerProps) {
     // @ts-ignore
     const [selectedSku, setSelectedSku] = useState<SkuDto>(null);
 
-    // Initialize the toggle mutation hook
     const toggleSkuStatus = useToggleSkuStatus(product.id);
 
     console.log("product in sku manager", product);
@@ -31,7 +30,6 @@ export function SkuManager({ product }: SkuManagerProps) {
         // Toggle the current status
         const newStatus = !sku.isActive;
 
-        // Call the mutation with skuId and new status
         toggleSkuStatus.mutate({
             skuId: sku.id,
             isActive: newStatus,
@@ -61,7 +59,7 @@ export function SkuManager({ product }: SkuManagerProps) {
                     setEditOpen(true);
                 }}
                 onToggleActive={(sku) => {
-                    handleToggleActive(sku);
+                    return handleToggleActive(sku);
                 }}
             />
             <EditSkuDialog

@@ -1,14 +1,14 @@
 package project.back_end.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import project.back_end.entity.UserVoucher;
 import project.back_end.response.UserVoucherResponse;
-
-import java.util.List;
 
 public interface UserVoucherService {
 
     // Lấy tất cả voucher chưa sử dụng trong ví (trả về Response cho FE)
-    List<UserVoucherResponse> getAvailableVouchers(Long userId);
+    Page<UserVoucherResponse> getAvailableVouchers(Long userId, Pageable pageable);
 
     boolean isVoucherOwned(Long userId, Long voucherId);
 
@@ -23,9 +23,11 @@ public interface UserVoucherService {
     // Admin cấp phát mã (trả về Response)
     UserVoucherResponse assignVoucherToUser(Long userId, Long voucherId);
 
-    List<UserVoucherResponse> getAllUserVouchers();
+    // Cập nhật: Thêm Pageable, đổi List thành Page
+    Page<UserVoucherResponse> getAllUserVouchers(Pageable pageable);
 
-    List<UserVoucherResponse> getAllVouchersByUserId(Long userId);
+    // Cập nhật: Thêm Pageable, đổi List thành Page
+    Page<UserVoucherResponse> getAllVouchersByUserId(Long userId, Pageable pageable);
 
     void removeVoucherFromUser(Long userVoucherId);
 }

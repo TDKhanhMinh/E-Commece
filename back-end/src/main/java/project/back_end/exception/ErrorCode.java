@@ -104,6 +104,12 @@ public enum ErrorCode {
     VOUCHER_NOT_COLLECTIBLE(400, "This voucher cannot be collected at this time. Please check the conditions and try again"),
     VOUCHER_ALREADY_EXISTS(409, "A voucher with this code already exists. Please choose a different code"),
 
+
+    /* =========================
+     * POINTS / REWARD
+     * ========================= */
+    INSUFFICIENT_POINTS(400, "You do not have enough points to redeem this reward"),
+
     /* =========================
      * COMMON / SYSTEM
      * ========================= */

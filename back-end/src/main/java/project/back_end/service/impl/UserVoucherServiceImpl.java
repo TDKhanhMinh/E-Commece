@@ -1,6 +1,8 @@
 package project.back_end.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.back_end.entity.User;
@@ -16,8 +18,6 @@ import project.back_end.response.UserVoucherResponse;
 import project.back_end.service.UserVoucherService;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,11 +31,9 @@ public class UserVoucherServiceImpl implements UserVoucherService {
     private final UserVoucherMapper userVoucherMapper;
 
     @Override
-    public List<UserVoucherResponse> getAvailableVouchers(Long userId) {
-        return userVoucherRepository.findByUserIdAndIsUsedFalse(userId)
-                .stream()
-                .map(userVoucherMapper::toResponse) // Chuyển sang Response
-                .collect(Collectors.toList());
+    public Page<UserVoucherResponse> getAvailableVouchers(Long userId, Pageable pageable) {
+        return userVoucherRepository.findByUserIdAndIsUsedFalse(userId, pageable)
+                .map(userVoucherMapper::toResponse); //
     }
 
     @Override
@@ -86,19 +84,15 @@ public class UserVoucherServiceImpl implements UserVoucherService {
     }
 
     @Override
-    public List<UserVoucherResponse> getAllUserVouchers() {
-        return userVoucherRepository.findAll()
-                .stream()
-                .map(userVoucherMapper::toResponse)
-                .collect(Collectors.toList());
+    public Page<UserVoucherResponse> getAllUserVouchers(Pageable pageable) {
+        return userVoucherRepository.findAll(pageable)
+                .map(userVoucherMapper::toResponse); //
     }
 
     @Override
-    public List<UserVoucherResponse> getAllVouchersByUserId(Long userId) {
-        return userVoucherRepository.findByUserId(userId)
-                .stream()
-                .map(userVoucherMapper::toResponse)
-                .collect(Collectors.toList());
+    public Page<UserVoucherResponse> getAllVouchersByUserId(Long userId, Pageable pageable) {
+        return userVoucherRepository.findByUserId(userId, pageable)
+                .map(userVoucherMapper::toResponse); //
     }
 
     @Override

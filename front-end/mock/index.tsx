@@ -18,6 +18,7 @@ import {
     SettingsIcon,
     ShieldCheck,
     ShoppingCart,
+    TicketIcon,
     Truck,
     User,
     Users,
@@ -436,9 +437,9 @@ export const ADMIN_SIDEBAR_ITEMS = [
         icon: ClipboardListIcon,
     },
     {
-        title: "Suppliers",
-        url: "/admin/brands",
-        icon: Building2Icon,
+        title: "Vouchers",
+        url: "/admin/vouchers",
+        icon: TicketIcon,
     },
     {
         title: "Shipping",

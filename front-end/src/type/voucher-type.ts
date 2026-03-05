@@ -15,10 +15,10 @@ export interface VoucherResponse {
     discountValue: number;
     discountType: DiscountType;
     minOrder: number;
-    maxDiscount?: number | null; // Có thể null nếu discountType là FIXED
+    maxDiscount?: number | null;
     usageLimit?: number | null;
     usedCount: number;
-    startDate: string; // ISO String format (VD: "2024-12-31T23:59:59")
+    startDate: string;
     endDate: string;
     active: boolean;
 }

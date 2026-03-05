@@ -17,11 +17,12 @@ import { useDeleteSku } from "@/hooks/use-products";
 interface SkuTableProps {
     product: ProductDetail;
     onEdit: (sku: SkuDto) => void;
+    onToggleActive?: (sku: any) => void;
 }
 
 const PAGE_SIZE = 5;
 
-export function SkuTable({ product, onEdit }: SkuTableProps) {
+export function SkuTable({ product, onEdit, onToggleActive }: SkuTableProps) {
     const deleteSkuMutation = useDeleteSku(product.id);
     const [page, setPage] = useState(1);
 
@@ -62,7 +63,6 @@ export function SkuTable({ product, onEdit }: SkuTableProps) {
                     )}
 
                     {pagedSkus.map((sku) => {
-                        // Calculate display prices
                         const originalPrice = sku.price;
                         const discountPercent = sku.discountPercent || 0;
                         const salePrice =

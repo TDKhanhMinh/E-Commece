@@ -21,5 +21,9 @@ public class CheckoutRequest {
     private String paymentMethod;
 
     private String shippingMethod;
+
+    private String voucherCode;
+
+    private Double pointsUsed;
 }
 
