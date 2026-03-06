@@ -53,6 +53,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/payment/vnpay-ipn/**").permitAll()
+                        .requestMatchers("/api/payment/vnpay-return/**").permitAll()
+                        .requestMatchers("/api/paypal/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

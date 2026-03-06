@@ -43,8 +43,9 @@ export function UpdateStatusDialog({
     }, [open, currentStatus]);
 
     const statusOptions = [
-        { value: "PENDING", label: "Chưa thanh toán" },
+        { value: "PENDING", label: "Chưa xác nhận" },
         { value: "CONFIRMED", label: "Đã xác nhận" },
+        { value: "UNPAID", label: "Chưa thanh toán" },
         { value: "PAID", label: "Đã thanh toán" },
         { value: "SHIPPING", label: "Đang giao hàng" },
         { value: "DELIVERED", label: "Đã giao hàng" },

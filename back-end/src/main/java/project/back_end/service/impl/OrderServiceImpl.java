@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -73,7 +74,11 @@ public class OrderServiceImpl implements OrderService {
         // ======================
         Order order = new Order();
         order.setUser(user);
-        order.setStatus(OrderStatus.PENDING);
+        if (!Objects.equals(request.getPaymentMethod(), "COD")) {
+            order.setStatus(OrderStatus.UNPAID);
+        } else {
+            order.setStatus(OrderStatus.PENDING);
+        }
         order.setCreatedAt(LocalDateTime.now());
         order.setShippingMethod(request.getShippingMethod());
         order.setPaymentMethod(request.getPaymentMethod());
@@ -249,111 +254,84 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
 
-        log.info("Current order {} input status: {}", orderId, status);
-
-        OrderStatus newStatus;
-        try {
-            newStatus = OrderStatus.valueOf(status.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new AppException(ErrorCode.INVALID_REQUEST);
-        }
-
+        OrderStatus newStatus = parseStatus(status);
         OrderStatus currentStatus = order.getStatus();
-        LocalDateTime now = LocalDateTime.now();
 
-        if (currentStatus == OrderStatus.CANCELLED || currentStatus == OrderStatus.DELIVERED) {
-            throw new AppException(ErrorCode.INVALID_REQUEST);
+        if (currentStatus == newStatus) {
+            log.info("Order {} is already {}, skipping update", orderId, newStatus);
+            return;
         }
+
+        if (isFinalStatus(currentStatus)) {
+            throw new AppException(ErrorCode.INVALID_STATUS_TRANSITION);
+        }
+
+        log.info("Updating order {} from {} to {}", orderId, currentStatus, newStatus);
+        LocalDateTime now = LocalDateTime.now();
+        order.setUpdatedAt(now);
 
         switch (newStatus) {
-            case PENDING:
-                break;
+            case CONFIRMED -> order.setConfirmedAt(now);
 
-            case CONFIRMED:
-                if (currentStatus != OrderStatus.PENDING) {
-                    throw new AppException(ErrorCode.INVALID_REQUEST);
-                }
-                order.setConfirmedAt(now);
-                order.setUpdatedAt(now);
+            case PAID -> {
+                // Có thể thêm logic lưu mã giao dịch VNPay vào đây nếu cần
+            }
 
-                break;
-
-            case PAID:
-                order.setUpdatedAt(now);
-
-                if (currentStatus != OrderStatus.PENDING && currentStatus != OrderStatus.CONFIRMED) {
-                    throw new AppException(ErrorCode.INVALID_REQUEST);
-
-                }
-                break;
-
-            case SHIPPING:
-                order.setUpdatedAt(now);
-
-                if (currentStatus != OrderStatus.CONFIRMED && currentStatus != OrderStatus.PAID) {
-                    throw new AppException(ErrorCode.INVALID_REQUEST);
-                }
-                break;
-
-            case DELIVERED:
-                order.setUpdatedAt(now);
-
-                if (currentStatus != OrderStatus.SHIPPING) {
-                    throw new AppException(ErrorCode.INVALID_REQUEST);
-                }
+            case DELIVERED -> {
+                if (currentStatus != OrderStatus.SHIPPING)
+                    throw new AppException(ErrorCode.INVALID_STATUS_TRANSITION);
                 order.setDeliveredAt(now);
+                awardMembershipPoints(order);
+            }
 
-                // LOGIC TÍCH ĐIỂM SAU KHI GIAO HÀNG THÀNH CÔNG
-                if (order.getFinalAmount() != null && order.getFinalAmount().compareTo(BigDecimal.ZERO) > 0) {
-                    long earnedPoints = order.getFinalAmount().longValue() / 100000; // Ví dụ: 1 điểm cho mỗi 100,000 VND chi tiêu
+            case CANCELLED, FAILED -> {
+                if (currentStatus == OrderStatus.SHIPPING && newStatus == OrderStatus.CANCELLED)
+                    throw new AppException(ErrorCode.INVALID_STATUS_TRANSITION);
 
-                    if (earnedPoints > 0) {
-                        memberShipPointService.managePoints(
-                                order.getUser().getId(),
-                                earnedPoints,
-                                PointTransactionType.EARN,
-                                order.getId(),
-                                "Tích điểm từ đơn hàng #" + order.getId()
-                        );
-                        log.info("Awarded {} points to user {} for order {}", earnedPoints, order.getUser().getId(), orderId);
-                    }
-                }
-                break;
-
-            case CANCELLED:
-                order.setUpdatedAt(now);
-
-                if (currentStatus == OrderStatus.SHIPPING) {
-                    throw new AppException(ErrorCode.INVALID_REQUEST);
-                }
                 order.setCancelledAt(now);
+                List<OrderItem> items = orderItemRepository.findByOrderId(orderId);
+                restoreStockBatch(items);
+            }
 
-                List<OrderItem> orderItems = orderItemRepository.findByOrderId(orderId);
-                RestoreStock(orderItems);
-                break;
-
-            case FAILED:
-                order.setUpdatedAt(now);
-
-                if (currentStatus == OrderStatus.SHIPPING) {
-                    throw new AppException(ErrorCode.INVALID_REQUEST);
-                }
-                List<OrderItem> failedOrderItems = orderItemRepository.findByOrderId(orderId);
-                for (OrderItem item : failedOrderItems) {
-                    Sku sku = skuRepository.findById(item.getSkuId())
-                            .orElseThrow(() -> new AppException(ErrorCode.SKU_NOT_FOUND));
-
-                    sku.setStock(sku.getStock() + item.getQuantity());
-                    skuRepository.save(sku);
-                }
-                break;
+            default -> {
+            }
         }
 
         order.setStatus(newStatus);
-        order.setUpdatedAt(now);
         orderRepository.save(order);
+    }
 
-        log.info("Updated order {} status to {} at {}", orderId, newStatus, now);
+// --- CÁC HÀM HỖ TRỢ (Helper Methods) ---
+
+    private OrderStatus parseStatus(String status) {
+        try {
+            return OrderStatus.valueOf(status.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new AppException(ErrorCode.INVALID_REQUEST);
+        }
+    }
+
+    private boolean isFinalStatus(OrderStatus status) {
+        return status == OrderStatus.CANCELLED || status == OrderStatus.DELIVERED || status == OrderStatus.FAILED;
+    }
+
+    private void awardMembershipPoints(Order order) {
+        BigDecimal amount = order.getFinalAmount();
+        if (amount != null && amount.compareTo(BigDecimal.ZERO) > 0) {
+            long earnedPoints = amount.longValue() / 100_000;
+            if (earnedPoints > 0) {
+                memberShipPointService.managePoints(
+                        order.getUser().getId(), earnedPoints, PointTransactionType.EARN,
+                        order.getId(), "Tích điểm đơn hàng #" + order.getId()
+                );
+            }
+        }
+    }
+
+    private void restoreStockBatch(List<OrderItem> items) {
+        for (OrderItem item : items) {
+            skuRepository.updateStock(item.getSkuId(), item.getQuantity());
+        }
     }
 
     @Override
@@ -366,9 +344,7 @@ public class OrderServiceImpl implements OrderService {
             throw new AppException(ErrorCode.INVALID_REQUEST);
         }
 
-        // ======================
         // Restore stock for all order items
-        // ======================
         List<OrderItem> orderItems = orderItemRepository.findByOrderId(orderId);
         RestoreStock(orderItems);
 

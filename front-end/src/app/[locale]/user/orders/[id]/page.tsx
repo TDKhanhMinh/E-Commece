@@ -4,18 +4,23 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { ChevronLeft, Loader2, MapPin, ShoppingBag } from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useOrderDetail } from "@/hooks/use-order";
 import { fDateTime } from "@/lib/format-date-time";
 import { formatCurrency } from "@/lib/format-price";
+import { toast } from "sonner";
 
 import { OrderDetailResponse, OrderItem } from "@/type/order-type";
 import Image from "next/image";
 import { getStatusBadge } from "@/lib/get-order-status";
+import { useEffect } from "react";
 
 export default function OrderDetail() {
     const params = useParams();
+    const searchParams = useSearchParams();
     const orderId = params?.id as string;
+
+    const responseCode = searchParams.get("vnp_ResponseCode");
 
     const { data, isLoading } = useOrderDetail(orderId);
     const orderDetails = data as OrderDetailResponse | undefined;
@@ -34,7 +39,23 @@ export default function OrderDetail() {
         }
     };
     console.log("Order detail data:", orderDetails);
+    useEffect(() => {
+        // @ts-ignore
 
+        if (responseCode) {
+            if (responseCode === "00") {
+                toast.success("Thanh toán đơn hàng thành công!");
+            } else {
+                toast.error("Thanh toán thất bại hoặc đã bị hủy.");
+            }
+
+            window.history.replaceState(
+                {},
+                document.title,
+                window.location.pathname
+            );
+        }
+    }, [searchParams]);
     if (isLoading) {
         return (
             <div className="mx-auto flex min-h-screen max-w-7xl items-center justify-center p-4">

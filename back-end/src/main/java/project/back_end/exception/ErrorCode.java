@@ -39,7 +39,7 @@ public enum ErrorCode {
     ATTRIBUTE_EXISTED(409, "Attribute code already exists"),
     DUPLICATE_ATTRIBUTE(400, "Duplicate attribute in SKU attributes"),
     INVALID_ATTRIBUTE_VALUE(400, "Invalid attribute value for the given attribute"),
-
+    INVALID_STATUS_TRANSITION(400, "Invalid status transition for the product"),
     /* =========================
      * SKU
      * ========================= */

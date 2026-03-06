@@ -8,7 +8,7 @@ export const getStatusBadge = (status: string | undefined) => {
                     variant={"outline"}
                     className="border-yellow-600 bg-yellow-50 text-yellow-600"
                 >
-                    Chờ thanh toán
+                    Chờ xác nhận
                 </Badge>
             );
         case "CONFIRMED":
@@ -27,6 +27,15 @@ export const getStatusBadge = (status: string | undefined) => {
                     className="border-blue-600 bg-blue-50 text-blue-600"
                 >
                     Đã thanh toán
+                </Badge>
+            );
+        case "UNPAID":
+            return (
+                <Badge
+                    variant={"outline"}
+                    className="border-red-600 bg-red-50 text-red-600"
+                >
+                    Chưa thanh toán
                 </Badge>
             );
         case "SHIPPING":

@@ -7,6 +7,9 @@ import { CheckoutItemRequest, CheckoutResponse } from "@/type/order-type";
 import { useDefaultDeliveryAddress } from "@/hooks/use-delivery-address";
 import { useVoucher } from "@/hooks/use-voucher";
 import { toast } from "sonner";
+
+// Các UI Components
+import { Button } from "@/components/ui/button"; // <-- Thêm import Button
 import {
     CheckoutData,
     CheckoutHeader,
@@ -20,6 +23,9 @@ import { PaymentMethodCard } from "@/components/common/checkout/checkout-payment
 import { VoucherSelector } from "@/components/common/checkout/checkout-voucher-select";
 import { PointSelector } from "@/components/common/checkout/PointSelector";
 
+import { usePayment } from "@/hooks/use-payment";
+import PayPalCheckoutButton from "@/components/common/checkout/paypal-checkout-button";
+
 export default function CheckoutPage() {
     const router = useRouter();
     const { user } = useAuthStore();
@@ -27,6 +33,13 @@ export default function CheckoutPage() {
 
     const checkoutMutation = useCheckout(userId);
     const { validateVoucher } = useVoucher();
+    const { createPaymentUrlMutation } = usePayment();
+
+    // State quản lý việc hiển thị giao diện PayPal
+    const [paypalPaymentData, setPaypalPaymentData] = useState<{
+        orderId: number;
+        amount: number;
+    } | null>(null);
 
     const [shippingMethod, setShippingMethod] = useState("standard");
     const [paymentMethod, setPaymentMethod] = useState("COD");
@@ -36,7 +49,7 @@ export default function CheckoutPage() {
     // Quản lý các state giảm giá
     const [pointsUsed, setPointsUsed] = useState<number>(0);
     const [pointsDiscount, setPointsDiscount] = useState<number>(0);
-    const [voucherDiscount, setVoucherDiscount] = useState<number>(0); // State mới cho Voucher
+    const [voucherDiscount, setVoucherDiscount] = useState<number>(0);
 
     const {
         defaultAddress,
@@ -60,7 +73,6 @@ export default function CheckoutPage() {
         }
     }, [router]);
 
-    // Lắng nghe thay đổi Điểm
     const handleChangePoints = (points: number, discountValue: number) => {
         setPointsUsed(points);
         setPointsDiscount(discountValue);
@@ -93,7 +105,6 @@ export default function CheckoutPage() {
                         discountAmount = voucherData.discountValue;
                     }
 
-                    // Lưu vào state riêng thay vì ghi đè vào checkoutData
                     setVoucherDiscount(discountAmount);
                 },
                 onError: (error: any) => {
@@ -139,17 +150,39 @@ export default function CheckoutPage() {
             )) as unknown as CheckoutResponse;
 
             sessionStorage.removeItem("checkoutData");
+            console.log("Checkout response:", response);
 
-            if (response?.orderId) {
+            if (paymentMethod === "COD" || response?.paymentMethod === "COD") {
                 toast.success(
                     `Đặt hàng thành công! Mã đơn hàng: #${response.orderId}`
                 );
                 router.push(`/user/orders/${response.orderId}`);
+            } else if (
+                paymentMethod === "VNPAY" ||
+                response?.paymentMethod === "VNPAY"
+            ) {
+                toast.info("Đang khởi tạo giao dịch VNPay, vui lòng đợi...");
+                createPaymentUrlMutation.mutate({
+                    orderId: response.orderId,
+                    amount: response.finalAmount,
+                });
+            } else if (
+                paymentMethod === "PAYPAL" ||
+                response?.paymentMethod === "PAYPAL"
+            ) {
+                toast.info(
+                    "Đơn hàng đã được tạo. Vui lòng hoàn tất thanh toán qua PayPal..."
+                );
+                setPaypalPaymentData({
+                    orderId: response.orderId,
+                    amount: response.finalAmount,
+                });
             } else {
-                router.push("/user/orders");
+                router.push(`/user/orders/${response.orderId}`);
             }
         } catch (error: any) {
             console.error("Checkout error:", error);
+            toast.error("Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại.");
         }
     };
 
@@ -165,52 +198,90 @@ export default function CheckoutPage() {
 
     return (
         <div className="container mx-auto max-w-6xl px-4 py-8">
-            <CheckoutHeader
-                onBack={handleBackToCart}
-                disabled={checkoutMutation.isPending}
-            />
+            {paypalPaymentData ? (
+                <div className="animate-in fade-in flex flex-col items-center justify-center space-y-6 py-16 duration-500">
+                    <div className="space-y-2 text-center">
+                        <h2 className="text-3xl font-bold text-slate-800">
+                            Thanh toán đơn hàng #{paypalPaymentData.orderId}
+                        </h2>
+                        <p className="text-slate-600">
+                            Vui lòng nhấp vào nút bên dưới để hoàn tất thanh
+                            toán an toàn qua PayPal
+                        </p>
+                    </div>
 
-            <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-                <div className="space-y-6 lg:col-span-2">
-                    <DeliveryAddressCard
-                        hasAddresses={hasAddresses}
-                        defaultAddress={defaultAddress}
-                        onAddAddress={handleAddAddress}
-                        onChangeAddress={handleChangeAddress}
-                    />
+                    <div className="w-full max-w-md rounded-2xl border border-slate-100 bg-slate-50 p-6 shadow-sm">
+                        <PayPalCheckoutButton
+                            orderId={paypalPaymentData.orderId}
+                            totalAmountVnd={paypalPaymentData.amount}
+                        />
+                    </div>
 
-                    <CheckoutItemsList items={checkoutData.items} />
-                    <ShippingMethodCard
-                        value={shippingMethod}
-                        onValueChange={setShippingMethod}
-                    />
-                    <PaymentMethodCard
-                        value={paymentMethod}
-                        onValueChange={setPaymentMethod}
-                    />
-                    <VoucherSelector
-                        onApplyVoucher={handleApplyVoucher}
-                        appliedVoucher={voucherCode}
-                    />
-                    <PointSelector
-                        totalAmount={checkoutData.summary.finalAmount || 0}
-                        onPointsChange={handleChangePoints}
-                    />
+                    <Button
+                        variant="ghost"
+                        className="text-slate-500 underline hover:text-slate-800"
+                        onClick={() =>
+                            router.push(
+                                `/user/orders/${paypalPaymentData.orderId}`
+                            )
+                        }
+                    >
+                        Thanh toán sau (Quản lý đơn hàng)
+                    </Button>
                 </div>
-
-                <div className="lg:col-span-1">
-                    <CheckoutSummaryCard
-                        summary={checkoutData.summary}
-                        hasAddresses={hasAddresses}
-                        isProcessing={checkoutMutation.isPending}
-                        voucherDiscount={voucherDiscount} // Truyền dữ liệu xuống
-                        pointsDiscount={pointsDiscount} // Truyền dữ liệu xuống
-                        shippingFee={shippingFee} // Truyền dữ liệu xuống
-                        onConfirmOrder={handleConfirmOrder}
-                        onBackToCart={handleBackToCart}
+            ) : (
+                /* NẾU KHÔNG: HIỂN THỊ GIAO DIỆN CHECKOUT BÌNH THƯỜNG */
+                <>
+                    <CheckoutHeader
+                        onBack={handleBackToCart}
+                        disabled={checkoutMutation.isPending}
                     />
-                </div>
-            </div>
+
+                    <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+                        <div className="space-y-6 lg:col-span-2">
+                            <DeliveryAddressCard
+                                hasAddresses={hasAddresses}
+                                defaultAddress={defaultAddress}
+                                onAddAddress={handleAddAddress}
+                                onChangeAddress={handleChangeAddress}
+                            />
+
+                            <CheckoutItemsList items={checkoutData.items} />
+                            <ShippingMethodCard
+                                value={shippingMethod}
+                                onValueChange={setShippingMethod}
+                            />
+                            <PaymentMethodCard
+                                value={paymentMethod}
+                                onValueChange={setPaymentMethod}
+                            />
+                            <VoucherSelector
+                                onApplyVoucher={handleApplyVoucher}
+                                appliedVoucher={voucherCode}
+                            />
+                            <PointSelector
+                                totalAmount={
+                                    checkoutData.summary.finalAmount || 0
+                                }
+                                onPointsChange={handleChangePoints}
+                            />
+                        </div>
+
+                        <div className="lg:col-span-1">
+                            <CheckoutSummaryCard
+                                summary={checkoutData.summary}
+                                hasAddresses={hasAddresses}
+                                isProcessing={checkoutMutation.isPending}
+                                voucherDiscount={voucherDiscount}
+                                pointsDiscount={pointsDiscount}
+                                shippingFee={shippingFee}
+                                onConfirmOrder={handleConfirmOrder}
+                                onBackToCart={handleBackToCart}
+                            />
+                        </div>
+                    </div>
+                </>
+            )}
         </div>
     );
 }

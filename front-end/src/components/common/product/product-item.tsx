@@ -118,7 +118,7 @@ function ProductItem({ item }: { item: ProductItemProps }) {
                 {/* Badges Container */}
                 <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
                     {discountPercent > 0 && (
-                        <Badge className="rounded-lg bg-gradient-to-r from-red-500 to-pink-500 px-3 py-1.5 text-xs font-bold text-white shadow-lg">
+                        <Badge className="rounded-lg bg-linear-to-r from-red-500 to-pink-500 px-3 py-1.5 text-xs font-bold text-white shadow-lg">
                             <Tag className="mr-1 h-3 w-3" />
                             SALE {discountPercent}%
                         </Badge>
@@ -145,7 +145,7 @@ function ProductItem({ item }: { item: ProductItemProps }) {
                 </Button>
 
                 {/* Product Image */}
-                <div className="relative aspect-square w-full overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 p-6">
+                <div className="relative aspect-square w-full overflow-hidden bg-linear-to-br from-gray-50 to-gray-100 p-6">
                     <Image
                         src={image || "/placeholder-product.png"}
                         alt={`${brandName} ${name} - ${categoryName}`}
@@ -200,7 +200,7 @@ function ProductItem({ item }: { item: ProductItemProps }) {
 
                     {/* Product Name */}
                     <h3
-                        className="group-hover:text-primary line-clamp-2 text-base leading-tight font-semibold text-gray-900 transition-colors"
+                        className="group-hover:text-primary line-clamp-2 text-start text-base leading-tight font-semibold text-gray-900 transition-colors"
                         itemProp="name"
                         title={name}
                     >

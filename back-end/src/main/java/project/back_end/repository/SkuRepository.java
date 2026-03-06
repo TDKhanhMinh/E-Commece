@@ -1,6 +1,9 @@
 package project.back_end.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import project.back_end.entity.product.Sku;
 
@@ -19,4 +22,8 @@ public interface SkuRepository extends JpaRepository<Sku, Long> {
 
     // 3. Tìm các SKU có giá trong khoảng (Dùng cho bộ lọc giá)
     List<Sku> findByProductIdAndPriceBetween(Long productId, BigDecimal min, BigDecimal max);
+
+    @Modifying
+    @Query("UPDATE Sku s SET s.stock = s.stock + :quantity WHERE s.id = :skuId")
+    void updateStock(@Param("skuId") Long skuId, @Param("quantity") Integer quantity);
 }

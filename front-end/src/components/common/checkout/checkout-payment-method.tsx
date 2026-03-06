@@ -65,6 +65,25 @@ export function PaymentMethodCard({
                             </div>
                         </Label>
                     </div>
+
+                    {/* Thanh toán qua Ví điện tử Paypal */}
+                    <div className="flex items-center space-y-0 space-x-3 rounded-xl border p-4 transition-colors hover:bg-slate-50">
+                        <RadioGroupItem value="PAYPAL" id="paypal" />
+                        <Label
+                            htmlFor="paypal"
+                            className="flex flex-1 cursor-pointer items-center gap-3 font-normal"
+                        >
+                            <Wallet className="h-5 w-5 text-blue-500" />
+                            <div>
+                                <p className="font-bold text-gray-900">
+                                    Thanh toán qua Paypal
+                                </p>
+                                <p className="text-muted-foreground text-xs">
+                                    Hỗ trợ thẻ ATM, QR Code, Thẻ quốc tế
+                                </p>
+                            </div>
+                        </Label>
+                    </div>
                 </RadioGroup>
             </CardContent>
         </Card>

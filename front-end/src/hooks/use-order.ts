@@ -59,7 +59,6 @@ export const useCheckout = (userId: number) => {
     return useMutation({
         mutationFn: (data: CheckoutRequest) => checkout(userId, data),
         onSuccess: (response) => {
-            toast.success("Đặt hàng thành công!");
             queryClient.invalidateQueries({
                 queryKey: ["orders", "user"],
             });

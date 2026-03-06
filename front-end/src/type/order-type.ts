@@ -32,6 +32,8 @@ export interface CheckoutResponse {
     totalItems: number;
     status: OrderStatus;
     createdAt: string;
+    paymentUrl?: string;
+    paymentMethod?: string;
 }
 
 /* ======================

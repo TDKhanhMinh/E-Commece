@@ -37,9 +37,10 @@ export default function OrderHistory() {
 
     const tabs = [
         { value: "all", label: "TẤT CẢ" },
-        { value: "PENDING", label: "CHỜ THANH TOÁN" },
+        { value: "PENDING", label: "CHỜ XÁC NHẬN" },
         { value: "CONFIRMED", label: "ĐÃ XÁC NHẬN" },
         { value: "PAID", label: "ĐÃ THANH TOÁN" },
+        { value: "UNPAID", label: "CHƯA THANH TOÁN" },
         { value: "SHIPPING", label: "ĐANG GIAO HÀNG" },
         { value: "DELIVERED", label: "ĐÃ GIAO" },
         { value: "CANCELLED", label: "ĐÃ HỦY" },

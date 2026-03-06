@@ -123,10 +123,13 @@ export default function AdminOrderManagement() {
                                         Tất cả trạng thái
                                     </SelectItem>
                                     <SelectItem value="PENDING">
-                                        Chưa thanh toán
+                                        Chưa xác nhận
                                     </SelectItem>
                                     <SelectItem value="CONFIRMED">
                                         Đã xác nhận
+                                    </SelectItem>
+                                    <SelectItem value="UNPAID">
+                                        Chưa thanh toán
                                     </SelectItem>
                                     <SelectItem value="PAID">
                                         Đã thanh toán

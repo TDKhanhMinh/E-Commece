@@ -225,4 +225,5 @@ public class ProductServiceImpl implements ProductService {
         String slug = nonlatin.matcher(normalized).replaceAll("");
         return slug.toLowerCase(Locale.ENGLISH);
     }
+
 }

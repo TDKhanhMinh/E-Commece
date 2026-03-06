@@ -48,7 +48,7 @@ export function OrderDetailsDialog({
                 ) : (
                     <div className="flex flex-col gap-6 p-6">
                         <Card className="border-none shadow-sm">
-                            <CardHeader className="pb-2">
+                            <CardHeader className="">
                                 <div className="flex items-start gap-2 text-sm">
                                     <MapPin className="mt-0.5 size-4 shrink-0 text-blue-600" />
                                     <div>
@@ -73,13 +73,30 @@ export function OrderDetailsDialog({
                                     </div>
                                 </div>
                             </CardHeader>
-                            <CardContent className="space-y-4 pt-4 text-sm">
+                            <CardContent className="space-y-4 text-sm">
                                 <div className="flex items-center justify-between">
                                     <span className="text-muted-foreground">
                                         Trạng thái:
                                     </span>
                                     <span className="font-bold text-red-500 uppercase">
                                         {getStatusBadge(orderDetails?.status)}
+                                    </span>
+                                </div>
+
+                                <div className="flex items-center justify-between">
+                                    <span className="text-muted-foreground">
+                                        Phuơng thức thanh toán:
+                                    </span>
+                                    <span className="font-bold text-red-500 uppercase">
+                                        {orderDetails?.paymentMethod}
+                                    </span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-muted-foreground">
+                                        Phuơng thức vận chuyển:
+                                    </span>
+                                    <span className="font-bold text-red-500 uppercase">
+                                        {orderDetails?.shippingMethod}
                                     </span>
                                 </div>
                                 <div className="flex items-center justify-between">
