@@ -44,16 +44,11 @@ export default function CartPage() {
     }
 
     if (error) {
-        return <CartError onBack={() => router.back()} />;
+        return <CartError />;
     }
 
     if (!cart || !cart.items || cart.items.length === 0) {
-        return (
-            <CartEmpty
-                onBack={() => router.back()}
-                onContinueShopping={() => router.push("/")}
-            />
-        );
+        return <CartEmpty onContinueShopping={() => router.push("/")} />;
     }
 
     const handleUpdateQuantity = (
@@ -124,6 +119,8 @@ export default function CartPage() {
 
         const checkoutData: CheckoutData = {
             items: checkoutItems,
+            pointsDiscount: 0,
+            pointsUsed: 0,
             summary: {
                 totalAmount: selectedSummary.totalAmount,
                 totalDiscount: selectedSummary.totalDiscount,
@@ -164,7 +161,6 @@ export default function CartPage() {
         <div className="container mx-auto max-w-6xl px-4 py-8">
             <CartHeader
                 itemCount={summary.itemCount}
-                onBack={() => router.back()}
                 onClearCart={handleClearCart}
                 isClearingCart={clearCart.isPending}
                 hasItems={cart.items.length > 0}

@@ -13,17 +13,14 @@ export default function HomeSaleProducts() {
     const t = useTranslations("HomePage");
     const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
-    // Fetch products using TanStack Query
     const { data, isLoading } = useProducts({
         page: 0,
-        size: 12, // Lấy 12 sản phẩm để hiển thị
+        size: 12,
     });
 
-    // Extract products from PageResponse
     const pageData = data as PageResponse<any> | undefined;
     const products = pageData?.content || [];
 
-    // Categories
     const categories = ["All", "iPhone", "MacBook", "iPad", "Watch", "Audio"];
 
     return (

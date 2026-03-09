@@ -186,7 +186,6 @@ export default function CheckoutPage() {
         }
     };
 
-    const handleBackToCart = () => router.push("/cart");
     const handleAddAddress = () => router.push("/user/address-delivery");
     const handleChangeAddress = () => router.push("/user/address-delivery");
 
@@ -232,10 +231,7 @@ export default function CheckoutPage() {
             ) : (
                 /* NẾU KHÔNG: HIỂN THỊ GIAO DIỆN CHECKOUT BÌNH THƯỜNG */
                 <>
-                    <CheckoutHeader
-                        onBack={handleBackToCart}
-                        disabled={checkoutMutation.isPending}
-                    />
+                    <CheckoutHeader />
 
                     <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
                         <div className="space-y-6 lg:col-span-2">
@@ -276,7 +272,6 @@ export default function CheckoutPage() {
                                 pointsDiscount={pointsDiscount}
                                 shippingFee={shippingFee}
                                 onConfirmOrder={handleConfirmOrder}
-                                onBackToCart={handleBackToCart}
                             />
                         </div>
                     </div>

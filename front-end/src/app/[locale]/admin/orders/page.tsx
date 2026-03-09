@@ -181,6 +181,9 @@ export default function AdminOrderManagement() {
                                             <TableHead className="font-semibold">
                                                 Ngày đặt
                                             </TableHead>
+                                            <TableHead className="font-semibold">
+                                                Ngày giao
+                                            </TableHead>
                                             <TableHead className="text-right font-semibold">
                                                 Tổng tiền
                                             </TableHead>
@@ -216,6 +219,14 @@ export default function AdminOrderManagement() {
                                                         order.createdAt,
                                                         "dd/MM/yyyy HH:mm"
                                                     )}
+                                                </TableCell>
+                                                <TableCell className="text-muted-foreground text-left text-sm">
+                                                    {order.deliveredAt
+                                                        ? fDateTime(
+                                                              order.deliveredAt,
+                                                              "dd/MM/yyyy HH:mm"
+                                                          )
+                                                        : "Chưa giao"}
                                                 </TableCell>
                                                 <TableCell className="text-primary text-right font-semibold">
                                                     {formatCurrency(

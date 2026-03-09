@@ -5,222 +5,254 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { USER_MEMBERSHIPS_TABS } from "../../../../../mock"; // Giữ nguyên đường dẫn của bạn
-import { usePoints } from "@/hooks/use-point";
-import { useAuthStore } from "@/store/useAuthStore";
-import { Clock, TrendingDown, TrendingUp } from "lucide-react";
-import { fDateTime } from "@/lib/format-date-time";
+import { USER_MEMBERSHIPS_TABS } from "../../../../../mock"; //
+import { usePoints } from "@/hooks/use-point"; //
+import { useAuthStore } from "@/store/useAuthStore"; //
+import {
+    ChevronRight,
+    Clock,
+    Crown,
+    ShieldCheck,
+    Star,
+    TrendingDown,
+    TrendingUp,
+} from "lucide-react";
+import { fDateTime } from "@/lib/format-date-time"; //
+import { Badge } from "@/components/ui/badge";
 
-// Ánh xạ tên hạng thành viên sang tiếng Việt
 const TIER_MAP: Record<string, string> = {
     MEMBER: "Thành viên",
-    SILVER: "Bạc",
-    GOLD: "Vàng",
+    SILVER: "Hạng Bạc",
+    GOLD: "Hạng Vàng",
     PLATINUM: "Bạch Kim",
-};
+}; //
 
-// Ánh xạ hạng tiếp theo
 const NEXT_TIER_MAP: Record<string, string> = {
     MEMBER: "Bạc",
     SILVER: "Vàng",
     GOLD: "Bạch Kim",
     PLATINUM: "Tối đa",
+}; //
+
+// Cấu hình màu sắc Gradient cho từng hạng
+const TIER_STYLES: Record<string, string> = {
+    MEMBER: "from-slate-400 to-slate-600",
+    SILVER: "from-slate-300 via-slate-100 to-slate-400",
+    GOLD: "from-amber-300 via-yellow-500 to-amber-600",
+    PLATINUM: "from-indigo-400 via-cyan-400 to-blue-500",
 };
 
 export default function Membership() {
-    const { user } = useAuthStore();
-    const userId = user?.id ? parseInt(user.id) : 0;
+    const { user } = useAuthStore(); //
+    const userId = user?.id ? parseInt(user.id) : 0; //
+    const [page, setPage] = useState(0); //
+    const size = 5; //
 
-    // Lấy state phân trang cho lịch sử
-    const [page, setPage] = useState(0);
-    const size = 5; // Hiển thị 5 giao dịch mỗi trang
+    const { useMyPointSummary, useMyPointHistory } = usePoints(); //
 
-    const { useMyPointSummary, useMyPointHistory } = usePoints();
-
-    // Fetch dữ liệu
-    const { data: summary, isLoading: isLoadingSummary } = useMyPointSummary();
+    const { data: summary, isLoading: isLoadingSummary } = useMyPointSummary(); //
     const { data: historyPage, isLoading: isLoadingHistory } =
-        useMyPointHistory(userId, page, size);
+        useMyPointHistory(userId, page, size); //
 
-    // Tính toán cho thanh Progress Bar
     const calculateProgress = () => {
-        if (!summary) return 0;
-        if (summary.membershipTier === "PLATINUM") return 100;
-
-        const currentAcc = summary.totalAccumulatedPoints || 0;
-        const missing = summary.pointsToNextTier || 0;
-        const target = currentAcc + missing;
-
-        if (target === 0) return 0;
-        return (currentAcc / target) * 100;
+        if (!summary) return 0; //
+        if (summary.membershipTier === "PLATINUM") return 100; //
+        const currentAcc = summary.totalAccumulatedPoints || 0; //
+        const missing = summary.pointsToNextTier || 0; //
+        const target = currentAcc + missing; //
+        if (target === 0) return 0; //
+        return (currentAcc / target) * 100; //
     };
 
     if (isLoadingSummary) {
         return (
-            <div className="p-6 text-center text-gray-500">
-                Đang tải thông tin thành viên...
+            <div className="flex h-screen animate-pulse items-center justify-center font-bold text-slate-500 italic">
+                Đang tải đặc quyền của bạn...
             </div>
         );
     }
 
-    const currentTierName = TIER_MAP[summary?.membershipTier || "MEMBER"];
-    const nextTierName = NEXT_TIER_MAP[summary?.membershipTier || "MEMBER"];
-    const isMaxTier = summary?.membershipTier === "PLATINUM";
+    const tierCode = summary?.membershipTier || "MEMBER"; //
+    const currentTierName = TIER_MAP[tierCode]; //
+    const nextTierName = NEXT_TIER_MAP[tierCode]; //
+    const isMaxTier = tierCode === "PLATINUM"; //
+    const currentStyle = TIER_STYLES[tierCode];
 
     return (
-        <div className="min-h-screen space-y-6 p-6">
-            {/* CARD HEADER - TỔNG QUAN */}
-            <div className="relative h-32 overflow-visible rounded-xl bg-linear-to-r from-green-800 to-green-600">
-                <Card className="absolute -bottom-[65%] left-1/2 w-[90%] max-w-2xl -translate-x-1/2 border-none shadow-xl">
-                    <CardContent className="space-y-2 py-4 text-center">
-                        <h2 className="text-2xl font-bold italic">
-                            Hạng thành viên:{" "}
-                            <span className="text-green-600">
+        <div className="min-h-screen space-y-8 bg-slate-50/50 p-6">
+            {/* THẺ THÀNH VIÊN VIP - HERO SECTION */}
+            <div
+                className={`relative h-64 w-full rounded-[2.5rem] bg-linear-to-br ${currentStyle} group overflow-hidden p-8 shadow-2xl transition-all duration-700`}
+            >
+                {/* Hiệu ứng ánh kim chạy qua thẻ */}
+                <div className="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 group-hover:translate-x-full"></div>
+
+                <div className="relative z-10 flex h-full flex-col justify-between text-black">
+                    <div className="flex items-start justify-between">
+                        <div className="space-y-1">
+                            <Badge className="border-none bg-white/50 text-[10px] tracking-[0.2em] text-black uppercase backdrop-blur-md">
+                                Official Member
+                            </Badge>
+                            <h2 className="text-3xl font-black tracking-tighter uppercase italic">
                                 {currentTierName}
-                            </span>
-                        </h2>
+                            </h2>
+                        </div>
+                        <Crown className="size-10 opacity-50" />
+                    </div>
 
-                        <p className="font-medium text-gray-600">
-                            Điểm tích lũy hiện tại:{" "}
-                            <span className="text-green-600">
-                                {summary?.totalAccumulatedPoints?.toLocaleString(
-                                    "vi-VN"
-                                ) || 0}{" "}
-                                điểm
-                            </span>
-                        </p>
-
-                        {!isMaxTier ? (
-                            <p className="text-sm text-gray-500">
-                                Tích thêm{" "}
-                                <span className="font-bold text-green-600">
-                                    {summary?.pointsToNextTier?.toLocaleString(
+                    <div className="space-y-4">
+                        <div className="flex items-end justify-between text-black">
+                            <div className="space-y-1">
+                                <p className="text-[10px] font-bold uppercase opacity-70">
+                                    Điểm tích lũy hiện tại
+                                </p>
+                                <p className="text-4xl leading-none font-black tracking-tighter">
+                                    {summary?.totalAccumulatedPoints?.toLocaleString(
                                         "vi-VN"
-                                    ) || 0}{" "}
-                                    điểm
-                                </span>{" "}
-                                nữa để lên hạng{" "}
-                                <span className="font-bold text-green-600">
-                                    {nextTierName}
-                                </span>
-                            </p>
-                        ) : (
-                            <p className="text-sm font-bold text-green-600">
-                                Bạn đã đạt hạng thành viên cao nhất!
-                            </p>
-                        )}
-                    </CardContent>
-                </Card>
+                                    ) || 0}
+                                </p>
+                            </div>
+                            <div className="text-right text-black">
+                                <p className="text-[10px] font-bold uppercase opacity-70">
+                                    Chủ thẻ
+                                </p>
+                                <p className="font-bold tracking-widest uppercase italic">
+                                    {user?.name || "Khách hàng"}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Các vòng tròn trang trí ẩn hiện */}
+                <div className="absolute -right-10 -bottom-10 size-48 rounded-full bg-white/10 blur-3xl"></div>
             </div>
 
-            <div className="h-12"></div>
-
+            {/* GRID THÔNG TIN CHI TIẾT */}
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 {/* ĐIỂM CÓ THỂ TIÊU (CURRENT POINTS) */}
-                <Card className="border-none shadow-sm">
-                    <CardContent className="space-y-4 p-6">
-                        <h3 className="text-lg font-bold">Điểm đổi quà</h3>
-                        <p className="text-sm">
-                            Bạn có{" "}
-                            <span className="text-xl font-bold text-green-600">
-                                {summary?.currentPoints?.toLocaleString(
-                                    "vi-VN"
-                                ) || 0}
-                            </span>{" "}
-                            điểm
-                        </p>
-                        <Button className="w-full rounded-xl bg-blue-600 py-6 text-lg transition-colors hover:bg-blue-700">
-                            Mua hàng ngay
+                <Card className="group rounded-[2rem] border-none bg-white shadow-xl shadow-slate-200/50 transition-all duration-500 hover:shadow-2xl">
+                    <CardContent className="flex h-full flex-col justify-between p-8">
+                        <div className="space-y-4">
+                            <div className="flex size-12 items-center justify-center rounded-2xl bg-blue-100 text-blue-600 transition-transform group-hover:scale-110">
+                                <Star className="size-6" />
+                            </div>
+                            <h3 className="text-2xl font-black text-slate-800 italic">
+                                Điểm đổi quà
+                            </h3>
+                            <p className="text-sm leading-relaxed font-medium text-slate-500">
+                                Bạn hiện có{" "}
+                                <span className="ml-2 text-3xl font-black text-blue-600">
+                                    {summary?.currentPoints?.toLocaleString(
+                                        "vi-VN"
+                                    ) || 0}
+                                </span>{" "}
+                                điểm
+                            </p>
+                        </div>
+                        <Button className="mt-6 h-14 w-full cursor-pointer rounded-2xl bg-slate-900 font-black tracking-widest text-white uppercase shadow-xl shadow-blue-900/10 transition-all hover:bg-blue-600">
+                            Sử dụng ngay{" "}
+                            <ChevronRight className="ml-2 size-4" />
                         </Button>
                     </CardContent>
                 </Card>
 
                 {/* TIẾN TRÌNH LÊN HẠNG */}
-                <Card className="border-none shadow-sm">
-                    <CardContent className="space-y-4 p-6">
-                        <h3 className="text-lg font-bold">
-                            Tiến trình lên hạng
-                        </h3>
-                        <div className="space-y-2">
-                            <p className="text-sm text-gray-600">
-                                Hạng hiện tại:{" "}
-                                <span className="font-medium text-green-600">
-                                    {currentTierName}
-                                </span>
-                            </p>
-                            {!isMaxTier && (
-                                <p className="text-sm text-gray-600">
-                                    Cần thêm{" "}
-                                    <span className="font-bold">
+                <Card className="group rounded-[2rem] border-none bg-white shadow-xl shadow-slate-200/50 transition-all duration-500 hover:shadow-2xl">
+                    <CardContent className="space-y-6 p-8">
+                        <div className="flex items-center justify-between">
+                            <h3 className="text-2xl font-black text-slate-800 italic">
+                                Tiến trình
+                            </h3>
+                            <ShieldCheck className="size-8 text-emerald-500" />
+                        </div>
+
+                        <div className="space-y-3">
+                            <div className="flex justify-between text-xs font-black tracking-widest text-slate-400 uppercase">
+                                <span>{currentTierName}</span>
+                                <span>{nextTierName}</span>
+                            </div>
+                            <Progress
+                                value={calculateProgress()} //
+                                className="h-4 overflow-hidden rounded-full bg-slate-100"
+                            />
+                            {!isMaxTier ? (
+                                <p className="text-sm font-semibold text-slate-500 italic">
+                                    Tích lũy thêm{" "}
+                                    <span className="font-black text-emerald-600">
                                         {summary?.pointsToNextTier?.toLocaleString(
                                             "vi-VN"
                                         ) || 0}
                                     </span>{" "}
-                                    điểm để lên{" "}
-                                    <span className="font-bold text-gray-500">
-                                        {nextTierName}
-                                    </span>
+                                    điểm để nâng cấp!
+                                </p>
+                            ) : (
+                                <p className="text-sm font-black text-emerald-600 uppercase italic">
+                                    Đã đạt cấp độ tối đa! ✨
                                 </p>
                             )}
                         </div>
-                        {/* Cập nhật thanh Progress động dựa vào data */}
-                        <Progress
-                            value={calculateProgress()}
-                            className="h-3 bg-gray-200"
-                        />
                     </CardContent>
                 </Card>
             </div>
 
-            {/* LỊCH SỬ ĐIỂM (PHẦN MỚI THÊM) */}
-            <Card className="border-none shadow-sm">
-                <CardHeader className="pb-2">
-                    <CardTitle className="flex items-center gap-2 text-lg font-bold">
-                        <Clock className="h-5 w-5 text-green-600" />
-                        Lịch sử biến động điểm
+            {/* LỊCH SỬ BIẾN ĐỘNG ĐIỂM */}
+            <Card className="overflow-hidden rounded-[2rem] border-none bg-white shadow-xl shadow-slate-200/50">
+                <CardHeader className="p-8 pb-4">
+                    <CardTitle className="flex items-center gap-3 text-2xl font-black tracking-tighter text-slate-800 uppercase italic">
+                        <div className="rounded-lg bg-slate-900 p-2 text-white">
+                            <Clock className="h-6 w-6" />
+                        </div>
+                        Lịch sử điểm thưởng
                     </CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="px-8 pb-8">
                     {isLoadingHistory ? (
-                        <div className="py-4 text-center text-sm text-gray-500">
-                            Đang tải lịch sử...
-                        </div>
+                        <div className="py-10 text-center text-sm font-bold text-slate-400 italic">
+                            Đang bóc tách dữ liệu...
+                        </div> //
                     ) : historyPage?.content &&
                       historyPage.content.length > 0 ? (
                         <div className="space-y-4">
                             {historyPage.content.map((item) => {
-                                const isEarn = item.pointDelta > 0;
+                                const isEarn = item.pointDelta > 0; //
                                 return (
                                     <div
-                                        key={item.id}
-                                        className="flex items-center justify-between rounded-lg border border-gray-100 bg-gray-50/50 p-3 transition-colors hover:bg-gray-50"
+                                        key={item.id} //
+                                        className="flex items-center justify-between rounded-[1.5rem] border border-slate-100 bg-slate-50 p-5 transition-all duration-300 hover:bg-white hover:shadow-lg"
                                     >
-                                        <div className="space-y-1">
-                                            <p className="text-sm font-medium text-gray-800">
-                                                {item.description}
-                                            </p>
-                                            <p className="text-xs text-gray-500">
-                                                {fDateTime(
-                                                    item.createdAt,
-                                                    "HH:mm dd/MM/yyyy"
+                                        <div className="flex items-center gap-4">
+                                            <div
+                                                className={`rounded-xl p-3 ${isEarn ? "bg-emerald-100 text-emerald-600" : "bg-rose-100 text-rose-600"}`}
+                                            >
+                                                {isEarn ? (
+                                                    <TrendingUp size={20} />
+                                                ) : (
+                                                    <TrendingDown size={20} />
                                                 )}
-                                            </p>
+                                            </div>
+                                            <div className="space-y-1">
+                                                <p className="text-sm leading-none font-black text-slate-800 uppercase">
+                                                    {item.description}
+                                                </p>
+                                                <p className="text-[10px] font-bold text-slate-400 italic">
+                                                    {fDateTime(
+                                                        item.createdAt,
+                                                        "HH:mm dd/MM/yyyy"
+                                                    )}
+                                                </p>
+                                            </div>
                                         </div>
                                         <div className="text-right">
                                             <p
-                                                className={`flex items-center justify-end gap-1 text-base font-bold ${isEarn ? "text-green-600" : "text-red-500"}`}
+                                                className={`text-xl font-black tracking-tighter ${isEarn ? "text-emerald-600" : "text-rose-600"}`}
                                             >
-                                                {isEarn ? (
-                                                    <TrendingUp className="h-4 w-4" />
-                                                ) : (
-                                                    <TrendingDown className="h-4 w-4" />
-                                                )}
                                                 {isEarn ? "+" : ""}
                                                 {item.pointDelta.toLocaleString(
                                                     "vi-VN"
                                                 )}
                                             </p>
-                                            <p className="text-xs text-gray-500">
+                                            <p className="text-[10px] font-bold text-slate-400">
                                                 Số dư:{" "}
                                                 {item.balanceAfter.toLocaleString(
                                                     "vi-VN"
@@ -231,55 +263,54 @@ export default function Membership() {
                                 );
                             })}
 
-                            {/* Nút phân trang cơ bản */}
-                            <div className="flex items-center justify-between pt-4">
+                            <div className="flex items-center justify-between pt-6">
                                 <Button
                                     variant="outline"
-                                    size="sm"
-                                    disabled={page === 0}
+                                    disabled={page === 0} //
                                     onClick={() =>
                                         setPage((p) => Math.max(0, p - 1))
                                     }
+                                    className="rounded-xl border-slate-200 font-bold"
                                 >
                                     Trang trước
                                 </Button>
-                                <span className="text-xs text-gray-500">
+                                <span className="text-[10px] font-black tracking-widest text-slate-400 uppercase">
                                     Trang {page + 1} / {historyPage.totalPages}
                                 </span>
                                 <Button
                                     variant="outline"
-                                    size="sm"
                                     disabled={
                                         page >= historyPage.totalPages - 1
-                                    }
+                                    } //
                                     onClick={() => setPage((p) => p + 1)}
+                                    className="rounded-xl border-slate-200 font-bold"
                                 >
                                     Trang sau
                                 </Button>
                             </div>
                         </div>
                     ) : (
-                        <div className="rounded-lg border border-dashed border-gray-200 bg-gray-50 py-8 text-center text-sm text-gray-500">
-                            Chưa có lịch sử giao dịch điểm nào.
+                        <div className="rounded-[2rem] border-2 border-dashed border-slate-100 bg-slate-50/50 py-16 text-center text-sm font-bold text-slate-400 italic">
+                            Chưa có dấu vết giao dịch nào.
                         </div>
                     )}
                 </CardContent>
             </Card>
 
-            {/* ƯU ĐÃI THÀNH VIÊN (GIỮ NGUYÊN) */}
-            <Card className="border-none shadow-sm">
-                <CardContent className="space-y-6 p-6">
-                    <h3 className="text-lg font-bold text-green-800">
-                        Ưu đãi thành viên
+            {/* ƯU ĐÃI THÀNH VIÊN */}
+            <Card className="overflow-hidden rounded-[2rem] border-none bg-white shadow-xl shadow-slate-200/50">
+                <CardContent className="space-y-8 p-8">
+                    <h3 className="border-b pb-4 text-2xl font-black tracking-tighter text-slate-800 uppercase italic">
+                        Đặc quyền của bạn
                     </h3>
 
                     <Tabs defaultValue="member" className="w-full">
-                        <TabsList className="hide-scrollbar h-auto w-full flex-nowrap justify-start gap-6 overflow-x-auto rounded-none border-b bg-transparent p-0">
+                        <TabsList className="hide-scrollbar h-auto w-full flex-nowrap justify-start gap-8 overflow-x-auto rounded-none border-none bg-transparent p-0">
                             {USER_MEMBERSHIPS_TABS.map((tab) => (
                                 <TabsTrigger
-                                    value={tab.value}
+                                    value={tab.value} //
                                     key={tab.value}
-                                    className="cursor-pointer rounded-none border-0 border-b-2 border-transparent bg-transparent px-0 py-2 font-bold text-gray-400 data-[state=active]:border-green-600 data-[state=active]:text-green-600"
+                                    className="cursor-pointer rounded-none border-0 border-b-4 border-transparent bg-transparent px-0 py-4 text-[10px] font-black tracking-widest text-slate-300 uppercase transition-all data-[state=active]:border-slate-900 data-[state=active]:text-slate-900"
                                 >
                                     {tab.label}
                                 </TabsTrigger>
@@ -288,24 +319,28 @@ export default function Membership() {
 
                         {USER_MEMBERSHIPS_TABS.map((tab) => (
                             <TabsContent
-                                value={tab.value}
+                                value={tab.value} //
                                 key={tab.value}
-                                className="space-y-3 pt-6 text-sm text-gray-700"
+                                className="animate-in fade-in space-y-4 pt-8 duration-500"
                             >
-                                {tab.content.map((item, index) => (
-                                    <p
-                                        key={index}
-                                        className="flex items-start gap-2"
-                                    >
-                                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-green-500"></span>
-                                        {item}
-                                    </p>
-                                ))}
+                                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                    {tab.content.map((item, index) => (
+                                        <div
+                                            key={index}
+                                            className="flex items-start gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-4"
+                                        >
+                                            <div className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-900"></div>
+                                            <p className="text-sm leading-relaxed font-bold text-slate-600">
+                                                {item}
+                                            </p>
+                                        </div>
+                                    ))}
+                                </div>
                                 <a
                                     href="#"
-                                    className="inline-block pt-2 text-xs text-green-600 hover:underline"
+                                    className="inline-flex items-center pt-4 text-[10px] font-black tracking-widest text-blue-600 uppercase hover:underline"
                                 >
-                                    Điều khoản & Điều kiện
+                                    Xem chi tiết Điều khoản & Điều kiện
                                 </a>
                             </TabsContent>
                         ))}

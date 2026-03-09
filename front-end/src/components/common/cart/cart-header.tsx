@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
+import { BackButton } from "@/components/common/ui/back-button";
 
 interface CartHeaderProps {
     itemCount: number;
-    onBack: () => void;
     onClearCart: () => void;
     isClearingCart: boolean;
     hasItems: boolean;
@@ -11,7 +11,6 @@ interface CartHeaderProps {
 
 export function CartHeader({
     itemCount,
-    onBack,
     onClearCart,
     isClearingCart,
     hasItems,
@@ -19,14 +18,7 @@ export function CartHeader({
     return (
         <>
             <div className="mb-6 flex items-center justify-between">
-                <Button
-                    variant="ghost"
-                    onClick={onBack}
-                    className="text-muted-foreground hover:text-primary flex items-center gap-1 pl-0 transition-colors"
-                >
-                    <ChevronLeft className="h-5 w-5" />
-                    Quay lại trang trước
-                </Button>
+                <BackButton />
                 {hasItems && (
                     <Button
                         variant="outline"

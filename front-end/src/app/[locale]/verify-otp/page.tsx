@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useMutation } from "@tanstack/react-query";
-import { ArrowLeft, Loader2, ShieldCheck } from "lucide-react";
+import { Loader2, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -33,8 +33,7 @@ import {
 } from "@/components/ui/input-otp";
 import { otpSchema } from "@/schema/auth-shema";
 import { forgotPassword, verifyOtp } from "@/service/auth-service";
-
-// import { resendOtp, verifyOtp } from "@/service/auth-service";
+import { BackButton } from "@/components/common/ui/back-button";
 
 type OtpFormValues = z.infer<typeof otpSchema>;
 
@@ -206,13 +205,7 @@ export default function VerifyOtpPage() {
                     </div>
                 </CardContent>
                 <CardFooter className="flex justify-center rounded-b-xl border-t bg-gray-50/50 p-4">
-                    <button
-                        onClick={() => router.back()}
-                        className="flex cursor-pointer items-center border-none bg-transparent text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
-                    >
-                        <ArrowLeft className="mr-2 h-4 w-4" />
-                        Quay lại
-                    </button>
+                    <BackButton />
                 </CardFooter>
             </Card>
         </div>

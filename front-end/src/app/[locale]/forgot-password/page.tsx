@@ -1,11 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useMutation } from "@tanstack/react-query";
-import { ArrowLeft, Loader2, Mail } from "lucide-react";
+import { Loader2, Mail } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -29,6 +28,7 @@ import { toast } from "sonner";
 import { forgotPasswordSchema } from "@/schema/auth-shema";
 import { forgotPassword } from "@/service/auth-service";
 import { useRouter } from "next/navigation";
+import { BackButton } from "@/components/common/ui/back-button";
 
 type ForgotPasswordForm = z.infer<typeof forgotPasswordSchema>;
 
@@ -125,13 +125,7 @@ export default function ForgotPasswordPage() {
                 </>
 
                 <CardFooter className="flex justify-center rounded-b-xl border-t bg-gray-50/50 p-4">
-                    <Link
-                        href="/login"
-                        className="flex items-center text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
-                    >
-                        <ArrowLeft className="mr-2 h-4 w-4" />
-                        Quay lại đăng nhập
-                    </Link>
+                    <BackButton />
                 </CardFooter>
             </Card>
         </div>

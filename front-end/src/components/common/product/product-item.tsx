@@ -6,7 +6,7 @@ import { HeartIcon, Package, ShoppingCart, Star, Tag } from "lucide-react";
 import Image from "next/image";
 import { Badge } from "../../ui/badge";
 
-interface ProductItemProps {
+export interface ProductItemProps {
     id: number;
     name: string;
     slug: string;

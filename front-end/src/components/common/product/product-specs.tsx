@@ -45,13 +45,11 @@ export const ProductSpecs = memo(
             });
         }, [append]);
 
-        // Calculate pagination
         const totalPages = Math.ceil(fields.length / itemsPerPage);
         const startIndex = (currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
         const paginatedFields = fields.slice(startIndex, endIndex);
 
-        // Reset to last page if current page becomes invalid
         React.useEffect(() => {
             if (currentPage > totalPages && totalPages > 0) {
                 setCurrentPage(totalPages);

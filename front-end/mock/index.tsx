@@ -24,6 +24,68 @@ import {
     Users,
 } from "lucide-react";
 
+export const MOCK_REVIEWS = [
+    {
+        id: "rev-001",
+        reviewerName: "Alex S.",
+        reviewDate: "05/03/2026",
+        rating: 5,
+        title: "Chất lượng vượt xa mong đợi!",
+        content:
+            "Đây là lần đầu tiên tôi mua đồng hồ thông minh tại T7M Online, và tôi thực sự ấn tượng. Máy không có một vết xước nào, hoạt động hoàn hảo và mức giá thì cực kỳ hợp lý.",
+        reviewerImage:
+            "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200", // Ảnh avatar ngẫu nhiên
+        productName: "Samsung Galaxy Watch 4 Classic 46MM (GPS) - Silver",
+        productImage:
+            "https://www.plug.tech/cdn/shop/files/Alexi_S._Galaxy_Watch_4_Classic_46MM_Silver_Stainless_Review.webp?v=1768322270&width=200",
+        isVerified: true,
+    },
+    {
+        id: "rev-002",
+        reviewerName: "Minh Tuấn",
+        reviewDate: "12/02/2026",
+        rating: 4,
+        title: "Giao hàng nhanh, máy đẹp",
+        content:
+            "Điện thoại ngoại hình 99% đúng như mô tả, pin còn 95%. Chơi game mượt mà không bị nóng. Điểm trừ duy nhất là hộp sạc đi kèm nhìn hơi cũ một chút, nhưng tổng thể vẫn rất đáng tiền.",
+        reviewerImage:
+            "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&q=80&w=200",
+        productName: "iPhone 15 Pro Max 256GB - Titan Tự Nhiên",
+        productImage:
+            "https://www.plug.tech/cdn/shop/files/PLUG_MM_SAMSUNG_ALL_IPHONES.webp?v=1763397440&width=200",
+        isVerified: true,
+    },
+    {
+        id: "rev-003",
+        reviewerName: "Sarah M.",
+        reviewDate: "28/01/2026",
+        rating: 5,
+        title: "Âm thanh chống ồn tuyệt vời",
+        content:
+            "Tôi mua chiếc AirPods này để dùng khi tập gym. Chống ồn đỉnh cao, kết nối với iPhone cực kỳ nhanh. Hàng certified pre-owned nhưng xài không khác gì bóc hộp từ Apple Store.",
+        reviewerImage:
+            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200",
+        productName: "Apple AirPods Pro (Gen 2)",
+        productImage:
+            "https://www.plug.tech/cdn/shop/files/PLUG_MM_IPHONES_STARTER_PACK.webp?v=1763397606&width=200", // Tạm dùng ảnh starter pack
+        isVerified: true,
+    },
+    {
+        id: "rev-004",
+        reviewerName: "Hải Đăng",
+        reviewDate: "15/01/2026",
+        rating: 5,
+        title: "Phục vụ rất chuyên nghiệp",
+        content:
+            "Lúc đầu tôi hơi lo lắng khi mua MacBook cũ online, nhưng các bạn nhân viên tư vấn rất nhiệt tình, quay video test máy cẩn thận trước khi gửi. Khởi động nhanh, màn hình sắc nét.",
+        reviewerImage:
+            "https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&q=80&w=200",
+        productName: "MacBook Pro M2 2022 13-inch - Silver",
+        productImage:
+            "https://www.plug.tech/cdn/shop/files/MacbookProM2Silver_Ariel_1_abf0003e-9cac-4154-a619-0a92e3045a1a.png?v=1747230954&width=200",
+        isVerified: false, // Thử nghiệm 1 người chưa có tích xanh
+    },
+];
 export const MOCK_CAROUSEL_PRODUCT_ITEMS = [
     {
         id: 1,
@@ -329,7 +391,7 @@ export const MOCK_USER_ACTIONS = [
     {
         label: "Delivery Addresses",
         icon: <MapPinIcon />,
-        url: "/user/addresses",
+        url: "/user/address-delivery",
     },
     {
         label: "Orders",

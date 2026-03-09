@@ -11,12 +11,12 @@ import { useProductData } from "@/hooks/use-product-data";
 import { ProductInfo } from "@/features/product/product-info";
 import { ProductImageGallery } from "@/features/product/product-image-gallery";
 import { ProductStructuredData } from "@/features/product/product-structured-data";
+import { BackButton } from "@/components/common/ui/back-button";
 
 function ProductDetails() {
     const params = useParams();
     const slug = params.slug as string;
 
-    // Use custom hook for all product data logic
     const {
         product,
         isLoading,
@@ -32,7 +32,6 @@ function ProductDetails() {
         discountPercent,
     } = useProductData(slug);
 
-    // Loading state
     if (isLoading) {
         return (
             <div className="flex min-h-screen items-center justify-center">
@@ -41,7 +40,6 @@ function ProductDetails() {
         );
     }
 
-    // Product not found
     if (!product) {
         return (
             <div className="flex min-h-screen items-center justify-center">
@@ -59,7 +57,6 @@ function ProductDetails() {
 
     return (
         <>
-            {/* SEO Structured Data */}
             <ProductStructuredData
                 product={{
                     name: product.name,
@@ -81,15 +78,14 @@ function ProductDetails() {
                 }
                 slug={slug}
             />
-
             <article
                 className="bg-background flex min-h-screen w-full flex-col items-center justify-center"
                 itemScope
                 itemType="https://schema.org/Product"
             >
                 <section className="container w-full max-w-7xl px-4 py-8">
+                    <BackButton />
                     <div className="grid w-full grid-cols-1 gap-8 lg:grid-cols-2">
-                        {/* Image Gallery */}
                         <ProductImageGallery
                             images={allImages}
                             currentImageIndex={currentImageIndex}
@@ -98,7 +94,6 @@ function ProductDetails() {
                             discountPercent={discountPercent}
                         />
 
-                        {/* Product Info */}
                         <ProductInfo
                             product={product}
                             selectedSku={selectedSku}
@@ -114,7 +109,11 @@ function ProductDetails() {
                 <ProductAboutUs />
             </article>
             <HomeSaleProducts />
-            <ProductReviews />
+            <ProductReviews
+                productSlug={slug}
+                productId={product.id}
+                productName={product.name}
+            />
             <HomeQuestions />
             <Subscribe />
         </>

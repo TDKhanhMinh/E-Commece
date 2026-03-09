@@ -3,14 +3,13 @@
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Menu, Moon, Search, ShoppingCart, Sun, User } from "lucide-react";
+import { Menu, Moon, ShoppingCart, Sun, User } from "lucide-react";
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 import { Sheet, SheetTrigger } from "../ui/sheet";
@@ -27,6 +26,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { UserAvatar } from "@/components/common";
 import { CartSheet } from "../common/cart/cart-sheet";
 import { useCartSummary } from "@/hooks/use-cart";
+import { GlobalSearch } from "@/components/common/ui/search-input";
 
 export default function Header() {
     const { setTheme } = useTheme();
@@ -154,12 +154,7 @@ export default function Header() {
                     </div>
 
                     <div className="relative hidden w-full max-w-sm items-center lg:flex">
-                        <Search className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
-                        <Input
-                            type="search"
-                            placeholder="Tìm kiếm sản phẩm..."
-                            className="bg-muted/50 focus-visible:ring-primary rounded-full pl-9"
-                        />
+                        <GlobalSearch />
                     </div>
 
                     <div className="flex items-center gap-2 md:gap-4">

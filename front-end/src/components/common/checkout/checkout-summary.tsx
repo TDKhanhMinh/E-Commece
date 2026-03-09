@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Coins, Loader2, Ticket, Truck } from "lucide-react";
+import { BackButton } from "@/components/common/ui/back-button";
 
 interface CheckoutSummary {
     totalAmount: number; // Tổng tiền gốc
@@ -19,7 +20,6 @@ interface CheckoutSummaryProps {
     pointsDiscount?: number; // Giảm giá từ Điểm tích lũy
     shippingFee?: number; // Phí vận chuyển
     onConfirmOrder: () => void;
-    onBackToCart: () => void;
 }
 
 export function CheckoutSummaryCard({
@@ -30,9 +30,7 @@ export function CheckoutSummaryCard({
     pointsDiscount = 0,
     shippingFee = 0,
     onConfirmOrder,
-    onBackToCart,
 }: CheckoutSummaryProps) {
-    // Tính toán tổng tiền cuối cùng người dùng phải trả
     const displayFinalAmount = Math.max(
         0,
         summary.finalAmount + shippingFee - voucherDiscount - pointsDiscount
@@ -133,14 +131,7 @@ export function CheckoutSummaryCard({
                     </p>
                 )}
 
-                <Button
-                    variant="ghost"
-                    className="w-full text-slate-500 hover:text-slate-800"
-                    onClick={onBackToCart}
-                    disabled={isProcessing}
-                >
-                    Quay lại giỏ hàng
-                </Button>
+                <BackButton />
 
                 <div className="rounded-lg border border-blue-100/50 bg-blue-50/50 p-3">
                     <p className="text-[11px] leading-relaxed text-blue-800">

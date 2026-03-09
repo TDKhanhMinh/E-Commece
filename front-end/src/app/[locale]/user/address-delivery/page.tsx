@@ -4,13 +4,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { DeliveryAddress, getDeliveryAddresses } from "@/service/user-service";
 import { AddressCard, AddressDialog } from "@/components/common";
-import { ChevronLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { BackButton } from "@/components/common/ui/back-button";
 
 export default function AddressDelivery() {
-    const router = useRouter();
-
     const {
         data: addressList,
         isLoading,
@@ -20,18 +16,7 @@ export default function AddressDelivery() {
         queryFn: getDeliveryAddresses,
     });
 
-    const addresses = addressList || [];
-
-    const BackButton = () => (
-        <Button
-            variant="ghost"
-            onClick={() => router.back()}
-            className="text-muted-foreground hover:text-primary mb-4 flex items-center gap-1 pl-0 transition-colors"
-        >
-            <ChevronLeft className="h-5 w-5" />
-            Quay lại trang trước
-        </Button>
-    );
+    const addresses = (addressList as unknown as any) || [];
 
     if (isLoading) {
         return (

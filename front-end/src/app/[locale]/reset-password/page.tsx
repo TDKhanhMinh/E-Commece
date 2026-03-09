@@ -36,6 +36,7 @@ import { Input } from "@/components/ui/input";
 
 import { resetPassword } from "@/service/auth-service";
 import { resetPasswordSchema } from "@/schema/auth-shema";
+import { BackButton } from "@/components/common/ui/back-button";
 
 type ResetPasswordForm = z.infer<typeof resetPasswordSchema>;
 
@@ -95,12 +96,7 @@ export default function ResetPasswordPage() {
                         lòng thực hiện lại quy trình đặt lại mật khẩu.
                     </p>
 
-                    <Button
-                        className="w-full cursor-pointer rounded-xl"
-                        onClick={() => router.replace("/forgot-password")}
-                    >
-                        Quay về trang Quên mật khẩu
-                    </Button>
+                    <BackButton />
                 </div>
             </div>
         );

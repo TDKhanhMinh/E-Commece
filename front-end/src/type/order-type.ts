@@ -155,6 +155,7 @@ export interface OrderItemData {
     content: [];
     numberOfElements: number;
     totalPages: number;
+    deliveredAt: string;
 }
 export interface UserOrderItemProps {
     id: string;

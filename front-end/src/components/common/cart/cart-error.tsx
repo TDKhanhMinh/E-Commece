@@ -1,23 +1,11 @@
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ChevronLeft } from "lucide-react";
+import { BackButton } from "@/components/common/ui/back-button";
 
-interface CartErrorProps {
-    onBack: () => void;
-}
-
-export function CartError({ onBack }: CartErrorProps) {
+export function CartError() {
     return (
         <div className="container mx-auto max-w-6xl px-4 py-8">
             <div className="mb-6">
-                <Button
-                    variant="ghost"
-                    onClick={onBack}
-                    className="text-muted-foreground hover:text-primary flex items-center gap-1 pl-0 transition-colors"
-                >
-                    <ChevronLeft className="h-5 w-5" />
-                    Quay lại trang trước
-                </Button>
+                <BackButton />
             </div>
             <Card className="p-8 text-center">
                 <p className="text-destructive text-lg">

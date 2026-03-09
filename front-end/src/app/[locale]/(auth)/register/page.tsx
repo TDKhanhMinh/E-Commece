@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Chrome, Github } from "lucide-react";
+import { Chrome, Github } from "lucide-react";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,6 +22,7 @@ import { useRouter } from "next/navigation";
 import { registerApi } from "@/service/auth-service";
 import { registerSchema } from "@/schema/auth-shema";
 import { FormHelperText } from "@/components/common";
+import { BackButton } from "@/components/common/ui/back-button";
 
 export default function RegisterPage() {
     const router = useRouter();
@@ -64,13 +65,7 @@ export default function RegisterPage() {
     };
     return (
         <div className="relative container flex min-h-screen flex-col items-center justify-center lg:max-w-none lg:px-0">
-            <Link
-                href="/"
-                className="text-muted-foreground hover:text-primary absolute top-4 left-4 flex items-center text-sm font-medium transition-colors md:top-8 md:left-8"
-            >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Quay lại trang chủ
-            </Link>
+            <BackButton />
 
             <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-100">
                 <Card className="mt-4 border-none shadow-lg">

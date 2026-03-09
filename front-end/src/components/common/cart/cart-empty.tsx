@@ -1,24 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ChevronLeft, ShoppingCart } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
+import { BackButton } from "@/components/common/ui/back-button";
 
 interface CartEmptyProps {
-    onBack: () => void;
     onContinueShopping: () => void;
 }
 
-export function CartEmpty({ onBack, onContinueShopping }: CartEmptyProps) {
+export function CartEmpty({ onContinueShopping }: CartEmptyProps) {
     return (
         <div className="container mx-auto max-w-6xl px-4 py-8">
             <div className="mb-6">
-                <Button
-                    variant="ghost"
-                    onClick={onBack}
-                    className="text-muted-foreground hover:text-primary flex items-center gap-1 pl-0 transition-colors"
-                >
-                    <ChevronLeft className="h-5 w-5" />
-                    Quay lại trang trước
-                </Button>
+                <BackButton />
             </div>
             <Card className="p-12 text-center">
                 <ShoppingCart className="text-muted-foreground mx-auto mb-4 h-16 w-16" />

@@ -1,23 +1,10 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { BackButton } from "@/components/common/ui/back-button";
 
-interface CheckoutHeaderProps {
-    onBack: () => void;
-    disabled?: boolean;
-}
-
-export function CheckoutHeader({ onBack, disabled }: CheckoutHeaderProps) {
+export function CheckoutHeader() {
     return (
         <div className="mb-8 flex items-center gap-4">
-            <Button
-                variant="ghost"
-                size="icon"
-                onClick={onBack}
-                disabled={disabled}
-            >
-                <ArrowLeft className="h-5 w-5" />
-            </Button>
+            <BackButton />
             <h1 className="text-3xl font-bold">Xác nhận đơn hàng</h1>
         </div>
     );

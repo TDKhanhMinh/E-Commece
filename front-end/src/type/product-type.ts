@@ -109,7 +109,6 @@ export interface ProductInfoProps {
     attributeGroups: Record<string, Set<string>>;
     selectedAttributes: Record<string, string>;
     onAttributeChange: (attributeName: string, value: string) => void;
-    formatPrice: (price: number) => string;
 }
 export interface ProductPriceProps {
     salePrice: number;

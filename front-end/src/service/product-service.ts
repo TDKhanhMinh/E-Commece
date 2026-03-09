@@ -6,11 +6,11 @@ import {
     UpdateSkuRequest,
 } from "@/type/product-type";
 import http from "@/service/http";
-import { ApiResponse } from "@/type/api-type";
+import { ApiResponse, PageResponse } from "@/type/api-type";
 
 // PRODUCT CRUD
 export const getAllProducts = async (params: any) =>
-    http.get<ApiResponse<any>>("/products", { params });
+    http.get<ApiResponse<PageResponse<any>>>("/products", { params });
 
 export const getProductById = async (id: number) =>
     http.get<ApiResponse<ProductDetail>>(`/products/${id}`);

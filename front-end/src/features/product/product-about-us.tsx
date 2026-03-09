@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import Image from "next/image";
 import { MOCK_ABOUT_US_PRODUCT_ITEMS } from "../../../mock";
+
 export default function ProductAboutUs() {
     return (
         <div className="mt-24 flex flex-col gap-8 py-5">
@@ -50,7 +51,7 @@ export default function ProductAboutUs() {
                 </div>
             </section>
             <div className="container mx-auto px-4 text-center">
-                <Link href="/products">
+                <Link href="/product">
                     <Button className="cursor-pointer rounded-full bg-green-900 px-32 py-4 text-lg font-bold text-white transition-colors hover:bg-green-800/80">
                         View all
                     </Button>

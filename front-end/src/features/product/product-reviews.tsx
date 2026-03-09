@@ -1,11 +1,7 @@
 "use client";
+
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-    Card,
-    CardContent,
-    CardFooter,
-    CardHeader,
-} from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import {
     Select,
@@ -17,196 +13,225 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import {
-    BadgeCheck,
-    Filter,
-    Heart,
-    HeaterIcon,
-    Star,
-    User,
-} from "lucide-react";
-import Link from "next/link";
+import { Filter, Loader2, Star } from "lucide-react";
+import { useReviewsByProduct, useReviewSummary } from "@/hooks/use-review";
+import { ReviewDialog } from "@/components/common/dialog/review-dialog";
+import { ReviewCard } from "@/components/common/product/review-card";
 
-function ProductReviews() {
+interface ProductReviewsProps {
+    productSlug: string;
+    productId: number;
+    productName: string;
+    productImage?: string;
+}
+
+function ProductReviews({
+    productSlug,
+    productId,
+    productName,
+    productImage = "/placeholder-product.png",
+}: ProductReviewsProps) {
+    const [params, setParams] = useState({
+        page: 0,
+        size: 6,
+        sortBy: "reviewDate",
+        sortDirection: "DESC",
+    });
+
+    const { data, isLoading } = useReviewsByProduct(productSlug, params);
+    const reviews = data?.content || [];
+
+    const { data: summaryData, isLoading: isSummaryLoading } =
+        useReviewSummary(productId);
+
+    const handleSortChange = (value: string) => {
+        switch (value) {
+            case "newest":
+                setParams((prev) => ({
+                    ...prev,
+                    sortBy: "reviewDate",
+                    sortDirection: "DESC",
+                }));
+                break;
+            case "oldest":
+                setParams((prev) => ({
+                    ...prev,
+                    sortBy: "reviewDate",
+                    sortDirection: "ASC",
+                }));
+                break;
+            case "rating-highest":
+                setParams((prev) => ({
+                    ...prev,
+                    sortBy: "rating",
+                    sortDirection: "DESC",
+                }));
+                break;
+            case "rating-lowest":
+                setParams((prev) => ({
+                    ...prev,
+                    sortBy: "rating",
+                    sortDirection: "ASC",
+                }));
+                break;
+        }
+    };
+
+    if (isLoading || isSummaryLoading) {
+        return (
+            <div className="flex h-64 items-center justify-center">
+                <Loader2 className="text-primary h-8 w-8 animate-spin" />
+            </div>
+        );
+    }
+
     return (
         <div className="mt-12 mb-12 flex w-full flex-col items-center gap-8 py-5">
             <section className="container px-4">
                 <div className="mb-8 w-full text-center">
                     <h1 className="text-4xl font-bold">Reviews</h1>
                 </div>
-                <div className="mb-8 w-full text-left">
-                    <h1 className="text-base font-bold">Customer reviews</h1>
-                </div>
+
                 <div className="flex w-full flex-row gap-4">
                     <div className="w-2/4">
                         <div className="flex flex-row items-center justify-center">
                             <div className="flex flex-col items-center justify-center px-4">
                                 <span className="text-4xl font-semibold">
-                                    4.88
+                                    {summaryData?.averageRating?.toFixed(2) ||
+                                        "0.00"}
                                 </span>
                                 <div className="my-2 flex flex-row items-center gap-1">
-                                    {Array.from({ length: 5 }).map(
-                                        (_, index) => (
-                                            <Star
-                                                key={index}
-                                                className="h-7 w-7 text-yellow-400"
-                                            />
-                                        )
-                                    )}
+                                    {Array.from({ length: 5 }).map((_, i) => (
+                                        <Star
+                                            key={i}
+                                            className={`h-7 w-7 ${
+                                                i <
+                                                Math.round(
+                                                    summaryData?.averageRating ||
+                                                        0
+                                                )
+                                                    ? "fill-yellow-400 text-yellow-400"
+                                                    : "text-gray-300"
+                                            }`}
+                                        />
+                                    ))}
                                 </div>
-                                <span>1234 reviews</span>
+                                <span>
+                                    {summaryData?.totalReviews || 0} reviews
+                                </span>
                             </div>
                             <div className="w-2/4">
-                                <div className="flex flex-row items-center justify-center">
-                                    <span className="mx-4 text-lg">5</span>
-                                    <Progress value={50} />
-                                </div>
-                                <div className="flex flex-row items-center justify-center">
-                                    <span className="mx-4 text-lg">4</span>
-                                    <Progress value={50} />
-                                </div>
-                                <div className="flex flex-row items-center justify-center">
-                                    <span className="mx-4 text-lg">3</span>
-                                    <Progress value={50} />
-                                </div>
-                                <div className="flex flex-row items-center justify-center">
-                                    <span className="mx-4 text-lg">2</span>
-                                    <Progress value={50} />
-                                </div>
-                                <div className="flex flex-row items-center justify-center">
-                                    <span className="mx-4 text-lg">1</span>
-                                    <Progress value={50} />
-                                </div>
+                                {[5, 4, 3, 2, 1].map((star) => {
+                                    const count =
+                                        summaryData?.ratingCounts?.[star] || 0;
+                                    const percentage = summaryData?.totalReviews
+                                        ? (count / summaryData.totalReviews) *
+                                          100
+                                        : 0;
+
+                                    return (
+                                        <div
+                                            key={star}
+                                            className="flex flex-row items-center justify-center"
+                                        >
+                                            <span className="mx-4 w-4 text-lg">
+                                                {star}
+                                            </span>
+                                            <Progress
+                                                value={percentage}
+                                                className="h-2"
+                                            />
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </div>
                     </div>
+
                     <div className="w-2/4">
                         <div className="flex flex-row items-center justify-start gap-4">
                             <span>
                                 Filter reviews{" "}
                                 <Filter className="mr-2 inline-block h-5 w-5" />
                             </span>
-                            <Select defaultValue="all">
-                                <SelectTrigger className="">
-                                    <SelectValue placeholder="Sort by newest" />
+                            <Select
+                                defaultValue="newest"
+                                onValueChange={handleSortChange}
+                            >
+                                <SelectTrigger className="w-50">
+                                    <SelectValue placeholder="Sort by" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectGroup>
-                                        <SelectLabel>Time</SelectLabel>
+                                        <SelectLabel>Time & Rating</SelectLabel>
                                         <SelectItem value="newest">
-                                            Sort by newest
+                                            Newest first
                                         </SelectItem>
                                         <SelectItem value="oldest">
-                                            Sort by oldest
+                                            Oldest first
                                         </SelectItem>
                                         <SelectItem value="rating-highest">
-                                            Sort by rating: highest to lowest
+                                            Highest Rating
                                         </SelectItem>
                                         <SelectItem value="rating-lowest">
-                                            Sort by rating: lowest to highest
-                                        </SelectItem>
-                                    </SelectGroup>
-                                </SelectContent>
-                            </Select>
-                            <Select defaultValue="all">
-                                <SelectTrigger className="">
-                                    <SelectValue placeholder="Sort by rating" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectGroup>
-                                        <SelectLabel>Rating</SelectLabel>
-                                        <SelectItem value="all">All</SelectItem>
-                                        <SelectItem value="1">
-                                            1{" "}
-                                            <Star className="inline-block h-4 w-4 text-yellow-400" />
-                                        </SelectItem>
-                                        <SelectItem value="2">
-                                            2{" "}
-                                            <Star className="inline-block h-4 w-4 text-yellow-400" />
-                                        </SelectItem>
-                                        <SelectItem value="3">
-                                            3{" "}
-                                            <Star className="inline-block h-4 w-4 text-yellow-400" />
-                                        </SelectItem>
-                                        <SelectItem value="4">
-                                            4{" "}
-                                            <Star className="inline-block h-4 w-4 text-yellow-400" />
-                                        </SelectItem>
-                                        <SelectItem value="5">
-                                            5{" "}
-                                            <Star className="inline-block h-4 w-4 text-yellow-400" />
+                                            Lowest Rating
                                         </SelectItem>
                                     </SelectGroup>
                                 </SelectContent>
                             </Select>
                         </div>
                     </div>
+                    <ReviewDialog
+                        productId={productId}
+                        productName={productName}
+                    />
                 </div>
+
                 <Separator className="my-8" />
-                <div className="grid grid-cols-3">
-                    {Array.from({ length: 6 }).map((_, index) => (
-                        <Card className="m-2 gap-2 shadow-md">
-                            <CardHeader className="">
-                                <div className="flex flex-row items-center justify-between">
-                                    <div className="flex flex-row items-center justify-start space-x-2">
-                                        <Button
-                                            variant="outline"
-                                            size="icon"
-                                            className="rounded-full"
-                                        >
-                                            <User />
-                                        </Button>
-                                        <span>Luis C</span>
-                                        <BadgeCheck
-                                            className="h-5 w-5"
-                                            color="#259832"
-                                        />
-                                    </div>
-                                    <span>7 hours ago</span>
-                                </div>
-                                <div className="flex flex-row items-center gap-1">
-                                    {Array.from({ length: 5 }).map(
-                                        (_, index) => (
-                                            <Star
-                                                key={index}
-                                                className="h-4 w-4 text-yellow-400"
-                                            />
-                                        )
-                                    )}
-                                </div>
-                            </CardHeader>
-                            <CardContent className="mt-1 space-y-2">
-                                <span className="font-semibold">
-                                    Great Phone
-                                </span>
-                                <p className="text-muted-foreground line-clamp-3 w-fit text-sm">
-                                    I bought the ‘good’ quality in October and
-                                    it’s been excellent in regards to the long
-                                    lasting batter. I bought the ‘good’ quality
-                                    in October and it’s been excellent in
-                                    regards to the long lasting batter...
-                                </p>
-                            </CardContent>
-                            <CardFooter className="mt-2">
-                                <div className="text-secondary-dark flex flex-row items-center gap-2 text-sm">
-                                    <Heart
-                                        fill="orange"
-                                        color="orange"
-                                        className="h-4 w-4"
-                                    />{" "}
-                                    Would recommend
-                                </div>
-                            </CardFooter>
-                        </Card>
-                    ))}
-                </div>
-                <div className="container mx-auto mt-12 px-4 text-center">
-                    <Link href="/products">
-                        <Button className="cursor-pointer rounded-full bg-green-900 px-32 py-4 text-lg font-bold text-white transition-colors hover:bg-green-800/80">
-                            View all reviews
+
+                {reviews.length > 0 ? (
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                        {reviews.map((review: any) => (
+                            <ReviewCard
+                                key={review.id}
+                                reviewerName={review.reviewerName}
+                                reviewDate={new Date(
+                                    review.reviewDate
+                                ).toLocaleDateString()}
+                                rating={review.rating}
+                                title={review.title}
+                                content={review.content}
+                                reviewerImage={review.reviewerImage}
+                                productName={review.productName || productName}
+                                productImage={
+                                    review.productImage || productImage
+                                }
+                                isVerified={review.isVerified}
+                                className="max-w-full"
+                            />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="text-muted-foreground py-20 text-center">
+                        Sản phẩm chưa có đánh giá nào.
+                    </div>
+                )}
+
+                {data && !data.last && (
+                    <div className="container mx-auto mt-12 px-4 text-center">
+                        <Button
+                            onClick={() =>
+                                setParams((prev) => ({
+                                    ...prev,
+                                    size: prev.size + 6,
+                                }))
+                            }
+                            className="rounded-full bg-green-900 px-16 py-4 font-bold text-white hover:bg-green-800"
+                        >
+                            Load more reviews
                         </Button>
-                    </Link>
-                </div>
+                    </div>
+                )}
             </section>
         </div>
     );

@@ -14,7 +14,7 @@ function Collection() {
                 </select>
             </div>
             <div className="flex flex-row flex-wrap space-x-5">
-                {MOCK_CAROUSEL_PRODUCT_ITEMS.map((product) => (
+                {MOCK_CAROUSEL_PRODUCT_ITEMS.map((product: any) => (
                     <div key={product.id} className="col-span-3 flex flex-col">
                         <ProductItem item={product} />
                     </div>

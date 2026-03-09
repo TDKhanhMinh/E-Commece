@@ -14,6 +14,7 @@ import { OrderDetailResponse, OrderItem } from "@/type/order-type";
 import Image from "next/image";
 import { getStatusBadge } from "@/lib/get-order-status";
 import { useEffect } from "react";
+import { BackButton } from "@/components/common/ui/back-button";
 
 export default function OrderDetail() {
     const params = useParams();
@@ -74,13 +75,7 @@ export default function OrderDetail() {
                     <p className="text-secondary-dark text-lg font-medium">
                         Không tìm thấy đơn hàng với ID: {orderId}
                     </p>
-                    <Link
-                        href="/user/orders"
-                        className="mt-4 inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
-                    >
-                        <ChevronLeft className="size-4" />
-                        Quay lại danh sách đơn hàng
-                    </Link>
+                    <BackButton />
                 </div>
             </div>
         );
