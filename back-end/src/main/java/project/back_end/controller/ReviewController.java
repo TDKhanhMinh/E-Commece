@@ -11,7 +11,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import project.back_end.entity.User;
 import project.back_end.request.ReviewRequest;
 import project.back_end.response.ApiResponse;
 import project.back_end.response.ProductRatingSummary;
@@ -67,13 +66,12 @@ public class ReviewController {
 
     // Xóa đánh giá (Admin hoặc Người dùng xóa bài của chính mình)
     @DeleteMapping("/{id}")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<Void>> deleteReview(
             @PathVariable Long id,
-            @AuthenticationPrincipal User currentUser) {
-
-        boolean isAdmin = currentUser.getRole().name().equals("ADMIN");
-        reviewService.deleteReview(id, currentUser.getId(), isAdmin);
+            @AuthenticationPrincipal UserDetails userDetails) {
+        String username = userDetails.getUsername();
+        reviewService.deleteReview(id, username);
 
         return ResponseEntity.ok(new ApiResponse<>(200, "Review deleted successfully", null));
     }

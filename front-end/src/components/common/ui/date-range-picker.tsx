@@ -32,7 +32,6 @@ export function DateRangePicker({
     date,
     onDateChange,
 }: DateRangePickerProps) {
-    // Nếu không truyền state từ ngoài vào, tự quản lý state nội bộ mặc định là "Tháng này"
     const [internalDate, setInternalDate] = React.useState<
         DateRange | undefined
     >({
@@ -43,7 +42,6 @@ export function DateRangePicker({
     const selectedDate = date !== undefined ? date : internalDate;
     const setDate = onDateChange || setInternalDate;
 
-    // Các tùy chọn thời gian chọn nhanh
     const presets = [
         {
             label: "Hôm nay",
@@ -83,7 +81,6 @@ export function DateRangePicker({
         },
     ];
 
-    // Hàm hiển thị text trên Button
     const getDisplayText = () => {
         if (selectedDate?.from) {
             if (selectedDate.to) {
@@ -98,7 +95,6 @@ export function DateRangePicker({
         <div className={cn("grid gap-2", className)}>
             <Popover>
                 <PopoverTrigger asChild>
-                    {/* Nút trigger giữ nguyên phong cách tối giản của bạn */}
                     <Button
                         id="date"
                         variant={"outline"}

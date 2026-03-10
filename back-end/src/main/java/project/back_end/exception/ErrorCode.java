@@ -110,6 +110,11 @@ public enum ErrorCode {
      * ========================= */
     INSUFFICIENT_POINTS(400, "You do not have enough points to redeem this reward"),
 
+
+    REVIEW_NOT_FOUND(404, "Review was not found"),
+    REVIEW_PERMISSION_DENIED(403, "You do not have permission to delete this review"),
+
+
     /* =========================
      * COMMON / SYSTEM
      * ========================= */

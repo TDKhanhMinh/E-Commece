@@ -1,8 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { BarChart3, Download, Loader2 } from "lucide-react";
+import { BarChart3, Loader2 } from "lucide-react";
 import { DateRangePicker } from "@/components/common/ui/date-range-picker";
 import { useMemo, useState } from "react";
 import { DateRange } from "react-day-picker";
@@ -46,7 +45,7 @@ export default function ReportsAnalyticsPage() {
             },
             {
                 title: "Tỷ lệ chốt đơn",
-                value: `${kpis.conversionRate}%`,
+                value: `${Math.round(kpis.conversionRate)}%`,
                 isPositive: false,
             },
             {
@@ -75,13 +74,6 @@ export default function ReportsAnalyticsPage() {
                         date={dateRange}
                         onDateChange={setDateRange}
                     />
-                    <Button
-                        disabled={isLoading}
-                        className="bg-foreground text-background hover:bg-foreground/90 flex-1 gap-2 md:flex-none"
-                    >
-                        <Download className="h-4 w-4" />
-                        <span className="font-medium">Xuất báo cáo</span>
-                    </Button>
                 </div>
             </div>
 

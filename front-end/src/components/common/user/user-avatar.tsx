@@ -44,6 +44,7 @@ export function UserAvatar() {
                     className="cursor-pointer"
                     onClick={() => {
                         logout();
+                        localStorage.clear();
                         router.push("/");
                     }}
                 >

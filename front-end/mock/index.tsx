@@ -520,8 +520,8 @@ export const ADMIN_SIDEBAR_ITEMS = [
     },
 
     {
-        title: "Notifications",
-        url: "/admin/notifications",
+        title: "Comments & Reviews",
+        url: "/admin/reviews",
         icon: Bell,
     },
     {

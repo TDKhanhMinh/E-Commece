@@ -35,7 +35,7 @@ public interface ReviewService {
     /**
      * Xóa đánh giá (Admin hoặc chính chủ sở hữu)
      */
-    void deleteReview(Long reviewId, Long userId, boolean isAdmin);
+    void deleteReview(Long reviewId, String username);
 
     /**
      * Tính toán thống kê rating cho sản phẩm (Số lượng 5*, 4*, 3*...)

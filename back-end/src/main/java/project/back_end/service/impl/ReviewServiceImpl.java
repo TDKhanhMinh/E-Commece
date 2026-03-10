@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import project.back_end.entity.Review;
 import project.back_end.entity.User;
 import project.back_end.entity.product.Product;
+import project.back_end.exception.AppException;
+import project.back_end.exception.ErrorCode;
 import project.back_end.mapper.ReviewMapper;
 import project.back_end.repository.ProductRepository;
 import project.back_end.repository.ReviewRepository;
@@ -75,17 +77,17 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public void deleteReview(Long reviewId, Long userId, boolean isAdmin) {
+    public void deleteReview(Long reviewId, String username) {
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy đánh giá"));
-
-        if (!isAdmin && !review.getUser().getId().equals(userId)) {
-            throw new RuntimeException("Bạn không có quyền xóa đánh giá này");
+                .orElseThrow(() -> new AppException(ErrorCode.REVIEW_NOT_FOUND));
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        if (!review.getUser().getId().equals(user.getId())) {
+            throw new AppException(ErrorCode.REVIEW_PERMISSION_DENIED);
         }
-
         reviewRepository.delete(review);
     }
-
+        
     @Override
     public Map<Integer, Long> getRatingStatistics(Long productId) {
         return reviewRepository.findByProductId(productId)
