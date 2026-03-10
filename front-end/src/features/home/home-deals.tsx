@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { DealItem } from "@/components/common";
 import { useProducts } from "@/hooks/use-products";
 import { Loader2 } from "lucide-react";
+import { formatCurrency } from "@/lib/format-price";
 
 export default function HomeDeals() {
     const t = useTranslations("HomePage");
@@ -59,7 +60,7 @@ export default function HomeDeals() {
                                 <div className="flex flex-col" key={item.id}>
                                     <DealItem
                                         name={item.name}
-                                        description={`From ${new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(item.price || item.minPrice || 0)}. ${item.description || "Classic with all features."}`}
+                                        description={`From ${formatCurrency(item.price || item.maxPrice)}. ${item.description || "Classic with all features."}`}
                                         productLink={`/product/${item.slug || item.id}`}
                                         imgUrl={
                                             item.image || "/placeholder.png"

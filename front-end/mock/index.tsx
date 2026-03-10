@@ -465,8 +465,13 @@ export const USER_SIDEBAR_ITEMS = [
 export const ADMIN_SIDEBAR_ITEMS = [
     {
         title: "Dashboard",
-        url: "/admin/dashboard",
+        url: "/admin",
         icon: LayoutDashboard,
+    },
+    {
+        title: "Reports & Analytics",
+        url: "/admin/reports",
+        icon: BarChart3,
     },
     {
         title: "Users",
@@ -513,11 +518,7 @@ export const ADMIN_SIDEBAR_ITEMS = [
         url: "/admin/payments",
         icon: CreditCard,
     },
-    {
-        title: "Reports & Analytics",
-        url: "/admin/reports",
-        icon: BarChart3,
-    },
+
     {
         title: "Notifications",
         url: "/admin/notifications",
