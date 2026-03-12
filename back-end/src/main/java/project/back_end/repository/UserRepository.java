@@ -34,4 +34,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * Thường dùng để vinh danh khách hàng VIP
      */
     Page<User> findAllByOrderByTotalAccumulatedPointsDesc(Pageable pageable);
+
 }

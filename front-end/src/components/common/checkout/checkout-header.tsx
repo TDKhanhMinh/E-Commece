@@ -1,11 +1,14 @@
 "use client";
 import { BackButton } from "@/components/common/ui/back-button";
+import { Fragment } from "react";
 
 export function CheckoutHeader() {
     return (
-        <div className="mb-8 flex items-center gap-4">
+        <Fragment>
             <BackButton />
-            <h1 className="text-3xl font-bold">Xác nhận đơn hàng</h1>
-        </div>
+            <div className="mb-8 flex items-center gap-4">
+                <h1 className="text-3xl font-bold">Xác nhận đơn hàng</h1>
+            </div>
+        </Fragment>
     );
 }

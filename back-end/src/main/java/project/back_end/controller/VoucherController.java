@@ -59,7 +59,6 @@ public class VoucherController {
         );
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<ApiResponse<Page<VoucherResponse>>> getAllVouchers(
             @RequestParam(defaultValue = "0") int page,

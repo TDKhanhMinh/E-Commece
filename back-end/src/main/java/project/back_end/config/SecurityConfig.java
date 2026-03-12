@@ -56,6 +56,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/payment/vnpay-ipn/**").permitAll()
                         .requestMatchers("/api/payment/vnpay-return/**").permitAll()
                         .requestMatchers("/api/paypal/**").permitAll()
+                        .requestMatchers("/ws-chat/**", "/api/ws-chat/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

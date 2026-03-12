@@ -15,7 +15,6 @@ public enum ErrorCode {
     ACCOUNT_LOCKED(401, "This account has been locked"),
     ACCOUNT_DISABLED(401, "This account is disabled"),
     ACCOUNT_EXPIRED(401, "This account has expired"),
-
     FORBIDDEN(403, "You do not have permission to perform this action"),
     USER_INACTIVE(403, "This user account is inactive"),
     EMAIL_ALREADY_EXISTS(409, "This email address is already registered"),
@@ -25,7 +24,6 @@ public enum ErrorCode {
      * ========================= */
     USER_NOT_FOUND(404, "User was not found"),
     ACCOUNT_NOT_FOUND(404, "Account was not found"),
-
     PASSWORD_MISMATCH(400, "The current password is incorrect"),
     SAME_PASSWORD(400, "The new password must be different from the current password"),
 
@@ -111,10 +109,16 @@ public enum ErrorCode {
     INSUFFICIENT_POINTS(400, "You do not have enough points to redeem this reward"),
 
 
+    /* =========================
+     * REVIEW / RATING
+     * ========================= */
     REVIEW_NOT_FOUND(404, "Review was not found"),
     REVIEW_PERMISSION_DENIED(403, "You do not have permission to delete this review"),
 
-
+    /* =========================
+     * CHAT / MESSAGING
+     * ========================= */
+    CHAT_ROOM_NOT_FOUND(404, "Chat room was not found"),
     /* =========================
      * COMMON / SYSTEM
      * ========================= */

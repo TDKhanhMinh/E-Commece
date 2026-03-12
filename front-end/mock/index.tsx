@@ -3,7 +3,6 @@ import {
     Bell,
     Building2Icon,
     ClipboardListIcon,
-    CreditCard,
     CreditCardIcon,
     Crown,
     FileText,
@@ -13,6 +12,7 @@ import {
     LifeBuoyIcon,
     LockKeyhole,
     MapPinIcon,
+    MessagesSquareIcon,
     Package,
     Settings,
     SettingsIcon,
@@ -514,9 +514,9 @@ export const ADMIN_SIDEBAR_ITEMS = [
         icon: Truck,
     },
     {
-        title: "Payments",
-        url: "/admin/payments",
-        icon: CreditCard,
+        title: "Chat Support",
+        url: "/admin/chat-supports",
+        icon: MessagesSquareIcon,
     },
 
     {
