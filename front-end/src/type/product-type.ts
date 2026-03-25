@@ -36,6 +36,7 @@ export interface ProductDetail {
 }
 
 export interface ProductList {
+    maxPrice: number;
     id: number;
     name: string;
     slug: string;

@@ -308,7 +308,7 @@ export default function ProductsPage(): JSX.Element {
 
     // Computed values
     const hasPagination = useMemo(
-        () => !!productPage && productPage.totalPages > 1,
+        () => !!productPage && productPage?.totalPages > 1,
         [productPage]
     );
 
