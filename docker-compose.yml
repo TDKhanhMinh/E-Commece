@@ -70,6 +70,10 @@ services:
       SPRING_MAIL_PASSWORD: ${MAIL_PASSWORD:-}
       # Server
       SERVER_PORT: 5000
+      # BỔ SUNG: Ghi đè cấu hình trả về của VNPay và PayPal trong application.yml
+      VNPAY_VNP_RETURNURL: ${VNPAY_RETURN_URL:-https://www.voipelearning.shop/en/user/orders}
+      PAYPAL_RETURNURL: ${PAYPAL_RETURN_URL:-https://www.voipelearning.shop/en/user/orders}
+      PAYPAL_CANCELURL: ${PAYPAL_CANCEL_URL:-https://www.voipelearning.shop/en/user/orders}
     ports:
       - "5000:5000"
     networks:
