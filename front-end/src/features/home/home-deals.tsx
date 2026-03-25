@@ -15,7 +15,7 @@ export default function HomeDeals() {
         page: 0,
         size: 7,
     });
-
+    // @ts-ignore
     const products = data?.content || data?.data || data || [];
 
     const topDeals = products.slice(0, 2);

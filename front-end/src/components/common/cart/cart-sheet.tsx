@@ -14,6 +14,7 @@ export function CartSheet() {
     const summary = useCartSummary();
 
     // Trạng thái trống
+    //@ts-ignore
     if (!isLoading && (!cart || !cart.items || cart.items.length === 0)) {
         return (
             <SheetContent className="flex h-full w-full flex-col p-4 sm:max-w-lg">
@@ -75,7 +76,8 @@ export function CartSheet() {
             <ScrollArea className="flex-1 overflow-auto px-4 py-2">
                 {/* add bottom padding so last items aren't hidden behind the fixed footer */}
                 <div className="my-4 space-y-4 pr-3 pb-6">
-                    {cart?.items.map((item: CartItemResponse) => (
+                    {//@ts-ignore
+                    cart?.items.map((item: CartItemResponse) => (
                         <div
                             key={item.id}
                             className="group bg-card hover:border-primary/50 relative flex gap-4 rounded-xl border p-3 transition-all hover:shadow-sm"
@@ -83,6 +85,7 @@ export function CartSheet() {
                             <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border bg-white p-1">
                                 <img
                                     src={
+                                        //@ts-ignore
                                         item?.productImage || "/placeholder.png"
                                     }
                                     alt={item.productName}

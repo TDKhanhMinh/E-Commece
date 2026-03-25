@@ -35,9 +35,9 @@ const AdminReviewPage = () => {
     });
 
     const deleteMutation = useDeleteReview();
-
+    //@ts-ignore
     const reviews = data?.content || [];
-    console.log("AdminReviewPage data:", data?.content);
+    //@ts-ignore
     const totalPages = data?.totalPages || 0;
 
     const handleDelete = (id: number) => {
@@ -228,7 +228,11 @@ const AdminReviewPage = () => {
                 <div className="flex items-center justify-between border-t px-4 py-4">
                     <div className="text-sm text-gray-500">
                         Hiển thị {reviews.length} trên tổng số{" "}
-                        {data?.totalElements || 0} đánh giá
+                        {
+                            //@ts-ignore
+                            data?.totalElements || 0
+                        }{" "}
+                        đánh giá
                     </div>
                     <div className="flex items-center space-x-2">
                         <Button

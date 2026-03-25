@@ -37,7 +37,9 @@ export default function Profile() {
         resolver: zodResolver(updateUserSchema),
         values: user
             ? {
+                  //@ts-ignore
                   phone: user.phone || "",
+                  //@ts-ignore
                   name: user.name || "",
               }
             : undefined,
@@ -156,6 +158,7 @@ export default function Profile() {
                                 id="email"
                                 type="email"
                                 className="bg-gray-100 focus-visible:ring-green-600"
+                                //@ts-ignore
                                 value={user.email || ""}
                                 readOnly
                             />

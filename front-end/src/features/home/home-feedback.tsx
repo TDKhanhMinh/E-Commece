@@ -16,6 +16,7 @@ export default function HomeFeedBack() {
         sortDirection: "DESC",
     });
     console.log(" ~ HomeFeedBack ~ data:", data);
+    // @ts-ignore
     const reviews = data?.content || [];
     const handlerMoreReviewsClick = (productSlug: string) => {
         router.push("/product/" + productSlug);

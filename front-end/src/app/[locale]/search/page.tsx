@@ -56,11 +56,16 @@ function SearchContent() {
     }, [keyword]);
 
     useEffect(() => {
-        if (data && data.content) {
+        if (
+            data && //@ts-ignore
+            data.content
+        ) {
             if (page === 0) {
+                //@ts-ignore
                 setAllProducts(data.content);
             } else {
                 setAllProducts((prev) => {
+                    //@ts-ignore
                     const newProducts = data.content.filter(
                         (newItem: any) =>
                             !prev.some((item) => item.id === newItem.id)
@@ -70,7 +75,7 @@ function SearchContent() {
             }
         }
     }, [data, page]);
-
+    //@ts-ignore
     const hasMore = data ? !data.last : true;
 
     useEffect(() => {

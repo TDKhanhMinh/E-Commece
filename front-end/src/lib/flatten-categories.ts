@@ -1,4 +1,4 @@
-import { Category } from "@/service/categories-service";
+import { Category } from "@/type/category-type";
 
 export const flattenCategories = (
     categories: Category[],

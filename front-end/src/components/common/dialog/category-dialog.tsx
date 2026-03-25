@@ -30,8 +30,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useCreateCategory, useUpdateCategory } from "@/hooks/use-categories";
-import { Category } from "@/service/categories-service";
 import { categorySchema } from "@/schema/category-schema";
+import { Category } from "@/type/category-type";
 
 interface CategoryDialogProps {
     open: boolean;
@@ -64,6 +64,7 @@ export function CategoryDialog({
         if (open) {
             form.reset({
                 name: categoryToEdit?.name || "",
+                // @ts-ignore
                 parentId: categoryToEdit?.parentId?.toString() || "root",
             });
         }

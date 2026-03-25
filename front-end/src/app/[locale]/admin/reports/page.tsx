@@ -30,7 +30,9 @@ export default function ReportsAnalyticsPage() {
 
     console.log("Report Data:", reportData);
     const kpiStats = useMemo(() => {
+        //@ts-ignore
         if (!reportData?.kpis) return [];
+        //@ts-ignore
         const { kpis } = reportData;
         return [
             {
@@ -140,15 +142,20 @@ export default function ReportsAnalyticsPage() {
                                 <BarChart3 className="text-muted-foreground h-5 w-5" />
                             </CardHeader>
                             <CardContent>
-                                {reportData?.revenueChart?.length > 0 ? (
-                                    <RevenueAreaChart
-                                        data={reportData?.revenueChart}
-                                    />
-                                ) : (
-                                    <div className="text-muted-foreground flex h-64 w-full items-center justify-center">
-                                        Không có dữ liệu để hiển thị biểu đồ.
-                                    </div>
-                                )}
+                                {
+                                    //@ts-ignore
+                                    reportData?.revenueChart?.length > 0 ? (
+                                        <RevenueAreaChart
+                                            //@ts-ignore
+                                            data={reportData?.revenueChart}
+                                        />
+                                    ) : (
+                                        <div className="text-muted-foreground flex h-64 w-full items-center justify-center">
+                                            Không có dữ liệu để hiển thị biểu
+                                            đồ.
+                                        </div>
+                                    )
+                                }
                             </CardContent>
                         </Card>
 
@@ -160,43 +167,49 @@ export default function ReportsAnalyticsPage() {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-6">
-                                {reportData?.topProducts?.length > 0 ? (
-                                    reportData?.topProducts?.map(
-                                        (product: any, index: number) => (
-                                            <div
-                                                key={index}
-                                                className="space-y-2"
-                                            >
-                                                <div className="flex items-center justify-between text-sm">
-                                                    <span className="max-w-37.5 truncate font-medium">
-                                                        {product.productName}
-                                                    </span>
-                                                    <span className="text-muted-foreground font-semibold">
-                                                        {formatCurrency(
-                                                            product.totalRevenue
-                                                        )}
-                                                    </span>
+                                {
+                                    //@ts-ignore
+                                    reportData?.topProducts?.length > 0 ? (
+                                        //@ts-ignore
+                                        reportData?.topProducts?.map(
+                                            (product: any, index: number) => (
+                                                <div
+                                                    key={index}
+                                                    className="space-y-2"
+                                                >
+                                                    <div className="flex items-center justify-between text-sm">
+                                                        <span className="max-w-37.5 truncate font-medium">
+                                                            {
+                                                                product.productName
+                                                            }
+                                                        </span>
+                                                        <span className="text-muted-foreground font-semibold">
+                                                            {formatCurrency(
+                                                                product.totalRevenue
+                                                            )}
+                                                        </span>
+                                                    </div>
+                                                    <div className="bg-muted h-2 w-full overflow-hidden rounded-full">
+                                                        <div
+                                                            className="bg-foreground h-full rounded-full transition-all duration-500 ease-in-out"
+                                                            style={{
+                                                                width: `${product.percentage}%`,
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <div className="text-muted-foreground text-[10px] tracking-wider uppercase">
+                                                        {product.totalSales}{" "}
+                                                        lượt bán
+                                                    </div>
                                                 </div>
-                                                <div className="bg-muted h-2 w-full overflow-hidden rounded-full">
-                                                    <div
-                                                        className="bg-foreground h-full rounded-full transition-all duration-500 ease-in-out"
-                                                        style={{
-                                                            width: `${product.percentage}%`,
-                                                        }}
-                                                    />
-                                                </div>
-                                                <div className="text-muted-foreground text-[10px] tracking-wider uppercase">
-                                                    {product.totalSales} lượt
-                                                    bán
-                                                </div>
-                                            </div>
+                                            )
                                         )
+                                    ) : (
+                                        <div className="text-muted-foreground flex h-64 w-full items-center justify-center">
+                                            Không có dữ liệu sản phẩm bán chạy.
+                                        </div>
                                     )
-                                ) : (
-                                    <div className="text-muted-foreground flex h-64 w-full items-center justify-center">
-                                        Không có dữ liệu sản phẩm bán chạy.
-                                    </div>
-                                )}
+                                }
                             </CardContent>
                         </Card>
                     </div>

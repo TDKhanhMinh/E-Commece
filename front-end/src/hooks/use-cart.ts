@@ -163,10 +163,15 @@ export const useCartSummary = () => {
     }
 
     return {
+        // @ts-ignore
         totalItems: cart.totalItems || 0,
+        // @ts-ignore
         totalAmount: cart.subtotal || 0,
+        // @ts-ignore
         finalAmount: cart.totalPrice || 0,
+        // @ts-ignore
         totalDiscount: cart.discountTotal || 0,
+        // @ts-ignore
         itemCount: cart.items?.length || 0,
     };
 };

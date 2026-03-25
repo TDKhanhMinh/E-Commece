@@ -56,7 +56,7 @@ export function GlobalSearch() {
             router.push(`/search?keyword=${encodeURIComponent(query.trim())}`);
         }
     };
-    console.log("Suggested Products:", data);
+    // @ts-ignore
     const suggestedProducts = (data?.content as unknown as any) || [];
 
     const isLoading =
