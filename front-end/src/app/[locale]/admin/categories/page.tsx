@@ -36,13 +36,13 @@ import {
     useCategories,
     useDeleteCategory,
 } from "@/hooks/use-categories";
-import { Category } from "@/service/categories-service";
 import { CategoryDialog } from "@/components/common/dialog/category-dialog";
 import ConfirmAction from "@/components/common/dialog/confirm-action";
 import { flattenCategories } from "@/lib/flatten-categories";
 import { PaginationControl } from "@/components/common/ui/pagination-control";
 import useDebounce from "@/hooks/use-debounce";
-import { PageResponse } from "@/service/http";
+import { Category } from "@/type/category-type";
+import { PageResponse } from "@/type/api-type";
 
 export default function CategoriesPage() {
     const [keyword, setKeyword] = useState("");
