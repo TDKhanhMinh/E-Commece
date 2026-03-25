@@ -33,8 +33,8 @@ import { Brand } from "@/type/brand-type";
 import { BrandDialog } from "@/components/common";
 import ConfirmAction from "@/components/common/dialog/confirm-action";
 import useDebounce from "@/hooks/use-debounce";
-import { PageResponse } from "@/service/http";
 import { PaginationControl } from "@/components/common/ui";
+import { PageResponse } from "@/type/api-type";
 
 export default function BrandsPage() {
     const [keyword, setKeyword] = useState("");

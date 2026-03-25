@@ -99,10 +99,8 @@ const ChatWidget = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [messageInput, setMessageInput] = useState("");
 
-    const { messages, isConnected, isLoading, sendMessage, connectionError } = useChat(
-        CURRENT_USER_ID,
-        RECIPIENT_ID
-    );
+    const { messages, isConnected, isLoading, sendMessage, connectionError } =
+        useChat(CURRENT_USER_ID, RECIPIENT_ID);
 
     const handleFormSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -148,7 +146,7 @@ const ChatWidget = () => {
 
                     {/* 3. Chat Body: flex-1 đảm bảo nó chiếm hết chỗ trống và đẩy input xuống dưới */}
                     {connectionError && (
-                        <div className="bg-red-50 border-b border-red-200 p-3 text-sm text-red-600">
+                        <div className="border-b border-red-200 bg-red-50 p-3 text-sm text-red-600">
                             ⚠️ {connectionError}
                         </div>
                     )}
