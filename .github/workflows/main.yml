@@ -242,49 +242,73 @@ jobs:
           ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_SSH_HOSTNAME }} "mkdir -p ~/app"
           scp docker-compose.prod.yml ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_SSH_HOSTNAME }}:~/app/docker-compose.prod.yml
 
-      - name: Deploy via SSH
+      - name: Write .env and deploy to server
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
+          MYSQL_USER: ${{ secrets.MYSQL_USER }}
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          JWT_EXPIRATION: ${{ secrets.JWT_EXPIRATION }}
+          MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_PAYPAL_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_PAYPAL_CLIENT_ID }}
+          VNPAY_RETURN_URL: ${{ secrets.VNPAY_RETURN_URL }}
+          PAYPAL_RETURN_URL: ${{ secrets.PAYPAL_RETURN_URL }}
+          PAYPAL_CANCEL_URL: ${{ secrets.PAYPAL_CANCEL_URL }}
+          BACKEND_IMAGE: ${{ env.REGISTRY }}/${{ github.repository_owner }}/next-ecommerce-backend:latest
+          FRONTEND_IMAGE: ${{ env.REGISTRY }}/${{ github.repository_owner }}/next-ecommerce-frontend:latest
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHCR_USER: ${{ github.actor }}
+          GHCR_REGISTRY: ${{ env.REGISTRY }}
         run: |
-          # GitHub Actions expand tất cả ${{ }} trước khi gửi script qua SSH
-          ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_SSH_HOSTNAME }} bash << ENDSSH
-            set -e
-            cd ~/app
+          # Ghi .env trên runner (an toàn với mọi ký tự đặc biệt)
+          {
+            printf 'MYSQL_ROOT_PASSWORD=%s\n' "$MYSQL_ROOT_PASSWORD"
+            printf 'MYSQL_DATABASE=%s\n'      "$MYSQL_DATABASE"
+            printf 'MYSQL_USER=%s\n'          "$MYSQL_USER"
+            printf 'MYSQL_PASSWORD=%s\n'      "$MYSQL_PASSWORD"
+            printf 'JWT_SECRET=%s\n'          "$JWT_SECRET"
+            printf 'JWT_EXPIRATION=%s\n'      "$JWT_EXPIRATION"
+            printf 'MAIL_USERNAME=%s\n'       "$MAIL_USERNAME"
+            printf 'MAIL_PASSWORD=%s\n'       "$MAIL_PASSWORD"
+            printf 'NEXT_PUBLIC_API_URL=%s\n'          "$NEXT_PUBLIC_API_URL"
+            printf 'NEXT_PUBLIC_PAYPAL_CLIENT_ID=%s\n' "$NEXT_PUBLIC_PAYPAL_CLIENT_ID"
+            printf 'VNPAY_RETURN_URL=%s\n'    "$VNPAY_RETURN_URL"
+            printf 'PAYPAL_RETURN_URL=%s\n'   "$PAYPAL_RETURN_URL"
+            printf 'PAYPAL_CANCEL_URL=%s\n'   "$PAYPAL_CANCEL_URL"
+            printf 'BACKEND_IMAGE=%s\n'       "$BACKEND_IMAGE"
+            printf 'FRONTEND_IMAGE=%s\n'      "$FRONTEND_IMAGE"
+          } > /tmp/deploy.env
 
-            # Ghi file .env với giá trị thực từ GitHub Secrets
-            cat > .env << EOF
-MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}
-MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}
-MYSQL_USER=${{ secrets.MYSQL_USER }}
-MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
-JWT_SECRET=${{ secrets.JWT_SECRET }}
-JWT_EXPIRATION=${{ secrets.JWT_EXPIRATION }}
-MAIL_USERNAME=${{ secrets.MAIL_USERNAME }}
-MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}
-NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
-NEXT_PUBLIC_PAYPAL_CLIENT_ID=${{ secrets.NEXT_PUBLIC_PAYPAL_CLIENT_ID }}
-VNPAY_RETURN_URL=${{ secrets.VNPAY_RETURN_URL }}
-PAYPAL_RETURN_URL=${{ secrets.PAYPAL_RETURN_URL }}
-PAYPAL_CANCEL_URL=${{ secrets.PAYPAL_CANCEL_URL }}
-BACKEND_IMAGE=${{ env.REGISTRY }}/${{ github.repository_owner }}/next-ecommerce-backend:latest
-FRONTEND_IMAGE=${{ env.REGISTRY }}/${{ github.repository_owner }}/next-ecommerce-frontend:latest
-EOF
+          # Upload .env lên server
+          scp /tmp/deploy.env ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_SSH_HOSTNAME }}:~/app/.env
 
-            echo "--- .env written ---"
-            cat .env | grep -E "^(BACKEND|FRONTEND)_IMAGE"
+          # Chạy docker deploy trên server
+          ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_SSH_HOSTNAME }} \
+            GHCR_TOKEN="$GHCR_TOKEN" GHCR_USER="$GHCR_USER" GHCR_REGISTRY="$GHCR_REGISTRY" \
+            bash << 'ENDSSH'
+              set -e
+              cd ~/app
 
-            # Đăng nhập GHCR để pull images
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
+              echo "--- Image values in .env ---"
+              grep -E "^(BACKEND|FRONTEND)_IMAGE" .env
 
-            # Pull images mới nhất từ GHCR
-            docker compose -f docker-compose.prod.yml pull backend frontend
+              # Đăng nhập GHCR
+              echo "$GHCR_TOKEN" | docker login "$GHCR_REGISTRY" -u "$GHCR_USER" --password-stdin
 
-            # Khởi động lại services
-            docker compose -f docker-compose.prod.yml up -d --remove-orphans
+              # Pull images mới nhất từ GHCR
+              docker compose -f docker-compose.prod.yml pull backend frontend
 
-            # Kiểm tra containers
-            docker compose -f docker-compose.prod.yml ps
+              # Khởi động lại services
+              docker compose -f docker-compose.prod.yml up -d --remove-orphans
 
-            # Xóa images cũ
-            docker image prune -af --filter "until=24h"
+              # Kiểm tra containers
+              docker compose -f docker-compose.prod.yml ps
 
-            echo "✅ Deployment completed successfully!"
+              # Xóa images cũ
+              docker image prune -af --filter "until=24h"
+
+              echo "✅ Deployment completed successfully!"
           ENDSSH
