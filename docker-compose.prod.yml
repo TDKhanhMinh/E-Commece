@@ -52,7 +52,7 @@ services:
   # ── Backend (Spring Boot) ─────────────────────────────────────────────────────
   # PULL từ GitHub Container Registry thay vì build
   backend:
-    image: ${BACKEND_IMAGE:-ghcr.io/TDKhanhMinh/next-ecommerce-backend:latest}
+    image: ${BACKEND_IMAGE:-ghcr.io/tdkhanhminh/next-ecommerce-backend:latest}
     container_name: spring-backend
     restart: always
     depends_on:
@@ -88,7 +88,7 @@ services:
   # ── Frontend (Next.js) ────────────────────────────────────────────────────────
   # PULL từ GitHub Container Registry thay vì build
   frontend:
-    image: ${FRONTEND_IMAGE:-ghcr.io/TDKhanhMinh/next-ecommerce-frontend:latest}
+    image: ${FRONTEND_IMAGE:-ghcr.io/tdkhanhminh/next-ecommerce-frontend:latest}
     container_name: nextjs-frontend
     restart: always
     depends_on:
