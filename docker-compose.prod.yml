@@ -1,0 +1,111 @@
+version: "3.8"
+
+# ═══════════════════════════════════════════════════════════════════════════
+# PRODUCTION DOCKER COMPOSE - Pull images từ GitHub Container Registry
+# ═══════════════════════════════════════════════════════════════════════════
+# Sử dụng file này trên VPS production để pull images đã build sẵn
+# Thay vì build lại từ source code như docker-compose.yml
+# ═══════════════════════════════════════════════════════════════════════════
+
+services:
+  # ── MySQL ────────────────────────────────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-server
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-next_ecommerce}
+      MYSQL_USER: ${MYSQL_USER:-springstudent}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-springstudent}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-rootpassword}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - app-network
+
+  # ── Redis ────────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: redis-server
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+  # ── Backend (Spring Boot) ─────────────────────────────────────────────────────
+  # PULL từ GitHub Container Registry thay vì build
+  backend:
+    image: ${BACKEND_IMAGE:-ghcr.io/trandokhanhminh/next-ecommerce-backend:latest}
+    container_name: spring-backend
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      # DataSource
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE:-next_ecommerce}?useSSL=false&serverTimezone=Asia/Ho_Chi_Minh&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER:-springstudent}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD:-springstudent}
+      # Redis
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      # JWT
+      JWT_SECRET: ${JWT_SECRET:-404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+      JWT_EXPIRATION: ${JWT_EXPIRATION:-360000000}
+      # Mail
+      SPRING_MAIL_USERNAME: ${MAIL_USERNAME:-}
+      SPRING_MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      # Server
+      SERVER_PORT: 5000
+      # Payment URLs
+      VNPAY_VNP_RETURNURL: ${VNPAY_RETURN_URL:-https://www.voipelearning.shop/en/user/orders}
+      PAYPAL_RETURNURL: ${PAYPAL_RETURN_URL:-https://www.voipelearning.shop/en/user/orders}
+      PAYPAL_CANCELURL: ${PAYPAL_CANCEL_URL:-https://www.voipelearning.shop/en/user/orders}
+    ports:
+      - "5000:5000"
+    networks:
+      - app-network
+
+  # ── Frontend (Next.js) ────────────────────────────────────────────────────────
+  # PULL từ GitHub Container Registry thay vì build
+  frontend:
+    image: ${FRONTEND_IMAGE:-ghcr.io/trandokhanhminh/next-ecommerce-frontend:latest}
+    container_name: nextjs-frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+    networks:
+      - app-network
+
+# ── Volumes ──────────────────────────────────────────────────────────────────
+volumes:
+  mysql-data:
+  redis-data:
+
+# ── Networks ─────────────────────────────────────────────────────────────────
+networks:
+  app-network:
+    driver: bridge

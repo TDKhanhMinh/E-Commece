@@ -1,0 +1,58 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# Root .gitignore for Next.js E-commerce Project
+# ═══════════════════════════════════════════════════════════════════════════
+
+# Environment Variables
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+
+# Docker
+docker-compose.override.yml
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Build artifacts
+dist/
+build/
+target/
+
+# Dependencies (covered by sub-projects)
+node_modules/
+
+# Backup files
+*.bak
+*.backup
+backup/
+*.sql
+
+# SSH Keys (never commit these!)
+*.pem
+*.key
+id_rsa
+id_rsa.pub
+github_actions
+github_actions.pub
