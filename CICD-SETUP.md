@@ -61,8 +61,8 @@ Hoặc nếu đã clone repo:
 cd ~/
 git clone https://github.com/your-username/your-repo.git
 cd your-repo
-chmod +x scripts/setup-vps.sh
-./scripts/setup-vps.sh
+
+
 ```
 
 ### 1.3. Tạo SSH Key cho GitHub Actions
