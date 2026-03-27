@@ -257,12 +257,16 @@ jobs:
           VNPAY_RETURN_URL: ${{ secrets.VNPAY_RETURN_URL }}
           PAYPAL_RETURN_URL: ${{ secrets.PAYPAL_RETURN_URL }}
           PAYPAL_CANCEL_URL: ${{ secrets.PAYPAL_CANCEL_URL }}
-          BACKEND_IMAGE: ${{ env.REGISTRY }}/${{ github.repository_owner }}/next-ecommerce-backend:latest
-          FRONTEND_IMAGE: ${{ env.REGISTRY }}/${{ github.repository_owner }}/next-ecommerce-frontend:latest
+          # Dùng IMAGE_BACKEND/FRONTEND từ workflow env (đã lowercase)
+          BACKEND_IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_BACKEND }}:latest
+          FRONTEND_IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_FRONTEND }}:latest
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GHCR_USER: ${{ github.actor }}
           GHCR_REGISTRY: ${{ env.REGISTRY }}
         run: |
+          echo "Backend image:  $BACKEND_IMAGE"
+          echo "Frontend image: $FRONTEND_IMAGE"
+
           # Ghi .env trên runner (an toàn với mọi ký tự đặc biệt)
           {
             printf 'MYSQL_ROOT_PASSWORD=%s\n' "$MYSQL_ROOT_PASSWORD"
