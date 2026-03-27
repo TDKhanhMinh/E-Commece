@@ -9,8 +9,8 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_BACKEND: trandokhanhminh/next-ecommerce-backend
-  IMAGE_FRONTEND: trandokhanhminh/next-ecommerce-frontend
+  IMAGE_BACKEND: TDKhanhMinh/next-ecommerce-backend
+  IMAGE_FRONTEND: TDKhanhMinh/next-ecommerce-frontend
 
 # ─────────────────────────────────────────────────────────────────────────────
 # JOB 1: CI Backend — Build & Test (Spring Boot)
