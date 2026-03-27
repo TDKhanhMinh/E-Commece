@@ -23,7 +23,7 @@ export default function Home() {
                             Top Devices. Smart Prices.
                         </Badge>
                         <div className="text-secondary-darker mb-6 text-3xl font-extrabold tracking-tight uppercase sm:text-4xl lg:text-5xl">
-                            Your next iPhone starts here!
+                            Your next iPhone starts here! Buy now!
                         </div>
                         <p className="text-secondary-darker mb-8 text-lg">
                             Shop premium iPhones from $119 certified by Plug,
