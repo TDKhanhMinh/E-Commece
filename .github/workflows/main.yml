@@ -5,11 +5,12 @@ on:
     branches: [main, master]
   pull_request:
     branches: [main, master]
+  workflow_dispatch: # Cho phép trigger thủ công
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_BACKEND: ${{ github.repository_owner }}/next-ecommerce-backend
-  IMAGE_FRONTEND: ${{ github.repository_owner }}/next-ecommerce-frontend
+  IMAGE_BACKEND: trandokhanhminh/next-ecommerce-backend
+  IMAGE_FRONTEND: trandokhanhminh/next-ecommerce-frontend
 
 # ─────────────────────────────────────────────────────────────────────────────
 # JOB 1: CI Backend — Build & Test (Spring Boot)
@@ -188,59 +189,90 @@ jobs:
           cache-to: type=gha,mode=max
 
   # ─────────────────────────────────────────────────────────────────────────────
-  # JOB 4: Deploy lên server (SSH)
+  # JOB 4: Deploy lên VPS server (SSH)
   # Yêu cầu Secrets: DEPLOY_HOST, DEPLOY_USER, DEPLOY_SSH_KEY
   # ─────────────────────────────────────────────────────────────────────────────
   deploy:
-    name: Deploy to Server
+    name: Deploy to VPS
     runs-on: ubuntu-latest
     needs: docker-build-push
     if: github.event_name == 'push'
     environment: production
 
     steps:
-      - name: Checkout code (lấy docker-compose.yml)
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Copy docker-compose.yml lên server
+      - name: Copy docker-compose files to server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
-          source: "docker-compose.yml"
+          source: "docker-compose.prod.yml,.env.example"
           target: "~/app"
+          strip_components: 0
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
+        env:
+          REGISTRY: ${{ env.REGISTRY }}
+          IMAGE_BACKEND: ${{ env.REGISTRY }}/${{ env.IMAGE_BACKEND }}:latest
+          IMAGE_FRONTEND: ${{ env.REGISTRY }}/${{ env.IMAGE_FRONTEND }}:latest
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ACTOR: ${{ github.actor }}
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
+          envs: REGISTRY,IMAGE_BACKEND,IMAGE_FRONTEND,GITHUB_TOKEN,GITHUB_ACTOR
           script: |
             set -e
             cd ~/app
 
             # Tạo / cập nhật file .env trên server từ GitHub Secrets
-            cat > .env <<EOF
+            cat > .env <<'EOF'
+            # Database
             MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}
             MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}
             MYSQL_USER=${{ secrets.MYSQL_USER }}
             MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
+
+            # JWT
             JWT_SECRET=${{ secrets.JWT_SECRET }}
             JWT_EXPIRATION=${{ secrets.JWT_EXPIRATION }}
+
+            # Email
             MAIL_USERNAME=${{ secrets.MAIL_USERNAME }}
             MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}
+
+            # Frontend env
             NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
             NEXT_PUBLIC_PAYPAL_CLIENT_ID=${{ secrets.NEXT_PUBLIC_PAYPAL_CLIENT_ID }}
+
+            # Payment URLs
+            VNPAY_RETURN_URL=${{ secrets.VNPAY_RETURN_URL }}
+            PAYPAL_RETURN_URL=${{ secrets.PAYPAL_RETURN_URL }}
+            PAYPAL_CANCEL_URL=${{ secrets.PAYPAL_CANCEL_URL }}
+
+            # Docker images
+            BACKEND_IMAGE=${IMAGE_BACKEND}
+            FRONTEND_IMAGE=${IMAGE_FRONTEND}
             EOF
 
-            # Đăng nhập GHCR để pull image private (nếu cần)
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            # Đăng nhập GHCR để pull images
+            echo "${GITHUB_TOKEN}" | docker login ${REGISTRY} -u ${GITHUB_ACTOR} --password-stdin
 
-            # Pull images mới nhất và khởi động lại services
-            docker compose pull backend frontend
-            docker compose up -d --remove-orphans
+            # Pull images mới nhất
+            docker compose -f docker-compose.prod.yml pull backend frontend
 
-            # Xóa images cũ không dùng nữa
-            docker image prune -f
+            # Khởi động lại services (zero-downtime với --wait)
+            docker compose -f docker-compose.prod.yml up -d --remove-orphans --wait
+
+            # Kiểm tra health của containers
+            docker compose -f docker-compose.prod.yml ps
+
+            # Xóa images và containers cũ không dùng nữa
+            docker image prune -af --filter "until=24h"
+            
+            echo "✅ Deployment completed successfully!"
