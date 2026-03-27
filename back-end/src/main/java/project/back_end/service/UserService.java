@@ -32,4 +32,5 @@ public interface UserService {
     void changeUserPassword(String email, ChangePasswordRequest changePasswordRequest);
 
     User getCurrentUser();
+    void createAdminUserIfNotExist();
 }
