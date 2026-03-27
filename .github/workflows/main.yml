@@ -302,14 +302,19 @@ jobs:
               # Đăng nhập GHCR
               echo "$GHCR_TOKEN" | docker login "$GHCR_REGISTRY" -u "$GHCR_USER" --password-stdin
 
-              # Pull images mới nhất từ GHCR
-              docker compose -f docker-compose.prod.yml pull backend frontend
+              # Dừng và xóa toàn bộ containers cũ (bất kể từ project nào)
+              echo "🛑 Stopping all existing containers..."
+              docker stop mysql-server redis-server spring-backend nextjs-frontend 2>/dev/null || true
+              docker rm   mysql-server redis-server spring-backend nextjs-frontend 2>/dev/null || true
 
-              # Khởi động lại services
-              docker compose -f docker-compose.prod.yml up -d --remove-orphans
+              # Pull images mới nhất từ GHCR
+              docker compose -p ecommerce -f docker-compose.prod.yml pull backend frontend
+
+              # Khởi động lại toàn bộ stack với project name cố định
+              docker compose -p ecommerce -f docker-compose.prod.yml up -d --remove-orphans
 
               # Kiểm tra containers
-              docker compose -f docker-compose.prod.yml ps
+              docker compose -p ecommerce -f docker-compose.prod.yml ps
 
               # Xóa images cũ
               docker image prune -af --filter "until=24h"
