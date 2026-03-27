@@ -189,8 +189,11 @@ jobs:
           cache-to: type=gha,mode=max
 
   # ─────────────────────────────────────────────────────────────────────────────
-  # JOB 4: Deploy lên VPS server (SSH)
-  # Yêu cầu Secrets: DEPLOY_HOST, DEPLOY_USER, DEPLOY_SSH_KEY
+  # JOB 4: Deploy lên VPS qua Cloudflare Tunnel
+  # Yêu cầu Secrets:
+  #   DEPLOY_SSH_HOSTNAME  - SSH hostname qua Cloudflare (VD: ssh.voipelearning.shop)
+  #   DEPLOY_USER          - SSH username (VD: root)
+  #   DEPLOY_SSH_KEY       - Private SSH key
   # ─────────────────────────────────────────────────────────────────────────────
   deploy:
     name: Deploy to VPS
@@ -203,35 +206,53 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install cloudflared
+        run: |
+          curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | sudo tee /usr/share/keyrings/cloudflare-main.gpg > /dev/null
+          echo "deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared any main" | sudo tee /etc/apt/sources.list.d/cloudflared.list
+          sudo apt-get update && sudo apt-get install -y cloudflared
+
+      - name: Setup SSH config for Cloudflare Tunnel
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+          # Ghi SSH private key
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+
+          # Cấu hình SSH dùng cloudflared làm ProxyCommand
+          cat >> ~/.ssh/config <<EOF
+          Host ${{ secrets.DEPLOY_SSH_HOSTNAME }}
+            HostName ${{ secrets.DEPLOY_SSH_HOSTNAME }}
+            User ${{ secrets.DEPLOY_USER }}
+            IdentityFile ~/.ssh/id_ed25519
+            ProxyCommand cloudflared access ssh --hostname %h
+            StrictHostKeyChecking no
+            UserKnownHostsFile /dev/null
+          EOF
+          chmod 600 ~/.ssh/config
+
+      - name: Test SSH connection
+        run: |
+          ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_SSH_HOSTNAME }} "echo '✅ SSH connection successful!'"
+
       - name: Copy docker-compose files to server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
-          source: "docker-compose.prod.yml,.env.example"
-          target: "~/app"
-          strip_components: 0
+        run: |
+          ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_SSH_HOSTNAME }} "mkdir -p ~/app"
+          scp docker-compose.prod.yml ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_SSH_HOSTNAME }}:~/app/docker-compose.prod.yml
 
       - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.3
         env:
-          REGISTRY: ${{ env.REGISTRY }}
           IMAGE_BACKEND: ${{ env.REGISTRY }}/${{ env.IMAGE_BACKEND }}:latest
           IMAGE_FRONTEND: ${{ env.REGISTRY }}/${{ env.IMAGE_FRONTEND }}:latest
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_ACTOR: ${{ github.actor }}
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
-          envs: REGISTRY,IMAGE_BACKEND,IMAGE_FRONTEND,GITHUB_TOKEN,GITHUB_ACTOR
-          script: |
+        run: |
+          ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_SSH_HOSTNAME }} bash -s << 'ENDSSH'
             set -e
             cd ~/app
 
             # Tạo / cập nhật file .env trên server từ GitHub Secrets
-            cat > .env <<'EOF'
+            cat > .env << 'EOF'
             # Database
             MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}
             MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}
@@ -256,23 +277,24 @@ jobs:
             PAYPAL_CANCEL_URL=${{ secrets.PAYPAL_CANCEL_URL }}
 
             # Docker images
-            BACKEND_IMAGE=${IMAGE_BACKEND}
-            FRONTEND_IMAGE=${IMAGE_FRONTEND}
+            BACKEND_IMAGE=${{ env.IMAGE_BACKEND }}
+            FRONTEND_IMAGE=${{ env.IMAGE_FRONTEND }}
             EOF
 
             # Đăng nhập GHCR để pull images
-            echo "${GITHUB_TOKEN}" | docker login ${REGISTRY} -u ${GITHUB_ACTOR} --password-stdin
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
 
             # Pull images mới nhất
             docker compose -f docker-compose.prod.yml pull backend frontend
 
-            # Khởi động lại services (zero-downtime với --wait)
-            docker compose -f docker-compose.prod.yml up -d --remove-orphans --wait
+            # Khởi động lại services
+            docker compose -f docker-compose.prod.yml up -d --remove-orphans
 
             # Kiểm tra health của containers
             docker compose -f docker-compose.prod.yml ps
 
-            # Xóa images và containers cũ không dùng nữa
+            # Xóa images cũ không dùng nữa
             docker image prune -af --filter "until=24h"
-            
+
             echo "✅ Deployment completed successfully!"
+          ENDSSH
