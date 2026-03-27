@@ -277,8 +277,8 @@ jobs:
             PAYPAL_CANCEL_URL=${{ secrets.PAYPAL_CANCEL_URL }}
 
             # Docker images
-            BACKEND_IMAGE=${{ env.IMAGE_BACKEND }}
-            FRONTEND_IMAGE=${{ env.IMAGE_FRONTEND }}
+            BACKEND_IMAGE=${{ env.REGISTRY }}/${{ env.IMAGE_BACKEND }}:latest
+            FRONTEND_IMAGE=${{ env.REGISTRY }}/${{ env.IMAGE_FRONTEND }}:latest
             EOF
 
             # Đăng nhập GHCR để pull images
