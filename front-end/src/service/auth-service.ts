@@ -16,6 +16,7 @@ export const registerApi = async (
 export const login = async (
     payload: LoginRequest
 ): Promise<AxiosResponse<LoginResponse>> => {
+    console.log("Biến API URL hiện tại là:", process.env.NEXT_PUBLIC_API_URL);
     return http.post<LoginResponse>("/auth/login", payload);
 };
 export const changePassword = async (
