@@ -70,10 +70,10 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserResponse(savedUser);
     }
     @Override
-    public void createAdminUserIfNotExist() {
+    public String createAdminUserIfNotExist() {
     User savedUser = new User();
     if (userRepo.existsByEmail("admin@gmail.com")) {
-        throw new AppException(ErrorCode.EMAIL_ALREADY_EXISTS);
+        return "Admin user already exists.";
     }
     savedUser.setName("Admin");
     savedUser.setPhone("0123456789");
@@ -84,6 +84,7 @@ public class UserServiceImpl implements UserService {
     savedUser.setAvatarUrl("https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o=");
     userRepo.save(savedUser);
     log.info("User registered successfully: {}", savedUser.getEmail());
+    return "Admin user created successfully.";
 }
     @Override
     public AuthResponse loginUser(LoginRequest loginRequest) {
