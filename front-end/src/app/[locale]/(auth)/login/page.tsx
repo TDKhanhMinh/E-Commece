@@ -52,6 +52,7 @@ export default function LoginPage() {
             // @ts-ignore
             if (data.role.toString().toLocaleLowerCase() === "admin") {
                 router.push("/admin");
+                console.log("Biến API URL hiện tại là:", process.env.NEXT_PUBLIC_API_URL);
             } else {
                 router.push("/");
             }
