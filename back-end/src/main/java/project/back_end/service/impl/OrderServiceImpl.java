@@ -276,20 +276,12 @@ public class OrderServiceImpl implements OrderService {
             return;
         }
 
-        if (isFinalStatus(currentStatus)) {
-            throw new AppException(ErrorCode.INVALID_STATUS_TRANSITION);
-        }
-
         log.info("Updating order {} from {} to {}", orderId, currentStatus, newStatus);
         LocalDateTime now = LocalDateTime.now();
         order.setUpdatedAt(now);
 
         switch (newStatus) {
             case CONFIRMED -> order.setConfirmedAt(now);
-
-            case PAID -> {
-                // Có thể thêm logic lưu mã giao dịch VNPay vào đây nếu cần
-            }
 
             case DELIVERED -> {
                 if (currentStatus != OrderStatus.SHIPPING)
@@ -310,7 +302,6 @@ public class OrderServiceImpl implements OrderService {
             default -> {
             }
         }
-
         order.setStatus(newStatus);
         orderRepository.save(order);
     }
@@ -325,9 +316,7 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    private boolean isFinalStatus(OrderStatus status) {
-        return status == OrderStatus.CANCELLED || status == OrderStatus.DELIVERED || status == OrderStatus.FAILED;
-    }
+
 
     private void awardMembershipPoints(Order order) {
         BigDecimal amount = order.getFinalAmount();

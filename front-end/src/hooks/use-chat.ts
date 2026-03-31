@@ -106,11 +106,10 @@ export const useChat = (
     return { messages, isConnected, isLoading, sendMessage, connectionError };
 };
 
-// 2. HOOK: useAdminChatRooms (Dùng cho giao diện Quản lý Admin)
+// 2. HOOK: useAdminChatRooms
 export const useAdminChatRooms = () => {
     const queryClient = useQueryClient();
 
-    // Fetch all chat rooms
     const {
         data: chatRooms = [],
         isLoading: isLoadingRooms,
@@ -122,11 +121,10 @@ export const useAdminChatRooms = () => {
             const data = await getAllChatRooms();
             return Array.isArray(data) ? data : [];
         },
-        staleTime: 1000 * 60 * 2, // 2 minutes
-        gcTime: 1000 * 60 * 5, // 5 minutes (formerly cacheTime)
+        staleTime: 1000 * 60 * 2,
+        gcTime: 1000 * 60 * 5,
     });
 
-    // Fetch room detail
     const {
         data: selectedRoomDetail = null,
         isLoading: isFetchingDetail,
@@ -140,7 +138,6 @@ export const useAdminChatRooms = () => {
     const handleFetchRoomDetail = async (chatRoomId: number) => {
         try {
             const data = await getChatRoomDetail(chatRoomId);
-            // Cache the result manually for this query
             queryClient.setQueryData(["chatRoomDetail"], data);
             return data;
         } catch (error) {

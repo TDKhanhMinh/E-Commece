@@ -34,29 +34,23 @@ public class MemberShipPointServiceImpl implements MemberShipPointService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
-        // 1. Cập nhật số dư điểm hiện tại (Dùng để chi tiêu)
         Long currentPoints = user.getCurrentPoints() != null ? user.getCurrentPoints() : 0L;
         Long newCurrentBalance = currentPoints + amount;
 
-        // Kiểm tra tránh trường hợp điểm bị âm khi REDEEM
         if (newCurrentBalance < 0) {
-            throw new AppException(ErrorCode.INSUFFICIENT_POINTS); // Bạn cần định nghĩa lỗi này
+            throw new AppException(ErrorCode.INSUFFICIENT_POINTS);
         }
         user.setCurrentPoints(newCurrentBalance);
 
-        // 2. Cập nhật tổng điểm tích lũy trọn đời (Nếu là tích điểm từ đơn hàng)
         if (type == PointTransactionType.EARN && amount > 0) {
             Long totalAcc = user.getTotalAccumulatedPoints() != null ? user.getTotalAccumulatedPoints() : 0L;
             Long newTotalAcc = totalAcc + amount;
             user.setTotalAccumulatedPoints(newTotalAcc);
-
-            // 3. Tự động xét hạng thành viên dựa trên tổng tích lũy
             user.setMembershipTier(determineTier(newTotalAcc));
         }
 
         userRepository.save(user);
 
-        // 4. Lưu nhật ký biến động điểm
         MemberShipPointHistory history = MemberShipPointHistory.builder()
                 .user(user)
                 .pointDelta(amount)
@@ -72,10 +66,8 @@ public class MemberShipPointServiceImpl implements MemberShipPointService {
 
     @Override
     public Page<MemberShipPointHistoryResponse> getPointHistory(Long userId, Pageable pageable) {
-        // Lấy Page<Entity> từ Repo
         Page<MemberShipPointHistory> entities = pointHistoryRepository.findByUserId(userId, pageable);
 
-        // Chuyển đổi sang Page<Response> bằng MapStruct
         return entities.map(pointMapper::toHistoryResponse);
     }
 

@@ -89,10 +89,8 @@ public class ChatServiceImpl implements ChatService {
         ChatRoom room = roomRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.CHAT_ROOM_NOT_FOUND));
 
-        // Xóa tất cả tin nhắn trong phòng chat
         messageRepository.deleteAllByChatRoomId(id);
 
-        // Xóa phòng chat
         roomRepository.deleteById(id);
     }
 

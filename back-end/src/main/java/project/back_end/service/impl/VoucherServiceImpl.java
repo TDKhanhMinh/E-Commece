@@ -63,7 +63,6 @@ public class VoucherServiceImpl implements VoucherService {
 
     @Override
     public Page<UserVoucherResponse> getUserVoucherWallet(Long userId, Pageable pageable) {
-        // Repository trả về Page<UserVoucher>, hàm map() của Spring Page sẽ tự động chuyển thành Page<Response>
         return userVoucherRepository.findByUserIdAndIsUsedFalse(userId, pageable)
                 .map(userVoucherMapper::toResponse); //
     }
@@ -85,7 +84,6 @@ public class VoucherServiceImpl implements VoucherService {
         userVoucherRepository.findByUserIdAndVoucherCodeAndIsUsedFalse(userId, code)
                 .orElseThrow(() -> new AppException(ErrorCode.VOUCHER_NOT_AVAILABLE));
 
-        // Trả về DTO thay vì Entity
         return voucherMapper.toResponse(voucher);
     }
 
@@ -143,7 +141,6 @@ public class VoucherServiceImpl implements VoucherService {
         Voucher existingVoucher = voucherRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.VOUCHER_NOT_FOUND));
 
-        // Tự động cập nhật các trường từ Request sang Entity có sẵn
         voucherMapper.updateVoucherFromRequest(request, existingVoucher);
 
         Voucher updatedVoucher = voucherRepository.save(existingVoucher);
