@@ -38,7 +38,7 @@ import {
 import { formatCurrency } from "@/lib/format-price";
 import { fDateTime } from "@/lib/format-date-time";
 import { useQuery } from "@tanstack/react-query";
-import { getOrdersByUser } from "@/service/order-service";
+import { getOrdersByAdmin, getOrdersByUser } from "@/service/order-service";
 import { OrderItemData } from "@/type/order-type";
 import { OrderDetailsDialog } from "@/components/common/dialog/order-details-dialog";
 import { UpdateStatusDialog } from "@/components/common/dialog/update-order-status-dialog";
@@ -65,7 +65,7 @@ export default function AdminOrderManagement() {
                 ...(statusFilter !== "ALL" && { status: statusFilter }),
             };
             // @ts-ignore
-            const response = await getOrdersByUser(params);
+            const response = await getOrdersByAdmin(params);
             console.log("Admin orders data", response);
             return response;
         },
