@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -70,6 +71,18 @@ public class OrderController {
         Page<OrderResponse> responses = orderService.getOrdersByUser(email, status, pageable);
         return ResponseEntity.ok(
                 new ApiResponse<>(200, "Lấy đơn hàng người dùng thành công", responses)
+        );
+    }
+
+    @GetMapping("/admin")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<ApiResponse<Page<OrderResponse>>> getOrdersByAdmin(
+            @RequestParam(required = false) OrderStatus status,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        Page<OrderResponse> responses = orderService.getAllOrders(status, pageable);
+        return ResponseEntity.ok(
+                new ApiResponse<>(200, "Lấy đơn hàng người dùng bời quản trị viên thành công", responses)
         );
     }
 

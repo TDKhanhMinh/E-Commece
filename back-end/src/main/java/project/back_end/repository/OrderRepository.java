@@ -29,6 +29,13 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("SELECT o FROM Order o WHERE o.user.id = :userId AND o.status = :status ORDER BY o.createdAt DESC")
     Page<Order> findByUserIdAndStatusOrderByCreatedAtDesc(@Param("userId") Long userId, @Param("status") OrderStatus status, Pageable pageable);
 
+    @Query("SELECT o FROM Order o WHERE o.status = :status ORDER BY o.createdAt DESC")
+    Page<Order> findAllByStatusAndCreatedAtDesc(@Param("status") OrderStatus status, Pageable pageable);
+
+    @Query("SELECT o FROM Order o ORDER BY o.createdAt DESC")
+    Page<Order> findAllByCreatedAtDesc(Pageable pageable);
+
+
     @Query("SELECT SUM(o.finalAmount) as totalRevenue, COUNT(o.id) as orderCount " +
             "FROM Order o " +
             "WHERE o.status IN ('DELIVERED', 'PAID') " +

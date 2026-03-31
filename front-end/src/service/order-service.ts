@@ -50,7 +50,29 @@ export const getOrdersByUser: (
     const url = queryString ? `/orders?${queryString}` : "/orders";
     return http.get<ApiResponse<OrderPageResponse>>(url);
 };
+// Lấy danh sách đơn hàng bởi admin với pagination
+export const getOrdersByAdmin: (
+    arg0: OrderSearchParams | undefined
+) => any = async (params?: OrderSearchParams) => {
+    const queryParams = new URLSearchParams();
 
+    if (params?.status) {
+        queryParams.append("status", params.status);
+    }
+    if (params?.page !== undefined) {
+        queryParams.append("page", params.page.toString());
+    }
+    if (params?.size !== undefined) {
+        queryParams.append("size", params.size.toString());
+    }
+    if (params?.sort) {
+        queryParams.append("sort", params.sort);
+    }
+
+    const queryString = queryParams.toString();
+    const url = queryString ? `/orders/admin?${queryString}` : "/orders/admin";
+    return http.get<ApiResponse<OrderPageResponse>>(url);
+};
 // Cập nhật trạng thái đơn hàng
 export const updateOrderStatus = async (orderId: number, status: string) => {
     console.log("Updating orders status:", orderId, status);

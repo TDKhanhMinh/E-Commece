@@ -22,6 +22,7 @@ export const useChat = (
 
     const wsRef = useRef<ChatWebSocketService | null>(null);
     const recipientIdRef = useRef(normalizedRecipientId);
+    // eslint-disable-next-line react-hooks/refs
     recipientIdRef.current = normalizedRecipientId;
 
     // Load chat history using TanStack Query

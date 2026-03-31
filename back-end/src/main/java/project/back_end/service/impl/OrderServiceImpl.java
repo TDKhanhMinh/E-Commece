@@ -247,7 +247,21 @@ public class OrderServiceImpl implements OrderService {
         return responsePage;
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Page<OrderResponse> getAllOrders(OrderStatus status, Pageable pageable) {
 
+        Page<Order> orderPage = (status == null)
+                ? orderRepository.findAllByCreatedAtDesc(pageable)
+                : orderRepository.findAllByStatusAndCreatedAtDesc(status, pageable);
+
+        Page<OrderResponse> responsePage = orderPage.map(checkoutMapper::toOrderResponse);
+
+        log.info("Retrieved page {} with {} orders for user {}",
+                pageable.getPageNumber(), responsePage.getNumberOfElements(),status);
+
+        return responsePage;
+    }
     @Override
     @Transactional
     public void updateOrderStatus(Long orderId, String status) {
