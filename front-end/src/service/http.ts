@@ -26,6 +26,7 @@ const http = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL,
     timeout: 30000,
 });
+console.log("Biến API URL tại file http.ts là:", process.env.NEXT_PUBLIC_API_URL);
 
 http.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
