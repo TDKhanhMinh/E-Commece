@@ -23,7 +23,8 @@ export class ApiError extends Error {
 }
 
 const http = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL,
+    baseURL:
+        process.env.NEXT_PUBLIC_API_URL || "https://api.voipelearning.shop/api",
     timeout: 30000,
 });
 console.log("Biến API URL tại file http.ts là:", process.env.NEXT_PUBLIC_API_URL);
