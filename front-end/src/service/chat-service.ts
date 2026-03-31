@@ -74,10 +74,13 @@ export class ChatWebSocketService {
             return;
         }
 
-        this.isConnecting = true;
-        console.log("🔌 Đang kết nối WebSocket cho user:", userId);
-
-        const socket = new SockJS(process.env.NEXT_PUBLIC_API_URL + "/ws-chat");
+        https: this.isConnecting = true;
+        console.log("Đang kết nối WebSocket cho user:", userId);
+        const wsUrl = process.env.NEXT_PUBLIC_API_URL
+            ? process.env.NEXT_PUBLIC_API_URL + "/ws-chat"
+            : "https://api.voipelearning.shop/api/ws-chat";
+        const socket = new SockJS(wsUrl);
+        console.log("Đã tạo SockJS client với URL:", wsUrl);
 
         this.stompClient = new Client({
             webSocketFactory: () => socket,
