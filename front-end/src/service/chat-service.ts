@@ -79,9 +79,7 @@ export class ChatWebSocketService {
 
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.voipelearning.shop/api";
 
-        const wsBaseUrl = apiUrl.replace(/\/api$/, "");
-
-        const socket = new SockJS(`${wsBaseUrl}/ws-chat`);
+        const socket = new SockJS(`${apiUrl}/ws-chat`);
 
         this.stompClient = new Client({
             webSocketFactory: () => socket,
