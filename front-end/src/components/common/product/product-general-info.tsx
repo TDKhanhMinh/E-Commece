@@ -12,6 +12,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { ProductFormValues } from "@/type/product-form.types";
 
 interface ProductGeneralInfoProps {
@@ -42,53 +49,65 @@ export const ProductGeneralInfo = memo(
                     <FormField
                         control={control}
                         name="categoryId"
-                        render={({ field }) => {
-                            // Tìm tên danh mục từ ID
-                            const selectedCategory = categories.find(
-                                (c) => c.id.toString() === field.value
-                            );
-
-                            return (
-                                <FormItem>
-                                    <FormLabel>Danh mục</FormLabel>
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Danh mục</FormLabel>
+                                <Select
+                                    key={field.value}
+                                    onValueChange={field.onChange}
+                                    value={field.value}
+                                >
                                     <FormControl>
-                                        <Input
-                                            value={
-                                                selectedCategory?.name ||
-                                                "Chưa chọn danh mục"
-                                            }
-                                            className="cursor-not-allowed bg-gray-100"
-                                        />
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder="Chọn danh mục" />
+                                        </SelectTrigger>
                                     </FormControl>
-                                </FormItem>
-                            );
-                        }}
+                                    <SelectContent>
+                                        {categories.map((c) => (
+                                            <SelectItem
+                                                key={c.id}
+                                                value={c.id.toString()}
+                                            >
+                                                {c.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )}
                     />
 
                     <FormField
                         control={control}
                         name="brandId"
-                        render={({ field }) => {
-                            // Tìm tên thương hiệu từ ID
-                            const selectedBrand = brands.find(
-                                (b) => b.id.toString() === field.value
-                            );
-
-                            return (
-                                <FormItem>
-                                    <FormLabel>Thương hiệu</FormLabel>
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Thương hiệu</FormLabel>
+                                <Select
+                                    key={field.value}
+                                    onValueChange={field.onChange}
+                                    value={field.value}
+                                >
                                     <FormControl>
-                                        <Input
-                                            value={
-                                                selectedBrand?.name ||
-                                                "Chưa chọn thương hiệu"
-                                            }
-                                            className="cursor-not-allowed bg-gray-100"
-                                        />
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder="Chọn thương hiệu" />
+                                        </SelectTrigger>
                                     </FormControl>
-                                </FormItem>
-                            );
-                        }}
+                                    <SelectContent>
+                                        {brands.map((b) => (
+                                            <SelectItem
+                                                key={b.id}
+                                                value={b.id.toString()}
+                                            >
+                                                {b.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )}
                     />
 
                     <FormField
@@ -100,6 +119,7 @@ export const ProductGeneralInfo = memo(
                                 <FormControl>
                                     <Textarea {...field} className="h-32" />
                                 </FormControl>
+                                <FormMessage />
                             </FormItem>
                         )}
                     />
