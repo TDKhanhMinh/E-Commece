@@ -57,8 +57,6 @@ export const ProductGeneralInfo = memo(
                                                 selectedCategory?.name ||
                                                 "Chưa chọn danh mục"
                                             }
-                                            readOnly
-                                            disabled
                                             className="cursor-not-allowed bg-gray-100"
                                         />
                                     </FormControl>
@@ -85,8 +83,6 @@ export const ProductGeneralInfo = memo(
                                                 selectedBrand?.name ||
                                                 "Chưa chọn thương hiệu"
                                             }
-                                            readOnly
-                                            disabled
                                             className="cursor-not-allowed bg-gray-100"
                                         />
                                     </FormControl>
