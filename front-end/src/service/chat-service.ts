@@ -77,9 +77,7 @@ export class ChatWebSocketService {
         this.isConnecting = true;
         console.log("🔌 Đang kết nối WebSocket cho user:", userId);
 
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.voipelearning.shop/api";
-
-        const socket = new SockJS(`${apiUrl}/ws-chat`);
+        const socket = new SockJS(process.env.NEXT_PUBLIC_API_URL + "/ws-chat");
 
         this.stompClient = new Client({
             webSocketFactory: () => socket,
