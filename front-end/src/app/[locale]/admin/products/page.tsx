@@ -330,6 +330,22 @@ export default function ProductsPage(): JSX.Element {
                     </p>
                 </div>
 
+
+            </div>
+
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                {/* Search Section */}
+                <div className="flex max-w-md items-center space-x-2 rounded-md border bg-white px-2 shadow-sm">
+                    <Search className="ml-2 h-4 w-4 text-gray-500" />
+                    <Input
+                        value={keyword}
+                        onChange={handleSearch}
+                        placeholder="Tìm kiếm theo tên sản phẩm..."
+                        className="border-none shadow-none focus-visible:ring-0"
+                        aria-label="Tìm kiếm sản phẩm"
+                    />
+                </div>
+
                 <Button
                     className="cursor-pointer bg-blue-600 hover:bg-blue-700"
                     onClick={handleAddProduct}
@@ -338,19 +354,6 @@ export default function ProductsPage(): JSX.Element {
                     Thêm sản phẩm
                 </Button>
             </div>
-
-            {/* Search Section */}
-            <div className="flex max-w-md items-center space-x-2 rounded-md border bg-white px-2 shadow-sm">
-                <Search className="ml-2 h-4 w-4 text-gray-500" />
-                <Input
-                    value={keyword}
-                    onChange={handleSearch}
-                    placeholder="Tìm kiếm theo tên sản phẩm..."
-                    className="border-none shadow-none focus-visible:ring-0"
-                    aria-label="Tìm kiếm sản phẩm"
-                />
-            </div>
-
             {/* Products Table */}
             <div className="rounded-md border bg-white shadow-sm">
                 <Table>

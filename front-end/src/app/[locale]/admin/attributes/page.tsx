@@ -150,25 +150,26 @@ export default function AttributesPage() {
                             RAM...
                         </p>
                     </div>
+                </div>
+
+                <div className="flex items-center justify-between">
+                    {/* SEARCH */}
+                    <div className="flex max-w-sm items-center space-x-2 rounded-md border bg-white px-2 shadow-sm">
+                        <Search className="ml-2 h-4 w-4 text-gray-500" />
+                        <Input
+                            placeholder="Tìm theo tên hoặc mã..."
+                            value={keyword}
+                            onChange={(e) => handleSearchChange(e.target.value)}
+                            className="border-none shadow-none focus-visible:ring-0"
+                        />
+                    </div>
                     <Button
                         onClick={handleCreate}
                         className="cursor-pointer bg-blue-600 hover:bg-blue-700"
                     >
-                        <Plus className="mr-2 h-4 w-4" /> Thêm thuộc tính
+                        Thêm thuộc tính
                     </Button>
                 </div>
-
-                {/* SEARCH */}
-                <div className="flex max-w-sm items-center space-x-2 rounded-md border bg-white px-2 shadow-sm">
-                    <Search className="ml-2 h-4 w-4 text-gray-500" />
-                    <Input
-                        placeholder="Tìm theo tên hoặc mã..."
-                        value={keyword}
-                        onChange={(e) => handleSearchChange(e.target.value)}
-                        className="border-none shadow-none focus-visible:ring-0"
-                    />
-                </div>
-
                 {/* TABLE */}
                 <div className="rounded-md border bg-white shadow-sm">
                     <Table>

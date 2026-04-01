@@ -100,22 +100,23 @@ export default function BrandsPage() {
                         Quản lý danh sách các hãng sản xuất.
                     </p>
                 </div>
+            </div>
+            <div className="flex items-center justify-between">
+                <div className="flex max-w-sm items-center space-x-2 rounded-md border bg-white px-2 shadow-sm">
+                    <Search className="ml-2 h-4 w-4 text-gray-500" />
+                    <Input
+                        placeholder="Tìm kiếm..."
+                        value={keyword}
+                        onChange={(e) => handleSearchChange(e.target.value)}
+                        className="border-none shadow-none focus-visible:ring-0"
+                    />
+                </div>
                 <Button
                     onClick={handleCreate}
                     className="bg-blue-600 hover:bg-blue-700"
                 >
                     <Plus className="mr-2 h-4 w-4" /> Thêm thương hiệu
                 </Button>
-            </div>
-
-            <div className="flex max-w-sm items-center space-x-2 rounded-md border bg-white px-2 shadow-sm">
-                <Search className="ml-2 h-4 w-4 text-gray-500" />
-                <Input
-                    placeholder="Tìm kiếm..."
-                    value={keyword}
-                    onChange={(e) => handleSearchChange(e.target.value)}
-                    className="border-none shadow-none focus-visible:ring-0"
-                />
             </div>
 
             <div className="rounded-md border bg-white shadow-sm">

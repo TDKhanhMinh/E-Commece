@@ -121,24 +121,25 @@ export default function CategoriesPage() {
                         Quản lý cấu trúc danh mục và phân cấp
                     </p>
                 </div>
+            </div>
+
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                {/* Search Input */}
+                <div className="flex max-w-sm items-center space-x-2 rounded-md border bg-white px-2 shadow-sm">
+                    <Search className="ml-2 h-4 w-4 text-gray-500" />
+                    <Input
+                        placeholder="Tìm theo tên danh mục..."
+                        value={keyword}
+                        onChange={(e) => handleSearchChange(e.target.value)}
+                        className="border-none shadow-none focus-visible:ring-0"
+                    />
+                </div>
 
                 <Button onClick={handleCreate} className="gap-2">
                     <Plus className="h-4 w-4" />
                     Thêm danh mục
                 </Button>
             </div>
-
-            {/* Search Input */}
-            <div className="flex max-w-sm items-center space-x-2 rounded-md border bg-white px-2 shadow-sm">
-                <Search className="ml-2 h-4 w-4 text-gray-500" />
-                <Input
-                    placeholder="Tìm theo tên danh mục..."
-                    value={keyword}
-                    onChange={(e) => handleSearchChange(e.target.value)}
-                    className="border-none shadow-none focus-visible:ring-0"
-                />
-            </div>
-
             <Card className="border-muted shadow-sm">
                 <CardContent className="p-0">
                     <Table>

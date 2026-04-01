@@ -12,12 +12,20 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, CircleCheck, CircleX, Pencil, Ticket } from "lucide-react";
+import {
+    Calendar,
+    CircleCheck,
+    CircleX,
+    Pencil,
+    Search,
+    Ticket,
+} from "lucide-react";
 import { toast } from "sonner";
 import { fDateTime } from "@/lib/format-date-time";
 import { ActionVoucherDialog } from "@/components/common/dialog/action-voucher-dialog";
 import { ConfirmDialog } from "@/components/common/dialog/confirm-dialog";
 import { Switch } from "@/components/ui/switch";
+import {Input} from "@/components/ui/input";
 
 export default function AdminVoucherPage() {
     const { useAdminVouchers, adminVoucherActions } = useVoucher();
@@ -53,10 +61,17 @@ export default function AdminVoucherPage() {
                         Tạo và quản lý các chương trình khuyến mãi hệ thống.
                     </p>
                 </div>
-
+            </div>
+            <div className="flex items-center justify-between">
+                <div className="flex max-w-sm items-center space-x-2 rounded-md border bg-white px-2 shadow-sm">
+                    <Search className="ml-2 h-4 w-4 text-gray-500" />
+                    <Input
+                        placeholder="Tìm theo tên hoặc mã..."
+                        className="border-none shadow-none focus-visible:ring-0"
+                    />
+                </div>
                 <ActionVoucherDialog />
             </div>
-
             <div className="rounded-lg border bg-white shadow-sm">
                 <Table>
                     <TableHeader>

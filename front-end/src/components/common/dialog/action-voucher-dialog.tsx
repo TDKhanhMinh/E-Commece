@@ -38,7 +38,6 @@ export function ActionVoucherDialog({
         reset,
         formState: { errors },
     } = useForm<VoucherRequest>({
-        // Nếu không có khởi tạo ban đầu, cứ để rỗng. useEffect sẽ lo việc gán giá trị
         defaultValues: {
             discountType: "FIXED",
             active: true,
@@ -52,7 +51,6 @@ export function ActionVoucherDialog({
         ? adminVoucherActions.update.isPending
         : adminVoucherActions.create.isPending;
 
-    // Khi Dialog mở lên, reset form dựa trên dữ liệu voucher (nếu có)
     useEffect(() => {
         if (open) {
             if (isEdit && voucher) {
@@ -65,7 +63,6 @@ export function ActionVoucherDialog({
                     maxDiscount: voucher.maxDiscount || undefined,
                     usageLimit: voucher.usageLimit || undefined,
                     active: voucher.active,
-                    // Cắt chuỗi ISO lấy định dạng YYYY-MM-DDThh:mm để điền vào input type="datetime-local"
                     startDate: voucher.startDate.slice(0, 16),
                     endDate: voucher.endDate.slice(0, 16),
                 });
@@ -90,11 +87,10 @@ export function ActionVoucherDialog({
             usageLimit: data.usageLimit ? Number(data.usageLimit) : null,
             startDate: new Date(data.startDate).toISOString(),
             endDate: new Date(data.endDate).toISOString(),
-            active: isEdit ? voucher.active : true, // Giữ nguyên trạng thái nếu đang edit
+            active: isEdit ? voucher.active : true,
         };
 
         if (isEdit && voucher) {
-            // Logic Cập nhật
             adminVoucherActions.update.mutate(
                 { id: voucher.id, data: payload },
                 {
@@ -130,12 +126,11 @@ export function ActionVoucherDialog({
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                {/* Dùng custom trigger nếu có truyền, không thì hiện nút Mặc định (Tạo mới) */}
                 {trigger ? (
                     trigger
                 ) : (
                     <Button className="gap-2">
-                        <Plus className="h-4 w-4" /> Thêm Voucher mới
+                        Thêm Voucher mới
                     </Button>
                 )}
             </DialogTrigger>
@@ -152,14 +147,12 @@ export function ActionVoucherDialog({
                     onSubmit={handleSubmit(onSubmit)}
                     className="space-y-4 py-4"
                 >
-                    {/* ... (Các thẻ input bên trong giữ nguyên hoàn toàn) ... */}
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="code">Mã Voucher (Code) *</Label>
                             <Input
                                 id="code"
                                 placeholder="VD: FREESHIP2024"
-                                // Khóa input mã code không cho sửa nếu đang Edit
                                 disabled={isEdit}
                                 {...register("code", {
                                     required: "Vui lòng nhập mã code",
