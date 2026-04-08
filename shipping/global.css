@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom utility classes */
+@layer utilities {
+  .text-shadow {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+  
+  .text-shadow-md {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* Custom component classes */
+@layer components {
+  .card {
+    @apply bg-white dark:bg-gray-900 rounded-lg p-4 shadow-sm;
+  }
+  
+  .card-elevated {
+    @apply bg-white dark:bg-gray-900 rounded-lg p-4 shadow-md;
+  }
+  
+  .btn-primary {
+    @apply bg-primary-500 px-4 py-2 rounded-md active:opacity-80;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary-500 px-4 py-2 rounded-md active:opacity-80;
+  }
+  
+  .btn-outline {
+    @apply border border-primary-500 px-4 py-2 rounded-md active:opacity-80;
+  }
+  
+  .input-base {
+    @apply border border-gray-300 dark:border-gray-700 rounded-md px-4 py-3 bg-white dark:bg-gray-900;
+  }
+  
+  .input-error {
+    @apply border-error;
+  }
+  
+  .input-focused {
+    @apply border-primary-500 border-2;
+  }
+}

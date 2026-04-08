@@ -1,0 +1,96 @@
+{
+  "extends": "@react-native/typescript-config",
+  "compilerOptions": {
+    "types": [
+      "jest"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ],
+      "@app/*": [
+        "src/app/*"
+      ],
+      "@features/*": [
+        "src/features/*"
+      ],
+      "@shared/*": [
+        "src/shared/*"
+      ],
+      "@core/*": [
+        "src/core/*"
+      ],
+      "@components/*": [
+        "src/shared/components/*"
+      ],
+      "@hooks/*": [
+        "src/shared/hooks/*"
+      ],
+      "@utils/*": [
+        "src/shared/utils/*"
+      ],
+      "@services/*": [
+        "src/shared/services/*"
+      ],
+      "@types/*": [
+        "src/shared/types/*"
+      ],
+      "@constants/*": [
+        "src/shared/constants/*"
+      ],
+      "@config/*": [
+        "src/shared/config/*"
+      ],
+      "@assets/*": [
+        "src/shared/assets/*"
+      ],
+      "@styles/*": [
+        "src/shared/styles/*"
+      ],
+      "@lib/*": [
+        "src/shared/lib/*"
+      ],
+      "@navigation/*": [
+        "src/core/navigation/*"
+      ],
+      "@store/*": [
+        "src/core/store/*"
+      ],
+      "@api/*": [
+        "src/core/api/*"
+      ],
+      "@providers/*": [
+        "src/core/providers/*"
+      ],
+      "@theme/*": [
+        "src/core/theme/*"
+      ],
+      "@query/*": [
+        "src/core/query/*"
+      ]
+    },
+    "strict": true,
+    "noEmit": true,
+    "isolatedModules": true,
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "jsx": "react-native"
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "App.tsx",
+    "index.js",
+    "nativewind-env.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/Pods",
+    "android",
+    "ios"
+  ]
+}

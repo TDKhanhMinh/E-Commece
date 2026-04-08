@@ -1,0 +1,37 @@
+module.exports = {
+  presets: ['@react-native/babel-preset', 'nativewind/babel'],
+  plugins: [
+    '@babel/plugin-transform-export-namespace-from',
+    [
+      'module-resolver',
+      {
+        root: ['.'],
+        extensions: ['.ios.js', '.android.js', '.js', '.ts', '.tsx', '.json'],
+        alias: {
+          '@': './src',
+          '@app': './src/app',
+          '@features': './src/features',
+          '@shared': './src/shared',
+          '@core': './src/core',
+          '@components': './src/shared/components',
+          '@hooks': './src/shared/hooks',
+          '@utils': './src/shared/utils',
+          '@services': './src/shared/services',
+          '@types': './src/shared/types',
+          '@constants': './src/shared/constants',
+          '@config': './src/shared/config',
+          '@assets': './src/shared/assets',
+          '@styles': './src/shared/styles',
+          '@lib': './src/shared/lib',
+          '@navigation': './src/core/navigation',
+          '@store': './src/core/store',
+          '@api': './src/core/api',
+          '@providers': './src/core/providers',
+          '@theme': './src/core/theme',
+          '@query': './src/core/query',
+        },
+      },
+    ],
+    'react-native-reanimated/plugin',
+  ],
+};
