@@ -1,4 +1,4 @@
-package project.back_end.exception;
+package project.back_end.enumerate;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,6 +26,8 @@ public enum ErrorCode {
     ACCOUNT_NOT_FOUND(404, "Account was not found"),
     PASSWORD_MISMATCH(400, "The current password is incorrect"),
     SAME_PASSWORD(400, "The new password must be different from the current password"),
+    USER_ALREADY_EXISTS(409, "A user with this email already exists"),
+    USER_NOT_SHIPPER(400, "The user is not a shipper or does not have a shipper profile"),
 
     /* =========================
      * PRODUCT / CATALOG
@@ -114,6 +116,15 @@ public enum ErrorCode {
      * ========================= */
     REVIEW_NOT_FOUND(404, "Review was not found"),
     REVIEW_PERMISSION_DENIED(403, "You do not have permission to delete this review"),
+
+    /* =========================
+     * DELIVERY / SHIPPER
+     * ========================= */
+    DELIVERY_NOT_FOUND(404, "Delivery was not found"),
+    SHIPPER_PROFILE_ALREADY_EXISTS(409, "Shipper profile already exists for this user"),
+    SHIPPER_PROFILE_NOT_FOUND(404, "Shipper profile was not found"),
+    INVALID_DELIVERY_STATUS(400, "Invalid delivery status. Allowed values are PENDING, IN_TRANSIT, DELIVERED, CANCELLED"),
+    DELIVERY_ALREADY_ACCEPTED(400, "This delivery has already been accepted by another shipper"),
 
     /* =========================
      * CHAT / MESSAGING

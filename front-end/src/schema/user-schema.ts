@@ -9,4 +9,6 @@ export const addDeliveryAddressSchema = z.object({
     userName: z.string().min(1, "Vui lòng nhập tên người nhận"),
     phoneNumber: z.string().min(1, "Vui lòng nhập số điện thoại"),
     isDefault: z.boolean().optional(),
+    latitude: z.string().optional(),
+    longitude: z.string().optional(),
 });

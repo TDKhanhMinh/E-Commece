@@ -1,4 +1,4 @@
-package project.back_end.entity.product;
+package project.back_end.enumerate;
 
 public enum AttributeType {
     TEXT,   // Nhập tay (Vd: Tên chip)

@@ -23,12 +23,16 @@ import * as z from "zod";
 import { toast } from "sonner";
 import { addDeliveryAddressSchema } from "@/schema/user-schema";
 import { FormHelperText } from "../ui/help-text";
+import MapAutoComplete from "../ui/map-auto-complete";
+import { AddDeliveryAddress } from "@/type/user-type";
 
 type AddAddressFormData = z.infer<typeof addDeliveryAddressSchema>;
 interface AddressDialogProps {
     phoneNumber?: string;
     userName?: string;
     location?: string;
+    latitude?: string;
+    longitude?: string;
     btnText: string;
     title: string;
     type?: "add" | "edit";
@@ -38,6 +42,8 @@ export function AddressDialog({
     phoneNumber,
     userName,
     location,
+    latitude,
+    longitude,
     btnText,
     title,
     type,
@@ -51,6 +57,8 @@ export function AddressDialog({
         register,
         handleSubmit,
         reset,
+        setValue,
+        watch,
         formState: { errors },
     } = useForm<AddAddressFormData>({
         resolver: zodResolver(addDeliveryAddressSchema),
@@ -59,15 +67,23 @@ export function AddressDialog({
             userName: userName || "",
             phoneNumber: phoneNumber || "",
             isDefault: false,
+            latitude: latitude || "",
+            longitude: longitude || "",
         },
     });
 
     const mutationAdd = useMutation({
         mutationFn: (data: AddAddressFormData) => {
+            const payload: AddDeliveryAddress = {
+                ...data,
+                latitude: data.latitude ?? "",
+                longitude: data.longitude ?? "",
+            };
+            console.log("Add payload ", payload);
             if (type === "add") {
-                return addDeliveryAddress(data);
+                return addDeliveryAddress(payload);
             }
-            return updateDeliveryAddress(addressId, data);
+            return updateDeliveryAddress(addressId, payload);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["addresses"] });
@@ -82,7 +98,12 @@ export function AddressDialog({
     });
     const mutationEdit = useMutation({
         mutationFn: (data: AddAddressFormData) => {
-            return updateDeliveryAddress(addressId, data);
+            const payload: AddDeliveryAddress = {
+                ...data,
+                latitude: data.latitude ?? "",
+                longitude: data.longitude ?? "",
+            };
+            return updateDeliveryAddress(addressId, payload);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["addresses"] });
@@ -103,6 +124,7 @@ export function AddressDialog({
             mutationAdd.mutate(data);
         }
     };
+    const selectedLocation = watch("location");
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -175,15 +197,35 @@ export function AddressDialog({
                         >
                             Địa chỉ chi tiết (Số nhà, tên đường, ...)
                         </Label>
-                        <Input
-                            id="address"
-                            placeholder="Nhập địa chỉ chi tiết"
-                            className="border-gray-300"
-                            {...register("location")}
-                            disabled={
-                                mutationAdd.isPending || mutationEdit.isPending
-                            }
+                        <MapAutoComplete
+                            onSelect={(address) => {
+                                setValue("location", address.description, {
+                                    shouldValidate: true,
+                                    shouldDirty: true,
+                                    shouldTouch: true,
+                                });
+                                setValue("latitude", String(address.latitude), {
+                                    shouldValidate: true,
+                                    shouldDirty: true,
+                                });
+                                setValue(
+                                    "longitude",
+                                    String(address.longitude),
+                                    {
+                                        shouldValidate: true,
+                                        shouldDirty: true,
+                                    }
+                                );
+                            }}
                         />
+                        <input type="hidden" {...register("location")} />
+                        <input type="hidden" {...register("latitude")} />
+                        <input type="hidden" {...register("longitude")} />
+                        {selectedLocation ? (
+                            <p className="text-muted-foreground text-sm">
+                                Đã chọn: {selectedLocation}
+                            </p>
+                        ) : null}
                         <FormHelperText error={errors.location} />
                     </div>
                     <div className="flex flex-row items-center justify-start">

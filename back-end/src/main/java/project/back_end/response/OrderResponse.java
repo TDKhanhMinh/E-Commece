@@ -4,7 +4,7 @@ package project.back_end.response;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import project.back_end.entity.OrderStatus;
+import project.back_end.enumerate.OrderStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

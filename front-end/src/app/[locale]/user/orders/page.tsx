@@ -2,7 +2,7 @@
 
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { UserOrderItem } from "@/components/common";
 import { useCancelOrder, useOrdersByUser } from "@/hooks/use-order";
 import { useMemo, useState } from "react";
@@ -71,32 +71,6 @@ export default function OrderHistory() {
         cancelOrder(Number(orderId));
     };
     // Loading state
-    if (isLoading) {
-        return (
-            <div className="w-full rounded-xl border bg-white p-6 shadow-sm">
-                <div className="flex min-h-100 items-center justify-center">
-                    <Loader2 className="text-primary h-8 w-8 animate-spin" />
-                </div>
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className="w-full rounded-xl border bg-white p-6 shadow-sm">
-                <div className="flex min-h-100 items-center justify-center">
-                    <div className="text-center">
-                        <p className="text-red-600">
-                            Không thể tải danh sách đơn hàng
-                        </p>
-                        <p className="mt-2 text-sm text-gray-500">
-                            Vui lòng thử lại sau
-                        </p>
-                    </div>
-                </div>
-            </div>
-        );
-    }
 
     return (
         <div className="w-full rounded-xl border bg-white p-6 shadow-sm">

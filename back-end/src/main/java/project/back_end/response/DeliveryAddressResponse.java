@@ -13,4 +13,6 @@ public class DeliveryAddressResponse {
     private String location;
     private String userName;
     private String phoneNumber;
+    private String latitude;
+    private String longitude;
 }

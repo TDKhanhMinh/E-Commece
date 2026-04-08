@@ -25,6 +25,8 @@ public class RegisterRequest {
     private String password;
     @Size(min = 10, max = 10, message = "PHONE_INVALID")
     @NotNull(message = "PHONE_REQUIRED")
-    @Pattern(regexp = "^(\\+84|0)(3|5|7|8|9)[0-9]{8}$", message = "Số điện thoại không hợp lệ")
+    @Pattern(regexp = "^(\\+84|0)(3|5|7|8|9)[0-9]{8}$", message = "PHONE_INVALID")
     private String phone;
+
+    private String role;
 }

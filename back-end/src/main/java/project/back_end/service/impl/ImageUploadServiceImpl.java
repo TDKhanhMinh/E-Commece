@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import project.back_end.enumerate.ErrorCode;
 import project.back_end.exception.AppException;
-import project.back_end.exception.ErrorCode;
 import project.back_end.service.ImageUploadService;
 
 import java.io.IOException;

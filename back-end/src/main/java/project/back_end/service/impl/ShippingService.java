@@ -1,7 +1,7 @@
 package project.back_end.service.impl;
 
 import org.springframework.stereotype.Service;
-import project.back_end.entity.ShippingMethod;
+import project.back_end.enumerate.ShippingMethod;
 
 @Service
 public class ShippingService {

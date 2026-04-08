@@ -20,8 +20,7 @@ import project.back_end.service.UserService;
 public class AuthController {
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);
     private final UserService userService;
-
-
+    
     public AuthController(UserService userService) {
         this.userService = userService;
     }
@@ -37,7 +36,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<UserResponse>> register(@Validated @RequestBody RegisterRequest registerRequest) {
-        log.info("Register request received for email: {}", registerRequest.getEmail());
+        log.info("Register request received for email with role: {}", registerRequest.getRole());
         UserResponse userResponse = userService.registerUser(registerRequest);
         return ResponseEntity.ok(
                 new ApiResponse<>(200, "Registration successful", userResponse)

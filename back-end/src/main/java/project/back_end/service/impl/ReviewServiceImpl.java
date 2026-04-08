@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import project.back_end.entity.Review;
 import project.back_end.entity.User;
 import project.back_end.entity.product.Product;
+import project.back_end.enumerate.ErrorCode;
 import project.back_end.exception.AppException;
-import project.back_end.exception.ErrorCode;
 import project.back_end.mapper.ReviewMapper;
 import project.back_end.repository.ProductRepository;
 import project.back_end.repository.ReviewRepository;
@@ -87,7 +87,7 @@ public class ReviewServiceImpl implements ReviewService {
         }
         reviewRepository.delete(review);
     }
-        
+
     @Override
     public Map<Integer, Long> getRatingStatistics(Long productId) {
         return reviewRepository.findByProductId(productId)

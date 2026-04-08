@@ -11,7 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import project.back_end.entity.OrderStatus;
+import project.back_end.enumerate.OrderStatus;
 import project.back_end.request.CheckoutRequest;
 import project.back_end.response.ApiResponse;
 import project.back_end.response.OrderResponse;

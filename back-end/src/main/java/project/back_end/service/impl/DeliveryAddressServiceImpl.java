@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.back_end.entity.DeliveryAddress;
 import project.back_end.entity.User;
+import project.back_end.enumerate.ErrorCode;
 import project.back_end.exception.AppException;
-import project.back_end.exception.ErrorCode;
 import project.back_end.mapper.AddressMapper;
 import project.back_end.repository.DeliveryAddressRepository;
 import project.back_end.repository.UserRepository;
@@ -77,6 +77,12 @@ public class DeliveryAddressServiceImpl implements DeliveryAddressService {
         if (request.getPhoneNumber() != null && !request.getPhoneNumber().isBlank()) {
             existingAddress.setPhoneNumber(request.getPhoneNumber());
         }
+        if (request.getLatitude() != null && !request.getLatitude().isBlank()) {
+            existingAddress.setLatitude(request.getLatitude());
+        }
+        if (request.getLongitude() != null && !request.getLongitude().isBlank()) {
+            existingAddress.setLongitude(request.getLongitude());
+        }
 
         DeliveryAddress savedAddress = deliveryAddressRepository.save(existingAddress);
         return addressMapper.toDeliveryAddressResponse(savedAddress);
@@ -105,6 +111,8 @@ public class DeliveryAddressServiceImpl implements DeliveryAddressService {
         newAddress.setLocation(addressRequest.getLocation());
         newAddress.setPhoneNumber(addressRequest.getPhoneNumber());
         newAddress.setIsDefault(addressRequest.getIsDefault());
+        newAddress.setLatitude(addressRequest.getLatitude());
+        newAddress.setLongitude(addressRequest.getLongitude());
         if (Boolean.TRUE.equals(addressRequest.getIsDefault()) && existingDefaultAddress != null) {
             existingDefaultAddress.setIsDefault(false);
             deliveryAddressRepository.save(existingDefaultAddress);

@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.back_end.entity.KpiProjection;
-import project.back_end.entity.OrderStatus;
+import project.back_end.enumerate.OrderStatus;
 import project.back_end.repository.OrderItemRepository;
 import project.back_end.repository.OrderRepository;
 import project.back_end.request.ReportRequest;

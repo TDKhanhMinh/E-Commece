@@ -6,6 +6,5 @@ import project.back_end.response.DeliveryAddressResponse;
 
 @Mapper(componentModel = "spring")
 public interface DeliveryAddressResponseMapper {
-
     DeliveryAddressResponse toResponse(OrderDeliveryAddress address);
 }

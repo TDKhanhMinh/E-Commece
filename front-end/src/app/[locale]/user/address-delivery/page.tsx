@@ -17,7 +17,7 @@ export default function AddressDelivery() {
     });
 
     const addresses = (addressList as unknown as any) || [];
-
+    console.log("Address List:", addresses);
     if (isLoading) {
         return (
             <div className="mx-auto w-full max-w-6xl p-4">

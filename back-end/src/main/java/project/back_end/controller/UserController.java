@@ -69,6 +69,16 @@ public class UserController {
         }
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<?>> deleteUser(@PathVariable Long id) {
+        log.info("Deleting user with ID: {}", id);
+        userService.deleteUser(id);
+        return ResponseEntity.ok(
+                new ApiResponse<>(200, "User deleted successfully", true)
+        );
+    }
+
     @GetMapping("/delivery-addresses")
     public ResponseEntity<ApiResponse<List<DeliveryAddressResponse>>> getUserDeliveryAddresses(@AuthenticationPrincipal UserDetails userDetails) {
         String username = userDetails.getUsername();
@@ -85,6 +95,9 @@ public class UserController {
             @RequestBody @Validated AddressRequest addressRequest) {
         String username = userDetails.getUsername();
         log.info("Adding delivery address for user ID: {}", username);
+        log.info("Address details: location={}, userName={}, phoneNumber={}, latitude={}, longitude={}",
+                addressRequest.getLocation(), addressRequest.getUserName(), addressRequest.getPhoneNumber(),
+                addressRequest.getLatitude(), addressRequest.getLongitude());
         return ResponseEntity.ok(
                 new ApiResponse<>(200, "User delivery address added successfully", deliveryAddressService.addUserDeliveryAddress(username, addressRequest))
         );
@@ -112,7 +125,6 @@ public class UserController {
             return ResponseEntity.status(404).body(
                     new ApiResponse<>(404, "User delivery address not found", false)
             );
-
         }
         return ResponseEntity.ok(
                 new ApiResponse<>(200, "User delivery address deleted successfully", true)

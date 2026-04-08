@@ -3,11 +3,13 @@ package project.back_end.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.springframework.stereotype.Component;
 import project.back_end.entity.product.Attribute;
 import project.back_end.request.Product.AttributeRequest;
 import project.back_end.response.Product.AttributeResponse;
 
 @Mapper(componentModel = "spring")
+@Component
 public interface AttributeMapper {
 
     // 1. Entity -> Response

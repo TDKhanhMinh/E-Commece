@@ -1,13 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { getAllUsers, UserProfile } from "@/service/user-service";
+import {
+    keepPreviousData,
+    useMutation,
+    useQuery,
+    useQueryClient,
+} from "@tanstack/react-query";
+import { deleteUser, getAllUsers, UserProfile } from "@/service/user-service";
 import {
     Filter,
     MoreHorizontal,
     Phone,
-    Plus,
     Search,
     Shield,
     User as UserIcon,
@@ -52,6 +56,9 @@ import {
 
 import useDebounce from "@/hooks/use-debounce";
 import { PaginationControl } from "@/components/common";
+import RegisterDialog from "@/components/common/dialog/register-dialog";
+import ConfirmAction from "@/components/common/dialog/confirm-action";
+import { toast } from "sonner";
 
 export default function AdminUsersPage() {
     const [pageIndex, setPageIndex] = useState(1);
@@ -60,6 +67,8 @@ export default function AdminUsersPage() {
     const [sortDir, setSortDir] = useState("asc");
     const [searchQuery, setSearchQuery] = useState("");
     const debouncedSearch = useDebounce(searchQuery, 500);
+    const queryClient = useQueryClient();
+
     const { data, isLoading, isError } = useQuery({
         queryKey: [
             "users",
@@ -79,6 +88,20 @@ export default function AdminUsersPage() {
             ),
         placeholderData: keepPreviousData,
     });
+    const deleteUserMutation = useMutation({
+        mutationFn: (id: number) => deleteUser(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["users"] });
+            toast.success("Đã xóa người dùng thành công");
+        },
+        onError: () => {
+            toast.error("Xóa thất bại, vui lòng thử lại");
+        },
+    });
+
+    function handleDeleteUser(id: number) {
+        deleteUserMutation.mutate(id);
+    }
     //@ts-ignore
     const users: UserProfile[] = data?.content || [];
     //@ts-ignore
@@ -93,6 +116,12 @@ export default function AdminUsersPage() {
                 return (
                     <Badge className="border-red-200 bg-red-100 text-red-800 hover:bg-red-200">
                         Admin
+                    </Badge>
+                );
+            case "SHIPPER":
+                return (
+                    <Badge className="border-blue-200 bg-blue-100 text-blue-800 hover:bg-blue-200">
+                        Shipper
                     </Badge>
                 );
             default:
@@ -128,9 +157,9 @@ export default function AdminUsersPage() {
                         Xem, tìm kiếm và quản lý tất cả tài khoản hệ thống.
                     </p>
                 </div>
-                <Button className="bg-primary hover:bg-primary/90 gap-2 shadow-sm">
-                    <Plus className="h-4 w-4" /> Thêm người dùng
-                </Button>
+                <RegisterDialog>
+                    <Button variant="default"> Thêm mới người dùng</Button>
+                </RegisterDialog>
             </div>
 
             <Card className="border-none shadow-md">
@@ -298,8 +327,34 @@ export default function AdminUsersPage() {
                                                             Phân quyền
                                                         </DropdownMenuItem>
                                                         <DropdownMenuSeparator />
-                                                        <DropdownMenuItem className="text-destructive focus:text-destructive cursor-pointer">
-                                                            Xóa tài khoản
+                                                        <DropdownMenuItem
+                                                            className="text-destructive focus:text-destructive cursor-pointer"
+                                                            onSelect={(e) =>
+                                                                e.preventDefault()
+                                                            }
+                                                        >
+                                                            <ConfirmAction
+                                                                title={
+                                                                    "Xóa tài khoản"
+                                                                }
+                                                                btnText={
+                                                                    "Xóa tài khoản"
+                                                                }
+                                                                description={
+                                                                    "Bạn có chắc chắn muốn xóa tài khoản này không"
+                                                                }
+                                                                requiredText={
+                                                                    "DELETE"
+                                                                }
+                                                                actionText={
+                                                                    "Xóa"
+                                                                }
+                                                                onConfirm={() =>
+                                                                    handleDeleteUser(
+                                                                        user.id
+                                                                    )
+                                                                }
+                                                            />
                                                         </DropdownMenuItem>
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>

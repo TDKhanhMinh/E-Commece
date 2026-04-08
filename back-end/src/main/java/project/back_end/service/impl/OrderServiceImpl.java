@@ -8,14 +8,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.back_end.entity.*;
 import project.back_end.entity.product.Sku;
+import project.back_end.enumerate.ErrorCode;
+import project.back_end.enumerate.OrderStatus;
+import project.back_end.enumerate.PointTransactionType;
 import project.back_end.exception.AppException;
-import project.back_end.exception.ErrorCode;
 import project.back_end.mapper.CheckoutMapper;
 import project.back_end.repository.*;
 import project.back_end.request.CheckoutItemRequest;
 import project.back_end.request.CheckoutRequest;
 import project.back_end.response.OrderResponse;
 import project.back_end.response.VoucherResponse;
+import project.back_end.service.DeliveryService;
 import project.back_end.service.MemberShipPointService;
 import project.back_end.service.OrderService;
 import project.back_end.service.VoucherService;
@@ -44,6 +47,7 @@ public class OrderServiceImpl implements OrderService {
     private final ShippingService shippingService;
     private final VoucherService voucherService;
     private final MemberShipPointService memberShipPointService;
+    private final DeliveryService deliveryService;
 
     @Transactional
     public OrderResponse checkout(String email, CheckoutRequest request) {
@@ -88,7 +92,12 @@ public class OrderServiceImpl implements OrderService {
         address.setLocation(addressRequest.getLocation());
         address.setUserName(addressRequest.getUserName());
         address.setPhoneNumber(addressRequest.getPhoneNumber());
+
+        address.setLatitude(addressRequest.getLatitude());
+        address.setLongitude(addressRequest.getLongitude());
+
         orderDeliveryAddressRepository.save(address);
+        log.error("Saved OrderDeliveryAddress with latitude: {}", address.getLatitude());
         order.setDeliveryAddress(address);
         orderRepository.save(order);
 
@@ -258,10 +267,11 @@ public class OrderServiceImpl implements OrderService {
         Page<OrderResponse> responsePage = orderPage.map(checkoutMapper::toOrderResponse);
 
         log.info("Retrieved page {} with {} orders for user {}",
-                pageable.getPageNumber(), responsePage.getNumberOfElements(),status);
+                pageable.getPageNumber(), responsePage.getNumberOfElements(), status);
 
         return responsePage;
     }
+
     @Override
     @Transactional
     public void updateOrderStatus(Long orderId, String status) {
@@ -281,7 +291,15 @@ public class OrderServiceImpl implements OrderService {
         order.setUpdatedAt(now);
 
         switch (newStatus) {
-            case CONFIRMED -> order.setConfirmedAt(now);
+            case CONFIRMED -> {
+                if (currentStatus != OrderStatus.PENDING)
+                    throw new AppException(ErrorCode.INVALID_STATUS_TRANSITION);
+                order.setConfirmedAt(now);
+                deliveryService.createDeliveryForOrder(order);
+            }
+            case PAID -> {
+                deliveryService.createDeliveryForOrder(order);
+            }
 
             case DELIVERED -> {
                 if (currentStatus != OrderStatus.SHIPPING)
@@ -315,7 +333,6 @@ public class OrderServiceImpl implements OrderService {
             throw new AppException(ErrorCode.INVALID_REQUEST);
         }
     }
-
 
 
     private void awardMembershipPoints(Order order) {
@@ -366,4 +383,6 @@ public class OrderServiceImpl implements OrderService {
 
         }
     }
+
+
 }

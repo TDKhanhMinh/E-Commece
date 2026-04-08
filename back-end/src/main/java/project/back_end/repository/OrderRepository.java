@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import project.back_end.entity.KpiProjection;
 import project.back_end.entity.Order;
-import project.back_end.entity.OrderStatus;
+import project.back_end.enumerate.OrderStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -15,4 +15,6 @@ public class DeliveryAddressResponse {
     private String userName;
     private String phoneNumber;
     private Boolean isDefault;
+    private String latitude;
+    private String longitude;
 }

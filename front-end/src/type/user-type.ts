@@ -16,11 +16,15 @@ interface DeliveryAddress {
     userName: string;
     phoneNumber: string;
     isDefault: boolean;
+    latitude: string;
+    longitude: string;
 }
 interface AddDeliveryAddress {
     location: string;
     userName: string;
     phoneNumber: string;
+    latitude: string;
+    longitude: string;
 }
 interface User {
     id: string;

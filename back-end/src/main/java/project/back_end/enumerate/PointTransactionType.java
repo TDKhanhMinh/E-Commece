@@ -1,4 +1,4 @@
-package project.back_end.entity;
+package project.back_end.enumerate;
 
 public enum PointTransactionType {
     EARN,    // Tích lũy điểm từ đơn hàng hoặc sự kiện

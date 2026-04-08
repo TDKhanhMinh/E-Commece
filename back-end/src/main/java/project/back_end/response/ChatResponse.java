@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import project.back_end.entity.MessageType;
+import project.back_end.enumerate.MessageType;
 
 import java.time.LocalDateTime;
 

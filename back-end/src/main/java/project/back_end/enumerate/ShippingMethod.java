@@ -1,4 +1,4 @@
-package project.back_end.entity;
+package project.back_end.enumerate;
 
 public enum ShippingMethod {
     STANDARD, // Giao hàng tiêu chuẩn

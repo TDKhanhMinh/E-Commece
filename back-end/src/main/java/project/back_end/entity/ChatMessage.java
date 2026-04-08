@@ -2,6 +2,7 @@ package project.back_end.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import project.back_end.enumerate.MessageType;
 
 import java.time.LocalDateTime;
 

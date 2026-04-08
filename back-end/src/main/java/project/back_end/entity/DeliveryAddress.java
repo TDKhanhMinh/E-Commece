@@ -18,7 +18,8 @@ public class DeliveryAddress {
     private String userName;
     private String phoneNumber;
     private Boolean isDefault = false;
-
+    private String latitude;
+    private String longitude;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

@@ -7,6 +7,7 @@ import project.back_end.entity.User;
 import project.back_end.request.AuthRequest.ChangePasswordRequest;
 import project.back_end.request.AuthRequest.LoginRequest;
 import project.back_end.request.AuthRequest.RegisterRequest;
+import project.back_end.request.UserRequest.UpdateShipperProfile;
 import project.back_end.request.UserRequest.UpdateUserRequest;
 import project.back_end.response.AuthResponse;
 import project.back_end.response.UserResponse.UserResponse;
@@ -16,6 +17,10 @@ public interface UserService {
     UserDTO getUserProfile(String username);
 
     UserResponse registerUser(RegisterRequest user);
+
+    void deleteUser(Long id);
+
+    void updateShipperProfile(UpdateShipperProfile updateShipperProfile, String username);
 
     AuthResponse loginUser(LoginRequest loginRequest);
 
@@ -32,5 +37,6 @@ public interface UserService {
     void changeUserPassword(String email, ChangePasswordRequest changePasswordRequest);
 
     User getCurrentUser();
-    String createAdminUserIfNotExist();
+
+    void createAdminUserIfNotExist();
 }

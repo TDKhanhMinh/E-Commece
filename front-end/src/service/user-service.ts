@@ -51,6 +51,12 @@ export const addDeliveryAddress: (
 ): Promise<AxiosResponse<DeliveryAddress>> => {
     return http.post<DeliveryAddress>("/user/delivery-addresses", data);
 };
+
+export const deleteUser: (id: number) => Promise<AxiosResponse<any>> = async (
+    id: number
+): Promise<AxiosResponse<any>> => {
+    return http.delete<AxiosResponse<any>>(`/user/${id}`);
+};
 export const deleteDeliveryAddress: (
     id: number
 ) => Promise<AxiosResponse<void>> = async (

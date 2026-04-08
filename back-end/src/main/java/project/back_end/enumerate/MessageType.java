@@ -1,4 +1,4 @@
-package project.back_end.entity;
+package project.back_end.enumerate;
 
 public enum MessageType {
     TEXT,           // Tin nhắn thuần hiện tại

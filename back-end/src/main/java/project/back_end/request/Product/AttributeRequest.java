@@ -3,7 +3,7 @@ package project.back_end.request.Product;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import project.back_end.entity.product.AttributeType;
+import project.back_end.enumerate.AttributeType;
 
 @Data
 public class AttributeRequest {

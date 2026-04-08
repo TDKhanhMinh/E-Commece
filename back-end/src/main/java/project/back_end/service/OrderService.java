@@ -3,7 +3,7 @@ package project.back_end.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import project.back_end.entity.OrderStatus;
+import project.back_end.enumerate.OrderStatus;
 import project.back_end.request.CheckoutRequest;
 import project.back_end.response.OrderResponse;
 

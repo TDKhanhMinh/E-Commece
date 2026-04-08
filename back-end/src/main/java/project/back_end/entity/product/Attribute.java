@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import project.back_end.enumerate.AttributeType;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity

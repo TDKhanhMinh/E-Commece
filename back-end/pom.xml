@@ -51,7 +51,12 @@
             <artifactId>cloudinary-http44</artifactId>
             <version>1.37.0</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.google.firebase</groupId>
+            <artifactId>firebase-admin</artifactId>
+            <version>9.8.0</version>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>

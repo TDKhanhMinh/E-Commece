@@ -110,7 +110,7 @@ public class PayPalService {
             ResponseEntity<Map> response = restTemplate.postForEntity(url, request, Map.class);
             if (response.getStatusCode() == HttpStatus.CREATED && response.getBody() != null) {
                 String status = (String) response.getBody().get("status");
-                return "COMPLETED".equals(status); // Thành công nếu status là COMPLETED
+                return "COMPLETED".equals(status);
             }
         } catch (Exception e) {
             log.error("Lỗi khi capture PayPal Order {}: ", paypalOrderId, e);
