@@ -56,7 +56,10 @@ jobs:
           java-version: "17"
           distribution: temurin
           cache: maven
-
+      - name: Inject Firebase Service Account Key
+        run: |
+          mkdir -p back-end/src/main/resources
+          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}" > back-end/src/main/resources/serviceAccountKey.json
       - name: Build & run tests
         working-directory: back-end
         env:
@@ -142,7 +145,10 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
+      - name: Inject Firebase Service Account Key for Docker Build
+        run: |
+          mkdir -p back-end/src/main/resources
+          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}" > back-end/src/main/resources/serviceAccountKey.json
       # ── Backend image ──────────────────────────────────────────────────────
       - name: Extract metadata for backend image
         id: meta-backend
