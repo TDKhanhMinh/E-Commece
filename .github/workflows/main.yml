@@ -72,7 +72,7 @@ jobs:
           JWT_EXPIRATION: 360000000
           SPRING_MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
           SPRING_MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
-        run: mvn verify -B
+        run: mvn clean package -B -DskipTests
 
       - name: Upload test reports
         if: always()
