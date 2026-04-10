@@ -41,6 +41,9 @@ public class User {
     @Column(name = "avatarUrl")
     private String avatarUrl;
 
+    @Column(name = "device_token")
+    private String deviceToken;
+
     @Column(name = "createdAt", updatable = false)
     private LocalDateTime createdAt;
 

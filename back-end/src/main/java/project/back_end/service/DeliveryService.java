@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import project.back_end.entity.Order;
 import project.back_end.enumerate.DeliveryStatus;
 import project.back_end.response.AdminDeliveryResponse;
+import project.back_end.response.ShipperDeliveryResponse;
 
 public interface DeliveryService {
     void createDeliveryForOrder(Order order);
@@ -15,7 +16,11 @@ public interface DeliveryService {
 
     DeliveryStatus parseStatus(String status);
 
-    Page<?> getDeliveriesByUser(String email, Pageable pageable);
+    ShipperDeliveryResponse getDeliveryById(Long deliveryId);
+
+    Page<ShipperDeliveryResponse> getAllDeliveryByStatus(String status, String email, Pageable pageable);
+
+    Page<ShipperDeliveryResponse> getDeliveriesByShipper(Pageable pageable);
 
     Page<AdminDeliveryResponse> getAllDeliveries(DeliveryStatus status, Pageable pageable);
 }

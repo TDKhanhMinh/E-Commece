@@ -1,179 +1,165 @@
-import React, { useCallback, useMemo } from 'react';
-import { View, FlatList, StyleSheet, RefreshControl } from 'react-native';
-import { Text, ActivityIndicator, useTheme, FAB } from 'react-native-paper';
+import React, { useCallback, useState } from 'react';
+import { View, FlatList, RefreshControl, ScrollView, TouchableOpacity } from 'react-native';
+import { Text, ActivityIndicator, useTheme } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { spacing } from '@styles/index';
-import { useShipments, usePrefetchShipment } from '../hooks/useShipments';
-import { ShipmentCard } from '../components/ShipmentCard';
-import type { Shipment } from '../types/shipping.types';
+import { useAllShipments } from '../hooks/useShipments';
+import { OrderCard } from '@features/home/components/OrderCard';
+import type { Order } from '@features/home/types/home.types';
+
+// Các trạng thái đơn hàng phổ biến
+const SHIPMENT_STATUSES = [
+  { id: 'PICKED_UP', label: 'Đang lấy hàng', icon: 'package-up' },
+  { id: 'DELIVERING', label: 'Đang giao', icon: 'truck-delivery' },
+  { id: 'SUCCESS', label: 'Hoàn thành', icon: 'check-circle' },
+  { id: 'CANCELLED', label: 'Đã hủy', icon: 'close-circle' },
+];
 
 export function ShipmentsScreen() {
   const insets = useSafeAreaInsets();
   const theme = useTheme();
-  const prefetchShipment = usePrefetchShipment();
 
-  const {
-    data,
-    isLoading,
-    isFetchingNextPage,
-    hasNextPage,
-    fetchNextPage,
-    refetch,
-    isRefetching,
-  } = useShipments();
+  // State quản lý tab trạng thái hiện tại
+  const [activeStatus, setActiveStatus] = useState<string>('PICKED_UP');
 
-  const shipments = useMemo(() => {
-    return data?.pages.flatMap((page) => page.data) ?? [];
-  }, [data]);
+  // Lấy dữ liệu với hook
+  const { data: shipmentsPayload, isPending, refetch, isRefetching } = useAllShipments(activeStatus);
 
-  const handleShipmentPress = useCallback((shipment: Shipment) => {
-    console.log('Navigate to shipment details:', shipment.id);
-  }, []);
-
-  const handleShipmentHover = useCallback(
-    (shipment: Shipment) => {
-      prefetchShipment(shipment.id);
-    },
-    [prefetchShipment],
-  );
+  // @ts-ignore
+  const orders: Order[] = shipmentsPayload?.data?.content || [];
 
   const renderItem = useCallback(
-    ({ item }: { item: Shipment }) => (
-      <ShipmentCard
-        shipment={item}
-        onPress={handleShipmentPress}
-      />
-    ),
-    [handleShipmentPress],
+    ({ item }: { item: Order }) => {
+      // Tái sử dụng OrderCard hiện đại
+      return <OrderCard order={item} />;
+    },
+    []
   );
 
-  const keyExtractor = useCallback((item: Shipment) => item.id, []);
+  const keyExtractor = useCallback((item: Order) => item.orderId.toString(), []);
 
-  const handleLoadMore = useCallback(() => {
-    if (hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
-
-  const renderEmptyComponent = useCallback(
-    () => (
-      <View style={styles.emptyContainer}>
+  // Giao diện khi danh sách trống
+  const renderEmptyComponent = useCallback(() => (
+    <View className="items-center justify-center py-[72px] px-6">
+      <View className="w-[100px] h-[100px] rounded-full items-center justify-center mb-6" style={[{ backgroundColor: theme.colors.surfaceVariant }]}>
         <Icon
-          name="package-variant"
-          size={64}
-          color={theme.colors.outlineVariant}
+          name="package-variant-closed"
+          size={56}
+          color={theme.colors.primary}
         />
-        <Text variant="titleMedium" style={{ marginTop: spacing.md }}>
-          No shipments yet
-        </Text>
-        <Text
-          variant="bodyMedium"
-          style={{ color: theme.colors.outline, textAlign: 'center' }}>
-          Create your first shipment to get started
-        </Text>
       </View>
-    ),
-    [theme.colors],
-  );
-
-  const renderFooterComponent = useCallback(() => {
-    if (!isFetchingNextPage) return null;
-    return (
-      <View style={styles.footer}>
-        <ActivityIndicator size="small" />
-      </View>
-    );
-  }, [isFetchingNextPage]);
-
-  if (isLoading && shipments.length === 0) {
-    return (
-      <View style={[styles.loadingContainer, { backgroundColor: theme.colors.background }]}>
-        <ActivityIndicator size="large" />
-        <Text variant="bodyMedium" style={{ marginTop: spacing.md }}>
-          Loading shipments...
-        </Text>
-      </View>
-    );
-  }
+      <Text variant="titleLarge" className="font-bold mb-1" style={[{ color: theme.colors.onSurface }]}>
+        Chưa có đơn hàng
+      </Text>
+      <Text
+        variant="bodyMedium"
+        className="text-center leading-[22px]"
+        style={[{ color: theme.colors.onSurfaceVariant }]}
+      >
+        Bạn chưa có chuyến hàng nào đang ở trạng thái này.
+      </Text>
+    </View>
+  ), [theme.colors]);
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <View style={[styles.header, { paddingTop: insets.top + spacing.md }]}>
-        <Text variant="headlineMedium" style={{ fontWeight: '600' }}>
-          My Shipments
-        </Text>
+    <View className="flex-1" style={[{ backgroundColor: theme.colors.background }]}>
+      {/* ── HEADER ── */}
+      <View
+        className="px-5 pb-5 bg-white"
+        style={{ paddingTop: insets.top + spacing.xs }}
+      >
+        <View className="flex-row items-center justify-between">
+          <View className="flex-1 pr-4">
+            <View className="flex-row items-center mb-1">
+              <View className="w-1.5 h-6 bg-indigo-600 rounded-full mr-2" />
+              <Text className="text-[26px] font-black text-slate-900 tracking-tight">
+                Đơn hàng
+              </Text>
+            </View>
+            <Text className="text-[14px] text-slate-500 font-medium leading-5">
+              Quản lý và theo dõi lộ trình các chuyến đi của bạn
+            </Text>
+          </View>
+
+          <View className="w-14 h-14 bg-indigo-50 rounded-2xl items-center justify-center border border-indigo-100/50">
+            <Icon name="package-variant" size={32} color="#4F46E5" />
+          </View>
+        </View>
       </View>
 
-      <FlatList
-        data={shipments}
-        renderItem={renderItem}
-        keyExtractor={keyExtractor}
-        contentContainerStyle={[
-          styles.listContent,
-          { paddingBottom: insets.bottom + 80 },
-          shipments.length === 0 && styles.emptyListContent,
-        ]}
-        showsVerticalScrollIndicator={false}
-        onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.5}
-        ListEmptyComponent={renderEmptyComponent}
-        ListFooterComponent={renderFooterComponent}
-        refreshControl={
-          <RefreshControl
-            refreshing={isRefetching && !isFetchingNextPage}
-            onRefresh={refetch}
-            colors={[theme.colors.primary]}
-            tintColor={theme.colors.primary}
-          />
-        }
-      />
+      {/* ── STATUS FILTER (TABS) ── */}
+      <View className="pb-2">
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: spacing.md, gap: spacing.sm }}
+        >
+          {SHIPMENT_STATUSES.map((status) => {
+            const isActive = activeStatus === status.id;
+            return (
+              <TouchableOpacity
+                key={status.id}
+                onPress={() => setActiveStatus(status.id)}
+                activeOpacity={0.7}
+                className="flex-row items-center px-4 py-2 rounded-full border gap-1.5"
+                style={[
+                  {
+                    backgroundColor: isActive ? theme.colors.primary : theme.colors.surface,
+                    borderColor: isActive ? theme.colors.primary : theme.colors.outlineVariant,
+                  }
+                ]}
+              >
+                <Icon
+                  name={status.icon}
+                  size={16}
+                  color={isActive ? '#ffffff' : theme.colors.onSurfaceVariant}
+                />
+                <Text
+                  variant="labelMedium"
+                  style={{
+                    color: isActive ? '#ffffff' : theme.colors.onSurfaceVariant,
+                    fontWeight: isActive ? '700' : '500',
+                  }}
+                >
+                  {status.label}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+      </View>
 
-      <FAB
-        icon="plus"
-        style={[
-          styles.fab,
-          {
-            backgroundColor: theme.colors.primary,
-            bottom: insets.bottom + spacing.md,
-          },
-        ]}
-        onPress={() => {}}
-      />
+      {/* ── LIST CONTENT ── */}
+      {isPending && orders.length === 0 ? (
+        <View className="flex-1 items-center justify-center">
+          <ActivityIndicator size="large" color={theme.colors.primary} />
+          <Text style={{ marginTop: spacing.md, color: theme.colors.outline }}>Đang tải dữ liệu...</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={orders}
+          renderItem={renderItem}
+          keyExtractor={keyExtractor}
+          className="px-0"
+          contentContainerStyle={[
+            { flexGrow: 1, paddingHorizontal: 0, paddingTop: 4 },
+            { paddingBottom: insets.bottom + spacing.xl },
+            orders.length === 0 && { justifyContent: 'center' },
+          ]}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={renderEmptyComponent}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefetching}
+              onRefresh={refetch}
+              colors={[theme.colors.primary]}
+              tintColor={theme.colors.primary}
+            />
+          }
+        />
+      )}
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  loadingContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  header: {
-    paddingHorizontal: spacing.md,
-    paddingBottom: spacing.md,
-  },
-  listContent: {
-    paddingHorizontal: spacing.md,
-    flexGrow: 1,
-  },
-  emptyListContent: {
-    justifyContent: 'center',
-  },
-  emptyContainer: {
-    alignItems: 'center',
-    paddingVertical: spacing.xxl,
-  },
-  footer: {
-    paddingVertical: spacing.md,
-    alignItems: 'center',
-  },
-  fab: {
-    position: 'absolute',
-    right: spacing.md,
-  },
-});

@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   View,
-  StyleSheet,
   TouchableOpacity,
   Image,
 } from 'react-native';
@@ -25,141 +24,93 @@ export function HomeHeader({ onNotificationPress, onAvatarPress }: HomeHeaderPro
 
   return (
     <View
-      style={[
-        styles.container,
-        {
-          backgroundColor: theme.colors.surface,
-          paddingTop: insets.top + spacing.sm,
-          borderBottomColor: theme.colors.outlineVariant,
-        },
-      ]}
+      className="px-5 pb-4 bg-white border-b border-gray-100"
+      style={{
+        paddingTop: insets.top + spacing.xs,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.05,
+        shadowRadius: 10,
+        elevation: 2,
+      }}
     >
-      {/* Logo + App name */}
-      <View style={styles.logoRow}>
-        <View style={[styles.logoBox, { backgroundColor: theme.colors.primary }]}>
-          <Icon name="truck-fast" size={20} color="#FFFFFF" />
-        </View>
-        <Text variant="titleMedium" style={[styles.appName, { color: theme.colors.onSurface }]}>
-          Giao Hàng Việt
-        </Text>
-      </View>
-
-      {/* Right actions */}
-      <View style={styles.rightRow}>
-        {/* Online/Offline toggle */}
-        <TouchableOpacity
-          style={[
-            styles.statusChip,
-            { backgroundColor: isOnline ? '#E8F5E9' : theme.colors.surfaceVariant },
-          ]}
-          onPress={toggleStatus}
-          activeOpacity={0.8}
-        >
-          <View
-            style={[
-              styles.statusDot,
-              { backgroundColor: isOnline ? '#4CAF50' : theme.colors.outline },
-            ]}
-          />
-          <Text
-            variant="labelSmall"
-            style={{ color: isOnline ? '#2E7D32' : theme.colors.onSurfaceVariant, fontWeight: '700' }}
+      <View className="flex-row items-center justify-between">
+        {/* Brand Section */}
+        <View className="flex-row items-center">
+          <View 
+            className="w-11 h-11 rounded-2xl items-center justify-center shadow-lg"
+            style={{ backgroundColor: '#1E40AF' }} // Indigo-800
           >
-            {isOnline ? 'ONLINE' : 'OFFLINE'}
-          </Text>
-        </TouchableOpacity>
-
-        {/* Bell */}
-        <TouchableOpacity style={styles.iconBtn} onPress={onNotificationPress}>
-          <Icon name="bell-outline" size={22} color={theme.colors.onSurface} />
-          <View style={[styles.badge, { backgroundColor: theme.colors.error }]}>
-            <Text variant="labelSmall" style={styles.badgeText}>3</Text>
+            <View className="absolute inset-0 bg-blue-500 opacity-20 rounded-2xl" />
+            <Icon name="truck-fast" size={26} color="#FFFFFF" />
           </View>
-        </TouchableOpacity>
-
-        {/* Avatar */}
-        <TouchableOpacity style={styles.avatarBtn} onPress={onAvatarPress}>
-          <View style={[styles.avatar, { backgroundColor: theme.colors.primaryContainer }]}>
-            <Icon name="account" size={20} color={theme.colors.primary} />
+          <View className="ml-3">
+            <Text className="text-[18px] font-black text-slate-900 tracking-tight leading-tight">
+              Giao Hàng Việt
+            </Text>
+            <View className="flex-row items-center mt-0.5">
+              <View className="px-1.5 py-0.5 rounded-md bg-slate-100 mr-2">
+                <Text className="text-[10px] font-bold text-slate-600 uppercase tracking-tighter">
+                  Pro Driver
+                </Text>
+              </View>
+              <Text className="text-[12px] text-slate-400 font-medium">Hành trình mới</Text>
+            </View>
           </View>
-        </TouchableOpacity>
+        </View>
+
+        {/* Action Section */}
+        <View className="flex-row items-center gap-3">
+          {/* Status Pill */}
+          <TouchableOpacity
+            onPress={toggleStatus}
+            activeOpacity={0.85}
+            className={`flex-row items-center px-3.5 py-2 rounded-2xl border ${
+              isOnline 
+                ? 'bg-emerald-50 border-emerald-100 shadow-sm' 
+                : 'bg-slate-50 border-slate-100'
+            }`}
+          >
+            <View 
+              className={`w-2 h-2 rounded-full mr-2 ${
+                isOnline ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'
+              }`} 
+            />
+            <Text 
+              className={`text-[11px] font-black tracking-widest uppercase ${
+                isOnline ? 'text-emerald-700' : 'text-slate-500'
+              }`}
+            >
+              {isOnline ? 'Trực tuyến' : 'Ngoại tuyến'}
+            </Text>
+          </TouchableOpacity>
+
+          {/* Combined Avatar & Notification */}
+          <View className="flex-row items-center ml-1">
+            <TouchableOpacity 
+              onPress={onNotificationPress}
+              activeOpacity={0.7}
+              className="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 items-center justify-center z-10"
+            >
+              <Icon name="bell-ring-outline" size={20} color="#334155" />
+              <View className="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-rose-500 border-2 border-white items-center justify-center">
+                <Text className="text-white text-[8px] font-black">2</Text>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              onPress={onAvatarPress}
+              activeOpacity={0.7}
+              className="-ml-3 w-10 h-10 rounded-full border-2 border-white overflow-hidden bg-white shadow-md shadow-black/20"
+            >
+              <View className="w-full h-full bg-indigo-100 items-center justify-center">
+                <Icon name="account-circle" size={28} color="#1E40AF" />
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.md,
-    paddingBottom: spacing.sm,
-    borderBottomWidth: 1,
-  },
-  logoRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.xs,
-  },
-  logoBox: {
-    width: 32,
-    height: 32,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  appName: {
-    fontWeight: '700',
-    letterSpacing: 0.5,
-  },
-  rightRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.xs,
-  },
-  statusChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 4,
-    borderRadius: 999,
-    gap: 4,
-  },
-  statusDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-  },
-  iconBtn: {
-    width: 36,
-    height: 36,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  badge: {
-    position: 'absolute',
-    top: 2,
-    right: 2,
-    width: 14,
-    height: 14,
-    borderRadius: 7,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  badgeText: {
-    color: '#FFF',
-    fontSize: 8,
-    fontWeight: '700',
-  },
-  avatarBtn: {
-    marginLeft: 2,
-  },
-  avatar: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

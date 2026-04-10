@@ -123,7 +123,7 @@ public enum ErrorCode {
     DELIVERY_NOT_FOUND(404, "Delivery was not found"),
     SHIPPER_PROFILE_ALREADY_EXISTS(409, "Shipper profile already exists for this user"),
     SHIPPER_PROFILE_NOT_FOUND(404, "Shipper profile was not found"),
-    INVALID_DELIVERY_STATUS(400, "Invalid delivery status. Allowed values are PENDING, IN_TRANSIT, DELIVERED, CANCELLED"),
+    INVALID_DELIVERY_STATUS(400, "Invalid delivery status. Allowed values are PENDING ,PICKED_UP,DELIVERING, SUCCESS,CANCELLED "),
     DELIVERY_ALREADY_ACCEPTED(400, "This delivery has already been accepted by another shipper"),
 
     /* =========================

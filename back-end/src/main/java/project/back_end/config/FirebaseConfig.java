@@ -1,12 +1,11 @@
 package project.back_end.config;
 
-
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.Configuration;
 
-import javax.annotation.PostConstruct;
 import java.io.InputStream;
 
 @Configuration
@@ -18,7 +17,7 @@ public class FirebaseConfig {
             InputStream serviceAccount = getClass().getClassLoader().getResourceAsStream("serviceAccountKey.json");
 
             if (serviceAccount == null) {
-                throw new RuntimeException("Không tìm thấy file serviceAccountKey.json");
+                throw new RuntimeException("LỖI NGHIÊM TRỌNG: Không tìm thấy file serviceAccountKey.json trong thư mục src/main/resources!");
             }
 
             FirebaseOptions options = FirebaseOptions.builder()
@@ -27,10 +26,10 @@ public class FirebaseConfig {
 
             if (FirebaseApp.getApps().isEmpty()) {
                 FirebaseApp.initializeApp(options);
-                System.out.println("Firebase Cloud Messaging đã sẵn sàng!");
+                System.out.println("Firebase đã khởi tạo THÀNH CÔNG!");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("LỖI KHI KHỞI TẠO FIREBASE: " + e.getMessage(), e);
         }
     }
 }

@@ -1,8 +1,7 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import { Text, Surface, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { spacing, borderRadius } from '@styles/index';
 import { useDriverStore } from '../store/useDriverStore';
 
 // ── Mini bar chart (7 bars) ─────────────────────────────────────────────────
@@ -11,57 +10,31 @@ function MiniBarChart({ data, color }: { data: number[]; color: string }) {
   const days = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
 
   return (
-    <View style={chartStyles.container}>
-      {data.map((val, i) => (
-        <View key={i} style={chartStyles.barCol}>
-          <View style={chartStyles.barTrack}>
-            <View
-              style={[
-                chartStyles.bar,
-                {
-                  height: `${(val / max) * 100}%`,
-                  backgroundColor: i === data.length - 1 ? color : color + '66',
-                },
-              ]}
-            />
+    <View className="flex-row items-end justify-between h-[60px]">
+      {data.map((val, i) => {
+        const isToday = i === data.length - 1;
+        return (
+          <View key={i} className="items-center flex-1 h-full">
+            <View className="flex-1 w-2.5 justify-end items-center mb-1.5">
+              <View
+                className="w-full rounded-full"
+                style={{
+                  height: `${Math.max((val / max) * 100, 10)}%`, // At least 10% height for visibility
+                  backgroundColor: isToday ? color : '#E5E7EB', // Highlight today with primary, others gray
+                }}
+              />
+            </View>
+            <Text
+              className={`text-[9px] font-bold ${isToday ? 'text-gray-800' : 'text-gray-400'}`}
+            >
+              {days[i]}
+            </Text>
           </View>
-          <Text style={[chartStyles.label, { color: '#9E9E9E' }]}>{days[i]}</Text>
-        </View>
-      ))}
+        );
+      })}
     </View>
   );
 }
-
-const chartStyles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    gap: 3,
-    height: 48,
-    marginTop: spacing.xs,
-  },
-  barCol: {
-    flex: 1,
-    alignItems: 'center',
-    gap: 2,
-  },
-  barTrack: {
-    flex: 1,
-    width: '100%',
-    justifyContent: 'flex-end',
-    borderRadius: 2,
-    overflow: 'hidden',
-    backgroundColor: '#F5F5F5',
-  },
-  bar: {
-    width: '100%',
-    borderRadius: 2,
-  },
-  label: {
-    fontSize: 8,
-    fontWeight: '500',
-  },
-});
 
 // ── Stat tile ───────────────────────────────────────────────────────────────
 interface StatTileProps {
@@ -69,107 +42,87 @@ interface StatTileProps {
   label: string;
   value: string;
   iconColor: string;
+  bgColorClass: string;
 }
 
-function StatTile({ icon, label, value, iconColor }: StatTileProps) {
-  const theme = useTheme();
+function StatTile({ icon, label, value, iconColor, bgColorClass }: StatTileProps) {
   return (
-    <View style={tileStyles.tile}>
-      <View style={[tileStyles.iconBox, { backgroundColor: iconColor + '20' }]}>
-        <Icon name={icon} size={18} color={iconColor} />
+    <View className="flex-1 flex-row items-center gap-3">
+      <View className={`w-10 h-10 rounded-full items-center justify-center ${bgColorClass}`}>
+        <Icon name={icon} size={20} color={iconColor} />
       </View>
-      <Text variant="labelSmall" style={{ color: theme.colors.onSurfaceVariant }}>
-        {label}
-      </Text>
-      <Text variant="titleMedium" style={{ fontWeight: '700', color: theme.colors.onSurface }}>
-        {value}
-      </Text>
+      <View>
+        <Text className="text-gray-500 font-medium text-[11px] mb-0.5">{label}</Text>
+        <Text className="text-gray-900 font-bold text-[15px]">{value}</Text>
+      </View>
     </View>
   );
 }
 
-const tileStyles = StyleSheet.create({
-  tile: {
-    flex: 1,
-    alignItems: 'center',
-    gap: 2,
-  },
-  iconBox: {
-    width: 34,
-    height: 34,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 2,
-  },
-});
-
 // ── Main widget ─────────────────────────────────────────────────────────────
 export function StatsWidget() {
-  const theme = useTheme();
   const stats = useDriverStore((s) => s.stats);
+  const theme = useTheme();
 
   const earningsFormatted = new Intl.NumberFormat('vi-VN').format(stats.earningsToday) + 'đ';
 
   return (
-    <Surface style={[styles.card, { backgroundColor: theme.colors.surface }]} elevation={2}>
-      {/* Top row */}
-      <View style={styles.statsRow}>
-        <StatTile
-          icon="cash-multiple"
-          label="Thu nhập hôm nay"
-          value={earningsFormatted}
-          iconColor="#4CAF50"
-        />
-        <View style={styles.divider} />
-        <StatTile
-          icon="check-circle-outline"
-          label="Đơn hoàn thành"
-          value={`${stats.completedToday} đơn`}
-          iconColor={theme.colors.primary}
-        />
-        <View style={styles.divider} />
-        <StatTile
-          icon="star"
-          label="Đánh giá"
-          value={`${stats.rating} ★`}
-          iconColor="#FF9800"
-        />
+    <Surface
+      className="mx-4 mt-4 rounded-3xl overflow-hidden bg-white border border-gray-100"
+      style={[{ elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.05, shadowRadius: 10 }]}
+    >
+      {/* ── Nửa trên (Màu nổi): Thu nhập ── */}
+      <View className="p-5 pb-8 relative overflow-hidden" style={{ backgroundColor: theme.colors.primary }}>
+        {/* Background shapes for decoration */}
+        <View className="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-white opacity-10" />
+        <View className="absolute -left-12 -bottom-12 w-28 h-28 rounded-full bg-black opacity-10" />
+
+        <View className="flex-row justify-between items-start">
+          <View>
+            <Text style={{ color: '#FFFFFF' }} className="text-white/80 font-medium text-xs tracking-wide mb-1 uppercase">
+              Thu nhập trong ngày
+            </Text>
+            <Text style={{ color: '#FFFFFF' }} className="text-[28px] font-black text-white tracking-tight">
+              {earningsFormatted}
+            </Text>
+          </View>
+          <View className="bg-white/20 p-2.5 rounded-[12px]">
+            <Icon name="wallet-giftcard" size={24} color="#FFF" />
+          </View>
+        </View>
       </View>
 
-      {/* Chart */}
-      <View style={styles.chartSection}>
-        <Text variant="labelSmall" style={{ color: theme.colors.onSurfaceVariant, marginBottom: 2 }}>
-          Thu nhập 7 ngày qua
-        </Text>
-        <MiniBarChart data={stats.weeklyEarnings} color={theme.colors.primary} />
+      {/* ── Nửa dưới (Màu Trắng): Các thống kê phụ và biểu đồ ── */}
+      <View className="bg-white px-5 py-5 rounded-t-3xl -mt-5">
+        {/* Chỉ số phụ */}
+        <View className="flex-row justify-between items-center mb-5">
+          <StatTile
+            icon="check-decagram"
+            label="Hoàn thành"
+            value={`${stats.completedToday} đơn`}
+            iconColor="#2563EB"
+            bgColorClass="bg-blue-50"
+          />
+          <View className="w-[1px] h-8 bg-gray-200 mx-2" />
+          <StatTile
+            icon="star"
+            label="Đánh giá"
+            value={`${stats.rating.toFixed(1)} ★`}
+            iconColor="#D97706"
+            bgColorClass="bg-amber-50"
+          />
+        </View>
+
+        {/* Biểu đồ */}
+        <View className="p-4 bg-gray-50/50 rounded-2xl border border-gray-100/60">
+          <View className="flex-row justify-between items-center mb-3">
+            <Text className="text-gray-900 font-bold text-sm tracking-tight">Thống kê 7 ngày</Text>
+            <Text className="text-gray-400 font-medium text-[10px] uppercase tracking-widest">Gần nhất</Text>
+          </View>
+          <MiniBarChart data={stats.weeklyEarnings} color={theme.colors.primary} />
+        </View>
       </View>
     </Surface>
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    marginHorizontal: spacing.md,
-    marginTop: spacing.md,
-    borderRadius: borderRadius.xl,
-    padding: spacing.md,
-    overflow: 'hidden',
-  },
-  statsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  divider: {
-    width: 1,
-    height: 48,
-    backgroundColor: '#E0E0E0',
-    marginHorizontal: spacing.xs,
-  },
-  chartSection: {
-    marginTop: spacing.md,
-    borderTopWidth: 1,
-    borderTopColor: '#F0F0F0',
-    paddingTop: spacing.sm,
-  },
-});

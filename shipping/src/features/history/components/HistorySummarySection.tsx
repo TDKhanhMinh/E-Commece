@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import { Text, useTheme, ActivityIndicator } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import type { HistorySummary } from '../types';
@@ -17,7 +17,7 @@ export const HistorySummarySection = ({
 
   if (isLoading) {
     return (
-      <View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
+      <View className="p-3 border-b border-[#E0E0E0]" style={{ backgroundColor: theme.colors.surface }}>
         <ActivityIndicator />
       </View>
     );
@@ -35,17 +35,15 @@ export const HistorySummarySection = ({
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
+    <View className="p-3 border-b border-[#E0E0E0]" style={{ backgroundColor: theme.colors.surface }}>
       {/* Main Stats */}
-      <View style={styles.statsGrid}>
+      <View className="flex-row justify-between mb-3 gap-2">
         {/* Total Orders */}
         <View
-          style={[
-            styles.statCard,
-            { backgroundColor: theme.colors.surfaceVariant },
-          ]}
+          className="flex-1 px-3 py-3 rounded-[10px] items-center"
+          style={{ backgroundColor: theme.colors.surfaceVariant }}
         >
-          <View style={styles.statIconWrapper}>
+          <View className="w-10 h-10 rounded-full justify-center items-center bg-[#F5F5F5]">
             <Icon
               name="package-variant"
               size={24}
@@ -75,12 +73,10 @@ export const HistorySummarySection = ({
 
         {/* Total Income */}
         <View
-          style={[
-            styles.statCard,
-            { backgroundColor: theme.colors.surfaceVariant },
-          ]}
+          className="flex-1 px-3 py-3 rounded-[10px] items-center"
+          style={{ backgroundColor: theme.colors.surfaceVariant }}
         >
-          <View style={styles.statIconWrapper}>
+          <View className="w-10 h-10 rounded-full justify-center items-center bg-[#F5F5F5]">
             <Icon
               name="cash-multiple"
               size={24}
@@ -110,12 +106,10 @@ export const HistorySummarySection = ({
 
         {/* Average Rating */}
         <View
-          style={[
-            styles.statCard,
-            { backgroundColor: theme.colors.surfaceVariant },
-          ]}
+          className="flex-1 px-3 py-3 rounded-[10px] items-center"
+          style={{ backgroundColor: theme.colors.surfaceVariant }}
         >
-          <View style={styles.statIconWrapper}>
+          <View className="w-10 h-10 rounded-full justify-center items-center bg-[#F5F5F5]">
             <Icon
               name="star"
               size={24}
@@ -146,20 +140,15 @@ export const HistorySummarySection = ({
 
       {/* Order Status Breakdown */}
       <View
-        style={[
-          styles.breakdownContainer,
-          {
-            backgroundColor: theme.colors.primary + '10',
-            borderLeftColor: theme.colors.primary,
-          },
-        ]}
+        className="flex-row px-3 py-2.5 rounded-lg border-l-[3px] gap-1"
+        style={{
+          backgroundColor: theme.colors.primary + '10',
+          borderLeftColor: theme.colors.primary,
+        }}
       >
-        <View style={styles.breakdownItem}>
+        <View className="flex-1 flex-row items-center justify-center">
           <View
-            style={[
-              styles.breakdownDot,
-              { backgroundColor: '#4CAF50' },
-            ]}
+            className="w-1.5 h-1.5 rounded-full mr-1.5 bg-[#4CAF50]"
           />
           <Text variant="bodySmall" style={{ color: theme.colors.onSurface }}>
             Hoàn thành:
@@ -176,14 +165,11 @@ export const HistorySummarySection = ({
           </Text>
         </View>
 
-        <View style={styles.divider} />
+        <View className="w-[1px] bg-[#E0E0E0]" />
 
-        <View style={styles.breakdownItem}>
+        <View className="flex-1 flex-row items-center justify-center">
           <View
-            style={[
-              styles.breakdownDot,
-              { backgroundColor: '#F44336' },
-            ]}
+            className="w-1.5 h-1.5 rounded-full mr-1.5 bg-[#F44336]"
           />
           <Text variant="bodySmall" style={{ color: theme.colors.onSurface }}>
             Đã hủy:
@@ -204,55 +190,3 @@ export const HistorySummarySection = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
-  },
-  statsGrid: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 12,
-    gap: 8,
-  },
-  statCard: {
-    flex: 1,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  statIconWrapper: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5F5F5',
-  },
-  breakdownContainer: {
-    flexDirection: 'row',
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    borderRadius: 8,
-    borderLeftWidth: 3,
-    gap: 4,
-  },
-  breakdownItem: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  breakdownDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    marginRight: 6,
-  },
-  divider: {
-    width: 1,
-    backgroundColor: '#E0E0E0',
-  },
-});

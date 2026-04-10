@@ -19,17 +19,19 @@ export interface DriverStats {
 }
 
 export interface Order {
-  id: string;
+  orderId: string;
+  deliveryId: string;
   pickupAddress: string;
-  dropoffAddress: string;
+  destination: string;
   pickupDistanceKm: number;
   deliveryDistanceKm: number;
   estimatedMinutes: number;
-  fee: number;
+  codAmount: number;
   cargoType: CargoType;
   customerName: string;
   customerPhone: string;
   note?: string;
+  deliveryStatus: string;
   createdAt: Date;
 }
 
@@ -48,7 +50,6 @@ export interface OrderDetail extends Order {
   receiverNote?: string;  // note from receiver (same as `note` but kept explicit)
   items: OrderItem[];
   orderTotal: number;     // full order value
-  codAmount?: number;     // amount driver needs to collect (COD)
   paymentMethod: PaymentMethod;
 }
 

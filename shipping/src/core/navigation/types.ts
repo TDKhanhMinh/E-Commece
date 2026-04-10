@@ -9,6 +9,7 @@ import type { HistoryStackParamList } from '@features/history/navigators';
 export type HomeStackParamList = {
   HomeMain: undefined;
   OrderDetail: { orderId: string };
+  Notifications: undefined;
 };
 
 export type AuthStackParamList = {
@@ -25,6 +26,7 @@ export type MainTabParamList = {
   History: NavigatorScreenParams<HistoryStackParamList>;
   Earnings: undefined;
   Wallet: undefined;
+  Profile: undefined;
   Settings: undefined;
 };
 

@@ -23,6 +23,7 @@ export const SCREEN_NAMES = {
   MAIN: {
     HOME: 'Home',
     SHIPPING: 'Shipping',
+    WALLET: 'Wallet',
     PROFILE: 'Profile',
   },
 } as const;

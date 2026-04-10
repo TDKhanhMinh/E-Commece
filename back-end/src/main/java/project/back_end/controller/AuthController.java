@@ -20,7 +20,7 @@ import project.back_end.service.UserService;
 public class AuthController {
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);
     private final UserService userService;
-    
+
     public AuthController(UserService userService) {
         this.userService = userService;
     }
@@ -77,6 +77,16 @@ public class AuthController {
         log.info("Password changed successfully for email: {}", email);
         return ResponseEntity.ok(
                 new ApiResponse<>(200, "Password changed successfully", null)
+        );
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<Void>> logout(@AuthenticationPrincipal UserDetails userDetails) {
+        String email = userDetails.getUsername();
+        userService.logoutUser(email);
+        log.info("User logged out successfully: {}", email);
+        return ResponseEntity.ok(
+                new ApiResponse<>(200, "Logout successful", null)
         );
     }
 }

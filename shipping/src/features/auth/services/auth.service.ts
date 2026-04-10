@@ -32,7 +32,7 @@ class AuthService {
     register: '/auth/register',
     logout: '/auth/logout',
     refreshToken: '/auth/refresh',
-    me: '/auth/me',
+    me: '/auth/profile',
     forgotPassword: '/auth/forgot-password',
     resetPassword: '/auth/reset-password',
   };
@@ -43,7 +43,7 @@ class AuthService {
       credentials,
     );
     console.log('Login response in service', response);
-    
+
     if (response.success && response.data) {
       const transformedData = this.transformLoginResponse(response.data);
       console.log('Transformed data in service', transformedData);

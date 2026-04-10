@@ -7,6 +7,7 @@ import project.back_end.entity.Delivery;
 import project.back_end.entity.Order;
 import project.back_end.entity.ShipperProfile;
 import project.back_end.response.AdminDeliveryResponse;
+import project.back_end.response.ShipperDeliveryResponse;
 import project.back_end.response.ShipperProfileResponse;
 
 @Mapper(componentModel = "spring")
@@ -43,6 +44,20 @@ public interface DeliveryMapper {
     @Mapping(source = "balance", target = "balance")
     @Mapping(source = "ratingAverage", target = "ratingAverage")
     ShipperProfileResponse toShipperProfileResponse(ShipperProfile shipperProfile);
+
+
+    @Mapping(source = "id", target = "deliveryId")
+    @Mapping(source = "order.id", target = "orderId")
+
+    @Mapping(source = "order.deliveryAddress.userName", target = "customerName")
+    @Mapping(source = "order.deliveryAddress.phoneNumber", target = "customerPhone")
+    @Mapping(source = "order.deliveryAddress.location", target = "destination")
+    @Mapping(source = "order.deliveryAddress.latitude", target = "latitude")
+    @Mapping(source = "order.deliveryAddress.longitude", target = "longitude")
+    @Mapping(source = "amountToCollect", target = "codAmount")
+    @Mapping(source = "order.orderItems", target = "items")
+    @Mapping(source = "status", target = "deliveryStatus")
+    ShipperDeliveryResponse toShipperDeliveryResponse(Delivery delivery);
 
     @Named("mapPaymentStatus")
     default String mapPaymentStatus(Order order) {

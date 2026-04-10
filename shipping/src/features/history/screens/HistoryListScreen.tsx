@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   View,
-  StyleSheet,
   FlatList,
   RefreshControl,
   Dimensions,
@@ -52,7 +51,10 @@ export const HistoryListScreen = ({ navigation }: HistoryListScreenProps) => {
   };
 
   const renderEmptyState = () => (
-    <View style={styles.emptyContainer}>
+    <View 
+      className="flex-1 justify-center items-center px-8"
+      style={{ minHeight: Dimensions.get('window').height / 2 }}
+    >
       <Icon
         name="history"
         size={64}
@@ -84,7 +86,7 @@ export const HistoryListScreen = ({ navigation }: HistoryListScreenProps) => {
   const renderFooter = () => {
     if (!isLoading && hasMore) {
       return (
-        <View style={styles.footerContainer}>
+        <View className="py-5 items-center">
           <Text
             variant="bodySmall"
             style={{
@@ -100,7 +102,7 @@ export const HistoryListScreen = ({ navigation }: HistoryListScreenProps) => {
 
     if (!hasMore && orders.length > 0) {
       return (
-        <View style={styles.footerContainer}>
+        <View className="py-5 items-center">
           <Text
             variant="labelSmall"
             style={{
@@ -118,7 +120,7 @@ export const HistoryListScreen = ({ navigation }: HistoryListScreenProps) => {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+    <View className="flex-1" style={{ backgroundColor: theme.colors.background }}>
       <FlatList
         data={orders}
         keyExtractor={(item) => item.id}
@@ -164,19 +166,3 @@ export const HistoryListScreen = ({ navigation }: HistoryListScreenProps) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 32,
-    minHeight: Dimensions.get('window').height / 2,
-  },
-  footerContainer: {
-    paddingVertical: 20,
-    alignItems: 'center',
-  },
-});

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import project.back_end.entity.User;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -15,6 +16,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByEmail(String email);
 
     User getUserByEmail(String email);
+
+    List<User> getAllByRole(User.Role role);
 
     @Query("SELECT u FROM User u WHERE " +
             "(:keyword IS NULL OR :keyword = '' OR " +

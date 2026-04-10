@@ -1,64 +1,20 @@
-import React from 'react';
-import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { Text, Surface, useTheme } from 'react-native-paper';
+import React, { useState } from 'react';
+import { View, TouchableOpacity, Modal as RNModal } from 'react-native';
+import { Text, Surface, useTheme, Portal, Modal, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { spacing, borderRadius } from '@styles/index';
 import type { Order, CargoType } from '../types/home.types';
-import { useDriverStore } from '../store/useDriverStore';
-
-// ── Cargo config ────────────────────────────────────────────────────────────
-const cargoConfig: Record<CargoType, { icon: string; label: string; color: string }> = {
-  food: { icon: 'food', label: 'Đồ ăn', color: '#FF5722' },
-  document: { icon: 'file-document', label: 'Tài liệu', color: '#2196F3' },
-  package: { icon: 'package-variant', label: 'Hàng hoá', color: '#9C27B0' },
-  fragile: { icon: 'glass-fragile', label: 'Dễ vỡ', color: '#F44336' },
-  bulky: { icon: 'archive', label: 'Hàng cồng kềnh', color: '#795548' },
-};
+import { formatCurrency } from '@/shared';
+import { useAcceptOrder } from '../hooks';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { HomeStackParamList } from '@/core';
 
 // ── Masked phone ─────────────────────────────────────────────────────────────
 function maskPhone(phone: string): string {
   if (phone.length < 6) return phone;
   return phone.slice(0, 3) + '****' + phone.slice(-3);
 }
-
-// ── Info row helper ──────────────────────────────────────────────────────────
-function InfoRow({
-  icon,
-  iconColor,
-  text,
-  bold,
-}: {
-  icon: string;
-  iconColor: string;
-  text: string;
-  bold?: boolean;
-}) {
-  const theme = useTheme();
-  return (
-    <View style={infoStyles.row}>
-      <Icon name={icon} size={14} color={iconColor} />
-      <Text
-        variant="bodySmall"
-        style={[
-          { color: bold ? theme.colors.onSurface : theme.colors.onSurfaceVariant },
-          bold && { fontWeight: '600' },
-        ]}
-        numberOfLines={1}
-      >
-        {text}
-      </Text>
-    </View>
-  );
-}
-
-const infoStyles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-    flex: 1,
-  },
-});
 
 // ── Main component ───────────────────────────────────────────────────────────
 interface OrderCardProps {
@@ -67,235 +23,192 @@ interface OrderCardProps {
 
 export function OrderCard({ order }: OrderCardProps) {
   const theme = useTheme();
-  const acceptOrder = useDriverStore((s) => s.acceptOrder);
-  const cargo = cargoConfig[order.cargoType];
+  const navigation = useNavigation<NativeStackNavigationProp<HomeStackParamList>>();
+  const acceptOrderMutation = useAcceptOrder();
+  const [visible, setVisible] = useState(false);
 
-  const feeFormatted = new Intl.NumberFormat('vi-VN').format(order.fee) + 'đ';
+  const feeFormatted = formatCurrency(order.codAmount);
+
+  const showDialog = () => setVisible(true);
+  const hideDialog = () => setVisible(false);
 
   const handleAccept = () => {
-    Alert.alert(
-      'Nhận đơn hàng?',
-      `Xác nhận nhận đơn ${order.id} - Phí: ${feeFormatted}`,
-      [
-        { text: 'Huỷ', style: 'cancel' },
-        {
-          text: 'Xác nhận',
-          onPress: () => acceptOrder(order.id),
-        },
-      ],
-    );
+    hideDialog();
+    acceptOrderMutation.mutate(order.deliveryId);
+  };
+
+  const handleCardPress = () => {
+    navigation.navigate('OrderDetail', { orderId: String(order.deliveryId) });
   };
 
   return (
     <Surface
-      style={[styles.card, { backgroundColor: theme.colors.surface }]}
-      elevation={1}
+      className="mx-4 mb-4 bg-white rounded-3xl overflow-hidden"
+      style={[{
+        elevation: 1.5,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.04,
+        shadowRadius: 8,
+        borderWidth: 1,
+        borderColor: 'rgba(0,0,0,0.03)'
+      }]}
     >
-      {/* ── Header: cargo badge + fee ── */}
-      <View style={styles.cardHeader}>
-        <View style={[styles.cargoBadge, { backgroundColor: cargo.color + '18' }]}>
-          <Icon name={cargo.icon} size={14} color={cargo.color} />
-          <Text
-            variant="labelSmall"
-            style={{ color: cargo.color, fontWeight: '700' }}
-          >
-            {cargo.label}
-          </Text>
-        </View>
-        <Text
-          variant="titleMedium"
-          style={{ color: '#4CAF50', fontWeight: '800' }}
+      <TouchableOpacity activeOpacity={0.75} onPress={handleCardPress} className="p-4">
+        {/* Modal xác nhận nhận đơn */}
+        <RNModal
+          visible={visible}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={hideDialog}
+          statusBarTranslucent
         >
-          {feeFormatted}
-        </Text>
-      </View>
+          <View className="flex-1 bg-black/50 justify-center px-6">
+            <View className="bg-white rounded-[24px] p-6 shadow-2xl">
+              <View
+                className="w-16 h-16 rounded-full items-center justify-center self-center mb-5"
+                style={[{ backgroundColor: theme.colors.primaryContainer }]}
+              >
+                <Icon name="truck-fast" size={32} color={theme.colors.primary} />
+              </View>
+              <Text variant="titleLarge" className="text-center font-bold text-gray-900 mb-2">
+                Nhận chuyến hàng?
+              </Text>
+              <Text variant="bodyMedium" className="text-center text-gray-500 mb-6 px-2">
+                Bạn sẽ là tài xế phụ trách việc lấy và giao đơn hàng này.
+              </Text>
 
-      {/* ── Route ─── */}
-      <View style={styles.routeSection}>
-        {/* Pickup */}
-        <View style={styles.routeRow}>
-          <View style={[styles.routeDot, { backgroundColor: theme.colors.primary }]} />
-          <View style={styles.routeTextBlock}>
-            <Text variant="labelSmall" style={{ color: theme.colors.primary, fontWeight: '600' }}>
-              LẤY HÀNG
+              <View className="bg-gray-50 p-4 rounded-2xl items-center mb-6 border border-gray-100">
+                <Text variant="labelMedium" className="text-gray-500 mb-1 font-medium">Tổng phí thu</Text>
+                <Text variant="headlineSmall" className="text-emerald-600 font-black tracking-tight">
+                  {feeFormatted}
+                </Text>
+                <View className="bg-gray-200/60 px-3 py-1 rounded-full mt-3">
+                  <Text variant="labelSmall" className="text-gray-600 font-bold">
+                    Mã: #{order.orderId}
+                  </Text>
+                </View>
+              </View>
+
+              <View className="flex-row gap-3">
+                <TouchableOpacity
+                  className="flex-1 bg-gray-100 py-4 rounded-xl items-center justify-center"
+                  onPress={hideDialog}
+                  activeOpacity={0.7}
+                >
+                  <Text variant="titleSmall" className="text-gray-600 font-bold">Quay lại</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  className="flex-1 py-4 rounded-xl items-center justify-center"
+                  style={[{ backgroundColor: theme.colors.primary }]}
+                  onPress={handleAccept}
+                  activeOpacity={0.7}
+                  disabled={acceptOrderMutation.isPending}
+                >
+                  <Text variant="titleSmall" className="text-white font-bold text-base">
+                    {acceptOrderMutation.isPending ? 'Đang xử lý...' : 'Đồng ý nhận'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </RNModal>
+
+        {/* ── Header: ID and Fee ── */}
+        <View className="flex-row justify-between items-center mb-4">
+          <View className="bg-gray-100 px-3 py-1.5 rounded-full border border-gray-200/50">
+            <Text variant="labelSmall" className="text-gray-500 font-bold uppercase tracking-wider">
+              #{order.orderId}
             </Text>
-            <Text
-              variant="bodySmall"
-              style={{ color: theme.colors.onSurface }}
-              numberOfLines={1}
-            >
-              {order.pickupAddress}
+          </View>
+          <View className="bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100">
+            <Text variant="titleMedium" className="text-emerald-600 font-black tracking-tight leading-5">
+              {feeFormatted}
             </Text>
           </View>
         </View>
 
-        {/* Dashed connector */}
-        <View style={styles.connector}>
-          <View style={[styles.connectorLine, { borderColor: theme.colors.outlineVariant }]} />
-        </View>
+        {/* ── Route ─── */}
+        <View className="bg-gray-50/80 rounded-2xl p-3 mb-4 border border-gray-100/50">
+          {/* Pickup */}
+          <View className="flex-row items-center gap-3">
+            <View className="w-[34px] h-[34px] rounded-full bg-blue-100 items-center justify-center">
+              <Icon name="package-up" size={18} color="#2563EB" />
+            </View>
+            <View className="flex-1">
+              <Text variant="labelSmall" className="text-blue-600 font-bold mb-0.5 uppercase">Điểm lấy hàng</Text>
+              <Text variant="bodyMedium" className="text-gray-800 font-semibold leading-5" numberOfLines={1}>
+                {order.pickupAddress || 'Chưa cập nhật'}
+              </Text>
+            </View>
+          </View>
 
-        {/* Dropoff */}
-        <View style={styles.routeRow}>
-          <View style={[styles.routeDot, { backgroundColor: '#F44336' }]} />
-          <View style={styles.routeTextBlock}>
-            <Text variant="labelSmall" style={{ color: '#F44336', fontWeight: '600' }}>
-              GIAO HÀNG
-            </Text>
-            <Text
-              variant="bodySmall"
-              style={{ color: theme.colors.onSurface }}
-              numberOfLines={1}
-            >
-              {order.dropoffAddress}
-            </Text>
+          {/* Connect Line */}
+          <View className="h-[18px] border-l-[2px] border-dashed border-gray-300 ml-[16px] my-1" />
+
+          {/* Dropoff */}
+          <View className="flex-row items-center gap-3">
+            <View className="w-[34px] h-[34px] rounded-full bg-rose-100 items-center justify-center">
+              <Icon name="map-marker-down" size={18} color="#E11D48" />
+            </View>
+            <View className="flex-1">
+              <Text variant="labelSmall" className="text-rose-600 font-bold mb-0.5 uppercase">Điểm giao hàng</Text>
+              <Text variant="bodyMedium" className="text-gray-800 font-semibold leading-5" numberOfLines={1}>
+                {order.destination}
+              </Text>
+            </View>
           </View>
         </View>
-      </View>
 
-      {/* ── Meta info ── */}
-      <View style={styles.metaRow}>
-        <InfoRow
-          icon="map-marker-distance"
-          iconColor={theme.colors.primary}
-          text={`${order.pickupDistanceKm}km → ${order.deliveryDistanceKm}km`}
-        />
-        <InfoRow
-          icon="clock-outline"
-          iconColor="#FF9800"
-          text={`~${order.estimatedMinutes} phút`}
-        />
-      </View>
-
-      {/* ── Customer ── */}
-      <View style={styles.customerRow}>
-        <View style={[styles.customerAvatar, { backgroundColor: theme.colors.primaryContainer }]}>
-          <Icon name="account" size={14} color={theme.colors.primary} />
+        {/* ── Customer & Meta ── */}
+        <View className="flex-row items-center justify-between mb-1 px-1">
+          <View className="flex-row items-center gap-2.5">
+            <View className="w-9 h-9 rounded-full bg-gray-100 items-center justify-center border border-gray-200">
+              <Icon name="account" size={18} color="#4B5563" />
+            </View>
+            <View>
+              <Text variant="labelLarge" className="text-gray-900 font-bold">
+                {order.customerName}
+              </Text>
+              <Text variant="bodySmall" className="text-gray-500 font-medium">
+                {maskPhone(order.customerPhone)}
+              </Text>
+            </View>
+          </View>
         </View>
-        <Text variant="bodySmall" style={{ color: theme.colors.onSurface, fontWeight: '600' }}>
-          {order.customerName}
-        </Text>
-        <Text variant="bodySmall" style={{ color: theme.colors.onSurfaceVariant }}>
-          •
-        </Text>
-        <Text variant="bodySmall" style={{ color: theme.colors.onSurfaceVariant }}>
-          {maskPhone(order.customerPhone)}
-        </Text>
-      </View>
 
-      {/* ── Note ── */}
-      {order.note ? (
-        <View style={[styles.noteRow, { backgroundColor: '#FFF8E1' }]}>
-          <Icon name="note-text-outline" size={13} color="#FF9800" />
-          <Text
-            variant="bodySmall"
-            style={{ color: '#795548', flex: 1 }}
-            numberOfLines={2}
-          >
-            {order.note}
-          </Text>
-        </View>
-      ) : null}
+        {/* ── Note ── */}
+        {order.note ? (
+          <View className="flex-row items-start gap-2 bg-amber-50/80 p-3 rounded-[14px] border border-amber-100 mt-3">
+            <Icon name="information-outline" size={16} color="#D97706" className="mt-0.5" />
+            <Text variant="bodySmall" className="text-amber-700 flex-1 font-medium leading-5">
+              {order.note}
+            </Text>
+          </View>
+        ) : null}
 
-      {/* ── Accept button ── */}
-      <TouchableOpacity
-        style={[styles.acceptBtn, { backgroundColor: theme.colors.primary }]}
-        onPress={handleAccept}
-        activeOpacity={0.85}
-      >
-        <Icon name="check-bold" size={16} color="#FFF" />
-        <Text variant="labelLarge" style={{ color: '#FFF', fontWeight: '700' }}>
-          Nhận đơn
-        </Text>
+        {/* ── Action Button ── */}
+        {order.deliveryStatus === 'PENDING' && (
+          <View className="mt-4 border-t border-gray-100 pt-3">
+            <TouchableOpacity
+              className="flex-row items-center justify-center rounded-[14px] py-3.5 shadow-sm"
+              style={[
+                { backgroundColor: theme.colors.primary },
+                acceptOrderMutation.isPending && { opacity: 0.7 }
+              ]}
+              onPress={showDialog}
+              activeOpacity={0.85}
+              disabled={acceptOrderMutation.isPending}
+            >
+              <Icon name={acceptOrderMutation.isPending ? "loading" : "truck-fast"} size={20} color="#FFF" />
+              <Text variant="bodyMedium" className="text-white font-bold ml-2">
+                {acceptOrderMutation.isPending ? 'Đang nhận đơn...' : 'Nhận đơn'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </TouchableOpacity>
     </Surface>
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    marginHorizontal: spacing.md,
-    marginBottom: spacing.sm,
-    borderRadius: borderRadius.xl,
-    padding: spacing.md,
-    overflow: 'hidden',
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: spacing.sm,
-  },
-  cargoBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 4,
-    borderRadius: borderRadius.full,
-    gap: 4,
-  },
-  routeSection: {
-    marginBottom: spacing.sm,
-  },
-  routeRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: spacing.sm,
-  },
-  routeDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    marginTop: 3,
-  },
-  routeTextBlock: {
-    flex: 1,
-  },
-  connector: {
-    paddingLeft: 4,
-    paddingVertical: 2,
-  },
-  connectorLine: {
-    borderLeftWidth: 1.5,
-    borderStyle: 'dashed',
-    height: 12,
-    marginLeft: 0,
-  },
-  metaRow: {
-    flexDirection: 'row',
-    gap: spacing.md,
-    marginBottom: spacing.sm,
-    paddingTop: spacing.xs,
-    borderTopWidth: 1,
-    borderTopColor: '#F0F0F0',
-  },
-  customerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.xs,
-    marginBottom: spacing.xs,
-  },
-  customerAvatar: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  noteRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 6,
-    padding: spacing.xs,
-    borderRadius: borderRadius.md,
-    marginBottom: spacing.sm,
-  },
-  acceptBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: borderRadius.lg,
-    paddingVertical: spacing.sm,
-    gap: spacing.xs,
-    marginTop: spacing.xs,
-  },
-});

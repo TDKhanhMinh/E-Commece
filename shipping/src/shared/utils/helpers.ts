@@ -1,12 +1,20 @@
 export function formatCurrency(
-  amount: number,
+  amount: string | number | undefined | null,
   currency: string = 'VND',
   locale: string = 'vi-VN',
 ): string {
+  if (amount === undefined || amount === null) return '0 ₫';
+  
+  const numericAmount = typeof amount === 'string' 
+    ? Number(amount.replace(/[^0-9.-]+/g, ""))
+    : amount;
+
+  if (isNaN(numericAmount)) return '0 ₫';
+
   return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency,
-  }).format(amount);
+  }).format(numericAmount);
 }
 
 export function formatDate(

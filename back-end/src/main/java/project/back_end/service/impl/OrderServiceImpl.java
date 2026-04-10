@@ -2,6 +2,7 @@ package project.back_end.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import project.back_end.entity.product.Sku;
 import project.back_end.enumerate.ErrorCode;
 import project.back_end.enumerate.OrderStatus;
 import project.back_end.enumerate.PointTransactionType;
+import project.back_end.enumerate.DeliveryStatus;
 import project.back_end.exception.AppException;
 import project.back_end.mapper.CheckoutMapper;
 import project.back_end.repository.*;
@@ -18,7 +20,6 @@ import project.back_end.request.CheckoutItemRequest;
 import project.back_end.request.CheckoutRequest;
 import project.back_end.response.OrderResponse;
 import project.back_end.response.VoucherResponse;
-import project.back_end.service.DeliveryService;
 import project.back_end.service.MemberShipPointService;
 import project.back_end.service.OrderService;
 import project.back_end.service.VoucherService;
@@ -47,7 +48,8 @@ public class OrderServiceImpl implements OrderService {
     private final ShippingService shippingService;
     private final VoucherService voucherService;
     private final MemberShipPointService memberShipPointService;
-    private final DeliveryService deliveryService;
+    private final ApplicationEventPublisher eventPublisher;
+    private final DeliveryRepository deliveryRepository;
 
     @Transactional
     public OrderResponse checkout(String email, CheckoutRequest request) {
@@ -290,16 +292,16 @@ public class OrderServiceImpl implements OrderService {
         LocalDateTime now = LocalDateTime.now();
         order.setUpdatedAt(now);
 
-        switch (newStatus) {
-            case CONFIRMED -> {
-                if (currentStatus != OrderStatus.PENDING)
-                    throw new AppException(ErrorCode.INVALID_STATUS_TRANSITION);
-                order.setConfirmedAt(now);
-                deliveryService.createDeliveryForOrder(order);
-            }
-            case PAID -> {
-                deliveryService.createDeliveryForOrder(order);
-            }
+         switch (newStatus) {
+             case CONFIRMED -> {
+                 if (currentStatus != OrderStatus.PENDING)
+                     throw new AppException(ErrorCode.INVALID_STATUS_TRANSITION);
+                 order.setConfirmedAt(now);
+                 createDeliveryForOrder(order);
+             }
+             case PAID -> {
+                 createDeliveryForOrder(order);
+             }
 
             case DELIVERED -> {
                 if (currentStatus != OrderStatus.SHIPPING)
@@ -352,6 +354,16 @@ public class OrderServiceImpl implements OrderService {
         for (OrderItem item : items) {
             skuRepository.updateStock(item.getSkuId(), item.getQuantity());
         }
+    }
+
+    private void createDeliveryForOrder(Order order) {
+        Delivery delivery = new Delivery();
+        delivery.setOrder(order);
+        delivery.setShipper(null);
+        delivery.setStatus(DeliveryStatus.PENDING);
+        delivery.setAmountToCollect(order.getFinalAmount());
+        order.setDelivery(delivery);
+        deliveryRepository.save(delivery);
     }
 
     @Override

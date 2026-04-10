@@ -7,16 +7,30 @@ import {
 import { queryKeys } from '@core/query';
 import { shippingService } from '../services/shipping.service';
 import type {
-  Shipment,
-  ShipmentFilters,
+    ShipmentFilters,
   CreateShipmentData,
 } from '../types/shipping.types';
 
 const ITEMS_PER_PAGE = 10;
 
+export function useAllShipments(status: string) {
+  return useQuery({
+    queryKey: ['all-shipments', status],
+    queryFn: async () => {
+      const response = await shippingService.getAllShipments(status);
+      console.log("Response shipments", JSON.stringify(response, null, 2));
+      if (response.success && response.data) {
+        return response.data;
+      }
+      throw new Error(response.error || 'Failed to fetch shipments');
+    },
+    staleTime: 1000 * 60 * 2,
+  });
+}
+
 export function useShipments(filters?: ShipmentFilters) {
   return useInfiniteQuery({
-    queryKey: queryKeys.shipments.list(filters),
+    queryKey: ['shipments', filters],
     queryFn: async ({ pageParam = 1 }) => {
       const response = await shippingService.getShipments(
         filters,

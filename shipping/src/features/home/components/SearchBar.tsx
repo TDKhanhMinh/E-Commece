@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, TextInput, TouchableOpacity } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { spacing, borderRadius } from '@styles/index';
@@ -19,10 +19,10 @@ export function SearchBar({ onSearch, onFilterPress }: SearchBarProps) {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
+    <View className="flex-row items-center px-4 py-2 gap-2" style={[{ backgroundColor: theme.colors.surface }]}>
       <View
+        className="flex-1 flex-row items-center rounded-xl border px-3 h-11 gap-1"
         style={[
-          styles.inputWrapper,
           {
             backgroundColor: theme.colors.surfaceVariant,
             borderColor: theme.colors.outlineVariant,
@@ -31,7 +31,8 @@ export function SearchBar({ onSearch, onFilterPress }: SearchBarProps) {
       >
         <Icon name="magnify" size={20} color={theme.colors.onSurfaceVariant} />
         <TextInput
-          style={[styles.input, { color: theme.colors.onSurface }]}
+          className="flex-1 text-sm p-0"
+          style={[{ color: theme.colors.onSurface }]}
           placeholder="Tìm kiếm đơn hàng..."
           placeholderTextColor={theme.colors.onSurfaceVariant}
           value={text}
@@ -47,7 +48,8 @@ export function SearchBar({ onSearch, onFilterPress }: SearchBarProps) {
 
       {/* Filter button */}
       <TouchableOpacity
-        style={[styles.filterBtn, { backgroundColor: theme.colors.primary }]}
+        className="w-11 h-11 rounded-xl items-center justify-center"
+        style={[{ backgroundColor: theme.colors.primary }]}
         onPress={onFilterPress}
         activeOpacity={0.8}
       >
@@ -57,34 +59,3 @@ export function SearchBar({ onSearch, onFilterPress }: SearchBarProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    gap: spacing.sm,
-  },
-  inputWrapper: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: borderRadius.lg,
-    borderWidth: 1,
-    paddingHorizontal: spacing.sm,
-    height: 44,
-    gap: spacing.xs,
-  },
-  input: {
-    flex: 1,
-    fontSize: 14,
-    padding: 0,
-  },
-  filterBtn: {
-    width: 44,
-    height: 44,
-    borderRadius: borderRadius.lg,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

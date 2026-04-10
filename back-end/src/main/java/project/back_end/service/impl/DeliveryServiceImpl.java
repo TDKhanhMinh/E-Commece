@@ -20,6 +20,7 @@ import project.back_end.repository.OrderRepository;
 import project.back_end.repository.ShipperProfileRepository;
 import project.back_end.repository.UserRepository;
 import project.back_end.response.AdminDeliveryResponse;
+import project.back_end.response.ShipperDeliveryResponse;
 import project.back_end.service.DeliveryService;
 
 import java.util.List;
@@ -34,10 +35,10 @@ public class DeliveryServiceImpl implements DeliveryService {
     private final ShipperProfileRepository shipperProfileRepository;
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
+    private final NotificationServiceImpl notificationService;
 
     @Override
     public void createDeliveryForOrder(Order order) {
-
         Delivery delivery = new Delivery();
         delivery.setOrder(order);
         delivery.setShipper(null);
@@ -45,6 +46,18 @@ public class DeliveryServiceImpl implements DeliveryService {
         delivery.setAmountToCollect(order.getFinalAmount());
         order.setDelivery(delivery);
         deliveryRepository.save(delivery);
+        // Gửi thông báo đến tất cả shipper về đơn hàng mới
+        List<User> shippers = userRepository.getAllByRole(User.Role.SHIPPER);
+        for (User shipper : shippers) {
+            if (shipper.getDeviceToken() != null) {
+                log.error("Gửi thông báo đến shipper); email: {}, deviceToken: {}", shipper.getEmail(), shipper.getDeviceToken());
+                notificationService.sendNotification(
+                        shipper.getDeviceToken(),
+                        "Đơn hàng mới",
+                        "Có đơn hàng mới. Vui lòng kiểm tra!"
+                );
+            }
+        }
     }
 
     @Override
@@ -66,10 +79,15 @@ public class DeliveryServiceImpl implements DeliveryService {
                 delivery.setStatus(DeliveryStatus.DELIVERING);
                 break;
             case SUCCESS:
-                if (delivery.getStatus() != DeliveryStatus.DELIVERING) {
-                    throw new AppException(ErrorCode.INVALID_DELIVERY_STATUS);
-                }
+//                if (delivery.getStatus() != DeliveryStatus.DELIVERING) {
+//                    throw new AppException(ErrorCode.INVALID_DELIVERY_STATUS);
+//                }
                 delivery.setStatus(DeliveryStatus.SUCCESS);
+                Order order = delivery.getOrder();
+                if (order != null) {
+                    order.setStatus(OrderStatus.DELIVERED);
+                    orderRepository.save(order);
+                }
                 break;
             case CANCELLED:
                 if (delivery.getStatus() == DeliveryStatus.DELIVERING) {
@@ -105,15 +123,16 @@ public class DeliveryServiceImpl implements DeliveryService {
         activeDeliveries.add(delivery);
         order.setStatus(OrderStatus.SHIPPING);
         orderRepository.save(order);
-        
+
         shipper.setDeliveries(activeDeliveries);
         shipperProfileRepository.save(shipper);
 
     }
 
+
     @Override
-    public Page<?> getDeliveriesByUser(String email, Pageable pageable) {
-        return null;
+    public Page<ShipperDeliveryResponse> getDeliveriesByShipper(Pageable pageable) {
+        return deliveryRepository.getUnassignedDeliveries(pageable).map(deliveryMapper::toShipperDeliveryResponse);
     }
 
     @Override
@@ -135,5 +154,23 @@ public class DeliveryServiceImpl implements DeliveryService {
         } catch (IllegalArgumentException e) {
             throw new AppException(ErrorCode.INVALID_DELIVERY_STATUS);
         }
+    }
+
+    @Override
+    public ShipperDeliveryResponse getDeliveryById(Long deliveryId) {
+        Delivery delivery = deliveryRepository.findById(deliveryId)
+                .orElseThrow(() -> new AppException(ErrorCode.DELIVERY_NOT_FOUND));
+        return deliveryMapper.toShipperDeliveryResponse(delivery);
+    }
+
+    @Override
+    public Page<ShipperDeliveryResponse> getAllDeliveryByStatus(String status, String email, Pageable pageable) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        ShipperProfile shipper = shipperProfileRepository.findByUser(user)
+                .orElseThrow(() -> new AppException(ErrorCode.SHIPPER_PROFILE_NOT_FOUND));
+        DeliveryStatus deliveryStatus = parseStatus(status);
+        return deliveryRepository.getDeliveriesByStatusAndShipper(deliveryStatus, shipper, pageable)
+                .map(deliveryMapper::toShipperDeliveryResponse);
     }
 }

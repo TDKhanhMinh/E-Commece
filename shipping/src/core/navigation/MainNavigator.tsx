@@ -1,14 +1,28 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Text, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { HomeStackNavigator } from '@features/home/navigators/HomeStackNavigator';
 import { ShipmentsScreen } from '@features/shipping';
 import { HistoryStackNavigator } from '@features/history/navigators';
+import { WalletScreen } from '@features/wallet';
+import { ProfileScreen } from '@features/profile';
+import { OrderDetailScreen } from '@features/history/screens/OrderDetailScreen';
 import type { MainTabParamList } from './types';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
+const OrdersStack = createNativeStackNavigator();
+
+function OrdersStackNavigator() {
+  return (
+    <OrdersStack.Navigator screenOptions={{ headerShown: false }}>
+      <OrdersStack.Screen name="ShipmentsList" component={ShipmentsScreen} />
+      <OrdersStack.Screen name="OrderDetail" component={OrderDetailScreen} />
+    </OrdersStack.Navigator>
+  );
+}
 
 // ── Placeholder screens ──────────────────────────────────────────────────────
 function EarningsScreen() {
@@ -26,20 +40,7 @@ function EarningsScreen() {
   );
 }
 
-function WalletScreen() {
-  const theme = useTheme();
-  return (
-    <View style={placeholderStyles.container}>
-      <Icon name="wallet" size={56} color={theme.colors.outlineVariant} />
-      <Text variant="titleMedium" style={{ color: theme.colors.onSurfaceVariant, marginTop: 12 }}>
-        Ví của tôi
-      </Text>
-      <Text variant="bodySmall" style={{ color: theme.colors.outline, marginTop: 4 }}>
-        Tính năng đang phát triển
-      </Text>
-    </View>
-  );
-}
+
 
 function SettingsScreen() {
   const theme = useTheme();
@@ -119,9 +120,9 @@ export function MainNavigator() {
       />
       <Tab.Screen
         name="Orders"
-        component={ShipmentsScreen}
+        component={OrdersStackNavigator}
         options={{
-          tabBarLabel: 'Đơn hàng',
+          tabBarLabel: 'Đơn hiện có',
           tabBarIcon: ({ color, size }) => (
             <TabIcon name="package-variant" color={color} size={size} />
           ),
@@ -140,16 +141,6 @@ export function MainNavigator() {
         }}
       />
       <Tab.Screen
-        name="Earnings"
-        component={EarningsScreen}
-        options={{
-          tabBarLabel: 'Thu nhập',
-          tabBarIcon: ({ color, size }) => (
-            <TabIcon name="chart-bar" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tab.Screen
         name="Wallet"
         component={WalletScreen}
         options={{
@@ -160,12 +151,12 @@ export function MainNavigator() {
         }}
       />
       <Tab.Screen
-        name="Settings"
-        component={SettingsScreen}
+        name="Profile"
+        component={ProfileScreen}
         options={{
-          tabBarLabel: 'Cài đặt',
+          tabBarLabel: 'Hồ sơ',
           tabBarIcon: ({ color, size }) => (
-            <TabIcon name="cog-outline" color={color} size={size} />
+            <TabIcon name="account" color={color} size={size} />
           ),
         }}
       />

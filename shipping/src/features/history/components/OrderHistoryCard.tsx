@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
+import { View, TouchableOpacity, Pressable } from 'react-native';
 import { Card, Text, useTheme, Chip } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import type { HistoryOrder } from '../types';
@@ -80,28 +80,27 @@ export const OrderHistoryCard = ({ order, onPress }: OrderHistoryCardProps) => {
 
   return (
     <Card
-      style={[styles.card, { backgroundColor: theme.colors.surface }]}
+      className="mx-3 my-2 rounded-xl shadow-sm"
+      style={{ backgroundColor: theme.colors.surface, elevation: 2 }}
       onPress={onPress}
     >
-      <View style={styles.cardContent}>
+      <View className="p-3">
         {/* Header: Order ID and Status */}
-        <View style={styles.header}>
-          <View style={styles.orderIdSection}>
+        <View className="flex-row justify-between items-center mb-2">
+          <View className="flex-row items-center flex-1">
             <Icon
               name={getItemIcon()}
               size={20}
               color={theme.colors.primary}
-              style={styles.icon}
+              className="mr-2"
             />
-            <Text variant="titleSmall" style={styles.orderId}>
+            <Text variant="titleSmall" className="font-semibold flex-1">
               {order.trackingNumber}
             </Text>
           </View>
           <View
-            style={[
-              styles.statusBadge,
-              { backgroundColor: statusStyle.backgroundColor },
-            ]}
+            className="px-2.5 py-1 rounded-md"
+            style={{ backgroundColor: statusStyle.backgroundColor }}
           >
             <Text
               variant="labelSmall"
@@ -116,7 +115,7 @@ export const OrderHistoryCard = ({ order, onPress }: OrderHistoryCardProps) => {
         </View>
 
         {/* Date and Time */}
-        <View style={styles.timeRow}>
+        <View className="flex-row items-center mb-2.5">
           <Icon
             name="clock-outline"
             size={14}
@@ -124,20 +123,19 @@ export const OrderHistoryCard = ({ order, onPress }: OrderHistoryCardProps) => {
           />
           <Text
             variant="bodySmall"
-            style={[styles.timeText, { color: theme.colors.outline }]}
+            className="ml-1.5"
+            style={{ color: theme.colors.outline }}
           >
             {date} • {time}
           </Text>
         </View>
 
         {/* Route Information */}
-        <View style={styles.routeSection}>
-          <View style={styles.routePoint}>
+        <View className="my-2.5">
+          <View className="flex-row items-center">
             <View
-              style={[
-                styles.routeDot,
-                { backgroundColor: theme.colors.primary },
-              ]}
+              className="w-2 h-2 rounded-full"
+              style={{ backgroundColor: theme.colors.primary }}
             />
             <Text
               variant="bodySmall"
@@ -152,17 +150,13 @@ export const OrderHistoryCard = ({ order, onPress }: OrderHistoryCardProps) => {
             </Text>
           </View>
           <View
-            style={[
-              styles.routeLine,
-              { backgroundColor: theme.colors.outlineVariant },
-            ]}
+            className="h-3 w-0.5 ml-[3px] my-0.5"
+            style={{ backgroundColor: theme.colors.outlineVariant }}
           />
-          <View style={styles.routePoint}>
+          <View className="flex-row items-center">
             <View
-              style={[
-                styles.routeDot,
-                { backgroundColor: theme.colors.tertiary },
-              ]}
+              className="w-2 h-2 rounded-full"
+              style={{ backgroundColor: theme.colors.tertiary }}
             />
             <Text
               variant="bodySmall"
@@ -179,8 +173,8 @@ export const OrderHistoryCard = ({ order, onPress }: OrderHistoryCardProps) => {
         </View>
 
         {/* Income Information */}
-        <View style={styles.incomeRow}>
-          <View style={styles.incomeLeft}>
+        <View className="flex-row justify-between items-center my-2 pt-2 border-t border-[#E0E0E0]">
+          <View className="flex-1">
             <Text
               variant="labelSmall"
               style={{ color: theme.colors.outline }}
@@ -199,10 +193,8 @@ export const OrderHistoryCard = ({ order, onPress }: OrderHistoryCardProps) => {
             </Text>
           </View>
           <Pressable
-            style={[
-              styles.detailButton,
-              { borderColor: theme.colors.outline },
-            ]}
+            className="px-3 py-1.5 border rounded-md justify-center items-center"
+            style={{ borderColor: theme.colors.outline }}
             onPress={onPress}
           >
             <Text
@@ -219,8 +211,8 @@ export const OrderHistoryCard = ({ order, onPress }: OrderHistoryCardProps) => {
 
         {/* Customer Rating (if available) */}
         {order.customerRating && (
-          <View style={styles.ratingRow}>
-            <View style={styles.starsContainer}>
+          <View className="flex-row items-center mt-2 pt-2 border-t border-[#E0E0E0]">
+            <View className="flex-row gap-0.5">
               {[...Array(5)].map((_, i) => (
                 <Icon
                   key={i}
@@ -256,95 +248,3 @@ export const OrderHistoryCard = ({ order, onPress }: OrderHistoryCardProps) => {
   );
 };
 
-const styles = StyleSheet.create({
-  card: {
-    marginHorizontal: 12,
-    marginVertical: 8,
-    borderRadius: 12,
-    elevation: 2,
-  },
-  cardContent: {
-    padding: 12,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  orderIdSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  icon: {
-    marginRight: 8,
-  },
-  orderId: {
-    fontWeight: '600',
-    flex: 1,
-  },
-  statusBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 6,
-  },
-  timeRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  timeText: {
-    marginLeft: 6,
-  },
-  routeSection: {
-    marginVertical: 10,
-  },
-  routePoint: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  routeDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-  },
-  routeLine: {
-    height: 12,
-    width: 2,
-    marginLeft: 3,
-    marginVertical: 2,
-  },
-  incomeRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginVertical: 8,
-    paddingTop: 8,
-    borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
-  },
-  incomeLeft: {
-    flex: 1,
-  },
-  detailButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderWidth: 1,
-    borderRadius: 6,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  ratingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 8,
-    paddingTop: 8,
-    borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
-  },
-  starsContainer: {
-    flexDirection: 'row',
-    gap: 2,
-  },
-});

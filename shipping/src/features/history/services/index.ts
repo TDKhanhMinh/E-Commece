@@ -1,1 +1,2 @@
-export { historyService } from './history.service';
+export * from './history.service';
+

@@ -188,6 +188,16 @@ public class UserServiceImpl implements UserService {
         return new AuthResponse(token, userMapper.toUserDTO(user), user.getRole().name());
     }
 
+    @Override
+    public void logoutUser(String username) {
+        User user = userRepo.findByEmail(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        user.setDeviceToken(null);
+        userRepo.save(user);
+
+        log.info("User logged out successfully and delete token: {}", user.getEmail() + ", deviceToken: " + user.getDeviceToken());
+    }
+
 
     @Override
     public Page<UserResponse> getAllUsers(int page, int size, String sortBy, String sortDir, String search) {

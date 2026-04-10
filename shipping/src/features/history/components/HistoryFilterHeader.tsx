@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, TextInput, Pressable } from 'react-native';
+import { View, TextInput, Pressable } from 'react-native';
 import { Text, useTheme, Modal, Portal } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import type { DateRangeFilter } from '../types';
@@ -43,28 +43,27 @@ export const HistoryFilterHeader = ({
 
   return (
     <>
-      <View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
+      <View
+        className="px-3 py-3 gap-3 border-b border-[#E0E0E0]"
+        style={{ backgroundColor: theme.colors.surface }}
+      >
         {/* Search Bar */}
         <View
-          style={[
-            styles.searchBar,
-            {
-              backgroundColor: theme.colors.surfaceVariant,
-              borderColor: theme.colors.outline,
-            },
-          ]}
+          className="flex-row items-center rounded-lg border px-3 py-2"
+          style={{
+            backgroundColor: theme.colors.surfaceVariant,
+            borderColor: theme.colors.outline,
+          }}
         >
           <Icon
             name="magnify"
             size={20}
             color={theme.colors.outline}
-            style={styles.searchIcon}
+            className="mr-2"
           />
           <TextInput
-            style={[
-              styles.searchInput,
-              { color: theme.colors.onSurface },
-            ]}
+            className="flex-1 text-sm py-1"
+            style={{ color: theme.colors.onSurface }}
             placeholder="Tìm mã đơn, khách hàng..."
             placeholderTextColor={theme.colors.outline}
             value={searchText}
@@ -84,13 +83,11 @@ export const HistoryFilterHeader = ({
 
         {/* Filter Button */}
         <Pressable
-          style={[
-            styles.filterButton,
-            {
-              backgroundColor: theme.colors.surfaceVariant,
-              borderColor: currentDateRange !== 'all' ? theme.colors.primary : theme.colors.outline,
-            },
-          ]}
+          className="flex-row items-center px-3 py-2 rounded-lg border self-start"
+          style={{
+            backgroundColor: theme.colors.surfaceVariant,
+            borderColor: currentDateRange !== 'all' ? theme.colors.primary : theme.colors.outline,
+          }}
           onPress={() => setShowDatePicker(true)}
         >
           <Icon
@@ -126,17 +123,15 @@ export const HistoryFilterHeader = ({
             }
           />
         </Pressable>
-      </View>
+      </View >
 
       {/* Date Range Modal */}
-      <Portal>
+      < Portal >
         <Modal
           visible={showDatePicker}
           onDismiss={() => setShowDatePicker(false)}
-          contentContainerStyle={[
-            styles.modalContent,
-            { backgroundColor: theme.colors.surface },
-          ]}
+          contentContainerStyle={{ backgroundColor: theme.colors.surface }}
+          style={{ margin: 20 }}
         >
           <Text
             variant="titleSmall"
@@ -152,15 +147,13 @@ export const HistoryFilterHeader = ({
           {DATE_RANGE_OPTIONS.map(option => (
             <Pressable
               key={option.value}
-              style={[
-                styles.dateOption,
-                {
-                  backgroundColor:
-                    currentDateRange === option.value
-                      ? theme.colors.primaryContainer
-                      : 'transparent',
-                },
-              ]}
+              className="flex-row items-center px-3 py-3 rounded-lg mb-2"
+              style={{
+                backgroundColor:
+                  currentDateRange === option.value
+                    ? theme.colors.primaryContainer
+                    : 'transparent',
+              }}
               onPress={() => handleDateRangeSelect(option.value)}
             >
               {currentDateRange === option.value && (
@@ -168,7 +161,7 @@ export const HistoryFilterHeader = ({
                   name="check"
                   size={20}
                   color={theme.colors.primary}
-                  style={styles.checkIcon}
+                  className="mr-3"
                 />
               )}
               <Text
@@ -189,10 +182,8 @@ export const HistoryFilterHeader = ({
           ))}
 
           <Pressable
-            style={[
-              styles.closeButton,
-              { backgroundColor: theme.colors.primary },
-            ]}
+            className="py-3 rounded-lg items-center mt-4"
+            style={{ backgroundColor: theme.colors.primary }}
             onPress={() => setShowDatePicker(false)}
           >
             <Text
@@ -206,64 +197,8 @@ export const HistoryFilterHeader = ({
             </Text>
           </Pressable>
         </Modal>
-      </Portal>
+      </Portal >
     </>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    gap: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
-  },
-  searchBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: 8,
-    borderWidth: 1,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-  },
-  searchIcon: {
-    marginRight: 8,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 14,
-    paddingVertical: 4,
-  },
-  filterButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8,
-    borderWidth: 1,
-    alignSelf: 'flex-start',
-  },
-  modalContent: {
-    margin: 20,
-    padding: 20,
-    borderRadius: 12,
-  },
-  dateOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    borderRadius: 8,
-    marginBottom: 8,
-  },
-  checkIcon: {
-    marginRight: 12,
-  },
-  closeButton: {
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 16,
-  },
-});

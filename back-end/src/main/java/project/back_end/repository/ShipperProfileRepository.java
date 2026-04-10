@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface ShipperProfileRepository extends JpaRepository<ShipperProfile, Long> {
     Optional<ShipperProfile> findByUser(User user);
+
 }

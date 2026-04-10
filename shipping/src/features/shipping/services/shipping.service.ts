@@ -1,5 +1,5 @@
 import { httpClient } from '@api/httpClient';
-import type { ApiResponse, PaginatedResponse } from '@types/common.types';
+import type { ApiResponse, PaginatedResponse } from '@shared/types/common.types';
 import type {
   Shipment,
   CreateShipmentData,
@@ -21,8 +21,14 @@ class ShippingService {
     shipments: '/shipments',
     tracking: '/shipments/tracking',
     estimate: '/shipments/estimate',
+    all: '/delivery/status'
   };
-
+  async getAllShipments(status: string): Promise<ApiResponse<PaginatedResponse<any>>> {
+    return httpClient.get<PaginatedResponse<any>>(this.endpoints.all, {
+      params: { status },
+    });
+  }
+  //--------------------------------------------
   async getShipments(
     filters?: ShipmentFilters,
     page: number = 1,
@@ -39,6 +45,8 @@ class ShippingService {
       params,
     });
   }
+
+
 
   async getShipmentById(id: string): Promise<ApiResponse<Shipment>> {
     return httpClient.get<Shipment>(`${this.endpoints.shipments}/${id}`);

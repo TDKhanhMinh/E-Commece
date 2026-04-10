@@ -11,6 +11,7 @@ interface CreateStoreOptions<T = any> {
   partialize?: (state: T) => Partial<T>;
   version?: number;
   migrate?: (persistedState: any, version: number) => T | Promise<T>;
+  onRehydrateStorage?: () => (state?: T, error?: unknown) => void;
 }
 
 export function createStore<T extends object>(
@@ -28,6 +29,7 @@ export function createStore<T extends object>(
       ...(partialize ? { partialize } : {}),
       ...(version !== undefined ? { version } : {}),
       ...(migrate ? { migrate } : {}),
+      ...(options.onRehydrateStorage ? { onRehydrateStorage: options.onRehydrateStorage } : {}),
     }) as StateCreator<T, [], []>;
   }
 
@@ -41,8 +43,9 @@ export function createStore<T extends object>(
 export function createSelectors<T extends object>(store: ReturnType<typeof create<T>>) {
   const selectors: { [K in keyof T]: () => T[K] } = {} as { [K in keyof T]: () => T[K] };
 
-  for (const key of Object.keys(store.getState()) as (keyof T)[]) {
-    selectors[key] = () => store((state) => state[key]);
+  const typedStore = store as any;
+  for (const key of Object.keys(typedStore.getState()) as (keyof T)[]) {
+    selectors[key] = () => typedStore((state: any) => state[key]);
   }
 
   return selectors;

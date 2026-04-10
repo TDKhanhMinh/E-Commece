@@ -75,6 +75,16 @@ export const useAuthStore = createStore<AuthStore>(
     migrate: (persistedState: any, version: number) => {
       return persistedState as AuthStore;
     },
+    onRehydrateStorage: () => (state?: AuthStore) => {
+      // Sync the rehydrated token to httpClient
+      if (state?.tokens?.accessToken) {
+        // Need to import httpClient
+        import('@api/httpClient').then(({ httpClient }) => {
+          httpClient.setAuthToken(state.tokens!.accessToken);
+        });
+      }
+      state?.setHydrated(true);
+    },
   },
 );
 

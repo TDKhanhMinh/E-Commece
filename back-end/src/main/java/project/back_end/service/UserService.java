@@ -24,6 +24,8 @@ public interface UserService {
 
     AuthResponse loginUser(LoginRequest loginRequest);
 
+    void logoutUser(String username);
+
     Page<UserResponse> getAllUsers(int page, int size, String sortBy, String sortDir, String search);
 
     String sendOtp(String email);

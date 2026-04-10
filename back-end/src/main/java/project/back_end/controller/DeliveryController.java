@@ -15,6 +15,7 @@ import project.back_end.enumerate.DeliveryStatus;
 import project.back_end.enumerate.OrderStatus;
 import project.back_end.response.AdminDeliveryResponse;
 import project.back_end.response.ApiResponse;
+import project.back_end.response.ShipperDeliveryResponse;
 import project.back_end.service.DeliveryService;
 
 @Slf4j
@@ -36,6 +37,43 @@ public class DeliveryController {
         return ResponseEntity.ok(new ApiResponse<>(200, "Lấy danh sách don van thành công", responses));
     }
 
+    @GetMapping("/unassigned")
+    @PreAuthorize("hasRole('SHIPPER')")
+    public ResponseEntity<ApiResponse<Page<ShipperDeliveryResponse>>> getDeliveriesForShipper(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        String email = userDetails.getUsername();
+        Page<ShipperDeliveryResponse> deliveries = deliveryService.getDeliveriesByShipper(pageable);
+        log.error("Get deliveries for shipper: {}, page: {}, size: {}", email, pageable.getPageNumber(), deliveries.getContent().size());
+        return ResponseEntity.ok(new ApiResponse<>(200, "Lấy danh sách đơn hàng thành công", deliveries));
+    }
+
+    @GetMapping("/status")
+    @PreAuthorize("hasRole('SHIPPER')")
+    public ResponseEntity<ApiResponse<Page<ShipperDeliveryResponse>>> getDeliveriesByStatusForShipper(
+            @RequestParam String status,
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        String email = userDetails.getUsername();
+        Page<ShipperDeliveryResponse> deliveries = deliveryService.getAllDeliveryByStatus(status, email, pageable);
+        log.error("Get deliveries by status: {}, for shipper: {}, page: {}, size: {}", status, email, pageable.getPageNumber(), deliveries.getContent().size());
+        return ResponseEntity.ok(new ApiResponse<>(200, "Lấy danh sách đơn hàng thành công", deliveries));
+    }
+
+    @GetMapping("/{deliveryId}")
+    @PreAuthorize("hasRole('SHIPPER')")
+    public ResponseEntity<ApiResponse<ShipperDeliveryResponse>> getDeliveryByIdForShipper(
+            @PathVariable Long deliveryId,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        String email = userDetails.getUsername();
+        ShipperDeliveryResponse response = deliveryService.getDeliveryById(deliveryId);
+        log.error("Get delivery by id: {}, for shipper: {}", deliveryId, email);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Lấy thông tin chi tiết đơn hàng thành công", response));
+    }
+
     @PostMapping("/{deliveryId}/accept")
     @PreAuthorize("hasRole('SHIPPER')")
     public ResponseEntity<ApiResponse<String>> acceptDelivery(
@@ -46,4 +84,15 @@ public class DeliveryController {
         deliveryService.acceptDelivery(deliveryId, email);
         return ResponseEntity.ok(new ApiResponse<>(200, "Shipper đã nhận đơn hàng thành công", null));
     }
+
+
+    @PostMapping("/{deliveryId}/success")
+    @PreAuthorize("hasRole('SHIPPER')")
+    public ResponseEntity<ApiResponse<String>> markDeliveryAsSuccess(
+            @PathVariable Long deliveryId
+    ) {
+        deliveryService.updateDeliveryStatus(deliveryId, "SUCCESS");
+        return ResponseEntity.ok(new ApiResponse<>(200, "Shipper đã cập nhật trạng thái đơn hàng thành công", null));
+    }
+
 }

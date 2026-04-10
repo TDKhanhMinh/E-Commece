@@ -1,7 +1,6 @@
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { API_CONFIG } from '@constants/app.constants';
-import type { ApiResponse } from '@types/common.types';
-
-type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+import type { ApiResponse } from '@shared/types/common.types';
 
 interface RequestConfig {
   headers?: Record<string, string>;
@@ -10,83 +9,100 @@ interface RequestConfig {
 }
 
 class HttpClient {
-  private baseURL: string;
-  private defaultHeaders: Record<string, string>;
-  private authToken: string | null = null;
+  private instance: AxiosInstance;
 
   constructor(baseURL: string = API_CONFIG.BASE_URL) {
-    this.baseURL = baseURL;
-    this.defaultHeaders = {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    };
+    this.instance = axios.create({
+      baseURL,
+      timeout: API_CONFIG.TIMEOUT,
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+    });
   }
 
   setAuthToken(token: string | null): void {
-    this.authToken = token;
+    if (token) {
+      this.instance.defaults.headers.common.Authorization = `Bearer ${token}`;
+    } else {
+      delete this.instance.defaults.headers.common.Authorization;
+    }
   }
 
-  private buildUrl(endpoint: string, params?: Record<string, string | number | boolean>): string {
-    const url = new URL(endpoint, this.baseURL);
-    if (params) {
-      Object.entries(params).forEach(([key, value]) => {
-        url.searchParams.append(key, String(value));
-      });
-    }
-    return url.toString();
-  }
-
-  private getHeaders(customHeaders?: Record<string, string>): Record<string, string> {
-    const headers = { ...this.defaultHeaders, ...customHeaders };
-    if (this.authToken) {
-      headers.Authorization = `Bearer ${this.authToken}`;
-    }
-    return headers;
+  getAuthToken(): string | undefined {
+    return this.instance.defaults.headers.common.Authorization as string | undefined;
   }
 
   private async request<T>(
-    method: HttpMethod,
+    method: string,
     endpoint: string,
     data?: unknown,
     config: RequestConfig = {},
   ): Promise<ApiResponse<T>> {
-    const { headers, params, timeout = API_CONFIG.TIMEOUT } = config;
+    const { headers, params, timeout } = config;
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), timeout);
+    // Detect FormData to let axios set Content-Type with boundary automatically
+    const isFormData = typeof FormData !== 'undefined' && data instanceof FormData;
+
+    const axiosConfig: AxiosRequestConfig = {
+      method,
+      url: endpoint,
+      params,
+      ...(timeout && { timeout }),
+    };
+
+    if (isFormData) {
+      console.log('🔵 Detected FormData upload');
+      axiosConfig.data = data;
+      // CRITICAL: For FormData in React Native, we must NOT set Content-Type
+      // React Native's FormData will automatically set the correct multipart header
+      // We explicitly override the default Content-Type to prevent conflicts
+      axiosConfig.headers = {
+        ...headers,
+        'Content-Type': 'multipart/form-data', // React Native needs this explicit
+      };
+      // Don't transform the data - let React Native handle it
+      axiosConfig.transformRequest = [(data) => data];
+      console.log('🔵 FormData config:', {
+        url: axiosConfig.url,
+        method: axiosConfig.method,
+        headers: axiosConfig.headers,
+        hasData: !!axiosConfig.data,
+      });
+    } else {
+      if (data !== undefined) {
+        axiosConfig.data = data;
+      }
+      // Apply custom headers for non-FormData requests
+      if (headers) {
+        axiosConfig.headers = headers;
+      }
+    }
 
     try {
-      const response = await fetch(this.buildUrl(endpoint, params), {
-        method,
-        headers: this.getHeaders(headers),
-        body: data ? JSON.stringify(data) : undefined,
-        signal: controller.signal,
-      });
-
-      clearTimeout(timeoutId);
-
-      const responseData = await response.json();
-
-      if (!response.ok) {
-        return {
-          success: false,
-          data: null as T,
-          error: responseData.message || `HTTP Error: ${response.status}`,
-        };
-      }
+      const response = await this.instance.request(axiosConfig);
 
       return {
         success: true,
-        data: responseData,
+        data: response.data,
       };
     } catch (error) {
-      clearTimeout(timeoutId);
+      if (axios.isAxiosError(error)) {
+        const responseData = error.response?.data;
 
-      if (error instanceof Error && error.name === 'AbortError') {
+        if (error.code === 'ECONNABORTED') {
+          return {
+            success: false,
+            data: null as T,
+            error: 'Request timeout',
+          };
+        }
+
         return {
           success: false,
           data: null as T,
-          error: 'Request timeout',
+          error: responseData?.message || `HTTP Error: ${error.response?.status}`,
         };
       }
 
