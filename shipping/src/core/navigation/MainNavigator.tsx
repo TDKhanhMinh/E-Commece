@@ -26,48 +26,7 @@ function OrdersStackNavigator() {
   );
 }
 
-// ── Placeholder screens ──────────────────────────────────────────────────────
-function EarningsScreen() {
-  const theme = useTheme();
-  return (
-    <View style={placeholderStyles.container}>
-      <Icon name="chart-bar" size={56} color={theme.colors.outlineVariant} />
-      <Text variant="titleMedium" style={{ color: theme.colors.onSurfaceVariant, marginTop: 12 }}>
-        Thu nhập
-      </Text>
-      <Text variant="bodySmall" style={{ color: theme.colors.outline, marginTop: 4 }}>
-        Tính năng đang phát triển
-      </Text>
-    </View>
-  );
-}
 
-
-
-function SettingsScreen() {
-  const theme = useTheme();
-  return (
-    <View style={placeholderStyles.container}>
-      <Icon name="cog-outline" size={56} color={theme.colors.outlineVariant} />
-      <Text variant="titleMedium" style={{ color: theme.colors.onSurfaceVariant, marginTop: 12 }}>
-        Cài đặt
-      </Text>
-      <Text variant="bodySmall" style={{ color: theme.colors.outline, marginTop: 4 }}>
-        Tính năng đang phát triển
-      </Text>
-    </View>
-  );
-}
-
-const placeholderStyles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
-
-// ── Tab bar icon helper ──────────────────────────────────────────────────────
 function TabIcon({
   name,
   color,

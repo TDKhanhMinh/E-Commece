@@ -22,6 +22,9 @@ export interface Order {
   orderId: string;
   deliveryId: string;
   pickupAddress: string;
+  pickupLocation: string;
+  pickupLongitude: number;
+  pickupLatitude: number;
   destination: string;
   pickupDistanceKm: number;
   deliveryDistanceKm: number;

@@ -59,6 +59,9 @@ public interface DeliveryMapper {
     @Mapping(source = "order.orderItems", target = "items")
     @Mapping(source = "status", target = "deliveryStatus")
     @Mapping(source = "order.proofImageUrl", target = "proofImageUrl")
+    @Mapping(source = "pickupAddress", target = "pickupLocation")
+    @Mapping(source = "pickupLatitude", target = "pickupLatitude")
+    @Mapping(source = "pickupLongitude", target = "pickupLongitude")
     ShipperDeliveryResponse toShipperDeliveryResponse(Delivery delivery);
 
     @Named("mapPaymentStatus")

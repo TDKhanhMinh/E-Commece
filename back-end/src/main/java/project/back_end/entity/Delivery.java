@@ -25,6 +25,10 @@ public class Delivery {
     @JoinColumn(name = "shipper_id")
     private ShipperProfile shipper;
 
+    private String pickupAddress;
+    private String pickupLatitude;
+    private String pickupLongitude;
+    
     private BigDecimal amountToCollect;
 
     private DeliveryStatus status;

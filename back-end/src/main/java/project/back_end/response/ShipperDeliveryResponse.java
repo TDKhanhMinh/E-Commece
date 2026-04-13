@@ -22,6 +22,9 @@ public class ShipperDeliveryResponse {
     private Double codAmount;
     private String deliveryStatus;
     private String proofImageUrl;
+    private String pickupLocation;
+    private String pickupLatitude;
+    private String pickupLongitude;
     private List<CheckoutItemResponse> items;
 
 

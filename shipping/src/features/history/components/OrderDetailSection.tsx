@@ -6,6 +6,7 @@ import { launchCamera } from 'react-native-image-picker';
 import { useSuccessfulDelivery, useUploadImage } from '../hooks/useOrderHistory';
 import { useNavigation } from '@core/navigation/useNavigation';
 import { RouteMapSection } from './RouteMapSection';
+import { formatCurrency } from '@/shared';
 
 interface OrderDetailSectionProps {
   order: any;
@@ -279,7 +280,6 @@ export const OrderDetailSection = ({ order }: OrderDetailSectionProps) => {
             </View>
           </View>
         </View>
-
         {/* Khối Danh sách Hàng hoá */}
         <View className="bg-white rounded-[20px] p-5 shadow-sm border border-gray-100">
           <View className="flex-row items-center gap-2 mb-4">
@@ -300,8 +300,10 @@ export const OrderDetailSection = ({ order }: OrderDetailSectionProps) => {
                     {item.productName || item.name}
                   </Text>
                   <Text className="text-gray-500 text-xs font-medium">
-                    Đơn giá: <Text className="text-gray-900 font-semibold">{item.salePrice?.toLocaleString('vi-VN') || item.price?.toLocaleString('vi-VN')} đ</Text>
-                    {item.skuCode ? ` • Mã: ${item.skuCode}` : ''}
+                    Đơn giá: <Text className="text-gray-900 font-semibold">{formatCurrency(item.salePrice)}</Text>
+                  </Text>
+                  <Text className="text-gray-500 text-xs font-medium">
+                    {item.skuCode ? `SKU: ${item.skuCode}` : ''}
                   </Text>
                 </View>
                 <View className="bg-purple-100 px-2 py-1 rounded-md border border-purple-200 ml-2">

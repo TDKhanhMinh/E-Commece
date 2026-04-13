@@ -20,3 +20,20 @@ buildscript {
 }
 
 apply plugin: "com.facebook.react.rootproject"
+
+// Mapbox Maven repository – required by @rnmapbox/maps to resolve
+// com.mapbox.maps:android-ndk27 and com.mapbox.mapboxsdk:mapbox-sdk-turf
+allprojects {
+    repositories {
+        maven {
+            url 'https://api.mapbox.com/downloads/v2/releases/maven'
+            authentication {
+                basic(BasicAuthentication)
+            }
+            credentials {
+                username = 'mapbox'
+                password = MAPBOX_DOWNLOADS_TOKEN
+            }
+        }
+    }
+}

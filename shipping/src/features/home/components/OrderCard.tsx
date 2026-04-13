@@ -28,6 +28,7 @@ export function OrderCard({ order }: OrderCardProps) {
   const acceptOrderMutation = useAcceptOrder();
   const deliveryOrderMutation = useDeliveryOrder();
   const cancelOrderMutation = useCancelOrder();
+  const isAnyPending = acceptOrderMutation.isPending || deliveryOrderMutation.isPending || cancelOrderMutation.isPending;
 
   const [visible, setVisible] = useState(false);
 
@@ -76,7 +77,7 @@ export function OrderCard({ order }: OrderCardProps) {
           onConfirm={handleConfirm}
           orderId={order.orderId}
           feeFormatted={feeFormatted}
-          isLoading={isPickup ? deliveryOrderMutation.isPending : acceptOrderMutation.isPending}
+          isLoading={isAnyPending}
           title={modalTitle}
           description={modalDescription}
           confirmText={modalConfirmText}
@@ -106,7 +107,7 @@ export function OrderCard({ order }: OrderCardProps) {
             <View className="flex-1">
               <Text variant="labelSmall" className="text-blue-600 font-bold mb-0.5 uppercase">Điểm lấy hàng</Text>
               <Text variant="bodyMedium" className="text-gray-800 font-semibold leading-5" numberOfLines={1}>
-                {order.pickupAddress || 'Chưa cập nhật'}
+                {order.pickupLocation || 'Chưa cập nhật'}
               </Text>
             </View>
           </View>
@@ -161,15 +162,15 @@ export function OrderCard({ order }: OrderCardProps) {
               className="flex-row items-center justify-center rounded-[14px] py-3.5 shadow-sm"
               style={[
                 { backgroundColor: theme.colors.primary },
-                deliveryOrderMutation.isPending && { opacity: 0.7 }
+                isAnyPending && { opacity: 0.7 }
               ]}
               onPress={showDialog}
               activeOpacity={0.85}
-              disabled={deliveryOrderMutation.isPending}
+              disabled={isAnyPending}
             >
-              <Icon name={deliveryOrderMutation.isPending ? "loading" : "truck-fast"} size={20} color="#FFF" />
+              <Icon name={isAnyPending ? "loading" : "truck-fast"} size={20} color="#FFF" />
               <Text style={{ color: "#FFFFFF" }} variant="bodyMedium" className="text-white font-bold ml-2">
-                {deliveryOrderMutation.isPending ? 'Đang xử lý...' : 'Đã lấy hàng'}
+                {isAnyPending ? 'Đang xử lý...' : 'Đã lấy hàng'}
               </Text>
             </TouchableOpacity>
           </View>
@@ -181,15 +182,15 @@ export function OrderCard({ order }: OrderCardProps) {
               className="flex-row items-center justify-center rounded-[14px] py-3.5 shadow-sm"
               style={[
                 { backgroundColor: theme.colors.primary },
-                acceptOrderMutation.isPending && { opacity: 0.7 }
+                isAnyPending && { opacity: 0.7 }
               ]}
               onPress={showDialog}
               activeOpacity={0.85}
-              disabled={acceptOrderMutation.isPending}
+              disabled={isAnyPending}
             >
-              <Icon name={acceptOrderMutation.isPending ? "loading" : "truck-fast"} size={20} color="#FFF" />
+              <Icon name={isAnyPending ? "loading" : "truck-fast"} size={20} color="#FFF" />
               <Text style={{ color: "#FFFFFF" }} variant="bodyMedium" className="text-white font-bold ml-2">
-                {acceptOrderMutation.isPending ? 'Đang nhận đơn...' : 'Nhận đơn'}
+                {isAnyPending ? 'Đang nhận đơn...' : 'Nhận đơn'}
               </Text>
             </TouchableOpacity>
           </View>

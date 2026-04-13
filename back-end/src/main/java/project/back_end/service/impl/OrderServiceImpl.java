@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.back_end.entity.*;
 import project.back_end.entity.product.Sku;
+import project.back_end.enumerate.DeliveryStatus;
 import project.back_end.enumerate.ErrorCode;
 import project.back_end.enumerate.OrderStatus;
 import project.back_end.enumerate.PointTransactionType;
-import project.back_end.enumerate.DeliveryStatus;
 import project.back_end.exception.AppException;
 import project.back_end.mapper.CheckoutMapper;
 import project.back_end.repository.*;
@@ -292,16 +292,16 @@ public class OrderServiceImpl implements OrderService {
         LocalDateTime now = LocalDateTime.now();
         order.setUpdatedAt(now);
 
-         switch (newStatus) {
-             case CONFIRMED -> {
-                 if (currentStatus != OrderStatus.PENDING)
-                     throw new AppException(ErrorCode.INVALID_STATUS_TRANSITION);
-                 order.setConfirmedAt(now);
-                 createDeliveryForOrder(order);
-             }
-             case PAID -> {
-                 createDeliveryForOrder(order);
-             }
+        switch (newStatus) {
+            case CONFIRMED -> {
+                if (currentStatus != OrderStatus.PENDING)
+                    throw new AppException(ErrorCode.INVALID_STATUS_TRANSITION);
+                order.setConfirmedAt(now);
+                createDeliveryForOrder(order);
+            }
+            case PAID -> {
+                createDeliveryForOrder(order);
+            }
 
             case DELIVERED -> {
                 if (currentStatus != OrderStatus.SHIPPING)
@@ -360,6 +360,9 @@ public class OrderServiceImpl implements OrderService {
         Delivery delivery = new Delivery();
         delivery.setOrder(order);
         delivery.setShipper(null);
+        delivery.setPickupAddress("Đại học Tôn Đức Thắng, 19 Nguyễn Hữu Thọ, Tân Phong, Quận 7, Hồ Chí Minh");
+        delivery.setPickupLatitude("10.732091380000043");
+        delivery.setPickupLongitude("106.69945521900007");
         delivery.setStatus(DeliveryStatus.PENDING);
         delivery.setAmountToCollect(order.getFinalAmount());
         order.setDelivery(delivery);
