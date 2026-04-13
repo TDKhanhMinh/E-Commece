@@ -1,8 +1,12 @@
+import { API_BASE_URL_DEV, API_BASE_URL_PROD } from '@env';
+
 export const APP_NAME = 'Shipping';
 export const APP_VERSION = '0.0.1';
 
 export const API_CONFIG = {
-  BASE_URL: __DEV__ ? 'http://192.168.1.76:5000/api' : 'https://api.shipping.com',
+  BASE_URL: __DEV__
+    ? API_BASE_URL_DEV || 'http://localhost:5000/api'
+    : API_BASE_URL_PROD || 'https://api.shipping.com',
   TIMEOUT: 30000,
   RETRY_ATTEMPTS: 3,
 } as const;

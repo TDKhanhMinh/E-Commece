@@ -14,13 +14,12 @@ import Mapbox from '@rnmapbox/maps';
 import polyline from '@mapbox/polyline';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { GOONG_MAP_KEY, GOONG_API_KEY, MAPBOX_ACCESS_TOKEN } from '@env';
+
 // ──────────────────────────────────────────────────────────────────
-// Goong Keys
+// Goong & Mapbox Config
 // ──────────────────────────────────────────────────────────────────
-const GOONG_MAP_KEY = 'N6tZz1MMmnVzn6OfoBPVNGJVqJFIIHi7ET62ZGCg';
-const GOONG_API_KEY = 'dTxBSGquKN0T5txd9Kvm8dqrDWEfhiJq9PFQgkJe';
 const GOONG_STYLE_URL = `https://tiles.goong.io/assets/goong_map_web.json?api_key=${GOONG_MAP_KEY}`;
-const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoibWluaDEzMDIwNCIsImEiOiJjbW53dXl1ODIwMGRsMnhvcXV3azZveHZkIn0.svghOcaw1pnff-ODZGH39w';
 
 Mapbox.setAccessToken(MAPBOX_ACCESS_TOKEN);
 
@@ -182,9 +181,9 @@ export const RouteMapSection = ({
   const cameraRef = useRef<Mapbox.Camera>(null);
 
   const pickupLng = safeCoord(order?.pickupLongitude, 106.6992);
-  const pickupLat = safeCoord(order?.pickupLatitude,  10.7326);
-  const destLng   = safeCoord(order?.longitude,       106.6602);
-  const destLat   = safeCoord(order?.latitude,        10.7626);
+  const pickupLat = safeCoord(order?.pickupLatitude, 10.7326);
+  const destLng = safeCoord(order?.longitude, 106.6602);
+  const destLat = safeCoord(order?.latitude, 10.7626);
   const centerLng = (pickupLng + destLng) / 2;
   const centerLat = (pickupLat + destLat) / 2;
 
@@ -209,7 +208,7 @@ export const RouteMapSection = ({
         setDirectionsError(true);
       })
       .finally(() => setDirectionsLoading(false));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order?.pickupLongitude, order?.pickupLatitude, order?.longitude, order?.latitude]);
 
   const routeGeoJSON: GeoJSON.Feature<GeoJSON.LineString> | null = routeCoords
@@ -598,7 +597,7 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   markerPickup: { backgroundColor: '#10B981' },
-  markerDest:   { backgroundColor: '#F43F5E' },
+  markerDest: { backgroundColor: '#F43F5E' },
   markerInner: {
     width: 8,
     height: 8,

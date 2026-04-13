@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
     Table,
     TableBody,
@@ -14,7 +14,7 @@ import { AdminDeliveryResponseDTO } from "@/type/delivery-type";
 import { formatCurrency } from "@/lib/format-price";
 import { fDateTime } from "@/lib/format-date-time";
 import { useDelivery } from "@/hooks/use-delivery";
-import { Loader2, MoreHorizontal } from "lucide-react";
+import { Loader2, MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const getDeliveryStatusBadge = (
@@ -76,10 +76,17 @@ const getPaymentStatusBadge = (
     );
 };
 
+const ITEMS_PER_PAGE = 10;
+
 export default function DeliveryManagementPage() {
-    const { data: delivery, isLoading, error } = useDelivery();
-    //@ts-ignore
+    const [currentPage, setCurrentPage] = useState(0);
+    const { data: delivery, isLoading, error } = useDelivery(undefined, currentPage, ITEMS_PER_PAGE);
+    //@ts-expect-error API response structure
     const deliveryData = delivery?.content || [];
+    //@ts-expect-error API response structure
+    const totalPages = delivery?.totalPages || 0;
+    //@ts-expect-error API response structure
+    const totalElements = delivery?.totalElements || 0;
     console.log("Delivery data:", delivery);
     if (isLoading) {
         return (
@@ -148,7 +155,7 @@ export default function DeliveryManagementPage() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {deliveryData.map((deli: any) => (
+                        {deliveryData.map((deli: AdminDeliveryResponseDTO) => (
                             <TableRow key={deli.deliveryId}>
                                 <TableCell className="font-medium">
                                     #{deli.deliveryId}
@@ -169,16 +176,16 @@ export default function DeliveryManagementPage() {
                                 </TableCell>
 
                                 <TableCell
-                                    className="max-w-[250px] truncate"
+                                    className="max-w-62.5 truncate"
                                     title={deli.destination}
                                 >
                                     {deli.destination}
                                 </TableCell>
 
                                 <TableCell>
-                                    {deli.shipperProfile ? (
+                                    {deli.shipperName ? (
                                         <span className="font-medium text-slate-700">
-                                            {deli.shipperProfile.fullName}
+                                            {deli.shipperName}
                                         </span>
                                     ) : (
                                         <span className="text-muted-foreground text-sm italic">
@@ -232,6 +239,61 @@ export default function DeliveryManagementPage() {
                     </TableBody>
                 </Table>
             </div>
+
+            {/* Pagination */}
+            {totalElements > 0 && (
+                <div className="flex items-center justify-between rounded-md border bg-white p-4 shadow-sm">
+                    <div className="flex items-center gap-2">
+                        <span className="text-sm text-gray-600">
+                            Trang {currentPage + 1} / {totalPages}
+                        </span>
+                        <span className="text-sm text-gray-500">
+                            (Tổng cộng {totalElements} bản ghi)
+                        </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 0))}
+                            disabled={currentPage === 0}
+                            className="flex items-center gap-2"
+                        >
+                            <ChevronLeft className="h-4 w-4" />
+                            Trước
+                        </Button>
+                        <div className="flex gap-1">
+                            {Array.from({ length: totalPages }, (_, i) => i).map(
+                                (page) => (
+                                    <Button
+                                        key={page}
+                                        variant={
+                                            currentPage === page
+                                                ? "default"
+                                                : "outline"
+                                        }
+                                        size="sm"
+                                        onClick={() => setCurrentPage(page)}
+                                        className="min-w-10"
+                                    >
+                                        {page + 1}
+                                    </Button>
+                                )
+                            )}
+                        </div>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages - 1))}
+                            disabled={currentPage === totalPages - 1}
+                            className="flex items-center gap-2"
+                        >
+                            Tiếp
+                            <ChevronRight className="h-4 w-4" />
+                        </Button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
