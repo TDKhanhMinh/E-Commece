@@ -85,13 +85,33 @@ public class DeliveryController {
         return ResponseEntity.ok(new ApiResponse<>(200, "Shipper đã nhận đơn hàng thành công", null));
     }
 
+    @PostMapping("/{deliveryId}/delivery")
+    @PreAuthorize("hasRole('SHIPPER')")
+    public ResponseEntity<ApiResponse<String>> pickupDelivery(
+            @PathVariable Long deliveryId
+    ) {
+        deliveryService.updateDeliveryStatus(deliveryId, "DELIVERING", null);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Shipper đã lấy hàng thành công ", null));
+    }
+
+    @PostMapping("/{deliveryId}/cancel")
+    @PreAuthorize("hasRole('SHIPPER')")
+    public ResponseEntity<ApiResponse<String>> cancelDelivery(
+            @PathVariable Long deliveryId
+    ) {
+        deliveryService.updateDeliveryStatus(deliveryId, "CANCELED", null);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Shipper đã hủy đơn hàng thành công", null));
+    }
+
 
     @PostMapping("/{deliveryId}/success")
     @PreAuthorize("hasRole('SHIPPER')")
     public ResponseEntity<ApiResponse<String>> markDeliveryAsSuccess(
-            @PathVariable Long deliveryId
+            @PathVariable Long deliveryId,
+            @RequestBody String proofImage
     ) {
-        deliveryService.updateDeliveryStatus(deliveryId, "SUCCESS");
+        log.error("Shipper cập nhật trạng thái đơn hàng thành công, deliveryId: {}, proofImage: {}", deliveryId, proofImage);
+        deliveryService.updateDeliveryStatus(deliveryId, "SUCCESS", proofImage);
         return ResponseEntity.ok(new ApiResponse<>(200, "Shipper đã cập nhật trạng thái đơn hàng thành công", null));
     }
 

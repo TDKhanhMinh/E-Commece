@@ -1,5 +1,5 @@
-import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface OnboardingFooterProps {
   onContinue: () => void;
@@ -7,8 +7,13 @@ interface OnboardingFooterProps {
 }
 
 export const OnboardingFooter = ({ onContinue, onSignUp }: OnboardingFooterProps) => {
+  const insets = useSafeAreaInsets();
+
   return (
-    <View className="px-8 pb-10 w-full">
+    <View 
+      className="px-8 w-full"
+      style={{ paddingBottom: Math.max(insets.bottom, 24) }}
+    >
       <TouchableOpacity
         onPress={onContinue}
         className="bg-success w-full py-4 rounded-xl active:bg-success-dark mb-3"

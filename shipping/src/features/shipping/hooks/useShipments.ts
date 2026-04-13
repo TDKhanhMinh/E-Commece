@@ -7,7 +7,7 @@ import {
 import { queryKeys } from '@core/query';
 import { shippingService } from '../services/shipping.service';
 import type {
-    ShipmentFilters,
+  ShipmentFilters,
   CreateShipmentData,
 } from '../types/shipping.types';
 
@@ -28,6 +28,8 @@ export function useAllShipments(status: string) {
   });
 }
 
+
+// ----------------------------------------------------------
 export function useShipments(filters?: ShipmentFilters) {
   return useInfiniteQuery({
     queryKey: ['shipments', filters],

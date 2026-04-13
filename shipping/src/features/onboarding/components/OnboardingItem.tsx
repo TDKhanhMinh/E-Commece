@@ -1,5 +1,5 @@
-import React from 'react';
 import { View, Text, Image, useWindowDimensions } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { OnboardingStep } from '../types';
 
 interface OnboardingItemProps {
@@ -8,9 +8,17 @@ interface OnboardingItemProps {
 
 export const OnboardingItem = ({ item }: OnboardingItemProps) => {
   const { width } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
 
   return (
-    <View style={{ width }} className="flex-1 items-center justify-center p-8">
+    <View 
+      className="flex-1 items-center justify-center p-8"
+      style={{ 
+        width,
+        paddingLeft: Math.max(insets.left, 32), 
+        paddingRight: Math.max(insets.right, 32) 
+      }}
+    >
       <View className="flex-[0.7] justify-center items-center">
         <Image
           source={item.image}

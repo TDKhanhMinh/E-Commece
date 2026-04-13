@@ -19,6 +19,7 @@ public class AdminDeliveryResponse {
     private String destination;
     private String latitude;
     private String longitude;
+    private String proofImageUrl;
 
     private ShipperProfileResponse shipperProfile;
     private Double codAmount;

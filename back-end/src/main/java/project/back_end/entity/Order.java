@@ -45,6 +45,7 @@ public class Order {
     private String paymentMethod;
     private String shippingMethod;
     private BigDecimal shippingCost;
+    private String proofImageUrl;
 
     private LocalDateTime createdAt;
     private LocalDateTime deliveredAt;

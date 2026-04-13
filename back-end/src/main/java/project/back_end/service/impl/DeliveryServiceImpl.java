@@ -61,7 +61,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     }
 
     @Override
-    public void updateDeliveryStatus(Long deliveryId, String status) {
+    public void updateDeliveryStatus(Long deliveryId, String status, String proofImage) {
         Delivery delivery = deliveryRepository.findById(deliveryId)
                 .orElseThrow(() -> new AppException(ErrorCode.DELIVERY_NOT_FOUND));
         DeliveryStatus newStatus = parseStatus(status);
@@ -79,13 +79,14 @@ public class DeliveryServiceImpl implements DeliveryService {
                 delivery.setStatus(DeliveryStatus.DELIVERING);
                 break;
             case SUCCESS:
-//                if (delivery.getStatus() != DeliveryStatus.DELIVERING) {
-//                    throw new AppException(ErrorCode.INVALID_DELIVERY_STATUS);
-//                }
+                if (proofImage.isEmpty()) {
+                    throw new AppException(ErrorCode.PROOF_IMAGE_REQUIRED);
+                }
                 delivery.setStatus(DeliveryStatus.SUCCESS);
                 Order order = delivery.getOrder();
                 if (order != null) {
                     order.setStatus(OrderStatus.DELIVERED);
+                    order.setProofImageUrl(proofImage);
                     orderRepository.save(order);
                 }
                 break;

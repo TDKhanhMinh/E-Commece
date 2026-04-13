@@ -27,6 +27,8 @@ public class OrderResponse {
     private BigDecimal totalDiscount;
     private BigDecimal finalAmount;
 
+    private String proofImageUrl;
+
     private DeliveryAddressResponse deliveryAddress;
     private List<CheckoutItemResponse> items;
 

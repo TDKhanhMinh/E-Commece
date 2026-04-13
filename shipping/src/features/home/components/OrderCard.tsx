@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { View, TouchableOpacity, Modal as RNModal } from 'react-native';
-import { Text, Surface, useTheme, Portal, Modal, Button } from 'react-native-paper';
+import { View, TouchableOpacity } from 'react-native';
+import { Text, Surface, useTheme } from 'react-native-paper';
+import { OrderConfirmModal } from './OrderConfirmModal';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { spacing, borderRadius } from '@styles/index';
 import type { Order, CargoType } from '../types/home.types';
 import { formatCurrency } from '@/shared';
-import { useAcceptOrder } from '../hooks';
+import { useAcceptOrder, useCancelOrder, useDeliveryOrder } from '../hooks';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { HomeStackParamList } from '@/core';
@@ -25,6 +26,9 @@ export function OrderCard({ order }: OrderCardProps) {
   const theme = useTheme();
   const navigation = useNavigation<NativeStackNavigationProp<HomeStackParamList>>();
   const acceptOrderMutation = useAcceptOrder();
+  const deliveryOrderMutation = useDeliveryOrder();
+  const cancelOrderMutation = useCancelOrder();
+
   const [visible, setVisible] = useState(false);
 
   const feeFormatted = formatCurrency(order.codAmount);
@@ -32,9 +36,20 @@ export function OrderCard({ order }: OrderCardProps) {
   const showDialog = () => setVisible(true);
   const hideDialog = () => setVisible(false);
 
-  const handleAccept = () => {
+  const isPickup = order.deliveryStatus === 'PICKED_UP';
+  const modalTitle = isPickup ? 'Xác nhận đã lấy hàng?' : 'Nhận chuyến hàng?';
+  const modalDescription = isPickup
+    ? 'Bạn xác nhận đã nhận hàng từ người gửi và bắt đầu quá trình giao hàng.'
+    : 'Bạn sẽ là tài xế phụ trách việc lấy và giao đơn hàng này.';
+  const modalConfirmText = isPickup ? 'Xác nhận lấy hàng' : 'Đồng ý nhận';
+
+  const handleConfirm = () => {
     hideDialog();
-    acceptOrderMutation.mutate(order.deliveryId);
+    if (isPickup) {
+      deliveryOrderMutation.mutate(String(order.deliveryId));
+    } else {
+      acceptOrderMutation.mutate(String(order.deliveryId));
+    }
   };
 
   const handleCardPress = () => {
@@ -55,64 +70,17 @@ export function OrderCard({ order }: OrderCardProps) {
       }]}
     >
       <TouchableOpacity activeOpacity={0.75} onPress={handleCardPress} className="p-4">
-        {/* Modal xác nhận nhận đơn */}
-        <RNModal
+        <OrderConfirmModal
           visible={visible}
-          transparent={true}
-          animationType="fade"
-          onRequestClose={hideDialog}
-          statusBarTranslucent
-        >
-          <View className="flex-1 bg-black/50 justify-center px-6">
-            <View className="bg-white rounded-[24px] p-6 shadow-2xl">
-              <View
-                className="w-16 h-16 rounded-full items-center justify-center self-center mb-5"
-                style={[{ backgroundColor: theme.colors.primaryContainer }]}
-              >
-                <Icon name="truck-fast" size={32} color={theme.colors.primary} />
-              </View>
-              <Text variant="titleLarge" className="text-center font-bold text-gray-900 mb-2">
-                Nhận chuyến hàng?
-              </Text>
-              <Text variant="bodyMedium" className="text-center text-gray-500 mb-6 px-2">
-                Bạn sẽ là tài xế phụ trách việc lấy và giao đơn hàng này.
-              </Text>
-
-              <View className="bg-gray-50 p-4 rounded-2xl items-center mb-6 border border-gray-100">
-                <Text variant="labelMedium" className="text-gray-500 mb-1 font-medium">Tổng phí thu</Text>
-                <Text variant="headlineSmall" className="text-emerald-600 font-black tracking-tight">
-                  {feeFormatted}
-                </Text>
-                <View className="bg-gray-200/60 px-3 py-1 rounded-full mt-3">
-                  <Text variant="labelSmall" className="text-gray-600 font-bold">
-                    Mã: #{order.orderId}
-                  </Text>
-                </View>
-              </View>
-
-              <View className="flex-row gap-3">
-                <TouchableOpacity
-                  className="flex-1 bg-gray-100 py-4 rounded-xl items-center justify-center"
-                  onPress={hideDialog}
-                  activeOpacity={0.7}
-                >
-                  <Text variant="titleSmall" className="text-gray-600 font-bold">Quay lại</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  className="flex-1 py-4 rounded-xl items-center justify-center"
-                  style={[{ backgroundColor: theme.colors.primary }]}
-                  onPress={handleAccept}
-                  activeOpacity={0.7}
-                  disabled={acceptOrderMutation.isPending}
-                >
-                  <Text variant="titleSmall" className="text-white font-bold text-base">
-                    {acceptOrderMutation.isPending ? 'Đang xử lý...' : 'Đồng ý nhận'}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </RNModal>
+          onClose={hideDialog}
+          onConfirm={handleConfirm}
+          orderId={order.orderId}
+          feeFormatted={feeFormatted}
+          isLoading={isPickup ? deliveryOrderMutation.isPending : acceptOrderMutation.isPending}
+          title={modalTitle}
+          description={modalDescription}
+          confirmText={modalConfirmText}
+        />
 
         {/* ── Header: ID and Fee ── */}
         <View className="flex-row justify-between items-center mb-4">
@@ -187,6 +155,25 @@ export function OrderCard({ order }: OrderCardProps) {
           </View>
         ) : null}
 
+        {order.deliveryStatus === 'PICKED_UP' && (
+          <View className="mt-4 border-t border-gray-100 pt-3">
+            <TouchableOpacity
+              className="flex-row items-center justify-center rounded-[14px] py-3.5 shadow-sm"
+              style={[
+                { backgroundColor: theme.colors.primary },
+                deliveryOrderMutation.isPending && { opacity: 0.7 }
+              ]}
+              onPress={showDialog}
+              activeOpacity={0.85}
+              disabled={deliveryOrderMutation.isPending}
+            >
+              <Icon name={deliveryOrderMutation.isPending ? "loading" : "truck-fast"} size={20} color="#FFF" />
+              <Text style={{ color: "#FFFFFF" }} variant="bodyMedium" className="text-white font-bold ml-2">
+                {deliveryOrderMutation.isPending ? 'Đang xử lý...' : 'Đã lấy hàng'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
         {/* ── Action Button ── */}
         {order.deliveryStatus === 'PENDING' && (
           <View className="mt-4 border-t border-gray-100 pt-3">
@@ -201,7 +188,7 @@ export function OrderCard({ order }: OrderCardProps) {
               disabled={acceptOrderMutation.isPending}
             >
               <Icon name={acceptOrderMutation.isPending ? "loading" : "truck-fast"} size={20} color="#FFF" />
-              <Text variant="bodyMedium" className="text-white font-bold ml-2">
+              <Text style={{ color: "#FFFFFF" }} variant="bodyMedium" className="text-white font-bold ml-2">
                 {acceptOrderMutation.isPending ? 'Đang nhận đơn...' : 'Nhận đơn'}
               </Text>
             </TouchableOpacity>

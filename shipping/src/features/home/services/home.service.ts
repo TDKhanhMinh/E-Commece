@@ -13,6 +13,14 @@ class HomeService {
     async acceptOrder(deliveryId: string): Promise<ApiResponse<any>> {
         return await httpClient.post(`/delivery/${deliveryId}/accept`);
     }
+
+    async deliveryOrder(deliveryId: string): Promise<ApiResponse<any>> {
+        return await httpClient.post(`/delivery/${deliveryId}/delivery`);
+    }
+
+    async cancelOrder(deliveryId: string): Promise<ApiResponse<any>> {
+        return await httpClient.post(`/delivery/${deliveryId}/cancel`);
+    }
 }
 
 export const homeService = new HomeService();

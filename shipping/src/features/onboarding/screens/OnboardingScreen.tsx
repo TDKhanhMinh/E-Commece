@@ -5,9 +5,9 @@ import {
   FlatList,
   Animated,
   TouchableOpacity,
-  SafeAreaView,
   StatusBar,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppStore } from '@core/store/useAppStore';
 import { OnboardingItem } from '../components/OnboardingItem';
 import { Paginator } from '../components/Paginator';
@@ -40,6 +40,7 @@ export const OnboardingScreen = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
   const slidesRef = useRef<FlatList>(null);
+  const insets = useSafeAreaInsets();
 
   const viewableItemsChanged = useRef(({ viewableItems }: any) => {
     if (viewableItems && viewableItems.length > 0) {
@@ -67,11 +68,14 @@ export const OnboardingScreen = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <View className="flex-1 bg-white">
       <StatusBar barStyle="dark-content" />
       
       {/* Header */}
-      <View className="flex-row justify-between items-center px-8 py-4">
+      <View 
+        className="flex-row justify-between items-center px-8 pb-4"
+        style={{ paddingTop: Math.max(insets.top, 16) }}
+      >
         <View className="flex-row items-center">
           <View className="w-8 h-8 bg-success rounded-lg items-center justify-center mr-2">
             <Text className="text-white font-bold text-xs">S</Text>
@@ -108,6 +112,6 @@ export const OnboardingScreen = () => {
         onContinue={handleContinue} 
         onSignUp={handleSignUp} 
       />
-    </SafeAreaView>
+    </View>
   );
 };

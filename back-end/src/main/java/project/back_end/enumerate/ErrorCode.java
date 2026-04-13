@@ -125,7 +125,7 @@ public enum ErrorCode {
     SHIPPER_PROFILE_NOT_FOUND(404, "Shipper profile was not found"),
     INVALID_DELIVERY_STATUS(400, "Invalid delivery status. Allowed values are PENDING ,PICKED_UP,DELIVERING, SUCCESS,CANCELLED "),
     DELIVERY_ALREADY_ACCEPTED(400, "This delivery has already been accepted by another shipper"),
-
+    PROOF_IMAGE_REQUIRED(400, "Proof image is required when marking delivery as SUCCESS"),
     /* =========================
      * CHAT / MESSAGING
      * ========================= */

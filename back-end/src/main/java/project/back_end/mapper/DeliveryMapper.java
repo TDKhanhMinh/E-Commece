@@ -21,6 +21,7 @@ public interface DeliveryMapper {
     @Mapping(source = "order.deliveryAddress.location", target = "destination")
     @Mapping(source = "order.deliveryAddress.latitude", target = "latitude")
     @Mapping(source = "order.deliveryAddress.longitude", target = "longitude")
+    @Mapping(source = "order.proofImageUrl", target = "proofImageUrl")
 
     @Mapping(source = "shipper", target = "shipperProfile")
 
@@ -57,6 +58,7 @@ public interface DeliveryMapper {
     @Mapping(source = "amountToCollect", target = "codAmount")
     @Mapping(source = "order.orderItems", target = "items")
     @Mapping(source = "status", target = "deliveryStatus")
+    @Mapping(source = "order.proofImageUrl", target = "proofImageUrl")
     ShipperDeliveryResponse toShipperDeliveryResponse(Delivery delivery);
 
     @Named("mapPaymentStatus")

@@ -21,6 +21,7 @@ public class ShipperDeliveryResponse {
     private String longitude;
     private Double codAmount;
     private String deliveryStatus;
+    private String proofImageUrl;
     private List<CheckoutItemResponse> items;
 
 

@@ -10,7 +10,7 @@ import project.back_end.response.ShipperDeliveryResponse;
 public interface DeliveryService {
     void createDeliveryForOrder(Order order);
 
-    void updateDeliveryStatus(Long deliveryId, String status);
+    void updateDeliveryStatus(Long deliveryId, String status, String proofImage);
 
     void acceptDelivery(Long deliveryId, String email);
 

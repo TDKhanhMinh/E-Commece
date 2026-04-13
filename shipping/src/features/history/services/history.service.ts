@@ -2,7 +2,7 @@ import { httpClient } from '@/core';
 import type { ReportIssueData } from '../types';
 import { ApiResponse } from '@/shared';
 import { API_CONFIG } from '@/shared/constants/app.constants';
-
+import ReactNativeBlobUtil from 'react-native-blob-util';
 class HistoryService {
   private readonly endpoints = {
     deliveryDetails: '/delivery',
@@ -15,66 +15,67 @@ class HistoryService {
   async reportIssue(data: ReportIssueData): Promise<ApiResponse<any>> {
     return await httpClient.post('/issues/report', data);
   }
-  async updateSuccessfulDelivery(deliveryId: string): Promise<ApiResponse<any>> {
-    return await httpClient.post(`/delivery/${deliveryId}/success`);
+  async updateSuccessfulDelivery(deliveryId: string, proofImage: string): Promise<ApiResponse<any>> {
+    return await httpClient.post(`/delivery/${deliveryId}/success`, { proofImage });
   }
 
   async uploadImage(fileData: { uri: string; type: string; name: string }): Promise<any> {
-    const formData = new FormData();
+    console.log('📤 Uploading with React Native Blob Util');
+    console.log('Original URI:', fileData.uri);
 
-    // React Native requires this specific format for file uploads
-    formData.append('file', {
-      uri: fileData.uri,
-      type: fileData.type,
-      name: fileData.name,
-    } as any);
+    const realPath = fileData.uri.replace(/^file:\/\//i, '');
 
-    console.log('📤 Uploading with native fetch API');
-    console.log('File data:', fileData);
-
-    // Get auth token from httpClient
     const authHeader = httpClient.getAuthToken();
 
-    // Use native fetch for file upload (more reliable in React Native)
     try {
-      const headers: Record<string, string> = {};
-      if (authHeader) {
-        headers['Authorization'] = authHeader;
-      }
-      // Don't set Content-Type - let React Native set it with boundary
+      const response = await ReactNativeBlobUtil.fetch(
+        'POST',
+        `${API_CONFIG.BASE_URL}${this.endpoints.images}`,
+        {
+          Authorization: authHeader || '',
+          'Content-Type': 'multipart/form-data',
+        },
+        [
+          // Định nghĩa FormData ở dạng mảng object
+          {
+            name: 'file', // Tên field phải khớp với tham số của Spring Boot
+            filename: fileData.name || `proof_${Date.now()}.jpg`,
+            type: fileData.type || 'image/jpeg',
+            // Hàm wrap() này là "phép thuật" giúp đọc file an toàn không bị sập
+            data: ReactNativeBlobUtil.wrap(realPath)
+          }
+        ]
+      );
 
-      const response = await fetch(`${API_CONFIG.BASE_URL}${this.endpoints.images}`, {
-        method: 'POST',
-        headers,
-        body: formData,
-      });
+      console.log('📥 Upload status:', response.info().status);
 
-      console.log('📥 Upload status:', response.status, response.statusText);
-      const result = await response.json();
-      console.log('📥 Upload response:', result);
+      // Parse data từ chuỗi String sang JSON
+      const resultData = JSON.parse(response.data);
+      console.log('📥 Upload response:', resultData);
 
-      if (response.ok) {
+      const status = response.info().status;
+      if (status >= 200 && status < 300) {
         return {
           success: true,
-          data: result,
+          data: resultData,
         };
       } else {
         return {
           success: false,
           data: null,
-          error: result.message || 'Upload failed',
+          error: resultData.message || 'Upload failed with status ' + status,
         };
       }
+
     } catch (error) {
-      console.error(' Upload error:', error);
+      console.error('❌ Upload error:', error);
       return {
         success: false,
         data: null,
-        error: error instanceof Error ? error.message : 'Upload failed',
+        error: error instanceof Error ? error.message : 'Unknown native error',
       };
     }
   }
-
 }
 export const historyService = new HistoryService();
 

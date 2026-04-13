@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, ScrollView, TouchableOpacity, Image, Platform, PermissionsAndroid, Alert, Modal } from 'react-native';
-import { Text, useTheme } from 'react-native-paper';
+import { Text, useTheme, Snackbar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { launchCamera } from 'react-native-image-picker';
 import { useSuccessfulDelivery, useUploadImage } from '../hooks/useOrderHistory';
@@ -14,6 +14,7 @@ interface OrderDetailSectionProps {
 export const OrderDetailSection = ({ order }: OrderDetailSectionProps) => {
   const theme = useTheme();
   const navigation = useNavigation();
+  const [uploadImageReslut, setUploadImageResult] = useState('');
   const [proofImage, setProofImage] = useState<string | null>(null);
   const { mutateAsync: uploadImage } = useUploadImage();
 
@@ -25,11 +26,23 @@ export const OrderDetailSection = ({ order }: OrderDetailSectionProps) => {
     message: '',
   });
 
+  // Toast States
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastConfig, setToastConfig] = useState({
+    message: '',
+    type: 'success' as 'success' | 'error',
+  });
+
+  const showToast = (type: 'success' | 'error', message: string) => {
+    setToastConfig({ type, message });
+    setToastVisible(true);
+  };
+
   const successfulDelivery = useSuccessfulDelivery();
 
-  const handSuccessfulDelivery = async (deliveryId: string) => {
+  const handSuccessfulDelivery = async (deliveryId: string, proofImage: string) => {
     try {
-      const response = await successfulDelivery.mutateAsync(deliveryId);
+      const response = await successfulDelivery.mutateAsync({ deliveryId, proofImage });
       console.log('Successful delivery response', response);
 
       setModalConfig({
@@ -100,7 +113,7 @@ export const OrderDetailSection = ({ order }: OrderDetailSectionProps) => {
       const result = await launchCamera({
         mediaType: 'photo',
         cameraType: 'back',
-        quality: 0.8,
+        quality: 0.5,
         saveToPhotos: true,
       });
       console.log("📸 Camera result:", JSON.stringify(result, null, 2));
@@ -112,7 +125,7 @@ export const OrderDetailSection = ({ order }: OrderDetailSectionProps) => {
 
       if (result.errorCode) {
         console.error('Lỗi Camera:', result.errorMessage);
-        Alert.alert('Lỗi Camera', result.errorMessage || 'Không thể mở camera');
+        showToast('error', result.errorMessage || 'Không thể mở camera');
         return;
       }
 
@@ -135,19 +148,19 @@ export const OrderDetailSection = ({ order }: OrderDetailSectionProps) => {
         };
 
         console.log('Uploading image with data:', fileData);
-
         try {
           const uploadResult = await uploadImage(fileData);
+          setUploadImageResult(uploadResult.data);
           console.log('Upload SUCCESS:', JSON.stringify(uploadResult, null, 2));
-          Alert.alert('Thành công', 'Đã tải lên ảnh minh chứng');
+          showToast('success', 'Đã tải lên ảnh minh chứng thành công');
         } catch (uploadError) {
           console.error('Upload FAILED:', uploadError);
-          Alert.alert('Lỗi tải lên', 'Không thể tải ảnh lên server. Vui lòng thử lại.');
+          showToast('error', 'Không thể tải ảnh lên server. Vui lòng thử lại.');
         }
       }
     } catch (err) {
       console.error('Lỗi khi chụp ảnh hoặc tải lên:', err);
-      Alert.alert('Lỗi', 'Đã xảy ra lỗi. Vui lòng thử lại.');
+      showToast('error', 'Đã xảy ra lỗi khi chụp ảnh hoặc tải lên.');
     }
   };
 
@@ -195,7 +208,7 @@ export const OrderDetailSection = ({ order }: OrderDetailSectionProps) => {
         return 'ĐÃ HỦY';
       case 'PICKED_UP':
       case 'picking_up':
-        return 'ĐÃ LẤY HÀNG';
+        return 'ĐÃ NHẬN ĐƠN HÀNG';
       case 'DELIVERING':
       case 'delivering':
         return 'ĐANG GIAO HÀNG';
@@ -317,7 +330,7 @@ export const OrderDetailSection = ({ order }: OrderDetailSectionProps) => {
         </View>
 
         {/* Khối Hành động (Chụp ảnh & Xác nhận) */}
-        {order.deliveryStatus === 'PICKED_UP' && (
+        {order.deliveryStatus === 'DELIVERING' && (
           <View className="bg-white rounded-[20px] p-5 shadow-sm border border-gray-100">
             <View className="flex-row items-center gap-2 mb-4">
               <View className="p-1.5 bg-orange-50 rounded-lg border border-orange-100">
@@ -347,35 +360,37 @@ export const OrderDetailSection = ({ order }: OrderDetailSectionProps) => {
                   </View>
                 </View>
               ) : (
-                <View className="flex-row items-center py-2">
-                  <Icon name="camera-plus" size={24} color="#EA580C" />
-                  <Text className="text-orange-600 font-bold ml-2">Chụp ảnh phát hàng</Text>
+                <View className="flex-row items-center">
+                  <Icon name="camera-plus" size={20} color="#EA580C" />
+                  <Text className="text-orange-600 font-bold ml-2">Chụp ảnh minh chứng</Text>
                 </View>
               )}
             </TouchableOpacity>
 
-            {/* Các nút hành động chính */}
+
             <TouchableOpacity
-              className="bg-blue-600 rounded-xl py-4 flex-row justify-center items-center gap-2 mb-3 shadow-[0_4px_12px_rgba(37,99,235,0.3)]"
-              onPress={() => handSuccessfulDelivery(order.deliveryId)}
+              disabled={uploadImageReslut === ''}
+              className={uploadImageReslut === '' ? 'bg-gray-400 rounded-xl py-4 flex-row justify-center items-center gap-2 mb-3 shadow-[0_4px_12px_rgba(37,99,235,0.3)]' : 'bg-blue-600 rounded-xl py-4 flex-row justify-center items-center gap-2 mb-3 shadow-[0_4px_12px_rgba(37,99,235,0.3)]'}
+              onPress={() => handSuccessfulDelivery(order.deliveryId, uploadImageReslut)}
               activeOpacity={0.8}
             >
               <Icon name="truck-check" size={22} color="#FFFFFF" />
-              <Text className="text-white font-black tracking-wide text-[15px]">
+              <Text style={{ color: "#FFFFFF" }} className="font-black tracking-wide text-[15px]">
                 XÁC NHẬN GIAO HÀNG
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              activeOpacity={0.7}
-              className="flex-row items-center justify-center py-3.5 bg-red-50 rounded-xl border border-red-100"
-            >
-              <Icon name="alert-circle" size={18} color="#DC2626" />
-              <Text className="text-red-600 font-bold ml-2">Báo cáo sự cố</Text>
-            </TouchableOpacity>
+
+
           </View>
         )}
-
+        <TouchableOpacity
+          activeOpacity={0.7}
+          className="flex-row items-center justify-center py-3.5 bg-red-50 rounded-xl border border-red-100"
+        >
+          <Icon name="alert-circle" size={18} color="#DC2626" />
+          <Text className="text-red-600 font-bold ml-2">Báo cáo sự cố</Text>
+        </TouchableOpacity>
       </View>
 
       {/* Custom Alert Modal */}
@@ -410,13 +425,39 @@ export const OrderDetailSection = ({ order }: OrderDetailSectionProps) => {
               onPress={() => setModalVisible(false)}
               activeOpacity={0.8}
             >
-              <Text className="text-white font-black tracking-wide text-[15px]">
+              <Text style={{ color: '#FFFFFF' }} className="font-black tracking-wide text-[15px]">
                 ĐÓNG
               </Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
+
+      {/* Toast Notification (Snackbar) */}
+      <Snackbar
+        visible={toastVisible}
+        onDismiss={() => setToastVisible(false)}
+        duration={3000}
+        style={{
+          backgroundColor: toastConfig.type === 'success' ? '#10B981' : '#EF4444',
+          borderRadius: 12,
+          marginBottom: 20,
+        }}
+        action={{
+          label: 'Đóng',
+          textColor: '#FFFFFF',
+          onPress: () => setToastVisible(false),
+        }}
+      >
+        <View className="flex-row items-center gap-2">
+          <Icon
+            name={toastConfig.type === 'success' ? 'check-circle' : 'alert-circle'}
+            size={20}
+            color="#FFFFFF"
+          />
+          <Text style={{ color: '#FFFFFF', fontWeight: 'bold' }}>{toastConfig.message}</Text>
+        </View>
+      </Snackbar>
     </ScrollView>
   );
 };

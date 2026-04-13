@@ -11,6 +11,8 @@ import { WalletScreen } from '@features/wallet';
 import { ProfileScreen } from '@features/profile';
 import { OrderDetailScreen } from '@features/history/screens/OrderDetailScreen';
 import type { MainTabParamList } from './types';
+import { useAllShipments } from '@/features/shipping/hooks/useShipments';
+import { da } from 'zod/v4/locales';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 const OrdersStack = createNativeStackNavigator();
@@ -81,6 +83,9 @@ function TabIcon({
 // ── Navigator ────────────────────────────────────────────────────────────────
 export function MainNavigator() {
   const theme = useTheme();
+  const { data } = useAllShipments("PICKED_UP");
+  // @ts-ignore
+  const totalOrder = data?.data.totalElements;
 
   return (
     <Tab.Navigator
@@ -126,7 +131,7 @@ export function MainNavigator() {
           tabBarIcon: ({ color, size }) => (
             <TabIcon name="package-variant" color={color} size={size} />
           ),
-          tabBarBadge: 2,
+          tabBarBadge: totalOrder,
           tabBarBadgeStyle: { fontSize: 10 },
         }}
       />
