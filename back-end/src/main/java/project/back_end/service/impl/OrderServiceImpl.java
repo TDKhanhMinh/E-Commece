@@ -2,7 +2,7 @@ package project.back_end.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,13 +18,13 @@ import project.back_end.mapper.CheckoutMapper;
 import project.back_end.repository.*;
 import project.back_end.request.CheckoutItemRequest;
 import project.back_end.request.CheckoutRequest;
+import project.back_end.response.DirectionsResponse;
 import project.back_end.response.OrderResponse;
 import project.back_end.response.VoucherResponse;
-import project.back_end.service.MemberShipPointService;
-import project.back_end.service.OrderService;
-import project.back_end.service.VoucherService;
+import project.back_end.service.*;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +48,9 @@ public class OrderServiceImpl implements OrderService {
     private final ShippingService shippingService;
     private final VoucherService voucherService;
     private final MemberShipPointService memberShipPointService;
-    private final ApplicationEventPublisher eventPublisher;
     private final DeliveryRepository deliveryRepository;
+    private final GoongMapService goongMapService;
+    private final ObjectProvider<DeliveryService> deliveryService;
 
     @Transactional
     public OrderResponse checkout(String email, CheckoutRequest request) {
@@ -297,10 +298,10 @@ public class OrderServiceImpl implements OrderService {
                 if (currentStatus != OrderStatus.PENDING)
                     throw new AppException(ErrorCode.INVALID_STATUS_TRANSITION);
                 order.setConfirmedAt(now);
-                createDeliveryForOrder(order);
+                deliveryService.getObject().createDeliveryForOrder(order);
             }
             case PAID -> {
-                createDeliveryForOrder(order);
+                deliveryService.getObject().createDeliveryForOrder(order);
             }
 
             case DELIVERED -> {
@@ -357,6 +358,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private void createDeliveryForOrder(Order order) {
+        DirectionsResponse directions = goongMapService.getDirections(
+                Double.parseDouble("10.732091380000043"), Double.parseDouble("106.69945521900007"),
+                Double.parseDouble(order.getDeliveryAddress().getLatitude()), Double.parseDouble(order.getDeliveryAddress().getLongitude())
+        );
         Delivery delivery = new Delivery();
         delivery.setOrder(order);
         delivery.setShipper(null);
@@ -365,6 +370,13 @@ public class OrderServiceImpl implements OrderService {
         delivery.setPickupLongitude("106.69945521900007");
         delivery.setStatus(DeliveryStatus.PENDING);
         delivery.setAmountToCollect(order.getFinalAmount());
+        if (directions != null) {
+            delivery.setEncodedPolyline(directions.getEncodedPolyline());
+            delivery.setDistanceText(directions.getDistanceText());
+            delivery.setDistanceValue(directions.getDistanceValue());
+            delivery.setDurationText(directions.getDurationText());
+        }
+        delivery.setShippingCost(calculateShippingFee(order.getShippingCost(), directions != null ? directions.getDistanceValue() : 0));
         order.setDelivery(delivery);
         deliveryRepository.save(delivery);
     }
@@ -397,6 +409,19 @@ public class OrderServiceImpl implements OrderService {
             skuRepository.save(sku);
 
         }
+    }
+
+    public BigDecimal calculateShippingFee(BigDecimal defaultCost, long distanceInMeters) {
+        BigDecimal feePerKm = new BigDecimal("5000");
+
+        BigDecimal distance = BigDecimal.valueOf(distanceInMeters);
+        BigDecimal divisor = new BigDecimal("1000");
+
+        BigDecimal distanceInKm = distance.divide(divisor);
+
+        BigDecimal distanceFee = distanceInKm.multiply(feePerKm).setScale(0, RoundingMode.HALF_UP);
+
+        return defaultCost.add(distanceFee);
     }
 
 

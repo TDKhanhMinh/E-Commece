@@ -1,9 +1,11 @@
 package project.back_end.service;
 
 
+import org.springframework.stereotype.Service;
 import project.back_end.request.ReportRequest;
 import project.back_end.response.ReportResponse;
 
+@Service
 public interface ReportService {
 
     /**

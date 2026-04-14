@@ -16,7 +16,7 @@ class HistoryService {
     return await httpClient.post('/issues/report', data);
   }
   async updateSuccessfulDelivery(deliveryId: string, proofImage: string): Promise<ApiResponse<any>> {
-    return await httpClient.post(`/delivery/${deliveryId}/success`, { proofImage });
+    return await httpClient.post(`/delivery/${deliveryId}/success`, proofImage);
   }
 
   async uploadImage(fileData: { uri: string; type: string; name: string }): Promise<any> {

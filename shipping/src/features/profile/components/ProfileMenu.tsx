@@ -4,6 +4,9 @@ import { Typography } from '@components/ui/Typography';
 import { Card } from '@components/ui/Card';
 import { Divider } from '@components/ui/Divider';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { ProfileStackParamList } from '@navigation/types';
 
 interface MenuItemProps {
   icon: string;
@@ -35,6 +38,8 @@ function MenuItem({ icon, label, onPress, showDivider = true }: MenuItemProps) {
 }
 
 export function ProfileMenu() {
+  const navigation = useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
+
   return (
     <View className="px-4">
       <Card variant="outlined" className="bg-white p-0 rounded-2xl overflow-hidden shadow-sm">
@@ -42,27 +47,27 @@ export function ProfileMenu() {
         <MenuItem 
           icon="car-side" 
           label="Phương tiện của tôi" 
-          onPress={() => console.log('Vehicle')} 
+          onPress={() => navigation.navigate('MyVehicle')} 
         />
         <MenuItem 
           icon="bank-outline" 
           label="Tài khoản ngân hàng" 
-          onPress={() => console.log('Bank')} 
+          onPress={() => navigation.navigate('BankAccount')} 
         />
         <MenuItem 
           icon="cog-outline" 
           label="Cài đặt ứng dụng" 
-          onPress={() => console.log('Settings')} 
+          onPress={() => navigation.navigate('Settings')} 
         />
         <MenuItem 
           icon="headphones" 
           label="Trung tâm hỗ trợ" 
-          onPress={() => console.log('Support')} 
+          onPress={() => navigation.navigate('SupportCenter')} 
         />
         <MenuItem 
           icon="file-document-outline" 
           label="Chính sách & Điều khoản" 
-          onPress={() => console.log('Policy')} 
+          onPress={() => navigation.navigate('PolicyTerms')} 
           showDivider={false}
         />
       </Card>

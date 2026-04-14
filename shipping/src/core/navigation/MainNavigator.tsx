@@ -8,7 +8,7 @@ import { HomeStackNavigator } from '@features/home/navigators/HomeStackNavigator
 import { ShipmentsScreen } from '@features/shipping';
 import { HistoryStackNavigator } from '@features/history/navigators';
 import { WalletScreen } from '@features/wallet';
-import { ProfileScreen } from '@features/profile';
+import { ProfileScreen, ProfileStackNavigator } from '@features/profile';
 import { OrderDetailScreen } from '@features/history/screens/OrderDetailScreen';
 import type { MainTabParamList } from './types';
 import { useAllShipments } from '@/features/shipping/hooks/useShipments';
@@ -116,7 +116,7 @@ export function MainNavigator() {
       />
       <Tab.Screen
         name="Profile"
-        component={ProfileScreen}
+        component={ProfileStackNavigator}
         options={{
           tabBarLabel: 'Hồ sơ',
           tabBarIcon: ({ color, size }) => (

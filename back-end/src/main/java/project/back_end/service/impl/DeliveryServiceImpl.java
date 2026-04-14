@@ -2,6 +2,7 @@ package project.back_end.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import project.back_end.repository.UserRepository;
 import project.back_end.response.AdminDeliveryResponse;
 import project.back_end.response.ShipperDeliveryResponse;
 import project.back_end.service.DeliveryService;
+import project.back_end.service.OrderService;
 
 import java.util.List;
 
@@ -36,6 +38,8 @@ public class DeliveryServiceImpl implements DeliveryService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final NotificationServiceImpl notificationService;
+    private final ObjectProvider<OrderService> orderService;
+
 
     @Override
     public void createDeliveryForOrder(Order order) {
@@ -46,7 +50,6 @@ public class DeliveryServiceImpl implements DeliveryService {
         delivery.setAmountToCollect(order.getFinalAmount());
         order.setDelivery(delivery);
         deliveryRepository.save(delivery);
-        // Gửi thông báo đến tất cả shipper về đơn hàng mới
         List<User> shippers = userRepository.getAllByRole(User.Role.SHIPPER);
         for (User shipper : shippers) {
             if (shipper.getDeviceToken() != null) {
@@ -85,22 +88,24 @@ public class DeliveryServiceImpl implements DeliveryService {
                 delivery.setStatus(DeliveryStatus.SUCCESS);
                 Order order = delivery.getOrder();
                 if (order != null) {
-                    order.setStatus(OrderStatus.DELIVERED);
+                    orderService.getObject().updateOrderStatus(order.getId(), "DELIVERED");
                     order.setProofImageUrl(proofImage);
                     orderRepository.save(order);
                 }
+
                 break;
             case CANCELLED:
                 if (delivery.getStatus() == DeliveryStatus.DELIVERING) {
                     throw new AppException(ErrorCode.INVALID_DELIVERY_STATUS);
                 }
                 delivery.setStatus(DeliveryStatus.CANCELLED);
+                deliveryRepository.save(delivery);
+                orderService.getObject().updateOrderStatus(delivery.getOrder().getId(), "CANCELLED");
                 break;
             default:
                 delivery.setStatus(newStatus);
                 throw new AppException(ErrorCode.INVALID_DELIVERY_STATUS);
         }
-
     }
 
     @Override

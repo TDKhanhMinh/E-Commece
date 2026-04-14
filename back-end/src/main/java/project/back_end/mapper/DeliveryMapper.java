@@ -62,6 +62,10 @@ public interface DeliveryMapper {
     @Mapping(source = "pickupAddress", target = "pickupLocation")
     @Mapping(source = "pickupLatitude", target = "pickupLatitude")
     @Mapping(source = "pickupLongitude", target = "pickupLongitude")
+    @Mapping(source = "shippingCost", target = "shippingCost")
+    @Mapping(source = "distanceText", target = "distanceText")
+    @Mapping(source = "createdAt", target = "createdAt")
+    @Mapping(source = "encodedPolyline", target = "encodedPolyline")
     ShipperDeliveryResponse toShipperDeliveryResponse(Delivery delivery);
 
     @Named("mapPaymentStatus")

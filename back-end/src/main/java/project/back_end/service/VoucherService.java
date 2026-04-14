@@ -2,10 +2,12 @@ package project.back_end.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 import project.back_end.request.VoucherRequest.VoucherRequest;
 import project.back_end.response.UserVoucherResponse;
 import project.back_end.response.VoucherResponse;
 
+@Service
 public interface VoucherService {
     // Lưu voucher vào kho của người dùng khi họ nhấn "Lưu" hoặc "Thu thập"
     void collectVoucher(Long userId, String voucherCode);

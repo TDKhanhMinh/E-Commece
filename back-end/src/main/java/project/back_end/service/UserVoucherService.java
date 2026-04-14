@@ -2,9 +2,11 @@ package project.back_end.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 import project.back_end.entity.UserVoucher;
 import project.back_end.response.UserVoucherResponse;
 
+@Service
 public interface UserVoucherService {
 
     // Lấy tất cả voucher chưa sử dụng trong ví (trả về Response cho FE)

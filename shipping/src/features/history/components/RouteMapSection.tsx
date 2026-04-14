@@ -13,8 +13,9 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Mapbox from '@rnmapbox/maps';
 import polyline from '@mapbox/polyline';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import type { Order } from '../../home/types/home.types';
 
-import { GOONG_MAP_KEY, GOONG_API_KEY, MAPBOX_ACCESS_TOKEN } from '@env';
+import { GOONG_MAP_KEY, MAPBOX_ACCESS_TOKEN } from '@env';
 
 // ──────────────────────────────────────────────────────────────────
 // Goong & Mapbox Config
@@ -22,50 +23,6 @@ import { GOONG_MAP_KEY, GOONG_API_KEY, MAPBOX_ACCESS_TOKEN } from '@env';
 const GOONG_STYLE_URL = `https://tiles.goong.io/assets/goong_map_web.json?api_key=${GOONG_MAP_KEY}`;
 
 Mapbox.setAccessToken(MAPBOX_ACCESS_TOKEN);
-
-// ──────────────────────────────────────────────────────────────────
-// Types
-// ──────────────────────────────────────────────────────────────────
-interface DirectionsResult {
-  coords: [number, number][];
-  distanceText: string;
-  durationText: string;
-}
-
-// ──────────────────────────────────────────────────────────────────
-// Hàm gọi API Goong Directions
-// ──────────────────────────────────────────────────────────────────
-async function fetchGoongDirections(
-  originLng: number,
-  originLat: number,
-  destLng: number,
-  destLat: number,
-): Promise<DirectionsResult> {
-  // Goong Directions API nhận tọa độ theo thứ tự lat,lng (khác với GeoJSON là lng,lat)
-  const url =
-    `https://rsapi.goong.io/Direction` +
-    `?origin=${originLat},${originLng}` +
-    `&destination=${destLat},${destLng}` +
-    `&vehicle=car` +
-    `&api_key=${GOONG_API_KEY}`;
-
-  const response = await fetch(url);
-  const json = await response.json();
-
-  if (json.routes && json.routes.length > 0) {
-    const route = json.routes[0];
-    const leg = route.legs?.[0];
-    const encoded: string = route.overview_polyline.points;
-    const decoded = polyline.decode(encoded);
-    const coords: [number, number][] = decoded.map((p: [number, number]) => [p[1], p[0]]);
-    return {
-      coords,
-      distanceText: leg?.distance?.text ?? '',
-      durationText: leg?.duration?.text ?? '',
-    };
-  }
-  return { coords: [], distanceText: '', durationText: '' };
-}
 
 // ──────────────────────────────────────────────────────────────────
 // Helper
@@ -122,18 +79,18 @@ const MapContent = ({
       <Mapbox.ShapeSource id="routeSource" shape={routeGeoJSON}>
         <Mapbox.LineLayer
           id="routeOutline"
-          style={{ lineColor: '#FFFFFF', lineWidth: 7, lineCap: 'round', lineJoin: 'round' }}
-          layerIndex={10}
+          style={{ lineColor: '#FFFFFF', lineWidth: 10, lineCap: 'round', lineJoin: 'round' }}
+          layerIndex={998}
         />
         <Mapbox.LineLayer
           id="routeFill"
           style={{
             lineColor: directionsError ? '#94A3B8' : '#2563EB',
-            lineWidth: 4,
+            lineWidth: 6,
             lineCap: 'round',
             lineJoin: 'round',
           }}
-          layerIndex={11}
+          layerIndex={999}
         />
       </Mapbox.ShapeSource>
     )}
@@ -160,7 +117,7 @@ const MapContent = ({
 // Props
 // ──────────────────────────────────────────────────────────────────
 interface RouteMapSectionProps {
-  order: any;
+  order: Order | any;
   isLoading?: boolean;
 }
 
@@ -189,27 +146,30 @@ export const RouteMapSection = ({
 
   useEffect(() => {
     if (isLoading) { return; }
-    setDirectionsLoading(true);
-    setDirectionsError(false);
 
-    fetchGoongDirections(pickupLng, pickupLat, destLng, destLat)
-      .then(result => {
-        if (result.coords.length > 0) {
-          setRouteCoords(result.coords);
-          setDistanceText(result.distanceText);
-          setDurationText(result.durationText);
-        } else {
-          setRouteCoords([[pickupLng, pickupLat], [destLng, destLat]]);
-          setDirectionsError(true);
-        }
-      })
-      .catch(() => {
+    if (order?.encodedPolyline) {
+      setDirectionsLoading(true);
+      try {
+        const decoded = polyline.decode(order.encodedPolyline);
+        const coords: [number, number][] = decoded.map((p: [number, number]) => [p[1], p[0]]);
+        setRouteCoords(coords);
+        setDistanceText(order.distanceText || '');
+        setDurationText(order.durationText || '');
+        setDirectionsError(false);
+      } catch (error) {
+        console.error("Failed to decode polyline:", error);
         setRouteCoords([[pickupLng, pickupLat], [destLng, destLat]]);
         setDirectionsError(true);
-      })
-      .finally(() => setDirectionsLoading(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order?.pickupLongitude, order?.pickupLatitude, order?.longitude, order?.latitude]);
+      } finally {
+        setDirectionsLoading(false);
+      }
+    } else {
+      // Fallback: draw a straight line if no polyline provided
+      setRouteCoords([[pickupLng, pickupLat], [destLng, destLat]]);
+      setDistanceText(order?.distanceText || '');
+      setDurationText('');
+    }
+  }, [order?.encodedPolyline, pickupLng, pickupLat, destLng, destLat, isLoading]);
 
   const routeGeoJSON: GeoJSON.Feature<GeoJSON.LineString> | null = routeCoords
     ? { type: 'Feature', geometry: { type: 'LineString', coordinates: routeCoords }, properties: {} }

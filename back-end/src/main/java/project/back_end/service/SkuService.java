@@ -1,12 +1,14 @@
 package project.back_end.service;
 
 
+import org.springframework.stereotype.Service;
 import project.back_end.request.Product.AutoGenerateSkuRequest;
 import project.back_end.request.Product.SkuRequest;
 import project.back_end.request.Product.UpdateSkuRequest;
 
 import java.util.List;
 
+@Service
 public interface SkuService {
     // Thêm SKU mới vào Product
     void createSku(Long productId, SkuRequest request);

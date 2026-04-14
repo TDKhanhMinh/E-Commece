@@ -42,6 +42,10 @@ export type ProfileStackParamList = {
   Settings: undefined;
   AddressList: undefined;
   AddressForm: { addressId?: string };
+  MyVehicle: undefined;
+  BankAccount: undefined;
+  SupportCenter: undefined;
+  PolicyTerms: undefined;
 };
 
 export type RootStackParamList = {

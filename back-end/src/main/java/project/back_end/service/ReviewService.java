@@ -2,12 +2,14 @@ package project.back_end.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 import project.back_end.request.ReviewRequest;
 import project.back_end.response.ProductRatingSummary;
 import project.back_end.response.ReviewResponse;
 
 import java.util.Map;
 
+@Service
 public interface ReviewService {
 
     /**

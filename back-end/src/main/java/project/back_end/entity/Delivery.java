@@ -29,6 +29,16 @@ public class Delivery {
     private String pickupLatitude;
     private String pickupLongitude;
     
+    @Column(columnDefinition = "LONGTEXT")
+    private String encodedPolyline;
+
+    private String distanceText;
+    private long distanceValue;
+
+    private String durationText;
+
+    private BigDecimal shippingCost;
+
     private BigDecimal amountToCollect;
 
     private DeliveryStatus status;

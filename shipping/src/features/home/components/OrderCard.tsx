@@ -5,7 +5,7 @@ import { OrderConfirmModal } from './OrderConfirmModal';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { spacing, borderRadius } from '@styles/index';
 import type { Order, CargoType } from '../types/home.types';
-import { formatCurrency } from '@/shared';
+import { formatCurrency, formatDateTime } from '@/shared';
 import { useAcceptOrder, useCancelOrder, useDeliveryOrder } from '../hooks';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -14,7 +14,7 @@ import { HomeStackParamList } from '@/core';
 // ── Masked phone ─────────────────────────────────────────────────────────────
 function maskPhone(phone: string): string {
   if (phone.length < 6) return phone;
-  return phone.slice(0, 3) + '****' + phone.slice(-3);
+  return phone.slice(0, 3) + ' ••• ••• ' + phone.slice(-3); // Cách điệu lại format che số điện thoại
 }
 
 // ── Main component ───────────────────────────────────────────────────────────
@@ -32,7 +32,10 @@ export function OrderCard({ order }: OrderCardProps) {
 
   const [visible, setVisible] = useState(false);
 
-  const feeFormatted = formatCurrency(order.codAmount);
+  const shippingFeeFormatted = order.shippingCost
+    ? formatCurrency(parseFloat(order.shippingCost))
+    : formatCurrency(0);
+  const codFormatted = formatCurrency(order.codAmount);
 
   const showDialog = () => setVisible(true);
   const hideDialog = () => setVisible(false);
@@ -59,138 +62,171 @@ export function OrderCard({ order }: OrderCardProps) {
 
   return (
     <Surface
-      className="mx-4 mb-4 bg-white rounded-3xl overflow-hidden"
+      className="mx-4 mb-5 bg-white rounded-[32px]"
       style={[{
-        elevation: 1.5,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.04,
-        shadowRadius: 8,
-        borderWidth: 1,
-        borderColor: 'rgba(0,0,0,0.03)'
+        elevation: 4,
+        shadowColor: '#0F172A',
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.05,
+        shadowRadius: 16,
       }]}
     >
-      <TouchableOpacity activeOpacity={0.75} onPress={handleCardPress} className="p-4">
+      <TouchableOpacity activeOpacity={0.7} onPress={handleCardPress} className="p-5">
         <OrderConfirmModal
           visible={visible}
           onClose={hideDialog}
           onConfirm={handleConfirm}
           orderId={order.orderId}
-          feeFormatted={feeFormatted}
+          feeFormatted={shippingFeeFormatted}
+          codFormatted={codFormatted}
           isLoading={isAnyPending}
           title={modalTitle}
           description={modalDescription}
           confirmText={modalConfirmText}
         />
 
-        {/* ── Header: ID and Fee ── */}
-        <View className="flex-row justify-between items-center mb-4">
-          <View className="bg-gray-100 px-3 py-1.5 rounded-full border border-gray-200/50">
-            <Text variant="labelSmall" className="text-gray-500 font-bold uppercase tracking-wider">
-              #{order.orderId}
-            </Text>
-          </View>
-          <View className="bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100">
-            <Text variant="titleMedium" className="text-emerald-600 font-black tracking-tight leading-5">
-              {feeFormatted}
-            </Text>
-          </View>
-        </View>
-
-        {/* ── Route ─── */}
-        <View className="bg-gray-50/80 rounded-2xl p-3 mb-4 border border-gray-100/50">
-          {/* Pickup */}
-          <View className="flex-row items-center gap-3">
-            <View className="w-[34px] h-[34px] rounded-full bg-blue-100 items-center justify-center">
-              <Icon name="package-up" size={18} color="#2563EB" />
+        {/* ── Header: ID & Time & Shipping Fee ── */}
+        <View className="flex-row justify-between items-start mb-6">
+          <View className="flex-1 mr-3">
+            <View className="bg-slate-100 px-3 py-1.5 rounded-xl self-start mb-2">
+              <Text variant="labelSmall" className="text-slate-700 font-bold tracking-widest">
+                #{order.orderId}
+              </Text>
             </View>
-            <View className="flex-1">
-              <Text variant="labelSmall" className="text-blue-600 font-bold mb-0.5 uppercase">Điểm lấy hàng</Text>
-              <Text variant="bodyMedium" className="text-gray-800 font-semibold leading-5" numberOfLines={1}>
-                {order.pickupLocation || 'Chưa cập nhật'}
+            <View className="flex-row items-center">
+              <Icon name="clock-outline" size={14} color="#94A3B8" />
+              <Text variant="labelMedium" className="text-slate-500 font-medium ml-1.5">
+                {formatDateTime(order.createdAt)}
               </Text>
             </View>
           </View>
 
-          {/* Connect Line */}
-          <View className="h-[18px] border-l-[2px] border-dashed border-gray-300 ml-[16px] my-1" />
 
-          {/* Dropoff */}
-          <View className="flex-row items-center gap-3">
-            <View className="w-[34px] h-[34px] rounded-full bg-rose-100 items-center justify-center">
-              <Icon name="map-marker-down" size={18} color="#E11D48" />
+        </View>
+
+        {/* ── Route Section (Timeline Style) ─── */}
+        <View className="mb-6">
+          {/* Lấy hàng */}
+          <View className="flex-row items-start">
+            <View className="w-10 items-center justify-center mt-1">
+              <View className="w-8 h-8 rounded-full bg-blue-100 items-center justify-center">
+                <View className="w-3 h-3 rounded-full bg-blue-600" />
+              </View>
             </View>
-            <View className="flex-1">
-              <Text variant="labelSmall" className="text-rose-600 font-bold mb-0.5 uppercase">Điểm giao hàng</Text>
-              <Text variant="bodyMedium" className="text-gray-800 font-semibold leading-5" numberOfLines={1}>
+            <View className="flex-1 ml-3 bg-slate-50 rounded-2xl p-3">
+              <Text variant="labelSmall" className="text-blue-600 font-bold uppercase tracking-wide mb-1">Lấy hàng tại</Text>
+              <Text variant="bodyMedium" className="text-slate-800 font-semibold" numberOfLines={2}>
+                {order.pickupLocation || 'Địa điểm lấy hàng'}
+              </Text>
+            </View>
+          </View>
+
+          {/* Connection Line & Distance */}
+          <View className="flex-row items-center ml-5 my-1 h-8">
+            <View className="w-[2px] h-full bg-slate-200 border-dashed" />
+            {order.distanceText && (
+              <View className="bg-white px-3 py-1 rounded-full border border-slate-100 ml-5 shadow-sm flex-row items-center">
+                <Icon name="map-marker-distance" size={14} color="#64748B" />
+                <Text variant="labelSmall" className="text-slate-600 font-bold ml-1">{order.distanceText}</Text>
+              </View>
+            )}
+          </View>
+
+          {/* Giao hàng */}
+          <View className="flex-row items-start">
+            <View className="w-10 items-center justify-center mt-1">
+              <View className="w-8 h-8 rounded-full bg-orange-100 items-center justify-center">
+                <Icon name="map-marker" size={16} color="#EA580C" />
+              </View>
+            </View>
+            <View className="flex-1 ml-3 bg-slate-50 rounded-2xl p-3">
+              <Text variant="labelSmall" className="text-orange-600 font-bold uppercase tracking-wide mb-1">Giao hàng đến</Text>
+              <Text variant="bodyMedium" className="text-slate-800 font-semibold" numberOfLines={2}>
                 {order.destination}
               </Text>
             </View>
           </View>
         </View>
 
-        {/* ── Customer & Meta ── */}
-        <View className="flex-row items-center justify-between mb-1 px-1">
-          <View className="flex-row items-center gap-2.5">
-            <View className="w-9 h-9 rounded-full bg-gray-100 items-center justify-center border border-gray-200">
-              <Icon name="account" size={18} color="#4B5563" />
+        {/* Divider */}
+        <View className="h-[1px] bg-slate-100 w-full mb-4" />
+
+        {/* ── Footer Info: Customer & COD ── */}
+        <View className="flex-row items-center justify-between mb-2">
+          <View className="flex-row items-center flex-1">
+            <View className="w-12 h-12 rounded-full bg-slate-100 items-center justify-center">
+              <Icon name="account-outline" size={24} color="#64748B" />
             </View>
-            <View>
-              <Text variant="labelLarge" className="text-gray-900 font-bold">
+            <View className="ml-3 flex-1">
+              <Text variant="titleMedium" className="text-slate-900 font-bold mb-0.5" numberOfLines={1}>
                 {order.customerName}
               </Text>
-              <Text variant="bodySmall" className="text-gray-500 font-medium">
+              <Text variant="bodyMedium" className="text-slate-500">
                 {maskPhone(order.customerPhone)}
               </Text>
             </View>
           </View>
-        </View>
 
+          <View className="items-end ml-2">
+            <Text variant="labelSmall" className="text-slate-400 font-semibold mb-1">THU HỘ (COD)</Text>
+            <Text variant="titleMedium" className="text-slate-800 font-black">
+              {codFormatted}
+            </Text>
+          </View>
+        </View>
+        <View className="flex-row items-center justify-between mt-6 bg-emerald-50/60 py-4 rounded-[24px] border border-emerald-100/50">
+          <View className="flex-row items-center flex-1">
+            <View className="w-12 h-12 rounded-full bg-emerald-100 items-center justify-center shadow-sm">
+              <Icon name="wallet-outline" size={24} color="#059669" />
+            </View>
+            <View className="ml-3 flex-1">
+              <Text variant="titleMedium" className="text-emerald-900 font-bold mb-0.5">
+                Cước phí dịch vụ
+              </Text>
+              <Text variant="bodySmall" className="text-emerald-600 font-medium">
+                Thu nhập của tài xế
+              </Text>
+            </View>
+          </View>
+
+          <View className="items-end ml-2">
+            <Text variant="labelSmall" className="text-emerald-600/60 font-black mb-1 uppercase tracking-tighter">Số tiền nhận</Text>
+            <Text variant="titleMedium" className="text-emerald-700 font-black tracking-tighter">
+              {shippingFeeFormatted}
+            </Text>
+          </View>
+        </View>
         {/* ── Note ── */}
         {order.note ? (
-          <View className="flex-row items-start gap-2 bg-amber-50/80 p-3 rounded-[14px] border border-amber-100 mt-3">
-            <Icon name="information-outline" size={16} color="#D97706" className="mt-0.5" />
-            <Text variant="bodySmall" className="text-amber-700 flex-1 font-medium leading-5">
+          <View className="bg-amber-50/50 p-3.5 rounded-xl flex-row items-start mt-3">
+            <Icon name="message-text-outline" size={18} color="#D97706" style={{ marginTop: 2 }} />
+            <Text variant="bodySmall" className="text-amber-800 flex-1 ml-2 font-medium leading-5">
               {order.note}
             </Text>
           </View>
         ) : null}
 
-        {order.deliveryStatus === 'PICKED_UP' && (
-          <View className="mt-4 border-t border-gray-100 pt-3">
+        {/* ── Action Buttons ── */}
+        {(order.deliveryStatus === 'PENDING' || order.deliveryStatus === 'PICKED_UP') && (
+          <View className="mt-6">
             <TouchableOpacity
-              className="flex-row items-center justify-center rounded-[14px] py-3.5 shadow-sm"
+              className="flex-row items-center justify-center rounded-[20px] py-4"
               style={[
                 { backgroundColor: theme.colors.primary },
                 isAnyPending && { opacity: 0.7 }
               ]}
               onPress={showDialog}
-              activeOpacity={0.85}
+              activeOpacity={0.8}
               disabled={isAnyPending}
             >
-              <Icon name={isAnyPending ? "loading" : "truck-fast"} size={20} color="#FFF" />
-              <Text style={{ color: "#FFFFFF" }} variant="bodyMedium" className="text-white font-bold ml-2">
-                {isAnyPending ? 'Đang xử lý...' : 'Đã lấy hàng'}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        )}
-        {/* ── Action Button ── */}
-        {order.deliveryStatus === 'PENDING' && (
-          <View className="mt-4 border-t border-gray-100 pt-3">
-            <TouchableOpacity
-              className="flex-row items-center justify-center rounded-[14px] py-3.5 shadow-sm"
-              style={[
-                { backgroundColor: theme.colors.primary },
-                isAnyPending && { opacity: 0.7 }
-              ]}
-              onPress={showDialog}
-              activeOpacity={0.85}
-              disabled={isAnyPending}
-            >
-              <Icon name={isAnyPending ? "loading" : "truck-fast"} size={20} color="#FFF" />
-              <Text style={{ color: "#FFFFFF" }} variant="bodyMedium" className="text-white font-bold ml-2">
-                {isAnyPending ? 'Đang nhận đơn...' : 'Nhận đơn'}
+              <Icon
+                name={isAnyPending ? "loading" : (isPickup ? "package-variant" : "moped")}
+                size={24}
+                color="#FFF"
+                className={isAnyPending ? "animate-spin" : ""}
+              />
+              <Text style={{ color: "#FFFFFF" }} variant="titleMedium" className="text-white font-bold tracking-wide ml-2">
+                {isAnyPending ? 'Đang xử lý...' : (isPickup ? 'Đã lấy hàng' : 'Nhận đơn ngay')}
               </Text>
             </TouchableOpacity>
           </View>
@@ -199,4 +235,3 @@ export function OrderCard({ order }: OrderCardProps) {
     </Surface>
   );
 }
-

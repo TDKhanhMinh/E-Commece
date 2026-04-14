@@ -25,6 +25,10 @@ public class ShipperDeliveryResponse {
     private String pickupLocation;
     private String pickupLatitude;
     private String pickupLongitude;
+    private String shippingCost;
+    private String distanceText;
+    private String createdAt;
+    private String encodedPolyline;
     private List<CheckoutItemResponse> items;
 
 

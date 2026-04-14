@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -22,7 +24,20 @@ public class ShipperProfile {
 
     @OneToMany
     @JoinColumn(name = "shipper_id")
+    @ToString.Exclude
     private List<Delivery> deliveries;
+
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shipper_id")
+    @ToString.Exclude
+    private List<WalletTransaction> walletTransactions;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shipper_id")
+    @ToString.Exclude
+    private List<Notification> notifications;
+
 
     @Column(name = "vehicle_type")
     private String vehicleType;
@@ -42,9 +57,9 @@ public class ShipperProfile {
     @Column(name = "current_lng")
     private Double currentLng;
 
-    @Column(name = "balance")
-    private final Long balance = 0L;
+    @Column(name = "balance", precision = 15, scale = 2)
+    private BigDecimal balance = BigDecimal.ZERO;
 
     @Column(name = "rating_average")
-    private final Double ratingAverage = 0.0;
+    private Double ratingAverage = 0.0;
 }

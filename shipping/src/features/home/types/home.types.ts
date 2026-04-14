@@ -19,8 +19,8 @@ export interface DriverStats {
 }
 
 export interface Order {
-  orderId: string;
-  deliveryId: string;
+  orderId: string | number;
+  deliveryId: string | number;
   pickupAddress: string;
   pickupLocation: string;
   pickupLongitude: number;
@@ -30,12 +30,16 @@ export interface Order {
   deliveryDistanceKm: number;
   estimatedMinutes: number;
   codAmount: number;
+  shippingCost: string;
+  distanceText: string;
   cargoType: CargoType;
   customerName: string;
   customerPhone: string;
   note?: string;
   deliveryStatus: string;
   createdAt: Date;
+  encodedPolyline?: string;
+  durationText?: string;
 }
 
 export interface OrderItem {

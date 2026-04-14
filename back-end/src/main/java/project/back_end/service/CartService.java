@@ -1,10 +1,12 @@
 package project.back_end.service;
 
+import org.springframework.stereotype.Service;
 import project.back_end.request.CartRequest.CartItemRequest;
 import project.back_end.response.CartResponse;
 
 import java.util.List;
 
+@Service
 public interface CartService {
 
 

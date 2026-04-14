@@ -15,25 +15,17 @@ import { spacing } from '@styles/index';
 import { HomeHeader } from '../components/HomeHeader';
 import { StatsWidget } from '../components/StatsWidget';
 import { SearchBar } from '../components/SearchBar';
-import { OrderCard } from '../components/OrderCard';
+import { OrderCard, OrderSkeleton } from '../components';
 import type { Order } from '../types/home.types';
 import { useUnsignDelivery } from '../hooks/useHome';
 
 // ── Sort options ─────────────────────────────────────────────────────────────
-type SortKey = 'time' | 'distance' | 'fee';
+type SortKey = 'all' | 'distance' | 'time';
 const SORT_OPTIONS: { key: SortKey; label: string; icon: string }[] = [
-  { key: 'time', label: 'Thời gian', icon: 'clock-outline' },
+  { key: 'all', label: 'Tất cả', icon: 'clock-outline' },
   { key: 'distance', label: 'Khoảng cách', icon: 'map-marker-distance' },
-  { key: 'fee', label: 'Phí cao nhất', icon: 'cash-multiple' },
+  { key: 'time', label: 'Thời gian', icon: 'cash-multiple' },
 ];
-
-// function sortOrders(orders: Order[], key: SortKey): Order[] {
-//   return [...orders].sort((a, b) => {
-//     if (key === 'fee') return b.fee - a.fee;
-//     if (key === 'distance') return (a.pickupDistanceKm + a.deliveryDistanceKm) - (b.pickupDistanceKm + b.deliveryDistanceKm);
-//     return a.estimatedMinutes - b.estimatedMinutes;
-//   });
-// }
 
 // ── List header ──────────────────────────────────────────────────────────────
 interface ListHeaderProps {
@@ -63,7 +55,7 @@ function ListHeader({ searchQuery, onSearch, sortKey, onSort, count }: ListHeade
             Đơn hàng chờ nhận
           </Text>
           <View className="rounded-full px-2 py-0.5" style={{ backgroundColor: theme.colors.primary }}>
-            <Text className="text-white text-[11px] font-bold">{count}</Text>
+            <Text style={{ color: theme.colors.onPrimary }} className="text-white text-[11px] font-bold">{count}</Text>
           </View>
         </View>
 
@@ -117,15 +109,16 @@ export function HomeScreen() {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<NativeStackNavigationProp<HomeStackParamList>>();
-  const { data: availableOrders } = useUnsignDelivery();
+  const { data: availableOrders, isLoading } = useUnsignDelivery();
   console.log("availableOrders", availableOrders);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [sortKey, setSortKey] = useState<SortKey>('time');
 
-  const renderItem = ({ item }: ListRenderItemInfo<Order>) => (
-    <OrderCard order={item} key={item.orderId} />
-  );
+  const renderItem = ({ item }: ListRenderItemInfo<Order>) => {
+    if (isLoading) return <OrderSkeleton key={item.orderId} />;
+    return <OrderCard order={item} key={item.orderId} />;
+  };
 
   const keyExtractor = (item: Order) => item.orderId;
 
@@ -146,7 +139,8 @@ export function HomeScreen() {
       {/* Scrollable body */}
       <FlatList
         //@ts-ignore
-        data={availableOrders?.data?.content}
+        data={isLoading ? [1, 2, 3] : availableOrders?.data?.content}
+        //@ts-ignore
         keyExtractor={keyExtractor}
         renderItem={renderItem}
         ListHeaderComponent={

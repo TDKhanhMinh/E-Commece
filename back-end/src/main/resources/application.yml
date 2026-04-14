@@ -24,6 +24,9 @@ paypal:
   cancelUrl: http://localhost:3000/en/user/orders
   currency: USD
   intent: sale
+goongmap:
+  api-key: dTxBSGquKN0T5txd9Kvm8dqrDWEfhiJq9PFQgkJe
+
 #
 #Cloudinary:
 #  cloud-name: ${CLOUDINARY_CLOUD_NAME}

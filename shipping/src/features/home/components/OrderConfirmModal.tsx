@@ -9,6 +9,7 @@ interface OrderConfirmModalProps {
   onConfirm: () => void;
   orderId: string | number;
   feeFormatted: string;
+  codFormatted?: string;
   isLoading: boolean;
   title: string;
   description: string;
@@ -22,6 +23,7 @@ export function OrderConfirmModal({
   onConfirm,
   orderId,
   feeFormatted,
+  codFormatted,
   isLoading,
   title,
   description,
@@ -39,30 +41,38 @@ export function OrderConfirmModal({
       statusBarTranslucent
     >
       <View className="flex-1 bg-black/50 justify-center px-6">
-        <View className="bg-white rounded-[24px] p-6 shadow-2xl">
+        <View className="bg-white rounded-[32px] p-6 shadow-2xl border border-gray-100">
           <View
-            className="w-16 h-16 rounded-full items-center justify-center self-center mb-5"
+            className="w-20 h-20 rounded-full items-center justify-center self-center mb-6 shadow-sm"
             style={[{ backgroundColor: theme.colors.primaryContainer }]}
           >
-            <Icon name="truck-fast" size={32} color={theme.colors.primary} />
+            <Icon name="truck-delivery" size={40} color={theme.colors.primary} />
           </View>
-          <Text variant="titleLarge" className="text-center font-bold text-gray-900 mb-2">
+
+          <Text variant="headlineSmall" className="text-center font-black text-slate-900 mb-2">
             {title}
           </Text>
-          <Text variant="bodyMedium" className="text-center text-gray-500 mb-6 px-2">
+          <Text variant="bodyMedium" className="text-center text-slate-500 mb-8 px-4 leading-5">
             {description}
           </Text>
 
-          <View className="bg-gray-50 p-4 rounded-2xl items-center mb-6 border border-gray-100">
-            <Text variant="labelMedium" className="text-gray-500 mb-1 font-medium">Tổng phí thu</Text>
-            <Text variant="headlineSmall" className="text-emerald-600 font-black tracking-tight">
-              {feeFormatted}
-            </Text>
-            <View className="bg-gray-200/60 px-3 py-1 rounded-full mt-3">
-              <Text variant="labelSmall" className="text-gray-600 font-bold">
-                Mã: #{orderId}
-              </Text>
+          <View className="bg-slate-50 p-5 rounded-[24px] mb-8 border border-slate-100">
+            <View className="flex-row justify-between items-center mb-2 border-b border-slate-200/50 pb-3">
+              <Text variant="labelLarge" className="text-slate-500 font-bold">Mã đơn hàng</Text>
+              <Text variant="titleSmall" className="text-slate-900 font-black">#{orderId}</Text>
             </View>
+
+            <View className="flex-row justify-between items-center mb-3">
+              <Text variant="bodyMedium" className="text-slate-600 font-medium">Thu nhập nhận được</Text>
+              <Text variant="titleMedium" className="text-emerald-600 font-black">{feeFormatted}</Text>
+            </View>
+
+            {codFormatted && (
+              <View className="flex-row justify-between items-center">
+                <Text variant="bodyMedium" className="text-slate-600 font-medium">Thu hộ (COD)</Text>
+                <Text variant="titleMedium" className="text-amber-600 font-black">{codFormatted}</Text>
+              </View>
+            )}
           </View>
 
           <View className="flex-row gap-3">
