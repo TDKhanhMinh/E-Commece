@@ -89,10 +89,7 @@ export function onForegroundMessage(
     if (callback) {
       callback(remoteMessage);
     } else {
-      // Default: hiển thị Alert đơn giản
-      const title = remoteMessage.notification?.title || 'Thông báo mới';
-      const body = remoteMessage.notification?.body || '';
-      Alert.alert(title, body);
+      console.log('[FCM] No foreground callback provided, message received but not displayed.');
     }
   });
 }

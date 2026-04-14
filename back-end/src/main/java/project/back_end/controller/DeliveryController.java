@@ -88,18 +88,22 @@ public class DeliveryController {
     @PostMapping("/{deliveryId}/delivery")
     @PreAuthorize("hasRole('SHIPPER')")
     public ResponseEntity<ApiResponse<String>> pickupDelivery(
-            @PathVariable Long deliveryId
+            @PathVariable Long deliveryId,
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
-        deliveryService.updateDeliveryStatus(deliveryId, "DELIVERING", null);
+        String email = userDetails.getUsername();
+        deliveryService.updateDeliveryStatus(deliveryId, "DELIVERING", null, email);
         return ResponseEntity.ok(new ApiResponse<>(200, "Shipper đã lấy hàng thành công ", null));
     }
 
     @PostMapping("/{deliveryId}/cancel")
     @PreAuthorize("hasRole('SHIPPER')")
     public ResponseEntity<ApiResponse<String>> cancelDelivery(
-            @PathVariable Long deliveryId
+            @PathVariable Long deliveryId,
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
-        deliveryService.updateDeliveryStatus(deliveryId, "CANCELED", null);
+        String email = userDetails.getUsername();
+        deliveryService.updateDeliveryStatus(deliveryId, "CANCELED", null, email);
         return ResponseEntity.ok(new ApiResponse<>(200, "Shipper đã hủy đơn hàng thành công", null));
     }
 
@@ -108,10 +112,12 @@ public class DeliveryController {
     @PreAuthorize("hasRole('SHIPPER')")
     public ResponseEntity<ApiResponse<String>> markDeliveryAsSuccess(
             @PathVariable Long deliveryId,
-            @RequestBody String proofImage
+            @RequestBody String proofImage,
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
+        String email = userDetails.getUsername();
         log.error("Shipper cập nhật trạng thái đơn hàng thành công, deliveryId: {}, proofImage: {}", deliveryId, proofImage);
-        deliveryService.updateDeliveryStatus(deliveryId, "SUCCESS", proofImage);
+        deliveryService.updateDeliveryStatus(deliveryId, "SUCCESS", proofImage, email);
         return ResponseEntity.ok(new ApiResponse<>(200, "Shipper đã cập nhật trạng thái đơn hàng thành công", null));
     }
 

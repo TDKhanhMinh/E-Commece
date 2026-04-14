@@ -14,6 +14,7 @@ import {
   getInitialNotification,
 } from '@core/services/firebaseMessaging';
 import { notificationService } from '@/features/notifications/service/notification.service';
+import { notifeeService } from '@core/services/notifeeService';
 
 
 function useFCMSetup() {
@@ -48,10 +49,11 @@ function useFCMSetup() {
         console.log('[FCM] App opened from quit state via notification');
       }
 
-      unsubForeground = onForegroundMessage((message) => {
-        const title = message.notification?.title || 'Thông báo mới';
-        const body = message.notification?.body || '';
-        Alert.alert(`🔔 ${title}`, body);
+      // 2. Initialize Notifee
+      await notifeeService.setupChannel();
+
+      unsubForeground = onForegroundMessage(async (message) => {
+        await notifeeService.displayNotification(message);
       });
 
       // 5. Lắng nghe khi user tap notification (app đang background)

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.back_end.entity.*;
 import project.back_end.entity.product.Sku;
-import project.back_end.enumerate.DeliveryStatus;
 import project.back_end.enumerate.ErrorCode;
 import project.back_end.enumerate.OrderStatus;
 import project.back_end.enumerate.PointTransactionType;
@@ -18,13 +17,11 @@ import project.back_end.mapper.CheckoutMapper;
 import project.back_end.repository.*;
 import project.back_end.request.CheckoutItemRequest;
 import project.back_end.request.CheckoutRequest;
-import project.back_end.response.DirectionsResponse;
 import project.back_end.response.OrderResponse;
 import project.back_end.response.VoucherResponse;
 import project.back_end.service.*;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -357,29 +354,6 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    private void createDeliveryForOrder(Order order) {
-        DirectionsResponse directions = goongMapService.getDirections(
-                Double.parseDouble("10.732091380000043"), Double.parseDouble("106.69945521900007"),
-                Double.parseDouble(order.getDeliveryAddress().getLatitude()), Double.parseDouble(order.getDeliveryAddress().getLongitude())
-        );
-        Delivery delivery = new Delivery();
-        delivery.setOrder(order);
-        delivery.setShipper(null);
-        delivery.setPickupAddress("Đại học Tôn Đức Thắng, 19 Nguyễn Hữu Thọ, Tân Phong, Quận 7, Hồ Chí Minh");
-        delivery.setPickupLatitude("10.732091380000043");
-        delivery.setPickupLongitude("106.69945521900007");
-        delivery.setStatus(DeliveryStatus.PENDING);
-        delivery.setAmountToCollect(order.getFinalAmount());
-        if (directions != null) {
-            delivery.setEncodedPolyline(directions.getEncodedPolyline());
-            delivery.setDistanceText(directions.getDistanceText());
-            delivery.setDistanceValue(directions.getDistanceValue());
-            delivery.setDurationText(directions.getDurationText());
-        }
-        delivery.setShippingCost(calculateShippingFee(order.getShippingCost(), directions != null ? directions.getDistanceValue() : 0));
-        order.setDelivery(delivery);
-        deliveryRepository.save(delivery);
-    }
 
     @Override
     @Transactional
@@ -410,19 +384,4 @@ public class OrderServiceImpl implements OrderService {
 
         }
     }
-
-    public BigDecimal calculateShippingFee(BigDecimal defaultCost, long distanceInMeters) {
-        BigDecimal feePerKm = new BigDecimal("5000");
-
-        BigDecimal distance = BigDecimal.valueOf(distanceInMeters);
-        BigDecimal divisor = new BigDecimal("1000");
-
-        BigDecimal distanceInKm = distance.divide(divisor);
-
-        BigDecimal distanceFee = distanceInKm.multiply(feePerKm).setScale(0, RoundingMode.HALF_UP);
-
-        return defaultCost.add(distanceFee);
-    }
-
-
 }
