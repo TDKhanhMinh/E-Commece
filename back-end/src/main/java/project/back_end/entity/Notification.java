@@ -1,13 +1,18 @@
 package project.back_end.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
 import project.back_end.enumerate.NotificationType;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Data
+@Getter
+@Setter
 public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,6 +20,8 @@ public class Notification {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shipper_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private ShipperProfile shipperProfile;
 
     @Enumerated(EnumType.STRING)
@@ -26,5 +33,7 @@ public class Notification {
 
     //    @Column(columnDefinition = "json")
 //    private String metadata;
-    private final LocalDateTime createdAt = LocalDateTime.now();
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
 }

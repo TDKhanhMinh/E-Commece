@@ -1,9 +1,11 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import {
   View,
   FlatList,
   ListRenderItemInfo,
   StatusBar,
+  RefreshControl,
+  ActivityIndicator,
 } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -18,6 +20,7 @@ import { SearchBar } from '../components/SearchBar';
 import { OrderCard, OrderSkeleton } from '../components';
 import type { Order } from '../types/home.types';
 import { useUnsignDelivery } from '../hooks/useHome';
+
 
 // ── Sort options ─────────────────────────────────────────────────────────────
 type SortKey = 'all' | 'distance' | 'time';
@@ -104,23 +107,56 @@ function EmptyOrders() {
   );
 }
 
+// ── Footer loader ─────────────────────────────────────────────────────────────
+function FooterLoader() {
+  const theme = useTheme();
+  return (
+    <View className="items-center py-4">
+      <ActivityIndicator size="small" color={theme.colors.primary} />
+    </View>
+  );
+}
+
 // ── Screen ───────────────────────────────────────────────────────────────────
 export function HomeScreen() {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<NativeStackNavigationProp<HomeStackParamList>>();
-  const { data: availableOrders, isLoading } = useUnsignDelivery();
-  console.log("availableOrders", availableOrders);
+  const {
+    data,
+    isLoading,
+    isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage,
+    refetch,
+    isRefetching,
+  } = useUnsignDelivery();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [sortKey, setSortKey] = useState<SortKey>('time');
 
-  const renderItem = ({ item }: ListRenderItemInfo<Order>) => {
+  // Flatten all pages from Spring Boot Pageable into a single array
+  const orders = useMemo<Order[]>(
+    () => data?.pages.flatMap((page) => page.content as Order[]) ?? [],
+    [data],
+  );
+
+  const totalElements = data?.pages[0]?.totalElements;
+
+  const handleLoadMore = useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  const renderItem = useCallback(({ item }: ListRenderItemInfo<Order>) => {
     if (isLoading) return <OrderSkeleton key={item.orderId} />;
     return <OrderCard order={item} key={item.orderId} />;
-  };
+  }, [isLoading]);
 
-  const keyExtractor = (item: Order) => item.orderId;
+  const keyExtractor = useCallback((item: Order, index: number) => {
+    return (item?.orderId ?? index).toString();
+  }, []);
 
   return (
     <View className="flex-1" style={{ backgroundColor: theme.colors.background }}>
@@ -138,9 +174,7 @@ export function HomeScreen() {
 
       {/* Scrollable body */}
       <FlatList
-        //@ts-ignore
-        data={isLoading ? [1, 2, 3] : availableOrders?.data?.content}
-        //@ts-ignore
+        data={isLoading ? ([1, 2, 3] as unknown as Order[]) : orders}
         keyExtractor={keyExtractor}
         renderItem={renderItem}
         ListHeaderComponent={
@@ -149,17 +183,27 @@ export function HomeScreen() {
             onSearch={setSearchQuery}
             sortKey={sortKey}
             onSort={setSortKey}
-            //@ts-ignore
-            count={availableOrders?.data?.totalElements}
+            count={totalElements}
           />
         }
-        ListEmptyComponent={<EmptyOrders />}
+        ListEmptyComponent={isLoading ? null : <EmptyOrders />}
+        ListFooterComponent={isFetchingNextPage ? <FooterLoader /> : null}
         contentContainerStyle={[
           { flexGrow: 1 },
           { paddingBottom: insets.bottom + spacing.lg },
         ]}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.4}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefetching}
+            onRefresh={refetch}
+            colors={[theme.colors.primary]}
+            tintColor={theme.colors.primary}
+          />
+        }
       />
     </View>
   );

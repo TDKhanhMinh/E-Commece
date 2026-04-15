@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -9,8 +9,10 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import { Snackbar, useTheme } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useAuth } from '../hooks/useAuth';
 import {
   useFormWithSchema,
   forgotPasswordSchema,
@@ -23,6 +25,14 @@ import type { AuthStackScreenProps } from '@navigation/types';
 
 export function ForgotPasswordScreen() {
   const navigation = useNavigation<AuthStackScreenProps<'ForgotPassword'>['navigation']>();
+  const theme = useTheme();
+  const { forgotPassword, isSendingResetEmail } = useAuth();
+
+  const [snackbar, setSnackbar] = useState({
+    visible: false,
+    message: '',
+    type: 'success'
+  });
 
   const {
     control,
@@ -36,8 +46,24 @@ export function ForgotPasswordScreen() {
   });
 
   const onSubmit = async (data: ForgotPasswordFormData) => {
-    // Navigate to OTP screen with email
-    navigation.navigate('OTP', { email: data.email });
+    try {
+      await forgotPassword(data.email);
+      setSnackbar({
+        visible: true,
+        message: 'Mã xác thực đã được gửi đến email của bạn',
+        type: 'success'
+      });
+      // Delay navigation slightly to let user see the message
+      setTimeout(() => {
+        navigation.navigate('OTP', { email: data.email });
+      }, 1500);
+    } catch (error) {
+      setSnackbar({
+        visible: true,
+        message: 'Không thể gửi mã xác thực. Vui lòng thử lại.',
+        type: 'error'
+      });
+    }
   };
 
   return (
@@ -90,6 +116,7 @@ export function ForgotPasswordScreen() {
               <Button
                 title="Confirm"
                 onPress={handleSubmit(onSubmit)}
+                loading={isSendingResetEmail}
                 className="bg-success py-4 rounded-xl"
                 size="lg"
               />
@@ -97,6 +124,22 @@ export function ForgotPasswordScreen() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      <Snackbar
+        visible={snackbar.visible}
+        onDismiss={() => setSnackbar(prev => ({ ...prev, visible: false }))}
+        duration={3000}
+        style={{
+          backgroundColor: snackbar.type === 'success' ? '#4CAF50' : '#F44336',
+        }}
+        action={{
+          label: 'OK',
+          onPress: () => setSnackbar(prev => ({ ...prev, visible: false })),
+          textColor: '#fff'
+        }}
+      >
+        {snackbar.message}
+      </Snackbar>
     </SafeAreaView>
   );
 }

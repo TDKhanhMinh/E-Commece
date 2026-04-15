@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { notificationService } from "../service/notification.service";
 
 export function useAllNotifications(type: string) {
@@ -16,8 +16,15 @@ export function useAllNotifications(type: string) {
 }
 
 export function useMarkAllRead() {
+    const queryClient = useQueryClient();
     return useMutation({
         mutationFn: () => notificationService.markReadAll(),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['notifications'] });
+        },
+        onError: (error) => {
+            console.log('Mark all read error', error);
+        },
     });
 }
 

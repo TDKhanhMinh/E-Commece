@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import { Snackbar, useTheme } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
@@ -24,7 +25,14 @@ import type { AuthStackScreenProps } from '@navigation/types';
 
 export function LoginScreen() {
   const navigation = useNavigation<AuthStackScreenProps<'Login'>['navigation']>();
+  const theme = useTheme();
   const { login, isLoggingIn } = useAuth();
+
+  const [snackbar, setSnackbar] = useState({
+    visible: false,
+    message: '',
+    type: 'success'
+  });
 
   const {
     control,
@@ -41,8 +49,18 @@ export function LoginScreen() {
   const onSubmit = async (data: LoginFormData) => {
     try {
       await login(data);
+      setSnackbar({
+        visible: true,
+        message: 'Đăng nhập thành công',
+        type: 'success'
+      });
     } catch (error) {
       console.error('Login failed:', error);
+      setSnackbar({
+        visible: true,
+        message: 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.',
+        type: 'error'
+      });
     }
   };
 
@@ -160,6 +178,23 @@ export function LoginScreen() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      <Snackbar
+        visible={snackbar.visible}
+        onDismiss={() => setSnackbar(prev => ({ ...prev, visible: false }))}
+        duration={3000}
+        style={{
+          backgroundColor: snackbar.type === 'success' ? '#4CAF50' : '#F44336',
+          marginBottom: 16,
+        }}
+        action={{
+          label: 'OK',
+          onPress: () => setSnackbar(prev => ({ ...prev, visible: false })),
+          textColor: '#fff'
+        }}
+      >
+        {snackbar.message}
+      </Snackbar>
     </SafeAreaView>
   );
 }

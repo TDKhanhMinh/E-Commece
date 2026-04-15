@@ -6,9 +6,14 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BalanceCard } from '../components/BalanceCard';
 import { EarningsSummary } from '../components/EarningsSummary';
 import { TransactionList } from '../components/TransactionList';
+import { useWalletTransaction } from '../hooks/useWallet';
+import { ActivityIndicator } from 'react-native-paper';
 
 export function WalletScreen() {
   const insets = useSafeAreaInsets();
+  const { data: transactionResponse, isLoading, isError, refetch } = useWalletTransaction();
+
+  const transactions = transactionResponse?.content || [];
 
   return (
     <View className="flex-1 bg-gray-50">
@@ -39,7 +44,13 @@ export function WalletScreen() {
         
         <EarningsSummary />
         
-        <TransactionList />
+        {isLoading ? (
+          <View className="py-10 items-center">
+            <ActivityIndicator color="#1e40af" />
+          </View>
+        ) : (
+          <TransactionList transactions={transactions} />
+        )}
       </ScrollView>
     </View>
   );

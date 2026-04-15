@@ -28,13 +28,11 @@ public class ShipperProfile {
     private List<Delivery> deliveries;
 
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "shipper_id")
+    @OneToMany(mappedBy = "shipperProfile", fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<WalletTransaction> walletTransactions;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "shipper_id")
+    @OneToMany(mappedBy = "shipperProfile", fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<Notification> notifications;
 

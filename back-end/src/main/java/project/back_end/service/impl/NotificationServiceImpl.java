@@ -18,6 +18,8 @@ import project.back_end.repository.UserRepository;
 import project.back_end.response.NotificationResponse;
 import project.back_end.service.NotificationService;
 
+import java.util.List;
+
 
 @Service
 @AllArgsConstructor
@@ -93,12 +95,12 @@ public class NotificationServiceImpl implements NotificationService {
         if (shipperProfile == null) {
             throw new AppException(ErrorCode.SHIPPER_PROFILE_NOT_FOUND);
         }
-        Page<NotificationResponse> notifications = notificationRepository.getNotificationByShipperProfile(shipperProfile, Pageable.unpaged())
-                .map(notificationMapper::toNotificationResponse);
+
+        List<project.back_end.entity.Notification> notifications = shipperProfile.getNotifications();
 
         notifications.forEach(notification -> {
             notification.setIsRead(true);
-            notificationRepository.save(notificationMapper.toNotificationEntity(notification));
+            notificationRepository.save(notification);
         });
     }
 

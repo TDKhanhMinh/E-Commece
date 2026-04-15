@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { View, FlatList, TouchableOpacity, StatusBar, RefreshControl, ActivityIndicator } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { Snackbar } from 'react-native-paper';
+import { useAppNavigation, navigationRef } from '@navigation/index';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Typography } from '@components/ui/Typography';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -9,24 +10,54 @@ import { NotificationItem } from '../components/NotificationItem';
 import { useAllNotifications, useMarkAllRead } from '../hooks/useNotifications';
 import { useQueryClient } from '@tanstack/react-query';
 
-export function NotificationsScreen({ navigation }: any) {
+export function NotificationsScreen() {
+  const navigation = useAppNavigation();
   const insets = useSafeAreaInsets();
-  const [activeFilter, setActiveFilter] = useState<NotificationType | 'all'>('all');
+  const [activeFilter, setActiveFilter] = useState<NotificationType>('all');
 
   // Fetch real data from API with activeFilter as part of the query key
   const { data: notifications = [], isLoading, isError, refetch } = useAllNotifications(activeFilter);
   const markAllRead = useMarkAllRead();
-  const queryClient = useQueryClient();
+  console.log("notification", notifications);
 
-  const handleMarkAllRead = async () => {
+
+  const [snackbar, setSnackbar] = useState({
+    visible: false,
+    message: '',
+    type: 'success'
+  });
+
+  const handleMarkAllRead = useCallback(async () => {
     try {
       await markAllRead.mutateAsync();
-      // Invalidate query to refresh the list
-      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      setSnackbar({
+        visible: true,
+        message: 'Đã đánh dấu đọc tất cả thông báo',
+        type: 'success'
+      });
     } catch (error) {
       console.error('Failed to mark all read:', error);
+      setSnackbar({
+        visible: true,
+        message: 'Có lỗi xảy ra khi đánh dấu đọc thông báo',
+        type: 'error'
+      });
     }
-  };
+  }, [markAllRead]);
+
+  const handleGoBack = useCallback(() => {
+    if (navigationRef.isReady()) {
+      navigationRef.goBack();
+    } else {
+      navigation.goBack();
+    }
+  }, [navigation]);
+
+  const headerStyle = useMemo(() => ({ paddingTop: insets.top + 12 }), [insets.top]);
+  const contentContainerStyle = useMemo(() => ({
+    paddingBottom: insets.bottom + 24,
+    paddingHorizontal: 16
+  }), [insets.bottom]);
 
   const renderContent = () => {
     if (isLoading) {
@@ -67,10 +98,7 @@ export function NotificationsScreen({ navigation }: any) {
             onPress={() => console.log('Notification pressed:', item.notificationId)}
           />
         )}
-        contentContainerStyle={{
-          paddingBottom: insets.bottom + 24,
-          paddingHorizontal: 16
-        }}
+        contentContainerStyle={contentContainerStyle}
         refreshControl={
           <RefreshControl refreshing={isLoading} onRefresh={refetch} tintColor="#0f766e" />
         }
@@ -91,42 +119,58 @@ export function NotificationsScreen({ navigation }: any) {
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
 
       {/* Header */}
-      <View
-        className="bg-white px-4 pb-3 flex-row items-center justify-between border-b border-gray-100"
-        style={{ paddingTop: insets.top + 12 }}
-      >
-        <View className="flex-row items-center">
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            className="w-10 h-10 items-center justify-center -ml-2"
-          >
-            <Icon name="chevron-left" size={28} color="#1f2937" />
-          </TouchableOpacity>
-          <Typography variant="h6" className="font-bold ml-1 text-[#0f766e]">
-            TẤT CẢ THÔNG BÁO
-          </Typography>
-        </View>
+      <View style={headerStyle} className="bg-white border-b border-gray-100">
+        <View className="px-4 pb-3 flex-row items-center justify-between">
+          <View className="flex-row items-center">
+            <TouchableOpacity
+              onPress={handleGoBack}
+              className="w-10 h-10 items-center justify-center -ml-2"
+            >
+              <Icon name="chevron-left" size={28} color="#1f2937" />
+            </TouchableOpacity>
+            <Typography variant="h6" className="font-bold ml-1 text-[#0f766e]">
+              TẤT CẢ THÔNG BÁO
+            </Typography>
+          </View>
 
-        <TouchableOpacity
-          onPress={handleMarkAllRead}
-          disabled={markAllRead.isPending}
-        >
-          <Typography variant="body2" className="text-[#0f766e] font-semibold">
-            Đọc tất cả
-          </Typography>
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={handleMarkAllRead}
+            disabled={markAllRead.isPending}
+          >
+            <Typography variant="body2" className="text-[#0f766e] font-semibold">
+              Đọc tất cả
+            </Typography>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Filters */}
       <NotificationFilter
-        activeFilter={activeFilter as any}
-        onFilterChange={setActiveFilter as any}
+        activeFilter={activeFilter}
+        onFilterChange={setActiveFilter}
       />
 
       {/* Main Content */}
       <View className="flex-1">
         {renderContent()}
       </View>
+
+      <Snackbar
+        visible={snackbar.visible}
+        onDismiss={() => setSnackbar(prev => ({ ...prev, visible: false }))}
+        duration={3000}
+        style={{
+          backgroundColor: snackbar.type === 'success' ? '#0f766e' : '#ef4444',
+          marginBottom: insets.bottom + 16,
+        }}
+        action={{
+          label: 'Đóng',
+          onPress: () => setSnackbar(prev => ({ ...prev, visible: false })),
+          textColor: '#fff'
+        }}
+      >
+        {snackbar.message}
+      </Snackbar>
     </View>
   );
 }

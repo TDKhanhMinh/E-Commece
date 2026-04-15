@@ -14,7 +14,12 @@ import { AdminDeliveryResponseDTO } from "@/type/delivery-type";
 import { formatCurrency } from "@/lib/format-price";
 import { fDateTime } from "@/lib/format-date-time";
 import { useDelivery } from "@/hooks/use-delivery";
-import { Loader2, MoreHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+    ChevronLeft,
+    ChevronRight,
+    Loader2,
+    MoreHorizontal,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const getDeliveryStatusBadge = (
@@ -80,7 +85,11 @@ const ITEMS_PER_PAGE = 10;
 
 export default function DeliveryManagementPage() {
     const [currentPage, setCurrentPage] = useState(0);
-    const { data: delivery, isLoading, error } = useDelivery(undefined, currentPage, ITEMS_PER_PAGE);
+    const {
+        data: delivery,
+        isLoading,
+        error,
+    } = useDelivery(undefined, currentPage, ITEMS_PER_PAGE);
     //@ts-expect-error API response structure
     const deliveryData = delivery?.content || [];
     //@ts-expect-error API response structure
@@ -183,9 +192,9 @@ export default function DeliveryManagementPage() {
                                 </TableCell>
 
                                 <TableCell>
-                                    {deli.shipperName ? (
+                                    {deli.shipperProfile ? (
                                         <span className="font-medium text-slate-700">
-                                            {deli.shipperName}
+                                            {deli.shipperProfile.fullName}
                                         </span>
                                     ) : (
                                         <span className="text-muted-foreground text-sm italic">
@@ -255,7 +264,9 @@ export default function DeliveryManagementPage() {
                         <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 0))}
+                            onClick={() =>
+                                setCurrentPage((prev) => Math.max(prev - 1, 0))
+                            }
                             disabled={currentPage === 0}
                             className="flex items-center gap-2"
                         >
@@ -263,28 +274,33 @@ export default function DeliveryManagementPage() {
                             Trước
                         </Button>
                         <div className="flex gap-1">
-                            {Array.from({ length: totalPages }, (_, i) => i).map(
-                                (page) => (
-                                    <Button
-                                        key={page}
-                                        variant={
-                                            currentPage === page
-                                                ? "default"
-                                                : "outline"
-                                        }
-                                        size="sm"
-                                        onClick={() => setCurrentPage(page)}
-                                        className="min-w-10"
-                                    >
-                                        {page + 1}
-                                    </Button>
-                                )
-                            )}
+                            {Array.from(
+                                { length: totalPages },
+                                (_, i) => i
+                            ).map((page) => (
+                                <Button
+                                    key={page}
+                                    variant={
+                                        currentPage === page
+                                            ? "default"
+                                            : "outline"
+                                    }
+                                    size="sm"
+                                    onClick={() => setCurrentPage(page)}
+                                    className="min-w-10"
+                                >
+                                    {page + 1}
+                                </Button>
+                            ))}
                         </div>
                         <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages - 1))}
+                            onClick={() =>
+                                setCurrentPage((prev) =>
+                                    Math.min(prev + 1, totalPages - 1)
+                                )
+                            }
                             disabled={currentPage === totalPages - 1}
                             className="flex items-center gap-2"
                         >

@@ -16,9 +16,9 @@ public class WalletTransaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "shipper_id", insertable = false, updatable = false)
+    @JoinColumn(name = "shipper_id")
     private ShipperProfile shipperProfile;
-    
+
     private Long referenceId;
 
     @Enumerated(EnumType.STRING)

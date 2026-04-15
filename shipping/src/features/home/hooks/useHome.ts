@@ -1,16 +1,23 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { homeService } from "../services/home.service";
 
+const PAGE_SIZE = 10;
+
 export function useUnsignDelivery() {
-    return useQuery({
+    return useInfiniteQuery({
         queryKey: ['home', 'unsign-delivery'],
-        queryFn: async () => {
-            const response = await homeService.unsignDelivery();
-            console.log('Unsign delivery response', response);
+        queryFn: async ({ pageParam = 0 }) => {
+            const response = await homeService.unsignDelivery(pageParam as number, PAGE_SIZE);
             if (response.success && response.data) {
-                return response.data;
+                // @ts-ignore
+                return response.data.data;
             }
             throw new Error(response.error || 'Failed to get unsign delivery');
+        },
+        initialPageParam: 0,
+        getNextPageParam: (lastPage) => {
+            if (lastPage.last) return undefined;
+            return lastPage.number + 1;
         },
     });
 }

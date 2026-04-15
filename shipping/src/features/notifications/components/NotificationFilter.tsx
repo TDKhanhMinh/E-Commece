@@ -2,7 +2,7 @@ import React from 'react';
 import { View, ScrollView, Pressable } from 'react-native';
 import { Typography } from '@components/ui/Typography';
 
-export type NotificationType = 'all' | 'orders' | 'updates' | 'system';
+export type NotificationType = 'all' | 'ORDER_UPDATE' | 'OUTBOUND' | 'SYSTEM';
 
 interface NotificationFilterProps {
   activeFilter: NotificationType;
@@ -11,9 +11,9 @@ interface NotificationFilterProps {
 
 const FILTERS: { key: NotificationType; label: string }[] = [
   { key: 'all', label: 'Tất cả' },
-  { key: 'orders', label: 'Đơn hàng' },
-  { key: 'updates', label: 'Cập nhật' },
-  { key: 'system', label: 'Hệ thống' },
+  { key: 'ORDER_UPDATE', label: 'Đơn hàng' },
+  { key: 'OUTBOUND', label: 'Cập nhật' },
+  { key: 'SYSTEM', label: 'Hệ thống' },
 ];
 
 export function NotificationFilter({ activeFilter, onFilterChange }: NotificationFilterProps) {

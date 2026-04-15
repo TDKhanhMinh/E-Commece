@@ -4,7 +4,9 @@ export interface AdminDeliveryResponseDTO {
     customerName: string;
     customerPhone: string;
     destination: string;
-    shipperName: string | null;
+    shipperProfile: {
+        fullName: string;
+    };
     codAmount: number;
     paymentStatus: "PAID" | "UNPAID";
     deliveryStatus:

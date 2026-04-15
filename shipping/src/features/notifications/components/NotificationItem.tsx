@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View } from 'react-native';
 import { Typography } from '@components/ui/Typography';
 import { Card } from '@components/ui/Card';
@@ -28,8 +28,8 @@ const getNotificationConfig = (type: string) => {
 const formatTime = (dateString: string) => {
   try {
     const date = new Date(dateString);
-    return date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) + ', ' + 
-           date.toLocaleDateString('vi-VN');
+    return date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) + ', ' +
+      date.toLocaleDateString('vi-VN');
   } catch (e) {
     return dateString;
   }
@@ -38,6 +38,7 @@ const formatTime = (dateString: string) => {
 export function NotificationItem({ notification, onPress }: NotificationItemProps) {
   const { icon, color } = getNotificationConfig(notification.type);
   const formattedTime = formatTime(notification.createdAt);
+  const iconContainerStyle = useMemo(() => ({ backgroundColor: `${color}15` }), [color]);
 
   return (
     <Card
@@ -47,9 +48,9 @@ export function NotificationItem({ notification, onPress }: NotificationItemProp
     >
       <View className="flex-row items-start relative">
         {/* Type Icon */}
-        <View 
+        <View
+          style={iconContainerStyle}
           className="w-12 h-12 rounded-full items-center justify-center"
-          style={{ backgroundColor: `${color}15` }}
         >
           <Icon name={icon} size={24} color={color} />
         </View>

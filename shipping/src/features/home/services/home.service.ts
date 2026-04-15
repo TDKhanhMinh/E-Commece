@@ -1,13 +1,26 @@
-import { ApiResponse, PaginatedResponse } from "@/shared";
+import { ApiResponse } from "@/shared";
 import { httpClient } from "@api/httpClient";
+
+export interface SpringPage<T> {
+    content: T[];
+    totalElements: number;
+    totalPages: number;
+    number: number;   // current page (0-based)
+    size: number;
+    last: boolean;
+    first: boolean;
+    empty: boolean;
+}
 
 class HomeService {
     private readonly endpoints = {
         unsignDelivery: '/delivery/unassigned',
     };
 
-    async unsignDelivery(): Promise<ApiResponse<PaginatedResponse<any>>> {
-        return await httpClient.get(this.endpoints.unsignDelivery);
+    async unsignDelivery(page = 0, size = 10): Promise<ApiResponse<SpringPage<any>>> {
+        return await httpClient.get(this.endpoints.unsignDelivery, {
+            params: { page, size },
+        });
     }
 
     async acceptOrder(deliveryId: string): Promise<ApiResponse<any>> {

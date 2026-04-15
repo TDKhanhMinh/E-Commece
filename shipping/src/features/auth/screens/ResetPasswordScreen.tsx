@@ -9,6 +9,9 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import { Snackbar } from 'react-native-paper';
+import { useRoute, RouteProp } from '@react-navigation/native';
+import { useAuth } from '../hooks/useAuth';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
@@ -19,11 +22,23 @@ import {
 } from '@shared/lib/form';
 import { Input } from '@shared/components/ui/Input';
 import { Button } from '@shared/components/ui/Button';
-import type { AuthStackScreenProps } from '@navigation/types';
+import type { AuthStackScreenProps, AuthStackParamList } from '@navigation/types';
+
+type ResetPasswordRouteProp = RouteProp<AuthStackParamList, 'ResetPassword'>;
 
 export function ResetPasswordScreen() {
   const navigation = useNavigation<AuthStackScreenProps<'ResetPassword'>['navigation']>();
+  const route = useRoute<ResetPasswordRouteProp>();
+  const { token } = route.params;
+  const { resetPassword, isResettingPassword } = useAuth();
+  
   const [password, setPassword] = useState('');
+
+  const [snackbar, setSnackbar] = useState({
+    visible: false,
+    message: '',
+    type: 'success'
+  });
 
   const validationRules = {
     length: password.length >= 8,
@@ -44,8 +59,24 @@ export function ResetPasswordScreen() {
   });
 
   const onSubmit = async (data: ResetPasswordFormData) => {
-    // Navigate back to Login after success
-    navigation.navigate('Login');
+    try {
+      await resetPassword({ token, newPassword: data.password });
+      setSnackbar({
+        visible: true,
+        message: 'Đổi mật khẩu thành công',
+        type: 'success'
+      });
+      // Navigate back to Login after success
+      setTimeout(() => {
+        navigation.navigate('Login');
+      }, 1500);
+    } catch (error) {
+      setSnackbar({
+        visible: true,
+        message: 'Đổi mật khẩu thất bại. Vui lòng thử lại.',
+        type: 'error'
+      });
+    }
   };
 
   return (
@@ -134,14 +165,31 @@ export function ResetPasswordScreen() {
               <Button
                 title="Confirm"
                 onPress={handleSubmit(onSubmit)}
+                loading={isResettingPassword}
                 className="bg-success py-4 rounded-xl"
                 size="lg"
-                disabled={!validationRules.length || !validationRules.uppercase || !validationRules.number}
+                disabled={!validationRules.length || !validationRules.uppercase || !validationRules.number || isResettingPassword}
               />
             </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      <Snackbar
+        visible={snackbar.visible}
+        onDismiss={() => setSnackbar(prev => ({ ...prev, visible: false }))}
+        duration={3000}
+        style={{
+          backgroundColor: snackbar.type === 'success' ? '#4CAF50' : '#F44336',
+        }}
+        action={{
+          label: 'OK',
+          onPress: () => setSnackbar(prev => ({ ...prev, visible: false })),
+          textColor: '#fff'
+        }}
+      >
+        {snackbar.message}
+      </Snackbar>
     </SafeAreaView>
   );
 }

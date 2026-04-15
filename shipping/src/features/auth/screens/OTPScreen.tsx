@@ -10,6 +10,7 @@ import {
   Platform,
   TextInput,
 } from 'react-native';
+import { Snackbar } from 'react-native-paper';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { 
@@ -30,6 +31,11 @@ export function OTPScreen() {
   const [error, setError] = useState<string | null>(null);
   const [timer, setTimer] = useState(25);
   const inputs = useRef<Array<TextInput | null>>([]);
+  const [snackbar, setSnackbar] = useState({
+    visible: false,
+    message: '',
+    type: 'success'
+  });
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -66,7 +72,14 @@ export function OTPScreen() {
     }
 
     // Navigate to Reset Password with a dummy token
-    navigation.navigate('ResetPassword', { token: 'dummy-token' });
+    setSnackbar({
+      visible: true,
+      message: 'Xác thực OTP thành công',
+      type: 'success'
+    });
+    setTimeout(() => {
+      navigation.navigate('ResetPassword', { token: 'dummy-token' });
+    }, 1000);
   };
 
   return (
@@ -146,6 +159,22 @@ export function OTPScreen() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      <Snackbar
+        visible={snackbar.visible}
+        onDismiss={() => setSnackbar(prev => ({ ...prev, visible: false }))}
+        duration={3000}
+        style={{
+          backgroundColor: snackbar.type === 'success' ? '#4CAF50' : '#F44336',
+        }}
+        action={{
+          label: 'OK',
+          onPress: () => setSnackbar(prev => ({ ...prev, visible: false })),
+          textColor: '#fff'
+        }}
+      >
+        {snackbar.message}
+      </Snackbar>
     </SafeAreaView>
   );
 }

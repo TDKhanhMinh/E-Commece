@@ -1,20 +1,17 @@
 import React, { useState } from 'react';
 import { View, Pressable, ScrollView } from 'react-native';
 import { Typography } from '@components/ui/Typography';
-import { TransactionItem, Transaction } from './TransactionItem';
+import { TransactionItem } from './TransactionItem';
+import { WalletTransaction } from '../types/wallet.types';
 
-const MOCK_TRANSACTIONS: Transaction[] = [
-  { id: '1', title: 'Nhận phí đơn #2410-001', time: 'Hôm nay, 14:20', amount: 22500, type: 'in' },
-  { id: '2', title: 'Rút tiền về Vietcombank', time: 'Hôm nay, 09:15', amount: 500000, type: 'out' },
-  { id: '3', title: 'Hoàn trả ví Thu Hộ (COD)', time: 'Hôm qua, 18:45', amount: 120000, type: 'out' },
-  { id: '4', title: 'Thanh toán đơn #2410-098', time: 'Hôm qua, 10:30', amount: 45000, type: 'in' },
-  { id: '5', title: 'Thưởng hiệu suất tuần', time: '07/04/2026, 17:00', amount: 150000, type: 'in' },
-];
+interface TransactionListProps {
+  transactions: WalletTransaction[];
+}
 
-export function TransactionList() {
-  const [filter, setFilter] = useState<'all' | 'in' | 'out'>('all');
+export function TransactionList({ transactions }: TransactionListProps) {
+  const [filter, setFilter] = useState<'all' | 'CREDIT' | 'DEBIT'>('all');
 
-  const filteredData = MOCK_TRANSACTIONS.filter(item => 
+  const filteredData = transactions.filter(item => 
     filter === 'all' ? true : item.type === filter
   );
 
@@ -26,13 +23,13 @@ export function TransactionList() {
 
       <View className="flex-row gap-2 mb-6">
         <FilterTab active={filter === 'all'} label="Tất cả" onPress={() => setFilter('all')} />
-        <FilterTab active={filter === 'in'} label="Tiền vào" onPress={() => setFilter('in')} />
-        <FilterTab active={filter === 'out'} label="Tiền ra" onPress={() => setFilter('out')} />
+        <FilterTab active={filter === 'CREDIT'} label="Tiền vào" onPress={() => setFilter('CREDIT')} />
+        <FilterTab active={filter === 'DEBIT'} label="Tiền ra" onPress={() => setFilter('DEBIT')} />
       </View>
 
       <View>
         {filteredData.map(item => (
-          <TransactionItem key={item.id} transaction={item} />
+          <TransactionItem key={item.transactionId} transaction={item} />
         ))}
         {filteredData.length === 0 && (
           <Typography variant="body2" className="text-center text-gray-400 py-10 italic">

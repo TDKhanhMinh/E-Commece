@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity } from 'react-native';
-import { Text, Surface, useTheme } from 'react-native-paper';
+import { Text, Surface, useTheme, Snackbar } from 'react-native-paper';
 import { OrderConfirmModal } from './OrderConfirmModal';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { spacing, borderRadius } from '@styles/index';
@@ -31,6 +31,11 @@ export function OrderCard({ order }: OrderCardProps) {
   const isAnyPending = acceptOrderMutation.isPending || deliveryOrderMutation.isPending || cancelOrderMutation.isPending;
 
   const [visible, setVisible] = useState(false);
+  const [snackbar, setSnackbar] = useState({
+    visible: false,
+    message: '',
+    type: 'success'
+  });
 
   const shippingFeeFormatted = order.shippingCost
     ? formatCurrency(parseFloat(order.shippingCost))
@@ -49,11 +54,25 @@ export function OrderCard({ order }: OrderCardProps) {
 
   const handleConfirm = () => {
     hideDialog();
-    if (isPickup) {
-      deliveryOrderMutation.mutate(String(order.deliveryId));
-    } else {
-      acceptOrderMutation.mutate(String(order.deliveryId));
-    }
+    const mutation = isPickup ? deliveryOrderMutation : acceptOrderMutation;
+    const successMsg = isPickup ? 'Đã xác nhận lấy hàng thành công' : 'Đã nhận đơn hàng thành công';
+
+    mutation.mutate(String(order.deliveryId), {
+      onSuccess: () => {
+        setSnackbar({
+          visible: true,
+          message: successMsg,
+          type: 'success'
+        });
+      },
+      onError: (error: any) => {
+        setSnackbar({
+          visible: true,
+          message: error?.message || 'Thao tác thất bại. Vui lòng thử lại.',
+          type: 'error'
+        });
+      }
+    });
   };
 
   const handleCardPress = () => {
@@ -232,6 +251,23 @@ export function OrderCard({ order }: OrderCardProps) {
           </View>
         )}
       </TouchableOpacity>
+
+      <Snackbar
+        visible={snackbar.visible}
+        onDismiss={() => setSnackbar(prev => ({ ...prev, visible: false }))}
+        duration={3000}
+        style={{
+          backgroundColor: snackbar.type === 'success' ? '#10B981' : '#EF4444',
+          borderRadius: 12,
+        }}
+        action={{
+          label: 'Đóng',
+          onPress: () => setSnackbar(prev => ({ ...prev, visible: false })),
+          textColor: '#fff'
+        }}
+      >
+        {snackbar.message}
+      </Snackbar>
     </Surface>
   );
 }

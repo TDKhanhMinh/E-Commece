@@ -18,7 +18,11 @@ export function RegisterScreen({ navigation }: Props) {
   const insets = useSafeAreaInsets();
   const theme = useTheme();
   const { register, isRegistering, registerError } = useAuth();
-  const [showError, setShowError] = useState(false);
+  const [snackbar, setSnackbar] = useState({
+    visible: false,
+    message: '',
+    type: 'success'
+  });
 
   const { control, handleSubmit } = useFormWithSchema<RegisterFormData>({
     schema: registerSchema,
@@ -36,11 +40,20 @@ export function RegisterScreen({ navigation }: Props) {
       await register({
         email: data.email,
         password: data.password,
-        fullName: data.fullName,
+        name: data.fullName,
         phone: data.phone,
       });
-    } catch {
-      setShowError(true);
+      setSnackbar({
+        visible: true,
+        message: 'Đăng ký tài khoản thành công',
+        type: 'success'
+      });
+    } catch (err) {
+      setSnackbar({
+        visible: true,
+        message: registerError || 'Đăng ký thất bại. Vui lòng thử lại.',
+        type: 'error'
+      });
     }
   };
 
@@ -133,14 +146,18 @@ export function RegisterScreen({ navigation }: Props) {
       </ScrollView>
 
       <Snackbar
-        visible={showError}
-        onDismiss={() => setShowError(false)}
+        visible={snackbar.visible}
+        onDismiss={() => setSnackbar(prev => ({ ...prev, visible: false }))}
         duration={4000}
+        style={{
+          backgroundColor: snackbar.type === 'success' ? '#4CAF50' : '#F44336',
+        }}
         action={{
-          label: 'Dismiss',
-          onPress: () => setShowError(false),
+          label: 'OK',
+          onPress: () => setSnackbar(prev => ({ ...prev, visible: false })),
+          textColor: '#fff'
         }}>
-        {registerError || 'Registration failed. Please try again.'}
+        {snackbar.message}
       </Snackbar>
     </KeyboardAvoidingView>
   );

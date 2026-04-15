@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,7 @@ public class NotificationController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('SHIPPER')")
     public ResponseEntity<ApiResponse<Page<NotificationResponse>>> getNotifications(@AuthenticationPrincipal UserDetails userDetails,
                                                                                     Pageable pageable,
                                                                                     @RequestParam(required = false) String type) {
@@ -37,6 +39,14 @@ public class NotificationController {
         System.out.println("Fetching notifications for user: " + email + ", type: " + type);
         Page<NotificationResponse> notifications = notificationService.getNotificationsForUser(email, pageable, type);
         return ResponseEntity.ok(new ApiResponse<>(200, "Lấy thông báo thành công", notifications));
+    }
+
+    @PostMapping("/mark-all-read")
+    @PreAuthorize("hasRole('SHIPPER')")
+    public ResponseEntity<ApiResponse<?>> markAllAsRead(@AuthenticationPrincipal UserDetails userDetails) {
+        String email = userDetails.getUsername();
+        notificationService.markAllNotificationsAsRead(email);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Đánh dấu tất cả thông báo đã đọc thành công", null));
     }
 }
 
