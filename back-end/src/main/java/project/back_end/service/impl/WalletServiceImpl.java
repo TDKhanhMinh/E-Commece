@@ -1,6 +1,8 @@
 package project.back_end.service.impl;
 
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,15 +20,18 @@ import project.back_end.mapper.WalletMapper;
 import project.back_end.repository.ShipperProfileRepository;
 import project.back_end.repository.UserRepository;
 import project.back_end.repository.WalletTransactionRepository;
+import project.back_end.response.BalanceAndRevenueResponse;
 import project.back_end.response.WalletTransactionResponse;
 import project.back_end.service.WalletService;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
 public class WalletServiceImpl implements WalletService {
+    private static final Logger log = LoggerFactory.getLogger(WalletServiceImpl.class);
     private final ApplicationEventPublisher eventPublisher;
     private final WalletTransactionRepository repository;
     private final UserRepository userRepository;
@@ -52,13 +57,73 @@ public class WalletServiceImpl implements WalletService {
         transaction.setType(TransactionType.CREDIT);
         transaction.setReferenceId(orderId);
         transaction.setDescription("Nhận cước giao hàng từ đơn hàng #" + orderId);
-        repository.save(transaction);
         shipperTransactions.add(transaction);
+        repository.save(transaction);
+
+        shipperProfile.setBalance(shipperProfile.getBalance().add(fee));
         shipperProfile.setWalletTransactions(shipperTransactions);
         shipperProfileRepository.save(shipperProfile);
 
         // Phát sự kiện để cập nhật ví của shipper
         eventPublisher.publishEvent(new WalletTransactionEvent(transaction, user.getDeviceToken()));
+
+    }
+
+    @Override
+    public Page<WalletTransactionResponse> getAllTransactions(String status, Pageable pageable) {
+        TransactionStatus transactionStatus;
+
+        if (Objects.equals(status, "ALL")) {
+            return repository.findAll(pageable)
+                    .map(walletMapper::toWalletTransactionResponse);
+        }
+        try {
+            transactionStatus = TransactionStatus.valueOf(status.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new AppException(ErrorCode.INVALID_TRANSACTION_STATUS);
+        }
+        return repository.getWalletTransactionsByStatus(transactionStatus, pageable)
+                .map(walletMapper::toWalletTransactionResponse);
+    }
+
+
+    @Override
+    public BalanceAndRevenueResponse getShipperBalanceAndRevenue(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        ShipperProfile shipperProfile = user.getShipperProfile();
+        if (shipperProfile == null) {
+            throw new AppException(ErrorCode.SHIPPER_PROFILE_NOT_FOUND);
+        }
+        List<WalletTransaction> transactionsInCurrentMonth = repository.findAllByShipperProfileAndActionAndStatusAndTypeAndCreatedAtBetween(
+                shipperProfile,
+                TransactionAction.DELIVERY_FEE,
+                TransactionStatus.SUCCESS,
+                TransactionType.CREDIT,
+                java.time.LocalDate.now().withDayOfMonth(1).atStartOfDay(),
+                java.time.LocalDate.now().plusDays(1).atStartOfDay()
+        );
+        log.error("Transactions in current month: {}", transactionsInCurrentMonth.size());
+        List<WalletTransaction> transactionsInCurrentDay = repository.findAllByShipperProfileAndActionAndStatusAndTypeAndCreatedAtBetween(
+                shipperProfile,
+                TransactionAction.DELIVERY_FEE,
+                TransactionStatus.SUCCESS,
+                TransactionType.CREDIT,
+                java.time.LocalDate.now().atStartOfDay(),
+                java.time.LocalDate.now().plusDays(1).atStartOfDay()
+        );
+        WalletServiceImpl.log.error("Transactions in current day: {}", transactionsInCurrentDay.size());
+
+        BigDecimal revenueInCurrentMonth = transactionsInCurrentMonth.stream()
+                .map(WalletTransaction::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal revenueInCurrentDay = transactionsInCurrentDay.stream()
+                .map(WalletTransaction::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+
+        return walletMapper.toBalanceAndRevenueResponse(shipperProfile.getBalance(), revenueInCurrentMonth, revenueInCurrentDay);
 
     }
 
@@ -70,7 +135,7 @@ public class WalletServiceImpl implements WalletService {
         if (shipperProfile == null) {
             throw new AppException(ErrorCode.SHIPPER_PROFILE_NOT_FOUND);
         }
-        return repository.getWalletTransactionsByShipperProfile(shipperProfile, pageable)
+        return repository.getWalletTransactionsByShipperProfileAndStatus(shipperProfile, pageable, TransactionStatus.SUCCESS)
                 .map(walletMapper::toWalletTransactionResponse);
 
     }

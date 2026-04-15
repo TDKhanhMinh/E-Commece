@@ -112,6 +112,12 @@ public enum ErrorCode {
 
 
     /* =========================
+     * TRANSACTION / WALLET
+     * ========================= */
+    INVALID_TRANSACTION_STATUS(400, "Invalid transaction status. Allowed values are PENDING, SUCCESS, FAILED"),
+    TRANSACTION_NOT_FOUND(404, "Transaction was not found"),
+    
+    /* =========================
      * REVIEW / RATING
      * ========================= */
     REVIEW_NOT_FOUND(404, "Review was not found"),

@@ -1,13 +1,14 @@
 import React from 'react';
 import { View } from 'react-native';
 import { Typography } from '@components/ui/Typography';
-import { Card } from '@components/ui/Card';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { spacing } from '@styles/index';
 import { Pressable } from 'react-native';
+import { useBalance } from '../hooks';
 
 export function BalanceCard() {
   const [isVisible, setIsVisible] = React.useState(true);
+  const { data: balance } = useBalance();
+  console.log(balance);
 
   return (
     <View className="bg-[#0f766e] p-6 rounded-[32px] shadow-2xl overflow-hidden border border-white/10 mx-4">
@@ -32,7 +33,7 @@ export function BalanceCard() {
 
         <View className="flex-row items-end mb-4">
           <Typography variant="h2" className="text-white font-bold text-5xl leading-tight">
-            {isVisible ? "2.500.000" : "••••••••"}
+            {isVisible ? balance.balance : "••••••••"}
           </Typography>
           <Typography variant="h5" className="text-teal-200 font-bold mb-2 ml-1">
             đ

@@ -13,9 +13,9 @@ class NotificationService {
         return await httpClient.post<void>(this.endpoints.subscribe, { token });
     }
 
-    async getUserNotifications(type: string): Promise<ApiResponse<NotificationPage>> {
+    async getUserNotifications(type: string, page = 0, size = 10): Promise<ApiResponse<NotificationPage>> {
         const response = await httpClient.get<any>(this.endpoints.getUserNotifications, {
-            params: { type: type.toUpperCase() }
+            params: { type: type.toUpperCase(), page, size }
         });
         return {
             ...response,

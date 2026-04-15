@@ -514,6 +514,11 @@ export const ADMIN_SIDEBAR_ITEMS = [
         icon: Truck,
     },
     {
+        title: "Transactions",
+        url: "/admin/transactions",
+        icon: CreditCardIcon,
+    },
+    {
         title: "Chat Support",
         url: "/admin/chat-supports",
         icon: MessagesSquareIcon,
