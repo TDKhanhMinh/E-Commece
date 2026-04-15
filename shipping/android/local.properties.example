@@ -1,0 +1,12 @@
+# This is an example local.properties file
+# Copy this file to local.properties and fill in your actual tokens
+# DO NOT commit local.properties to version control
+
+# Mapbox Downloads Token
+# Get your token from: https://account.mapbox.com/tokens/
+# You can also view docs: https://docs.mapbox.com/android/maps/guides/install/
+MAPBOX_DOWNLOADS_TOKEN=your_actual_mapbox_token_here
+
+# SDK Location
+# Uncomment and set this if you don't have ANDROID_SDK_ROOT environment variable set
+# sdk.dir=/Users/username/Android/sdk
