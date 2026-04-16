@@ -26,12 +26,12 @@ export const getAllTransactionsAdmin = async (params?: any) =>
     );
 
 /**
- * Lấy chi tiết một giao dịch cụ thể
+ * Cập nhật trạng thái của một giao dịch cụ thể
  * @param transactionId ID của giao dịch
  */
-export const getTransactionById = async (transactionId: number) =>
-    http.get<ApiResponse<TransactionResponse>>(
-        `/wallet/transactions/${transactionId}`
+export const updateTransactionStatus = async (transactionId: number, status: string) =>
+    http.put<ApiResponse<TransactionResponse>>(
+        `/wallet/transactions/${transactionId}/status?status=${status}`
     );
 
 /**

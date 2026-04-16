@@ -1,5 +1,6 @@
 package project.back_end.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -7,13 +8,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import project.back_end.request.WithdrawRequest;
 import project.back_end.response.ApiResponse;
 import project.back_end.response.BalanceAndRevenueResponse;
 import project.back_end.response.WalletTransactionResponse;
+import project.back_end.response.WithdrawResponse;
 import project.back_end.service.WalletService;
 
 @RestController
@@ -27,15 +28,16 @@ public class WalletTransactionController {
 
     public ResponseEntity<ApiResponse<Page<WalletTransactionResponse>>> getWalletTransactions(
             @AuthenticationPrincipal UserDetails userDetails,
-            Pageable pageable
-    ) {
+            Pageable pageable) {
         String email = userDetails.getUsername();
-        return ResponseEntity.ok(new ApiResponse<>(200, "Success", walletService.getShipperHistoryTransactions(email, pageable)));
+        return ResponseEntity
+                .ok(new ApiResponse<>(200, "Success", walletService.getShipperHistoryTransactions(email, pageable)));
     }
 
     @GetMapping("/balance")
     @PreAuthorize("hasRole('SHIPPER')")
-    public ResponseEntity<ApiResponse<BalanceAndRevenueResponse>> getShipperBalance(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<ApiResponse<BalanceAndRevenueResponse>> getShipperBalance(
+            @AuthenticationPrincipal UserDetails userDetails) {
         String email = userDetails.getUsername();
         return ResponseEntity.ok(new ApiResponse<>(200, "Success", walletService.getShipperBalanceAndRevenue(email)));
     }
@@ -51,7 +53,28 @@ public class WalletTransactionController {
             @RequestParam(required = false) String endDate
 
     ) {
-        return ResponseEntity.ok(new ApiResponse<>(200, "Success", walletService.getAllTransactions(status, pageable, type, action, startDate, endDate)));
+        return ResponseEntity.ok(new ApiResponse<>(200, "Success",
+                walletService.getAllTransactions(status, pageable, type, action, startDate, endDate)));
+    }
+
+    @PutMapping("/transactions/{id}/status")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<Void>> updateTransactionStatus(
+            @PathVariable Long id,
+            @RequestParam String status) {
+        walletService.updateTransactionStatus(id, status);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Update status successful", null));
+    }
+
+    @PostMapping("/withdraw")
+    @PreAuthorize("hasRole('SHIPPER')")
+    public ResponseEntity<ApiResponse<WithdrawResponse>> requestWithdrawal(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Valid @RequestBody WithdrawRequest request) {
+        String email = userDetails.getUsername();
+        WithdrawResponse response = walletService.requestWithdrawal(email, request);
+        return ResponseEntity.ok(new ApiResponse<>(200, "Withdrawal request submitted successfully", response));
     }
 
 }
+

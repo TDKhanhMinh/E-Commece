@@ -6,10 +6,9 @@ import {
     createTransaction,
     getAllTransactionsAdmin,
     getMyTransactions,
-    getTransactionById,
+    updateTransactionStatus,
 } from "@/service/transaction-service";
 import { TransactionRequest } from "@/type/transaction-type";
-import { log } from "console";
 
 /**
  * 1. Hook lấy danh sách giao dịch cá nhân (Shipper)
@@ -30,7 +29,6 @@ export const useMyTransactions = (params?: any) => {
  * @param params
  */
 export const useTransactionsAdmin = (params?: any) => {
-    console.log("params", params);
     return useQuery({
         queryKey: ["transactions", "admin", params],
         queryFn: async () => {
@@ -41,19 +39,34 @@ export const useTransactionsAdmin = (params?: any) => {
 };
 
 /**
- * 3. Hook lấy chi tiết một giao dịch
- * @param transactionId
+ * 4. Hook cập nhật trạng thái giao dịch (Dành cho Admin)
  */
-export const useTransactionDetail = (transactionId: number) => {
-    return useQuery({
-        queryKey: ["transactions", "detail", transactionId],
-        queryFn: async () => await getTransactionById(transactionId),
-        enabled: !!transactionId, // Chỉ chạy khi có ID
+export const useUpdateTransactionStatus = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({
+            transactionId,
+            status,
+        }: {
+            transactionId: number;
+            status: string;
+        }) => updateTransactionStatus(transactionId, status),
+        onSuccess: () => {
+            toast.success("Cập nhật trạng thái giao dịch thành công!");
+            // Làm tươi danh sách giao dịch
+            queryClient.invalidateQueries({
+                queryKey: ["transactions", "admin"],
+            });
+        },
+        onError: (error: any) => {
+            const msg = error?.message || "Lỗi khi cập nhật trạng thái";
+            toast.error(msg);
+        },
     });
 };
 
 /**
- * 4. Hook Tạo giao dịch mới (Ví dụ: Yêu cầu rút tiền)
+ * 5. Hook Tạo giao dịch mới (Ví dụ: Yêu cầu rút tiền)
  */
 export const useCreateTransaction = () => {
     const queryClient = useQueryClient();

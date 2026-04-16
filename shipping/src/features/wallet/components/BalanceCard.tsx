@@ -4,11 +4,12 @@ import { Typography } from '@components/ui/Typography';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Pressable } from 'react-native';
 import { useBalance } from '../hooks';
+import { WithdrawModal } from './WithdrawModal';
 
 export function BalanceCard() {
   const [isVisible, setIsVisible] = React.useState(true);
+  const [showWithdraw, setShowWithdraw] = React.useState(false);
   const { data: balance } = useBalance();
-  console.log(balance);
 
   return (
     <View className="bg-[#0f766e] p-6 rounded-[32px] shadow-2xl overflow-hidden border border-white/10 mx-4">
@@ -33,7 +34,7 @@ export function BalanceCard() {
 
         <View className="flex-row items-end mb-4">
           <Typography variant="h2" className="text-white font-bold text-5xl leading-tight">
-            {isVisible ? balance.balance : "••••••••"}
+            {isVisible ? balance?.balance : "••••••••"}
           </Typography>
           <Typography variant="h5" className="text-teal-200 font-bold mb-2 ml-1">
             đ
@@ -57,9 +58,15 @@ export function BalanceCard() {
         <ActionButton
           icon="bank-transfer-out"
           label="Rút tiền"
-          onPress={() => console.log('Withdraw')}
+          onPress={() => setShowWithdraw(true)}
         />
       </View>
+
+      <WithdrawModal
+        visible={showWithdraw}
+        onClose={() => setShowWithdraw(false)}
+        currentBalance={Number(balance?.balance) || 0}
+      />
     </View>
   );
 }

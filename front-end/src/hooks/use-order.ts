@@ -7,6 +7,7 @@ import {
     getOrderById,
     getOrdersByUser,
     updateOrderStatus,
+    getOrdersByAdmin,
 } from "@/service/order-service";
 import { CheckoutRequest, OrderSearchParams } from "@/type/order-type";
 import { toast } from "sonner";
@@ -39,6 +40,20 @@ export const useOrdersByUser = (params?: OrderSearchParams) => {
         queryKey: ["orders", "user", params],
         queryFn: async () => {
             return await getOrdersByUser(params);
+        },
+        staleTime: 1000 * 60, // 1 phút
+    });
+};
+
+/**
+ * Hook lấy danh sách đơn hàng cho admin với pagination
+ * @param params Search params (status, page, size, sort, startDate, etc.)
+ */
+export const useOrdersByAdmin = (params?: OrderSearchParams) => {
+    return useQuery({
+        queryKey: ["admin-orders", params],
+        queryFn: async () => {
+            return await getOrdersByAdmin(params);
         },
         staleTime: 1000 * 60, // 1 phút
     });

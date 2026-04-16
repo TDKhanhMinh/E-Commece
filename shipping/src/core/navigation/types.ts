@@ -5,6 +5,7 @@ import type {
   NavigatorScreenParams,
 } from '@react-navigation/native';
 import type { HistoryStackParamList } from '@features/history/navigators';
+import type { WalletTransaction } from '@features/wallet/types/wallet.types';
 
 export type HomeStackParamList = {
   HomeMain: undefined;
@@ -20,12 +21,17 @@ export type AuthStackParamList = {
   ResetPassword: { token: string };
 };
 
+export type WalletStackParamList = {
+  WalletMain: undefined;
+  TransactionDetail: { transaction: WalletTransaction };
+};
+
 export type MainTabParamList = {
   Home: NavigatorScreenParams<HomeStackParamList>;
   Orders: undefined;
   History: NavigatorScreenParams<HistoryStackParamList>;
   Earnings: undefined;
-  Wallet: undefined;
+  Wallet: NavigatorScreenParams<WalletStackParamList>;
   Profile: undefined;
   Settings: undefined;
 };
@@ -80,6 +86,12 @@ export type ShipmentStackScreenProps<T extends keyof ShipmentStackParamList> =
 export type ProfileStackScreenProps<T extends keyof ProfileStackParamList> =
   CompositeScreenProps<
     NativeStackScreenProps<ProfileStackParamList, T>,
+    RootStackScreenProps<keyof RootStackParamList>
+  >;
+
+export type WalletStackScreenProps<T extends keyof WalletStackParamList> =
+  CompositeScreenProps<
+    NativeStackScreenProps<WalletStackParamList, T>,
     RootStackScreenProps<keyof RootStackParamList>
   >;
 

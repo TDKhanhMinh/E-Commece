@@ -116,6 +116,9 @@ public enum ErrorCode {
      * ========================= */
     INVALID_TRANSACTION_STATUS(400, "Invalid transaction status. Allowed values are PENDING, SUCCESS, FAILED"),
     TRANSACTION_NOT_FOUND(404, "Transaction was not found"),
+    INSUFFICIENT_BALANCE(400, "Insufficient balance for withdrawal"),
+    INVALID_WITHDRAW_AMOUNT(400, "Withdrawal amount must be greater than zero"),
+    PENDING_WITHDRAWAL_EXISTS(400, "You already have a pending withdrawal request"),
     
     /* =========================
      * REVIEW / RATING

@@ -1,6 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { walletService } from "../services/wallet.service";
-import { WalletPaginatedResponse } from "../types/wallet.types";
+import { WalletPaginatedResponse, WithdrawRequest } from "../types/wallet.types";
 
 export function useWalletTransaction() {
     return useQuery<WalletPaginatedResponse>({
@@ -28,6 +28,26 @@ export function useBalance() {
                 return response.data.data;
             }
             throw new Error(response.error || 'Failed to fetch balance');
+        },
+    });
+}
+
+export function useWithdraw() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (data: WithdrawRequest) => {
+            const response = await walletService.withdraw(data);
+            if (response.success && response.data) {
+                return response.data;
+            }
+            throw new Error(response.error || 'Rút tiền thất bại');
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['wallet', 'balance'] });
+            queryClient.invalidateQueries({ queryKey: ['wallet', 'transactions'] });
+        },
+        onError: (error) => {
+            console.log('Withdraw error', error);
         },
     });
 }

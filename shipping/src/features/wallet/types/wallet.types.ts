@@ -2,7 +2,7 @@ export interface WalletTransaction {
   transactionId: number;
   type: 'CREDIT' | 'DEBIT';
   transactionAction: string;
-  transactionStatus: 'PENDING' | 'SUCCESS' | 'FAILED';
+  transactionStatus: 'PENDING' | 'SUCCESS' | 'FAILED' | 'REJECTED';
   amount: string;
   description: string;
   createdAt: string;
@@ -18,4 +18,11 @@ export interface WalletPaginatedResponse {
 }
 
 export type TransactionType = 'CREDIT' | 'DEBIT';
-export type TransactionStatus = 'PENDING' | 'SUCCESS' | 'FAILED';
+export type TransactionStatus = 'PENDING' | 'SUCCESS' | 'FAILED' | 'REJECTED';
+
+export interface WithdrawRequest {
+  amount: number;
+  bankName?: string;
+  bankAccountNumber?: string;
+  description?: string;
+}

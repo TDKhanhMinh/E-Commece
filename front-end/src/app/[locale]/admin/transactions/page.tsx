@@ -47,7 +47,7 @@ import {
 } from "@/components/ui/dialog";
 
 // Nhúng hook Admin vào trang
-import { useTransactionsAdmin } from "@/hooks/use-transaction";
+import { useTransactionsAdmin, useUpdateTransactionStatus } from "@/hooks/use-transaction";
 import { TransactionResponse } from "@/type/transaction-type";
 import { fDateTime } from "@/lib/format-date-time";
 import { formatCurrency } from "@/lib/format-price";
@@ -90,6 +90,8 @@ const TransactionActions = ({
 }: {
     transaction: TransactionResponse;
 }) => {
+    const [isUpdateOpen, setIsUpdateOpen] = useState(false);
+
     const handleViewDetails = () => {
         console.log("View details for transaction:", transaction.transactionId);
     };
@@ -113,38 +115,111 @@ const TransactionActions = ({
     };
 
     return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                    <span className="sr-only">Mở menu</span>
-                    <MoreHorizontal className="h-4 w-4" />
-                </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Tính năng</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleViewDetails}>
-                    <Eye className="mr-2 h-4 w-4" />
-                    <span>Xem chi tiết</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleCopyId}>
-                    <Pencil className="mr-2 h-4 w-4" />
-                    <span>Cập nhật trạng thái</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleExport}>
-                    <Download className="mr-2 h-4 w-4" />
-                    <span>Xuất file</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                    onClick={handleDelete}
-                    className="text-red-600"
-                >
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    <span>Xóa giao dịch</span>
-                </DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
+        <>
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="h-8 w-8 p-0">
+                        <span className="sr-only">Mở menu</span>
+                        <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Tính năng</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleViewDetails}>
+                        <Eye className="mr-2 h-4 w-4 text-blue-500" />
+                        <span>Xem chi tiết</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setIsUpdateOpen(true)}>
+                        <Pencil className="mr-2 h-4 w-4 text-yellow-500" />
+                        <span>Cập nhật trạng thái</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleExport}>
+                        <Download className="mr-2 h-4 w-4 text-green-500" />
+                        <span>Xuất file</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                        onClick={handleDelete}
+                        className="text-red-600 focus:text-red-600 cursor-pointer"
+                    >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        <span>Xóa giao dịch</span>
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+
+            <UpdateTransactionStatusDialog 
+                transaction={transaction}
+                open={isUpdateOpen}
+                onOpenChange={setIsUpdateOpen}
+            />
+        </>
+    );
+};
+
+// Component cập nhật trạng thái giao dịch
+const UpdateTransactionStatusDialog = ({
+    transaction,
+    open,
+    onOpenChange,
+}: {
+    transaction: TransactionResponse;
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+}) => {
+    const [selectedStatus, setSelectedStatus] = useState<string>(transaction.transactionStatus);
+    const { mutate: updateStatus, isPending } = useUpdateTransactionStatus();
+
+    const handleUpdate = () => {
+        updateStatus(
+            { transactionId: transaction.transactionId, status: selectedStatus },
+            {
+                onSuccess: () => {
+                    onOpenChange(false);
+                },
+            }
+        );
+    };
+
+    return (
+        <Dialog open={open} onOpenChange={onOpenChange}>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle>Cập nhật trạng thái giao dịch #{transaction.transactionId}</DialogTitle>
+                </DialogHeader>
+                <div className="py-4 space-y-4">
+                    <RadioGroup
+                        value={selectedStatus}
+                        onValueChange={setSelectedStatus}
+                        className="grid grid-cols-2 gap-2"
+                    >
+                        {[
+                            { label: "Đang chờ", value: "PENDING" },
+                            { label: "Thành công", value: "SUCCESS" },
+                            { label: "Thất bại", value: "FAILED" },
+                            { label: "Bị từ chối", value: "REJECTED" },
+                        ].map((item) => (
+                            <div key={item.value} className="flex items-center space-x-2 rounded-md border p-3 hover:bg-slate-50 transition-colors cursor-pointer">
+                                <RadioGroupItem value={item.value} id={`update-status-${item.value}`} />
+                                <Label htmlFor={`update-status-${item.value}`} className="flex-1 cursor-pointer font-medium">
+                                    {item.label}
+                                </Label>
+                            </div>
+                        ))}
+                    </RadioGroup>
+                </div>
+                <DialogFooter>
+                    <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isPending}>
+                        Hủy
+                    </Button>
+                    <Button onClick={handleUpdate} disabled={isPending || selectedStatus === transaction.transactionStatus}>
+                        {isPending ? <RefreshCcw className="mr-2 h-4 w-4 animate-spin" /> : null}
+                        Xác nhận cập nhật
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     );
 };
 
@@ -272,7 +347,7 @@ export default function TransactionManagement() {
                                     >
                                         {[
                                             { label: "Tất cả", value: "ALL" },
-                                            { label: "Công tiền", value: "CREDIT" },
+                                            { label: "Cộng tiền", value: "CREDIT" },
                                             { label: "Trừ tiền", value: "DEBIT" },
                                         ].map((item) => (
                                             <div key={item.value} className="flex items-center space-x-2 rounded-md border p-2 transition-colors hover:bg-slate-50">
@@ -414,7 +489,7 @@ export default function TransactionManagement() {
                                                         >
                                                             {txn.type ===
                                                             "CREDIT"
-                                                                ? "+ Công tiền"
+                                                                ? "+ Cộng tiền"
                                                                 : "- Trừ tiền"}
                                                         </span>
                                                         <span className="text-muted-foreground text-xs">

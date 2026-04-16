@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import project.back_end.entity.ShipperProfile;
 import project.back_end.entity.User;
 import project.back_end.entity.WalletTransaction;
@@ -20,8 +21,10 @@ import project.back_end.mapper.WalletMapper;
 import project.back_end.repository.ShipperProfileRepository;
 import project.back_end.repository.UserRepository;
 import project.back_end.repository.WalletTransactionRepository;
+import project.back_end.request.WithdrawRequest;
 import project.back_end.response.BalanceAndRevenueResponse;
 import project.back_end.response.WalletTransactionResponse;
+import project.back_end.response.WithdrawResponse;
 import project.back_end.service.WalletService;
 
 import java.math.BigDecimal;
@@ -66,7 +69,6 @@ public class WalletServiceImpl implements WalletService {
 
         // Phát sự kiện để cập nhật ví của shipper
         eventPublisher.publishEvent(new WalletTransactionEvent(transaction, user.getDeviceToken()));
-
     }
 
     @Override
@@ -171,7 +173,6 @@ public class WalletServiceImpl implements WalletService {
 
         return walletMapper.toBalanceAndRevenueResponse(shipperProfile.getBalance(), revenueInCurrentMonth,
                 revenueInCurrentDay);
-
     }
 
     @Override
@@ -183,8 +184,121 @@ public class WalletServiceImpl implements WalletService {
             throw new AppException(ErrorCode.SHIPPER_PROFILE_NOT_FOUND);
         }
         return repository
-                .getWalletTransactionsByShipperProfileAndStatus(shipperProfile, pageable, TransactionStatus.SUCCESS)
+                .getWalletTransactionsByShipperProfile(shipperProfile, pageable)
                 .map(walletMapper::toWalletTransactionResponse);
+    }
 
+    @Override
+    @Transactional
+    public void updateTransactionStatus(Long transactionId, String status) {
+        WalletTransaction transaction = repository.findById(transactionId)
+                .orElseThrow(() -> new AppException(ErrorCode.TRANSACTION_NOT_FOUND));
+
+        TransactionStatus oldStatus = transaction.getStatus();
+        TransactionStatus newStatus;
+        try {
+            newStatus = TransactionStatus.valueOf(status.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new AppException(ErrorCode.INVALID_TRANSACTION_STATUS);
+        }
+
+        if (oldStatus == newStatus) {
+            return;
+        }
+
+        transaction.setStatus(newStatus);
+        repository.save(transaction);
+
+        if (oldStatus == TransactionStatus.PENDING && newStatus == TransactionStatus.SUCCESS) {
+            ShipperProfile shipperProfile = transaction.getShipperProfile();
+            if (shipperProfile != null) {
+                if (transaction.getType() == TransactionType.CREDIT) {
+                    shipperProfile.setBalance(shipperProfile.getBalance().add(transaction.getAmount()));
+                } else if (transaction.getType() == TransactionType.DEBIT) {
+                }
+                shipperProfileRepository.save(shipperProfile);
+
+                transaction.setBalanceAfter(shipperProfile.getBalance());
+                repository.save(transaction);
+            }
+        }
+
+        if (oldStatus == TransactionStatus.PENDING
+                && (newStatus == TransactionStatus.REJECTED || newStatus == TransactionStatus.FAILED)) {
+            ShipperProfile shipperProfile = transaction.getShipperProfile();
+            if (shipperProfile != null && transaction.getType() == TransactionType.DEBIT) {
+                shipperProfile.setBalance(shipperProfile.getBalance().add(transaction.getAmount()));
+                shipperProfileRepository.save(shipperProfile);
+
+                transaction.setBalanceAfter(shipperProfile.getBalance());
+                repository.save(transaction);
+                log.info("Refunded {} to shipper {} due to {} withdrawal",
+                        transaction.getAmount(), shipperProfile.getUserId(), newStatus);
+            }
+        }
+
+        log.info("Transaction {} status updated from {} to {}", transactionId, oldStatus, newStatus);
+    }
+
+    @Override
+    @Transactional
+    public WithdrawResponse requestWithdrawal(String email, WithdrawRequest request) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        ShipperProfile shipperProfile = user.getShipperProfile();
+        if (shipperProfile == null) {
+            throw new AppException(ErrorCode.SHIPPER_PROFILE_NOT_FOUND);
+        }
+
+        BigDecimal amount = request.getAmount();
+
+        // Validate số tiền rút > 0
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new AppException(ErrorCode.INVALID_WITHDRAW_AMOUNT);
+        }
+
+        // Validate số dư đủ
+        if (shipperProfile.getBalance().compareTo(amount) < 0) {
+            throw new AppException(ErrorCode.INSUFFICIENT_BALANCE);
+        }
+
+        // Trừ tiền ngay (hold)
+        BigDecimal balanceAfter = shipperProfile.getBalance().subtract(amount);
+        shipperProfile.setBalance(balanceAfter);
+        shipperProfileRepository.save(shipperProfile);
+
+        // Tạo giao dịch rút tiền PENDING
+        String description = request.getDescription();
+        if (description == null || description.isBlank()) {
+            description = "Yêu cầu rút tiền";
+            if (request.getBankName() != null && !request.getBankName().isBlank()) {
+                description += " về " + request.getBankName();
+            }
+            if (request.getBankAccountNumber() != null && !request.getBankAccountNumber().isBlank()) {
+                description += " - STK: " + request.getBankAccountNumber();
+            }
+        }
+
+        WalletTransaction transaction = new WalletTransaction();
+        transaction.setShipperProfile(shipperProfile);
+        transaction.setAmount(amount);
+        transaction.setBalanceAfter(balanceAfter);
+        transaction.setType(TransactionType.DEBIT);
+        transaction.setAction(TransactionAction.WITHDRAW_TO_BANK);
+        transaction.setStatus(TransactionStatus.PENDING);
+        transaction.setDescription(description);
+        repository.save(transaction);
+
+        log.info("Shipper {} requested withdrawal of {}. Balance after: {}",
+                shipperProfile.getUserId(), amount, balanceAfter);
+
+        return WithdrawResponse.builder()
+                .transactionId(transaction.getId())
+                .amount(amount)
+                .balanceAfter(balanceAfter)
+                .status(TransactionStatus.PENDING.name())
+                .description(description)
+                .createdAt(transaction.getCreatedAt().toString())
+                .build();
     }
 }

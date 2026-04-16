@@ -48,7 +48,7 @@ public class UserController {
                                 new ApiResponse<>(200, "User profile updated successfully", updatedUser));
         }
 
-        @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+        // @PreAuthorize("hasAuthority('ROLE_ADMIN')")
         @GetMapping("/all")
         public ResponseEntity<ApiResponse<Page<UserResponse>>> getAllUsers(@RequestParam(defaultValue = "0") int page,
                         @RequestParam(defaultValue = "10") int size,

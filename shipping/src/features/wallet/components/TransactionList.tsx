@@ -11,7 +11,7 @@ interface TransactionListProps {
 export function TransactionList({ transactions }: TransactionListProps) {
   const [filter, setFilter] = useState<'all' | 'CREDIT' | 'DEBIT'>('all');
 
-  const filteredData = transactions.filter(item => 
+  const filteredData = transactions.filter(item =>
     filter === 'all' ? true : item.type === filter
   );
 
@@ -43,12 +43,12 @@ export function TransactionList({ transactions }: TransactionListProps) {
 
 function FilterTab({ active, label, onPress }: { active: boolean, label: string, onPress: () => void }) {
   return (
-    <Pressable 
+    <Pressable
       onPress={onPress}
       className={`px-6 py-2 rounded-full border ${active ? 'bg-[#1e40af] border-[#1e40af]' : 'bg-gray-100 border-gray-100'}`}
     >
-      <Typography 
-        variant="caption" 
+      <Typography
+        variant="caption"
         className={`font-semibold ${active ? 'text-white' : 'text-gray-500'}`}
       >
         {label}

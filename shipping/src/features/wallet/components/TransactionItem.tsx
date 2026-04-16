@@ -1,7 +1,10 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 import { Typography } from '@components/ui/Typography';
 import { Card } from '@components/ui/Card';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { WalletStackParamList } from '@navigation/types';
 
 import { WalletTransaction } from '../types/wallet.types';
 
@@ -11,31 +14,38 @@ interface TransactionItemProps {
 
 export function TransactionItem({ transaction }: TransactionItemProps) {
   const isIncoming = transaction.type === 'CREDIT';
+  const navigation = useNavigation<NativeStackNavigationProp<WalletStackParamList>>();
 
   return (
-    <Card
-      variant="outlined"
-      className={`mb-3 border-l-4 ${isIncoming ? 'border-l-success' : 'border-l-error'} py-3 px-4 bg-white shadow-sm`}
+    <TouchableOpacity
+      activeOpacity={0.7}
+      onPress={() => navigation.navigate('TransactionDetail', { transaction })}
     >
-      <View className="flex-row items-center justify-between">
-        <View className="flex-1">
-          <Typography variant="body2" className="font-bold text-gray-800 mb-1">
-            {transaction.description}
-          </Typography>
-          <Typography variant="caption" className="text-gray-400">
-            {new Date(transaction.createdAt).toLocaleString('vi-VN')}
-          </Typography>
-        </View>
+      <Card
+        variant="outlined"
+        className={`mb-3 border-l-4 ${isIncoming ? 'border-l-success' : 'border-l-error'} py-3 px-4 bg-white shadow-sm`}
+      >
+        <View className="flex-row items-center justify-between">
+          <View className="flex-1">
+            <Typography variant="body2" className="font-bold text-gray-800 mb-1">
+              {transaction.description}
+            </Typography>
+            <Typography variant="caption" className="text-gray-400">
+              {new Date(transaction.createdAt).toLocaleString('vi-VN')}
+            </Typography>
+          </View>
 
-        <View className="items-end">
-          <Typography
-            variant="body1"
-            className={`font-bold ${isIncoming ? 'text-green-600' : 'text-red-600'}`}
-          >
-            {isIncoming ? '+' : '-'}{Math.abs(parseFloat(transaction.amount)).toLocaleString('vi-VN')} đ
-          </Typography>
+          <View className="items-end">
+            <Typography
+              variant="body1"
+              className={`font-bold ${isIncoming ? 'text-green-600' : 'text-red-600'}`}
+            >
+              {isIncoming ? '+' : '-'}{Math.abs(parseFloat(transaction.amount)).toLocaleString('vi-VN')} đ
+            </Typography>
+          </View>
         </View>
-      </View>
-    </Card>
+      </Card>
+    </TouchableOpacity>
   );
 }
+

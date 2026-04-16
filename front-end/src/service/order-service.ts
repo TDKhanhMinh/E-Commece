@@ -7,7 +7,6 @@ import {
 } from "@/type/order-type";
 import http from "@/service/http";
 import { ApiResponse } from "@/type/api-type";
-import { log } from "console";
 
 /**
  * Order Service - Quản lý đơn hàng
@@ -101,7 +100,6 @@ export const getOrdersByAdmin: (
     }
 
     const queryString = queryParams.toString();
-    console.log("Query string:", queryString);
     const url = queryString ? `/orders/admin?${queryString}` : "/orders/admin";
     return http.get<ApiResponse<OrderPageResponse>>(url);
 };

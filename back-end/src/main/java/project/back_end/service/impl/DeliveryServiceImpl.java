@@ -33,7 +33,6 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -49,13 +48,12 @@ public class DeliveryServiceImpl implements DeliveryService {
     private final WalletService walletService;
     private final GoongMapService goongMapService;
 
-
     @Override
     public void createDeliveryForOrder(Order order) {
         DirectionsResponse directions = goongMapService.getDirections(
                 Double.parseDouble("10.732091380000043"), Double.parseDouble("106.69945521900007"),
-                Double.parseDouble(order.getDeliveryAddress().getLatitude()), Double.parseDouble(order.getDeliveryAddress().getLongitude())
-        );
+                Double.parseDouble(order.getDeliveryAddress().getLatitude()),
+                Double.parseDouble(order.getDeliveryAddress().getLongitude()));
         Delivery delivery = new Delivery();
         delivery.setOrder(order);
         delivery.setShipper(null);
@@ -70,19 +68,20 @@ public class DeliveryServiceImpl implements DeliveryService {
             delivery.setDistanceValue(directions.getDistanceValue());
             delivery.setDurationText(directions.getDurationText());
         }
-        delivery.setShippingCost(calculateShippingFee(order.getShippingCost(), directions != null ? directions.getDistanceValue() : 0));
+        delivery.setShippingCost(
+                calculateShippingFee(order.getShippingCost(), directions != null ? directions.getDistanceValue() : 0));
         order.setDelivery(delivery);
 
         deliveryRepository.save(delivery);
         List<User> shippers = userRepository.getAllByRole(User.Role.SHIPPER);
         for (User shipper : shippers) {
             if (shipper.getDeviceToken() != null) {
-                log.error("Gửi thông báo đến shipper); email: {}, deviceToken: {}", shipper.getEmail(), shipper.getDeviceToken());
+                log.error("Gửi thông báo đến shipper); email: {}, deviceToken: {}", shipper.getEmail(),
+                        shipper.getDeviceToken());
                 notificationService.sendNotification(
                         shipper.getDeviceToken(),
                         "Đơn hàng mới",
-                        "Có đơn hàng mới. Vui lòng kiểm tra!"
-                );
+                        "Có đơn hàng mới. Vui lòng kiểm tra!");
             }
         }
     }
@@ -160,14 +159,14 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     }
 
-
     @Override
     public Page<ShipperDeliveryResponse> getDeliveriesByShipper(Pageable pageable) {
         return deliveryRepository.getUnassignedDeliveries(pageable).map(deliveryMapper::toShipperDeliveryResponse);
     }
 
     @Override
-    public Page<AdminDeliveryResponse> getAllDeliveries(DeliveryStatus status, String search, String startDate, String endDate, Pageable pageable) {
+    public Page<AdminDeliveryResponse> getAllDeliveries(DeliveryStatus status, String search, String startDate,
+            String endDate, Pageable pageable) {
         LocalDateTime createdAtAfter = null;
         LocalDateTime createdAtBefore = null;
 
@@ -198,7 +197,6 @@ public class DeliveryServiceImpl implements DeliveryService {
         return deliveryRepository.filterDeliveries(status, search, createdAtAfter, createdAtBefore, pageable)
                 .map(deliveryMapper::toAdminDeliveryResponse);
     }
-
 
     @Override
     public DeliveryStatus parseStatus(String status) {
@@ -242,6 +240,5 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         return defaultCost.add(distanceFee);
     }
-
 
 }

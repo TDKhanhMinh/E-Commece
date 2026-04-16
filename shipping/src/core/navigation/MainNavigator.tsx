@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { HomeStackNavigator } from '@features/home/navigators/HomeStackNavigator';
 import { ShipmentsScreen } from '@features/shipping';
 import { HistoryStackNavigator } from '@features/history/navigators';
-import { WalletScreen } from '@features/wallet';
+import { WalletStackNavigator } from '@features/wallet/navigators/WalletStackNavigator';
 import { ProfileScreen, ProfileStackNavigator } from '@features/profile';
 import { OrderDetailScreen } from '@features/history/screens/OrderDetailScreen';
 import type { MainTabParamList } from './types';
@@ -106,7 +106,7 @@ export function MainNavigator() {
       />
       <Tab.Screen
         name="Wallet"
-        component={WalletScreen}
+        component={WalletStackNavigator}
         options={{
           tabBarLabel: 'Ví',
           tabBarIcon: ({ color, size }) => (

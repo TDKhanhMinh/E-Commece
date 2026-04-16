@@ -40,8 +40,7 @@ import {
 } from "lucide-react";
 import { formatCurrency } from "@/lib/format-price";
 import { fDateTime } from "@/lib/format-date-time";
-import { useQuery } from "@tanstack/react-query";
-import { getOrdersByAdmin, getOrdersByUser } from "@/service/order-service";
+import { useOrdersByAdmin } from "@/hooks/use-order";
 import { OrderItemData } from "@/type/order-type";
 import { OrderDetailsDialog } from "@/components/common/dialog/order-details-dialog";
 import { UpdateStatusDialog } from "@/components/common/dialog/update-order-status-dialog";
@@ -92,24 +91,15 @@ export default function AdminOrderManagement() {
         return () => clearTimeout(timer);
     }, [searchTerm]);
 
-    const { data, isLoading, isError } = useQuery({
-        queryKey: ["admin-orders", filters, debouncedSearch, page, size],
-        queryFn: async () => {
-            const params = {
-                page,
-                size,
-                status: filters.status === "ALL" ? undefined : filters.status,
-                startDate: filters.orderStartDate || null,
-                endDate: filters.orderEndDate || null,
-                deliveryStartDate: filters.deliveryStartDate || null,
-                deliveryEndDate: filters.deliveryEndDate || null,
-                query: debouncedSearch || null,
-            };
-            // @ts-ignore
-            const response = await getOrdersByAdmin(params);
-            console.log("Admin orders data", response);
-            return response;
-        },
+    const { data, isLoading, isError } = useOrdersByAdmin({
+        page,
+        size,
+        status: filters.status === "ALL" ? undefined : filters.status,
+        startDate: filters.orderStartDate || null,
+        endDate: filters.orderEndDate || null,
+        deliveryStartDate: filters.deliveryStartDate || null,
+        deliveryEndDate: filters.deliveryEndDate || null,
+        query: debouncedSearch || null,
     });
 
     const activeFilterCount = Object.entries(filters).reduce((acc, [key, value]) => {

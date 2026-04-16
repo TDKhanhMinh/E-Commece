@@ -15,7 +15,7 @@ export function EarningsSummary() {
           Thu nhập hôm nay:
         </Typography>
         <Typography variant="h5" className="text-gray-900 font-bold">
-          {formatCurrency(balance.revenueInCurrentDay)}
+          {formatCurrency(balance?.revenueInCurrentDay)}
         </Typography>
       </Card>
 
@@ -24,7 +24,7 @@ export function EarningsSummary() {
           Thu nhập tháng này:
         </Typography>
         <Typography variant="h5" className="text-gray-900 font-bold">
-          {formatCurrency(balance.revenueInCurrentMonth)}
+          {formatCurrency(balance?.revenueInCurrentMonth)}
         </Typography>
       </Card>
     </View>

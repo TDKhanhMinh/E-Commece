@@ -18,7 +18,6 @@ export function WalletScreen() {
   const transactions = transactionResponse?.content || [];
 
   const handleRefresh = useCallback(() => {
-    // Invalidate all wallet queries (transactions + balance) so child components also refresh
     queryClient.invalidateQueries({ queryKey: ['wallet'] });
   }, [queryClient]);
 

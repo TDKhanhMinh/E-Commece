@@ -13,6 +13,7 @@ public class BackEndApplication {
 
         SpringApplication.run(BackEndApplication.class, args);
     }
+
     @Bean
     CommandLineRunner initDatabase(UserService userService) {
         return args -> {
@@ -21,6 +22,5 @@ public class BackEndApplication {
             System.out.println("Hoàn tất kiểm tra Admin!");
         };
     }
-
 
 }

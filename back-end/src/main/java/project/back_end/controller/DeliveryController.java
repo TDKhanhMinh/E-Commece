@@ -34,12 +34,12 @@ public class DeliveryController {
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate,
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        
+
         String statusToParse = (deliveryStatus != null && !deliveryStatus.isEmpty()) ? deliveryStatus : (status != null ? status.name() : null);
         DeliveryStatus enumStatus = deliveryService.parseStatus(statusToParse);
-        
+
         Page<AdminDeliveryResponse> responses = deliveryService.getAllDeliveries(enumStatus, search, startDate, endDate, pageable);
-        
+
         log.error("Get deliveries by admin with status: {}, page: {}, size: {}", enumStatus,
                 pageable.getPageNumber(), responses.getContent().size());
         return ResponseEntity.ok(new ApiResponse<>(200, "Lấy danh sách đơn vận thành công", responses));
