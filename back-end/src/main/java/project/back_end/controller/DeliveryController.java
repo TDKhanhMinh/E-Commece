@@ -29,23 +29,32 @@ public class DeliveryController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Page<AdminDeliveryResponse>>> getAllDeliveriesByAdmin(
             @RequestParam(required = false) OrderStatus status,
-            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
-    ) {
-        DeliveryStatus deliveryStatus = deliveryService.parseStatus(status != null ? status.name() : null);
-        Page<AdminDeliveryResponse> responses = deliveryService.getAllDeliveries(deliveryStatus, pageable);
-        log.error("Get deliveries by admin with status: {}, page: {}, size: {}", deliveryStatus, pageable.getPageNumber(), responses.getContent().size());
-        return ResponseEntity.ok(new ApiResponse<>(200, "Lấy danh sách don van thành công", responses));
+            @RequestParam(required = false) String deliveryStatus,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        
+        String statusToParse = (deliveryStatus != null && !deliveryStatus.isEmpty()) ? deliveryStatus : (status != null ? status.name() : null);
+        DeliveryStatus enumStatus = deliveryService.parseStatus(statusToParse);
+        
+        Page<AdminDeliveryResponse> responses = deliveryService.getAllDeliveries(enumStatus, search, startDate, endDate, pageable);
+        
+        log.error("Get deliveries by admin with status: {}, page: {}, size: {}", enumStatus,
+                pageable.getPageNumber(), responses.getContent().size());
+        return ResponseEntity.ok(new ApiResponse<>(200, "Lấy danh sách đơn vận thành công", responses));
     }
+
 
     @GetMapping("/unassigned")
     @PreAuthorize("hasRole('SHIPPER')")
     public ResponseEntity<ApiResponse<Page<ShipperDeliveryResponse>>> getDeliveriesForShipper(
             @AuthenticationPrincipal UserDetails userDetails,
-            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
-    ) {
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         String email = userDetails.getUsername();
         Page<ShipperDeliveryResponse> deliveries = deliveryService.getDeliveriesByShipper(pageable);
-        log.error("Get deliveries for shipper: {}, page: {}, size: {}", email, pageable.getPageNumber(), deliveries.getContent().size());
+        log.error("Get deliveries for shipper: {}, page: {}, size: {}", email, pageable.getPageNumber(),
+                deliveries.getContent().size());
         return ResponseEntity.ok(new ApiResponse<>(200, "Lấy danh sách đơn hàng thành công", deliveries));
     }
 
@@ -54,11 +63,11 @@ public class DeliveryController {
     public ResponseEntity<ApiResponse<Page<ShipperDeliveryResponse>>> getDeliveriesByStatusForShipper(
             @RequestParam String status,
             @AuthenticationPrincipal UserDetails userDetails,
-            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
-    ) {
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         String email = userDetails.getUsername();
         Page<ShipperDeliveryResponse> deliveries = deliveryService.getAllDeliveryByStatus(status, email, pageable);
-        log.error("Get deliveries by status: {}, for shipper: {}, page: {}, size: {}", status, email, pageable.getPageNumber(), deliveries.getContent().size());
+        log.error("Get deliveries by status: {}, for shipper: {}, page: {}, size: {}", status, email,
+                pageable.getPageNumber(), deliveries.getContent().size());
         return ResponseEntity.ok(new ApiResponse<>(200, "Lấy danh sách đơn hàng thành công", deliveries));
     }
 
@@ -66,8 +75,7 @@ public class DeliveryController {
     @PreAuthorize("hasRole('SHIPPER')")
     public ResponseEntity<ApiResponse<ShipperDeliveryResponse>> getDeliveryByIdForShipper(
             @PathVariable Long deliveryId,
-            @AuthenticationPrincipal UserDetails userDetails
-    ) {
+            @AuthenticationPrincipal UserDetails userDetails) {
         String email = userDetails.getUsername();
         ShipperDeliveryResponse response = deliveryService.getDeliveryById(deliveryId);
         log.error("Get delivery by id: {}, for shipper: {}", deliveryId, email);
@@ -78,8 +86,7 @@ public class DeliveryController {
     @PreAuthorize("hasRole('SHIPPER')")
     public ResponseEntity<ApiResponse<String>> acceptDelivery(
             @PathVariable Long deliveryId,
-            @AuthenticationPrincipal UserDetails userDetails
-    ) {
+            @AuthenticationPrincipal UserDetails userDetails) {
         String email = userDetails.getUsername();
         deliveryService.acceptDelivery(deliveryId, email);
         return ResponseEntity.ok(new ApiResponse<>(200, "Shipper đã nhận đơn hàng thành công", null));
@@ -89,8 +96,7 @@ public class DeliveryController {
     @PreAuthorize("hasRole('SHIPPER')")
     public ResponseEntity<ApiResponse<String>> pickupDelivery(
             @PathVariable Long deliveryId,
-            @AuthenticationPrincipal UserDetails userDetails
-    ) {
+            @AuthenticationPrincipal UserDetails userDetails) {
         String email = userDetails.getUsername();
         deliveryService.updateDeliveryStatus(deliveryId, "DELIVERING", null, email);
         return ResponseEntity.ok(new ApiResponse<>(200, "Shipper đã lấy hàng thành công ", null));
@@ -100,23 +106,21 @@ public class DeliveryController {
     @PreAuthorize("hasRole('SHIPPER')")
     public ResponseEntity<ApiResponse<String>> cancelDelivery(
             @PathVariable Long deliveryId,
-            @AuthenticationPrincipal UserDetails userDetails
-    ) {
+            @AuthenticationPrincipal UserDetails userDetails) {
         String email = userDetails.getUsername();
         deliveryService.updateDeliveryStatus(deliveryId, "CANCELED", null, email);
         return ResponseEntity.ok(new ApiResponse<>(200, "Shipper đã hủy đơn hàng thành công", null));
     }
-
 
     @PostMapping("/{deliveryId}/success")
     @PreAuthorize("hasRole('SHIPPER')")
     public ResponseEntity<ApiResponse<String>> markDeliveryAsSuccess(
             @PathVariable Long deliveryId,
             @RequestBody String proofImage,
-            @AuthenticationPrincipal UserDetails userDetails
-    ) {
+            @AuthenticationPrincipal UserDetails userDetails) {
         String email = userDetails.getUsername();
-        log.error("Shipper cập nhật trạng thái đơn hàng thành công, deliveryId: {}, proofImage: {}", deliveryId, proofImage);
+        log.error("Shipper cập nhật trạng thái đơn hàng thành công, deliveryId: {}, proofImage: {}", deliveryId,
+                proofImage);
         deliveryService.updateDeliveryStatus(deliveryId, "SUCCESS", proofImage, email);
         return ResponseEntity.ok(new ApiResponse<>(200, "Shipper đã cập nhật trạng thái đơn hàng thành công", null));
     }

@@ -25,8 +25,8 @@ import project.back_end.response.WalletTransactionResponse;
 import project.back_end.service.WalletService;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -70,22 +70,69 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public Page<WalletTransactionResponse> getAllTransactions(String status, Pageable pageable) {
-        TransactionStatus transactionStatus;
+    public Page<WalletTransactionResponse> getAllTransactions(String status, Pageable pageable, String type,
+            String action, String startDate, String endDate) {
+        // Parse status
+        TransactionStatus transactionStatus = null;
+        if (status != null && !status.equalsIgnoreCase("ALL") && !status.equalsIgnoreCase("null")) {
+            try {
+                transactionStatus = TransactionStatus.valueOf(status.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new AppException(ErrorCode.INVALID_TRANSACTION_STATUS);
+            }
+        }
 
-        if (Objects.equals(status, "ALL")) {
-            return repository.findAll(pageable)
-                    .map(walletMapper::toWalletTransactionResponse);
+        // Parse type
+        TransactionType transactionType = null;
+        if (type != null && !type.isEmpty() && !type.equalsIgnoreCase("null")) {
+            try {
+                transactionType = TransactionType.valueOf(type.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new AppException(ErrorCode.INVALID_REQUEST);
+            }
         }
-        try {
-            transactionStatus = TransactionStatus.valueOf(status.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new AppException(ErrorCode.INVALID_TRANSACTION_STATUS);
+
+        // Parse action
+        TransactionAction transactionAction = null;
+        if (action != null && !action.isEmpty() && !action.equalsIgnoreCase("null")) {
+            try {
+                transactionAction = TransactionAction.valueOf(action.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new AppException(ErrorCode.INVALID_REQUEST);
+            }
         }
-        return repository.getWalletTransactionsByStatus(transactionStatus, pageable)
+
+        // Parse dates
+        LocalDateTime createdAtAfter = null;
+        LocalDateTime createdAtBefore = null;
+        if (startDate != null && !startDate.isEmpty() && !startDate.equalsIgnoreCase("null")) {
+            try {
+                if (startDate.contains("T")) {
+                    createdAtAfter = LocalDateTime.parse(startDate);
+                } else {
+                    createdAtAfter = java.time.LocalDate.parse(startDate).atStartOfDay();
+                }
+            } catch (Exception e) {
+                throw new AppException(ErrorCode.INVALID_REQUEST);
+            }
+        }
+        if (endDate != null && !endDate.isEmpty() && !endDate.equalsIgnoreCase("null")) {
+            try {
+                if (endDate.contains("T")) {
+                    createdAtBefore = LocalDateTime.parse(endDate);
+                } else {
+                    createdAtBefore = java.time.LocalDate.parse(endDate).atTime(23, 59, 59);
+                }
+            } catch (Exception e) {
+                throw new AppException(ErrorCode.INVALID_REQUEST);
+            }
+        }
+
+        return repository.filterWalletTransactions(
+                transactionStatus, transactionType, transactionAction,
+                createdAtAfter, createdAtBefore, pageable)
                 .map(walletMapper::toWalletTransactionResponse);
     }
-
 
     @Override
     public BalanceAndRevenueResponse getShipperBalanceAndRevenue(String email) {
@@ -95,23 +142,23 @@ public class WalletServiceImpl implements WalletService {
         if (shipperProfile == null) {
             throw new AppException(ErrorCode.SHIPPER_PROFILE_NOT_FOUND);
         }
-        List<WalletTransaction> transactionsInCurrentMonth = repository.findAllByShipperProfileAndActionAndStatusAndTypeAndCreatedAtBetween(
-                shipperProfile,
-                TransactionAction.DELIVERY_FEE,
-                TransactionStatus.SUCCESS,
-                TransactionType.CREDIT,
-                java.time.LocalDate.now().withDayOfMonth(1).atStartOfDay(),
-                java.time.LocalDate.now().plusDays(1).atStartOfDay()
-        );
+        List<WalletTransaction> transactionsInCurrentMonth = repository
+                .findAllByShipperProfileAndActionAndStatusAndTypeAndCreatedAtBetween(
+                        shipperProfile,
+                        TransactionAction.DELIVERY_FEE,
+                        TransactionStatus.SUCCESS,
+                        TransactionType.CREDIT,
+                        java.time.LocalDate.now().withDayOfMonth(1).atStartOfDay(),
+                        java.time.LocalDate.now().plusDays(1).atStartOfDay());
         log.error("Transactions in current month: {}", transactionsInCurrentMonth.size());
-        List<WalletTransaction> transactionsInCurrentDay = repository.findAllByShipperProfileAndActionAndStatusAndTypeAndCreatedAtBetween(
-                shipperProfile,
-                TransactionAction.DELIVERY_FEE,
-                TransactionStatus.SUCCESS,
-                TransactionType.CREDIT,
-                java.time.LocalDate.now().atStartOfDay(),
-                java.time.LocalDate.now().plusDays(1).atStartOfDay()
-        );
+        List<WalletTransaction> transactionsInCurrentDay = repository
+                .findAllByShipperProfileAndActionAndStatusAndTypeAndCreatedAtBetween(
+                        shipperProfile,
+                        TransactionAction.DELIVERY_FEE,
+                        TransactionStatus.SUCCESS,
+                        TransactionType.CREDIT,
+                        java.time.LocalDate.now().atStartOfDay(),
+                        java.time.LocalDate.now().plusDays(1).atStartOfDay());
         WalletServiceImpl.log.error("Transactions in current day: {}", transactionsInCurrentDay.size());
 
         BigDecimal revenueInCurrentMonth = transactionsInCurrentMonth.stream()
@@ -122,8 +169,8 @@ public class WalletServiceImpl implements WalletService {
                 .map(WalletTransaction::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-
-        return walletMapper.toBalanceAndRevenueResponse(shipperProfile.getBalance(), revenueInCurrentMonth, revenueInCurrentDay);
+        return walletMapper.toBalanceAndRevenueResponse(shipperProfile.getBalance(), revenueInCurrentMonth,
+                revenueInCurrentDay);
 
     }
 
@@ -135,7 +182,8 @@ public class WalletServiceImpl implements WalletService {
         if (shipperProfile == null) {
             throw new AppException(ErrorCode.SHIPPER_PROFILE_NOT_FOUND);
         }
-        return repository.getWalletTransactionsByShipperProfileAndStatus(shipperProfile, pageable, TransactionStatus.SUCCESS)
+        return repository
+                .getWalletTransactionsByShipperProfileAndStatus(shipperProfile, pageable, TransactionStatus.SUCCESS)
                 .map(walletMapper::toWalletTransactionResponse);
 
     }

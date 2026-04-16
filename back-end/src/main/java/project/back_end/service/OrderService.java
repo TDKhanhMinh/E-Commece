@@ -17,7 +17,8 @@ public interface OrderService {
 
     Page<OrderResponse> getOrdersByUser(String email, OrderStatus status, Pageable pageable);
 
-    Page<OrderResponse> getAllOrders(OrderStatus status, Pageable pageable);
+    Page<OrderResponse> getAllOrders(OrderStatus status, String startDate, String endDate, String deliveryStartDate, String deliveryEndDate, Pageable pageable);
+
 
 
     void updateOrderStatus(Long orderId, String status);

@@ -17,10 +17,28 @@ import { useDelivery } from "@/hooks/use-delivery";
 import {
     ChevronLeft,
     ChevronRight,
+    Filter,
     Loader2,
     MoreHorizontal,
+    RefreshCcw,
+    Search,
+    X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+    RadioGroup,
+    RadioGroupItem,
+} from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 const getDeliveryStatusBadge = (
     status: AdminDeliveryResponseDTO["deliveryStatus"]
@@ -85,11 +103,60 @@ const ITEMS_PER_PAGE = 10;
 
 export default function DeliveryManagementPage() {
     const [currentPage, setCurrentPage] = useState(0);
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [filters, setFilters] = useState({
+        status: "ALL",
+        startDate: "",
+        endDate: "",
+    });
+    const [tempFilters, setTempFilters] = useState(filters);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [debouncedSearch, setDebouncedSearch] = useState("");
+
+    // Debounce search input
+    React.useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(searchQuery);
+            setCurrentPage(0);
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [searchQuery]);
+
     const {
         data: delivery,
         isLoading,
         error,
-    } = useDelivery(undefined, currentPage, ITEMS_PER_PAGE);
+    } = useDelivery({
+        status: filters.status === "ALL" ? undefined : filters.status,
+        startDate: filters.startDate || null,
+        endDate: filters.endDate || null,
+        query: debouncedSearch || null,
+        page: currentPage,
+        size: ITEMS_PER_PAGE,
+    });
+
+    const activeFilterCount = Object.entries(filters).reduce((acc, [key, value]) => {
+        if (key === "status") return value !== "ALL" ? acc + 1 : acc;
+        return value ? acc + 1 : acc;
+    }, 0);
+
+    const handleApplyFilters = () => {
+        setFilters(tempFilters);
+        setCurrentPage(0);
+        setIsFilterOpen(false);
+    };
+
+    const handleResetFilters = () => {
+        const reset = {
+            status: "ALL",
+            startDate: "",
+            endDate: "",
+        };
+        setTempFilters(reset);
+        setFilters(reset);
+        setCurrentPage(0);
+        setIsFilterOpen(false);
+    };
     //@ts-expect-error API response structure
     const deliveryData = delivery?.content || [];
     //@ts-expect-error API response structure
@@ -134,6 +201,108 @@ export default function DeliveryManagementPage() {
                     <p className="text-muted-foreground">
                         Theo dõi và điều phối các đơn hàng đang giao.
                     </p>
+                </div>
+                <div className="flex items-center gap-4">
+                    <div className="relative w-72">
+                        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                        <Input
+                            placeholder="Tìm kiếm mã VĐ, khách hàng..."
+                            className="pl-10"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                        {searchQuery && (
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 p-0 text-gray-400 hover:text-gray-600"
+                                onClick={() => setSearchQuery("")}
+                            >
+                                <X className="h-4 w-4" />
+                            </Button>
+                        )}
+                    </div>
+                    <Dialog open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+                    <DialogTrigger asChild>
+                        <Button variant="outline" className="relative">
+                            <Filter className="mr-2 h-4 w-4" />
+                            Bộ lọc
+                            {activeFilterCount > 0 && (
+                                <Badge 
+                                    variant="destructive" 
+                                    className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full p-0 text-[10px]"
+                                >
+                                    {activeFilterCount}
+                                </Badge>
+                            )}
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                            <DialogTitle>Bộ lọc vận đơn</DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-6 py-4">
+                            <div className="space-y-3">
+                                <Label className="text-base font-semibold">Trạng thái vận đơn</Label>
+                                <RadioGroup
+                                    value={tempFilters.status}
+                                    onValueChange={(value) => setTempFilters(prev => ({ ...prev, status: value }))}
+                                    className="grid grid-cols-2 gap-2"
+                                >
+                                    {[
+                                        { label: "Tất cả", value: "ALL" },
+                                        { label: "Chờ lấy hàng", value: "PENDING" },
+                                        { label: "Đã lấy hàng", value: "PICKED_UP" },
+                                        { label: "Đang giao", value: "DELIVERING" },
+                                        { label: "Thành công", value: "SUCCESS" },
+                                        { label: "Đã hủy", value: "CANCELLED" },
+                                    ].map((item) => (
+                                        <div key={item.value} className="flex items-center space-x-2 rounded-md border p-2 transition-colors hover:bg-slate-50">
+                                            <RadioGroupItem value={item.value} id={`status-${item.value}`} />
+                                            <Label htmlFor={`status-${item.value}`} className="flex-1 cursor-pointer text-sm font-normal">
+                                                {item.label}
+                                            </Label>
+                                        </div>
+                                    ))}
+                                </RadioGroup>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="startDate">Từ ngày</Label>
+                                    <Input 
+                                        id="startDate"
+                                        type="date" 
+                                        value={tempFilters.startDate}
+                                        onChange={(e) => setTempFilters(prev => ({ ...prev, startDate: e.target.value }))}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="endDate">Đến ngày</Label>
+                                    <Input 
+                                        id="endDate"
+                                        type="date" 
+                                        value={tempFilters.endDate}
+                                        onChange={(e) => setTempFilters(prev => ({ ...prev, endDate: e.target.value }))}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <DialogFooter className="flex sm:justify-between">
+                            <Button 
+                                variant="outline" 
+                                onClick={handleResetFilters}
+                                className="text-red-500 hover:text-red-600 hover:bg-red-50 border-red-200"
+                            >
+                                <RefreshCcw className="mr-2 h-4 w-4" />
+                                Đặt lại
+                            </Button>
+                            <Button onClick={handleApplyFilters}>
+                                Áp dụng bộ lọc
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
                 </div>
             </div>
 

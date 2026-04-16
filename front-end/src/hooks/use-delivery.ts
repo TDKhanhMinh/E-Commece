@@ -1,11 +1,34 @@
 import { useQuery } from "@tanstack/react-query";
 import { getAllDeliveryByAdmin } from "@/service/delivery-service";
 
-export const useDelivery = (status?: string, page: number = 0, size: number = 10) => {
+export interface DeliveryParams {
+    status?: string ;
+    startDate?: string | null;
+    endDate?: string | null;
+    query?: string | null;
+    page?: number;
+    size?: number;
+}
+
+export const useDelivery = ({
+    status,
+    startDate,
+    endDate,
+    query,
+    page = 0,
+    size = 10,
+}: DeliveryParams) => {
     return useQuery({
-        queryKey: ["deliveries", status, page, size],
+        queryKey: ["deliveries", status, startDate, endDate, query, page, size],
         queryFn: async () => {
-            return await getAllDeliveryByAdmin(status, page, size);
+            return await getAllDeliveryByAdmin(
+                status,
+                startDate,
+                endDate,
+                query,
+                page,
+                size
+            );
         },
     });
 };

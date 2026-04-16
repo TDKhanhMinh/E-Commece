@@ -78,13 +78,18 @@ public class OrderController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<ApiResponse<Page<OrderResponse>>> getOrdersByAdmin(
             @RequestParam(required = false) OrderStatus status,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate,
+            @RequestParam(required = false) String deliveryStartDate,
+            @RequestParam(required = false) String deliveryEndDate,
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        Page<OrderResponse> responses = orderService.getAllOrders(status, pageable);
+        Page<OrderResponse> responses = orderService.getAllOrders(status, startDate, endDate, deliveryStartDate, deliveryEndDate, pageable);
         return ResponseEntity.ok(
                 new ApiResponse<>(200, "Lấy đơn hàng người dùng bời quản trị viên thành công", responses)
         );
     }
+
 
     /**
      * ======================

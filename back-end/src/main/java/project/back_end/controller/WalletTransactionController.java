@@ -41,12 +41,17 @@ public class WalletTransactionController {
     }
 
     @GetMapping("/transactions/all")
-//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Page<WalletTransactionResponse>>> getAllTransactions(
             Pageable pageable,
-            @RequestParam(defaultValue = "ALL") String status
+            @RequestParam(defaultValue = "ALL") String status,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String action,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate
+
     ) {
-        return ResponseEntity.ok(new ApiResponse<>(200, "Success", walletService.getAllTransactions(status, pageable)));
+        return ResponseEntity.ok(new ApiResponse<>(200, "Success", walletService.getAllTransactions(status, pageable, type, action, startDate, endDate)));
     }
 
 }

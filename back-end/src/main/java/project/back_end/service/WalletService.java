@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 public interface WalletService {
     void addDeliveryFee(String email, BigDecimal fee, Long orderId);
 
-    Page<WalletTransactionResponse> getAllTransactions(String status, Pageable pageable);
+    Page<WalletTransactionResponse> getAllTransactions(String status, Pageable pageable, String type, String action, String startDate, String endDate);
 
     BalanceAndRevenueResponse getShipperBalanceAndRevenue(String email);
 

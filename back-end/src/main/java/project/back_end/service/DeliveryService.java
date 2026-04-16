@@ -24,5 +24,5 @@ public interface DeliveryService {
 
     Page<ShipperDeliveryResponse> getDeliveriesByShipper(Pageable pageable);
 
-    Page<AdminDeliveryResponse> getAllDeliveries(DeliveryStatus status, Pageable pageable);
+    Page<AdminDeliveryResponse> getAllDeliveries(DeliveryStatus status, String search, String startDate, String endDate, Pageable pageable);
 }

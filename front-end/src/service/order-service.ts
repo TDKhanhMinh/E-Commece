@@ -7,6 +7,7 @@ import {
 } from "@/type/order-type";
 import http from "@/service/http";
 import { ApiResponse } from "@/type/api-type";
+import { log } from "console";
 
 /**
  * Order Service - Quản lý đơn hàng
@@ -45,6 +46,21 @@ export const getOrdersByUser: (
     if (params?.sort) {
         queryParams.append("sort", params.sort);
     }
+    if (params?.startDate) {
+        queryParams.append("startDate", params.startDate);
+    }
+    if (params?.endDate) {
+        queryParams.append("endDate", params.endDate);
+    }
+    if (params?.deliveryStartDate) {
+        queryParams.append("deliveryStartDate", params.deliveryStartDate);
+    }
+    if (params?.deliveryEndDate) {
+        queryParams.append("deliveryEndDate", params.deliveryEndDate);
+    }
+    if (params?.query) {
+        queryParams.append("query", params.query);
+    }
 
     const queryString = queryParams.toString();
     const url = queryString ? `/orders?${queryString}` : "/orders";
@@ -68,8 +84,24 @@ export const getOrdersByAdmin: (
     if (params?.sort) {
         queryParams.append("sort", params.sort);
     }
+    if (params?.startDate) {
+        queryParams.append("startDate", params.startDate);
+    }
+    if (params?.endDate) {
+        queryParams.append("endDate", params.endDate);
+    }
+    if (params?.deliveryStartDate) {
+        queryParams.append("deliveryStartDate", params.deliveryStartDate);
+    }
+    if (params?.deliveryEndDate) {
+        queryParams.append("deliveryEndDate", params.deliveryEndDate);
+    }
+    if (params?.query) {
+        queryParams.append("query", params.query);
+    }
 
     const queryString = queryParams.toString();
+    console.log("Query string:", queryString);
     const url = queryString ? `/orders/admin?${queryString}` : "/orders/admin";
     return http.get<ApiResponse<OrderPageResponse>>(url);
 };

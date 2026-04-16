@@ -30,7 +30,9 @@ import project.back_end.service.WalletService;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
 import java.util.List;
+
 
 @Slf4j
 @Service
@@ -165,13 +167,38 @@ public class DeliveryServiceImpl implements DeliveryService {
     }
 
     @Override
-    public Page<AdminDeliveryResponse> getAllDeliveries(DeliveryStatus status, Pageable pageable) {
-        if (status != null) {
-            return deliveryRepository.findByStatus(status, pageable).map(deliveryMapper::toAdminDeliveryResponse);
-        } else {
-            return deliveryRepository.findAll(pageable).map(deliveryMapper::toAdminDeliveryResponse);
+    public Page<AdminDeliveryResponse> getAllDeliveries(DeliveryStatus status, String search, String startDate, String endDate, Pageable pageable) {
+        LocalDateTime createdAtAfter = null;
+        LocalDateTime createdAtBefore = null;
+
+        if (startDate != null && !startDate.isEmpty() && !startDate.equalsIgnoreCase("null")) {
+            try {
+                if (startDate.contains("T")) {
+                    createdAtAfter = LocalDateTime.parse(startDate);
+                } else {
+                    createdAtAfter = java.time.LocalDate.parse(startDate).atStartOfDay();
+                }
+            } catch (Exception e) {
+                log.error("Error parsing startDate: {}", startDate);
+            }
         }
+
+        if (endDate != null && !endDate.isEmpty() && !endDate.equalsIgnoreCase("null")) {
+            try {
+                if (endDate.contains("T")) {
+                    createdAtBefore = LocalDateTime.parse(endDate);
+                } else {
+                    createdAtBefore = java.time.LocalDate.parse(endDate).atTime(23, 59, 59);
+                }
+            } catch (Exception e) {
+                log.error("Error parsing endDate: {}", endDate);
+            }
+        }
+
+        return deliveryRepository.filterDeliveries(status, search, createdAtAfter, createdAtBefore, pageable)
+                .map(deliveryMapper::toAdminDeliveryResponse);
     }
+
 
     @Override
     public DeliveryStatus parseStatus(String status) {

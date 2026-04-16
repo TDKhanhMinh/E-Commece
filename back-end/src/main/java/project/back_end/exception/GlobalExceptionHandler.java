@@ -45,8 +45,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AppException.class)
     public ResponseEntity<ApiResponse<?>> handleAppException(AppException e) {
-        return buildErrorResponse(e.getErrorCode(), HttpStatus.FORBIDDEN);
+        HttpStatus status = HttpStatus.valueOf(e.getErrorCode().getCode());
+        return buildErrorResponse(e.getErrorCode(), status);
     }
+
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse> handleValidation(MethodArgumentNotValidException ex) {

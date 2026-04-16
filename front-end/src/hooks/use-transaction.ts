@@ -9,6 +9,7 @@ import {
     getTransactionById,
 } from "@/service/transaction-service";
 import { TransactionRequest } from "@/type/transaction-type";
+import { log } from "console";
 
 /**
  * 1. Hook lấy danh sách giao dịch cá nhân (Shipper)
@@ -29,6 +30,7 @@ export const useMyTransactions = (params?: any) => {
  * @param params
  */
 export const useTransactionsAdmin = (params?: any) => {
+    console.log("params", params);
     return useQuery({
         queryKey: ["transactions", "admin", params],
         queryFn: async () => {

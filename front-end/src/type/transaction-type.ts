@@ -1,8 +1,9 @@
 // type/transaction-type.ts
 
 export type TransactionType = "CREDIT" | "DEBIT";
-export type TransactionAction = "DELIVERY_FEE" | "WITHDRAW" | "DEPOSIT";
-export type TransactionStatus = "PENDING" | "SUCCESS" | "FAILED";
+export type TransactionAction = "DELIVERY_FEE" | "BONUS" | "WITHDRAW_TO_BANK" | "PENALTY" | "COD_PAYMENT";
+export type TransactionStatus = "PENDING" | "SUCCESS" | "FAILED" | "REJECTED";
+
 
 // Ánh xạ khớp với JSON của Spring Boot
 export interface TransactionResponse {

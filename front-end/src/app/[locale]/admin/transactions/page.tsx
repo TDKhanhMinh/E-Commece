@@ -29,7 +29,22 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Download, Eye, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { Download, Eye, Filter, MoreHorizontal, Pencil, RefreshCcw, Trash2, X } from "lucide-react";
+import { Input } from "@/components/ui/input";
+
+import {
+    RadioGroup,
+    RadioGroupItem
+} from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+    DialogFooter,
+} from "@/components/ui/dialog";
 
 // Nhúng hook Admin vào trang
 import { useTransactionsAdmin } from "@/hooks/use-transaction";
@@ -45,6 +60,8 @@ const getStatusColor = (status: TransactionResponse["transactionStatus"]) => {
             return "bg-yellow-100 text-yellow-800 hover:bg-yellow-100";
         case "FAILED":
             return "bg-red-100 text-red-800 hover:bg-red-100";
+        case "REJECTED":
+            return "bg-slate-100 text-slate-800 hover:bg-slate-100";
         default:
             return "bg-gray-100 text-gray-800 hover:bg-gray-100";
     }
@@ -54,10 +71,14 @@ const getActionLabel = (action: TransactionResponse["transactionAction"]) => {
     switch (action) {
         case "DELIVERY_FEE":
             return "Cước giao hàng";
-        case "WITHDRAW":
-            return "Rút tiền";
-        case "DEPOSIT":
-            return "Nạp tiền";
+        case "BONUS":
+            return "Tiền thưởng";
+        case "WITHDRAW_TO_BANK":
+            return "Rút tiền về ngân hàng";
+        case "PENALTY":
+            return "Phạt vi phạm";
+        case "COD_PAYMENT":
+            return "Thu hộ (COD)";
         default:
             return action;
     }
@@ -129,15 +150,59 @@ const TransactionActions = ({
 
 export default function TransactionManagement() {
     const [page, setPage] = useState(0);
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [filters, setFilters] = useState({
+        status: "ALL",
+        type: "ALL",
+        action: "ALL",
+        startDate: "",
+        endDate: "",
+    });
+    const [tempFilters, setTempFilters] = useState(filters);
     const size = 20;
+
+    const activeFilterCount = Object.entries(filters).reduce((acc, [key, value]) => {
+        if (key === "status" || key === "type" || key === "action") {
+            return value !== "ALL" ? acc + 1 : acc;
+        }
+        return value ? acc + 1 : acc;
+    }, 0);
 
     const {
         data: pageData,
         isLoading,
         isError,
-    } = useTransactionsAdmin({ page, size });
+    } = useTransactionsAdmin({
+        page,
+        size,
+        status: filters.status === "ALL" ? null : filters.status,
+        type: filters.type === "ALL" ? null : filters.type,
+        action: filters.action === "ALL" ? null : filters.action,
+        startDate: filters.startDate || null,
+        endDate: filters.endDate || null,
+    });
+
+    const handleApplyFilters = () => {
+        setFilters(tempFilters);
+        setPage(0);
+        setIsFilterOpen(false);
+    };
+
+    const handleResetFilters = () => {
+        const reset = {
+            status: "ALL",
+            type: "ALL",
+            action: "ALL",
+            startDate: "",
+            endDate: "",
+        };
+        setTempFilters(reset);
+        setFilters(reset);
+        setPage(0);
+        setIsFilterOpen(false);
+    };
     //@ts-ignore
-    console.log("API Response in Component 1:", pageData.content);
+    // console.log("API Response in Component 1:", pageData.content);
 
     // 4. Xử lý chuyển trang
     const handlePageChange = (newPage: number) => {
@@ -150,10 +215,135 @@ export default function TransactionManagement() {
     return (
         <div className="space-y-6 p-6">
             <Card>
-                <CardHeader>
+                <CardHeader className="flex flex-row items-center justify-between">
                     <CardTitle className="text-2xl font-bold">
                         Quản Lý Giao Dịch (Admin)
                     </CardTitle>
+                    <Dialog open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+                        <DialogTrigger asChild>
+                            <Button variant="outline" className="relative">
+                                <Filter className="mr-2 h-4 w-4" />
+                                Bộ lọc
+                                {activeFilterCount > 0 && (
+                                    <Badge 
+                                        variant="destructive" 
+                                        className="absolute -top-2 -right-2 h-5 w-5 justify-center rounded-full p-0 text-[10px]"
+                                    >
+                                        {activeFilterCount}
+                                    </Badge>
+                                )}
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[425px]">
+                            <DialogHeader>
+                                <DialogTitle>Bộ lọc giao dịch</DialogTitle>
+                            </DialogHeader>
+                            <div className="space-y-6 py-4">
+                                <div className="space-y-3">
+                                    <Label className="text-base font-semibold">Trạng thái</Label>
+                                    <RadioGroup
+                                        value={tempFilters.status}
+                                        onValueChange={(value) => setTempFilters(prev => ({ ...prev, status: value }))}
+                                        className="grid grid-cols-2 gap-2 sm:grid-cols-3"
+                                    >
+                                        {[
+                                            { label: "Tất cả", value: "ALL" },
+                                            { label: "Đang chờ", value: "PENDING" },
+                                            { label: "Thành công", value: "SUCCESS" },
+                                            { label: "Thất bại", value: "FAILED" },
+                                            { label: "Bị từ chối", value: "REJECTED" },
+                                        ].map((item) => (
+                                            <div key={item.value} className="flex items-center space-x-2 rounded-md border p-2 transition-colors hover:bg-slate-50">
+                                                <RadioGroupItem value={item.value} id={`status-${item.value}`} />
+                                                <Label htmlFor={`status-${item.value}`} className="flex-1 cursor-pointer text-sm">
+                                                    {item.label}
+                                                </Label>
+                                            </div>
+                                        ))}
+                                    </RadioGroup>
+                                </div>
+
+                                <div className="space-y-3">
+                                    <Label className="text-base font-semibold">Loại giao dịch</Label>
+                                    <RadioGroup
+                                        value={tempFilters.type}
+                                        onValueChange={(value) => setTempFilters(prev => ({ ...prev, type: value }))}
+                                        className="grid grid-cols-2 gap-2 sm:grid-cols-3"
+                                    >
+                                        {[
+                                            { label: "Tất cả", value: "ALL" },
+                                            { label: "Công tiền", value: "CREDIT" },
+                                            { label: "Trừ tiền", value: "DEBIT" },
+                                        ].map((item) => (
+                                            <div key={item.value} className="flex items-center space-x-2 rounded-md border p-2 transition-colors hover:bg-slate-50">
+                                                <RadioGroupItem value={item.value} id={`type-${item.value}`} />
+                                                <Label htmlFor={`type-${item.value}`} className="flex-1 cursor-pointer text-sm">
+                                                    {item.label}
+                                                </Label>
+                                            </div>
+                                        ))}
+                                    </RadioGroup>
+                                </div>
+
+                                <div className="space-y-3">
+                                    <Label className="text-base font-semibold">Hành động</Label>
+                                    <RadioGroup
+                                        value={tempFilters.action}
+                                        onValueChange={(value) => setTempFilters(prev => ({ ...prev, action: value }))}
+                                        className="grid grid-cols-1 gap-2 sm:grid-cols-2"
+                                    >
+                                        {[
+                                            { label: "Tất cả", value: "ALL" },
+                                            { label: "Cước giao hàng", value: "DELIVERY_FEE" },
+                                            { label: "Tiền thưởng", value: "BONUS" },
+                                            { label: "Rút về ngân hàng", value: "WITHDRAW_TO_BANK" },
+                                            { label: "Phạt vi phạm", value: "PENALTY" },
+                                            { label: "Thanh toán thu hộ", value: "COD_PAYMENT" },
+                                        ].map((item) => (
+                                            <div key={item.value} className="flex items-center space-x-2 rounded-md border p-2 transition-colors hover:bg-slate-50">
+                                                <RadioGroupItem value={item.value} id={`action-${item.value}`} />
+                                                <Label htmlFor={`action-${item.value}`} className="flex-1 cursor-pointer text-sm">
+                                                    {item.label}
+                                                </Label>
+                                            </div>
+                                        ))}
+                                    </RadioGroup>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium">Từ ngày</label>
+                                        <Input 
+                                            type="date" 
+                                            value={tempFilters.startDate}
+                                            onChange={(e) => setTempFilters(prev => ({ ...prev, startDate: e.target.value }))}
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium">Đến ngày</label>
+                                        <Input 
+                                            type="date" 
+                                            value={tempFilters.endDate}
+                                            onChange={(e) => setTempFilters(prev => ({ ...prev, endDate: e.target.value }))}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <DialogFooter className="flex sm:justify-between">
+                                <Button 
+                                    variant="outline" 
+                                    onClick={handleResetFilters}
+                                    className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                                >
+                                    <RefreshCcw className="mr-2 h-4 w-4" />
+                                    Đặt lại
+                                </Button>
+                                <Button onClick={handleApplyFilters}>
+                                    Áp dụng bộ lọc
+                                </Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
                 </CardHeader>
                 <CardContent>
                     <div className="rounded-md border">
@@ -224,8 +414,8 @@ export default function TransactionManagement() {
                                                         >
                                                             {txn.type ===
                                                             "CREDIT"
-                                                                ? "+ Biến động tăng"
-                                                                : "- Biến động giảm"}
+                                                                ? "+ Công tiền"
+                                                                : "- Trừ tiền"}
                                                         </span>
                                                         <span className="text-muted-foreground text-xs">
                                                             {getActionLabel(

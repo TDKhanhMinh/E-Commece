@@ -4,9 +4,12 @@
 export type OrderStatus =
     | "PENDING"
     | "CONFIRMED"
-    | "SHIPPED"
-    | "COMPLETED"
-    | "CANCELLED";
+    | "PAID"
+    | "UNPAID"
+    | "SHIPPING"
+    | "DELIVERED"
+    | "CANCELLED"
+    | "FAILED";
 
 /* ======================
  * CHECKOUT
@@ -93,10 +96,15 @@ export interface OrderPageResponse {
  * ORDER SEARCH PARAMS
  * ====================== */
 export interface OrderSearchParams {
-    status?: OrderStatus;
+    status?: OrderStatus | string;
     page?: number;
     size?: number;
     sort?: string;
+    startDate?: string | null;
+    endDate?: string | null;
+    deliveryStartDate?: string | null;
+    deliveryEndDate?: string | null;
+    query?: string | null;
 }
 // Định nghĩa thông tin địa chỉ giao hàng
 export interface OrderDeliveryAddress {

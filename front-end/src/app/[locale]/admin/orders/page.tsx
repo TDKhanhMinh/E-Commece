@@ -30,10 +30,13 @@ import {
 import {
     Edit,
     Eye,
+    Filter,
     Loader2,
     MoreHorizontal,
+    RefreshCcw,
     Search,
     Trash2,
+    X,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/format-price";
 import { fDateTime } from "@/lib/format-date-time";
@@ -43,10 +46,33 @@ import { OrderItemData } from "@/type/order-type";
 import { OrderDetailsDialog } from "@/components/common/dialog/order-details-dialog";
 import { UpdateStatusDialog } from "@/components/common/dialog/update-order-status-dialog";
 import { getStatusBadge } from "@/lib/get-order-status";
+import {
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+    RadioGroup,
+    RadioGroupItem,
+} from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 
 export default function AdminOrderManagement() {
     const [searchTerm, setSearchTerm] = useState("");
-    const [statusFilter, setStatusFilter] = useState("ALL");
+    const [debouncedSearch, setDebouncedSearch] = useState("");
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [filters, setFilters] = useState({
+        status: "ALL",
+        orderStartDate: "",
+        orderEndDate: "",
+        deliveryStartDate: "",
+        deliveryEndDate: "",
+    });
+    const [tempFilters, setTempFilters] = useState(filters);
     const [page, setPage] = useState(0);
     const [size, setSize] = useState(10);
     const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
@@ -56,13 +82,28 @@ export default function AdminOrderManagement() {
         status: string;
     } | null>(null);
     const [isStatusOpen, setIsStatusOpen] = useState(false);
+
+    // Debounce search input
+    React.useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(searchTerm);
+            setPage(0);
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [searchTerm]);
+
     const { data, isLoading, isError } = useQuery({
-        queryKey: ["admin-orders", statusFilter, page, size],
+        queryKey: ["admin-orders", filters, debouncedSearch, page, size],
         queryFn: async () => {
             const params = {
                 page,
                 size,
-                ...(statusFilter !== "ALL" && { status: statusFilter }),
+                status: filters.status === "ALL" ? undefined : filters.status,
+                startDate: filters.orderStartDate || null,
+                endDate: filters.orderEndDate || null,
+                deliveryStartDate: filters.deliveryStartDate || null,
+                deliveryEndDate: filters.deliveryEndDate || null,
+                query: debouncedSearch || null,
             };
             // @ts-ignore
             const response = await getOrdersByAdmin(params);
@@ -70,6 +111,31 @@ export default function AdminOrderManagement() {
             return response;
         },
     });
+
+    const activeFilterCount = Object.entries(filters).reduce((acc, [key, value]) => {
+        if (key === "status") return value !== "ALL" ? acc + 1 : acc;
+        return value ? acc + 1 : acc;
+    }, 0);
+
+    const handleApplyFilters = () => {
+        setFilters(tempFilters);
+        setPage(0);
+        setIsFilterOpen(false);
+    };
+
+    const handleResetFilters = () => {
+        const reset = {
+            status: "ALL",
+            orderStartDate: "",
+            orderEndDate: "",
+            deliveryStartDate: "",
+            deliveryEndDate: "",
+        };
+        setTempFilters(reset);
+        setFilters(reset);
+        setPage(0);
+        setIsFilterOpen(false);
+    };
 
     const orders: OrderItemData[] = data?.content || [];
     const totalElements = data?.numberOfElements || 0;
@@ -98,56 +164,137 @@ export default function AdminOrderManagement() {
             <Card className="border-none bg-white shadow-sm">
                 <CardHeader className="pb-3">
                     <div className="flex flex-col justify-between gap-4 sm:flex-row">
-                        <div className="relative w-full sm:w-72">
+                        <div className="relative w-full sm:w-80">
                             <Search className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
                             <Input
-                                placeholder="Tìm kiếm đơn hàng..."
+                                placeholder="Tìm kiếm mã ĐH, khách hàng..."
                                 className="bg-slate-50/50 pl-9"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
+                            {searchTerm && (
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 p-0 text-gray-400 hover:text-gray-600"
+                                    onClick={() => setSearchTerm("")}
+                                >
+                                    <X className="h-4 w-4" />
+                                </Button>
+                            )}
                         </div>
                         <div className="flex items-center gap-2">
-                            <Select
-                                value={statusFilter}
-                                onValueChange={(val) => {
-                                    setStatusFilter(val);
-                                    setPage(0);
-                                }}
-                            >
-                                <SelectTrigger className="w-full bg-slate-50/50 sm:w-45">
-                                    <SelectValue placeholder="Trạng thái" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="ALL">
-                                        Tất cả trạng thái
-                                    </SelectItem>
-                                    <SelectItem value="PENDING">
-                                        Chưa xác nhận
-                                    </SelectItem>
-                                    <SelectItem value="CONFIRMED">
-                                        Đã xác nhận
-                                    </SelectItem>
-                                    <SelectItem value="UNPAID">
-                                        Chưa thanh toán
-                                    </SelectItem>
-                                    <SelectItem value="PAID">
-                                        Đã thanh toán
-                                    </SelectItem>
-                                    <SelectItem value="SHIPPING">
-                                        Đang giao hàng
-                                    </SelectItem>
-                                    <SelectItem value="DELIVERED">
-                                        Đã giao hàng
-                                    </SelectItem>
-                                    <SelectItem value="CANCELLED">
-                                        Đã hủy
-                                    </SelectItem>
-                                    <SelectItem value="FAILED">
-                                        Thanh toán thất bại
-                                    </SelectItem>
-                                </SelectContent>
-                            </Select>
+                            <Dialog open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+                                <DialogTrigger asChild>
+                                    <Button variant="outline" className="relative">
+                                        <Filter className="mr-2 h-4 w-4" />
+                                        Bộ lọc
+                                        {activeFilterCount > 0 && (
+                                            <Badge 
+                                                variant="destructive" 
+                                                className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full p-0 text-[10px]"
+                                            >
+                                                {activeFilterCount}
+                                            </Badge>
+                                        )}
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[500px]">
+                                    <DialogHeader>
+                                        <DialogTitle>Bộ lọc đơn hàng</DialogTitle>
+                                    </DialogHeader>
+                                    <div className="space-y-6 py-4">
+                                        <div className="space-y-3">
+                                            <Label className="text-base font-semibold">Trạng thái đơn hàng</Label>
+                                            <RadioGroup
+                                                value={tempFilters.status}
+                                                onValueChange={(value) => setTempFilters(prev => ({ ...prev, status: value }))}
+                                                className="grid grid-cols-3 gap-2"
+                                            >
+                                                {[
+                                                    { label: "Tất cả", value: "ALL" },
+                                                    { label: "Chưa xác nhận", value: "PENDING" },
+                                                    { label: "Đã xác nhận", value: "CONFIRMED" },
+                                                    { label: "Đã thanh toán", value: "PAID" },
+                                                    { label: "Chưa thanh toán", value: "UNPAID" },
+                                                    { label: "Đang giao hàng", value: "SHIPPING" },
+                                                    { label: "Đã giao hàng", value: "DELIVERED" },
+                                                    { label: "Đã hủy", value: "CANCELLED" },
+                                                    { label: "Thanh toán thất bại", value: "FAILED" },
+                                                ].map((item) => (
+                                                    <div key={item.value} className="flex items-center space-x-2 rounded-md border p-2 transition-colors hover:bg-slate-50">
+                                                        <RadioGroupItem value={item.value} id={`status-${item.value}`} />
+                                                        <Label htmlFor={`status-${item.value}`} className="flex-1 cursor-pointer text-sm font-normal">
+                                                            {item.label}
+                                                        </Label>
+                                                    </div>
+                                                ))}
+                                            </RadioGroup>
+                                        </div>
+
+                                        <div className="space-y-3 pt-2">
+                                            <Label className="text-base font-semibold">Khoảng thời gian đặt hàng</Label>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div className="space-y-2">
+                                                    <Label htmlFor="orderStartDate" className="text-xs text-muted-foreground">Từ ngày</Label>
+                                                    <Input 
+                                                        id="orderStartDate"
+                                                        type="date" 
+                                                        value={tempFilters.orderStartDate}
+                                                        onChange={(e) => setTempFilters(prev => ({ ...prev, orderStartDate: e.target.value }))}
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <Label htmlFor="orderEndDate" className="text-xs text-muted-foreground">Đến ngày</Label>
+                                                    <Input 
+                                                        id="orderEndDate"
+                                                        type="date" 
+                                                        value={tempFilters.orderEndDate}
+                                                        onChange={(e) => setTempFilters(prev => ({ ...prev, orderEndDate: e.target.value }))}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-3 pt-2">
+                                            <Label className="text-base font-semibold">Khoảng thời gian giao hàng</Label>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div className="space-y-2">
+                                                    <Label htmlFor="deliveryStartDate" className="text-xs text-muted-foreground">Từ ngày</Label>
+                                                    <Input 
+                                                        id="deliveryStartDate"
+                                                        type="date" 
+                                                        value={tempFilters.deliveryStartDate}
+                                                        onChange={(e) => setTempFilters(prev => ({ ...prev, deliveryStartDate: e.target.value }))}
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <Label htmlFor="deliveryEndDate" className="text-xs text-muted-foreground">Đến ngày</Label>
+                                                    <Input 
+                                                        id="deliveryEndDate"
+                                                        type="date" 
+                                                        value={tempFilters.deliveryEndDate}
+                                                        onChange={(e) => setTempFilters(prev => ({ ...prev, deliveryEndDate: e.target.value }))}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <DialogFooter className="flex sm:justify-between">
+                                        <Button 
+                                            variant="outline" 
+                                            onClick={handleResetFilters}
+                                            className="text-red-500 hover:text-red-600 hover:bg-red-50 border-red-200"
+                                        >
+                                            <RefreshCcw className="mr-2 h-4 w-4" />
+                                            Đặt lại
+                                        </Button>
+                                        <Button onClick={handleApplyFilters}>
+                                            Áp dụng bộ lọc
+                                        </Button>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
                         </div>
                     </div>
                 </CardHeader>

@@ -258,19 +258,33 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<OrderResponse> getAllOrders(OrderStatus status, Pageable pageable) {
+    public Page<OrderResponse> getAllOrders(OrderStatus status, String startDate, String endDate, String deliveryStartDate, String deliveryEndDate, Pageable pageable) {
+        LocalDateTime start = parseDateTime(startDate, true);
+        LocalDateTime end = parseDateTime(endDate, false);
+        LocalDateTime dStart = parseDateTime(deliveryStartDate, true);
+        LocalDateTime dEnd = parseDateTime(deliveryEndDate, false);
 
-        Page<Order> orderPage = (status == null)
-                ? orderRepository.findAllByCreatedAtDesc(pageable)
-                : orderRepository.findAllByStatusAndCreatedAtDesc(status, pageable);
-
-        Page<OrderResponse> responsePage = orderPage.map(checkoutMapper::toOrderResponse);
-
-        log.info("Retrieved page {} with {} orders for user {}",
-                pageable.getPageNumber(), responsePage.getNumberOfElements(), status);
-
-        return responsePage;
+        Page<Order> orderPage = orderRepository.filterOrders(status, start, end, dStart, dEnd, pageable);
+        return orderPage.map(checkoutMapper::toOrderResponse);
     }
+
+    private LocalDateTime parseDateTime(String dateStr, boolean isStartOfDay) {
+        if (dateStr == null || dateStr.isEmpty() || dateStr.equalsIgnoreCase("null")) {
+            return null;
+        }
+        try {
+            if (dateStr.contains("T")) {
+                return LocalDateTime.parse(dateStr);
+            } else {
+                java.time.LocalDate date = java.time.LocalDate.parse(dateStr);
+                return isStartOfDay ? date.atStartOfDay() : date.atTime(23, 59, 59);
+            }
+        } catch (Exception e) {
+            log.error("Error parsing date: {}", dateStr);
+            return null;
+        }
+    }
+
 
     @Override
     @Transactional
