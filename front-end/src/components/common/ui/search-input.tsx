@@ -9,7 +9,10 @@ import { useRouter } from "next/navigation";
 import { useProducts } from "@/hooks/use-products";
 import { formatCurrency } from "@/lib/format-price";
 
+import { useTranslations } from "next-intl";
+
 export function GlobalSearch() {
+    const t = useTranslations("common.globalSearch");
     const [query, setQuery] = useState("");
     const [debouncedQuery, setDebouncedQuery] = useState("");
     const [isOpen, setIsOpen] = useState(false);
@@ -71,7 +74,7 @@ export function GlobalSearch() {
                 <Search className="text-muted-foreground absolute left-3 h-4 w-4" />
                 <Input
                     type="text"
-                    placeholder="Tìm kiếm sản phẩm..."
+                    placeholder={t("placeholder")}
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     onFocus={() => query.length > 0 && setIsOpen(true)}
@@ -96,12 +99,12 @@ export function GlobalSearch() {
                     {isLoading ? (
                         <div className="flex items-center justify-center p-6 text-sm">
                             <Loader2 className="text-primary mr-2 h-4 w-4 animate-spin" />
-                            Đang tìm kiếm...
+                            {t("loading")}
                         </div>
                     ) : suggestedProducts.length > 0 ? (
                         <div className="max-h-100 overflow-y-auto p-2">
                             <p className="text-muted-foreground mb-2 px-2 text-xs font-semibold uppercase">
-                                Sản phẩm gợi ý
+                                {t("suggestedTitle")}
                             </p>
                             {suggestedProducts
                                 .slice(0, 5)
@@ -146,14 +149,13 @@ export function GlobalSearch() {
                                     onClick={() => setIsOpen(false)}
                                     className="text-primary block text-center text-sm font-medium hover:underline"
                                 >
-                                    Xem tất cả kết quả cho &quot;{query}&quot;
+                                    {t("viewAll", { query })}
                                 </Link>
                             </div>
                         </div>
                     ) : debouncedQuery.length > 0 ? (
                         <div className="text-muted-foreground p-6 text-center text-sm">
-                            Không tìm thấy sản phẩm nào phù hợp với &quot;
-                            {debouncedQuery}&quot;.
+                            {t("noResults", { query: debouncedQuery })}
                         </div>
                     ) : null}
                 </div>

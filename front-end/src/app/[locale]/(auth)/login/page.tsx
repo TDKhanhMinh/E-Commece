@@ -20,7 +20,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useAuthStore } from "@/store/useAuthStore";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/routing";
 import { loginSchema } from "@/schema/auth-shema";
 import { FormHelperText } from "@/components/common";
 import { BackButton } from "@/components/common/ui/back-button";
@@ -28,6 +29,7 @@ import { BackButton } from "@/components/common/ui/back-button";
 export default function LoginPage() {
     const { setAuth } = useAuthStore();
     const router = useRouter();
+    const t = useTranslations("common.auth.login");
 
     type LoginFormData = z.infer<typeof loginSchema>;
     const {
@@ -56,7 +58,7 @@ export default function LoginPage() {
                 router.push("/");
             }
             setTimeout(() => {
-                toast.success("Đăng nhập thành công!");
+                toast.success(t("successToast"));
             }, 1000);
         },
         onError: (error) => {
@@ -75,21 +77,19 @@ export default function LoginPage() {
                 <Card className="border-none shadow-lg">
                     <CardHeader className="space-y-1 text-center">
                         <CardTitle className="text-2xl font-bold tracking-tight">
-                            Đăng nhập
+                            {t("title")}
                         </CardTitle>
-                        <CardDescription>
-                            Nhập email của bạn để truy cập tài khoản T7M Online;
-                        </CardDescription>
+                        <CardDescription>{t("description")}</CardDescription>
                     </CardHeader>
                     <CardContent className="grid gap-4">
                         <div className="grid grid-cols-2 gap-4">
                             <Button variant="outline" className="w-full">
                                 <Chrome className="mr-2 h-4 w-4" />
-                                Google
+                                {t("google")}
                             </Button>
                             <Button variant="outline" className="w-full">
                                 <Github className="mr-2 h-4 w-4" />
-                                Github
+                                {t("github")}
                             </Button>
                         </div>
 
@@ -99,7 +99,7 @@ export default function LoginPage() {
                             </div>
                             <div className="relative flex justify-center text-xs uppercase">
                                 <span className="bg-background text-muted-foreground px-2">
-                                    Hoặc tiếp tục với
+                                    {t("orContinueWith")}
                                 </span>
                             </div>
                         </div>
@@ -109,7 +109,7 @@ export default function LoginPage() {
                             className="space-y-6"
                         >
                             <div className="grid gap-2">
-                                <Label htmlFor="email">Email</Label>
+                                <Label htmlFor="email">{t("emailLabel")}</Label>
                                 <Input
                                     id="email"
                                     type="email"
@@ -126,12 +126,14 @@ export default function LoginPage() {
                             </div>
                             <div className="grid gap-2">
                                 <div className="flex items-center justify-between">
-                                    <Label htmlFor="password">Mật khẩu</Label>
+                                    <Label htmlFor="password">
+                                        {t("passwordLabel")}
+                                    </Label>
                                     <Link
                                         href="/forgot-password"
                                         className="text-primary text-sm font-medium hover:underline"
                                     >
-                                        Quên mật khẩu?
+                                        {t("forgotPassword")}
                                     </Link>
                                 </div>
                                 <Input
@@ -152,33 +154,33 @@ export default function LoginPage() {
                                 className="mt-2 h-11 w-full cursor-pointer font-semibold"
                             >
                                 {mutation.isPending
-                                    ? "Đang đăng nhập..."
-                                    : "Đăng nhập"}
+                                    ? t("loggingIn")
+                                    : t("submit")}
                             </Button>
                         </form>
                     </CardContent>
                     <CardFooter className="flex flex-wrap items-center justify-center gap-1">
                         <span className="text-muted-foreground text-sm">
-                            Chưa có tài khoản?
+                            {t("noAccount")}
                         </span>
                         <Link
                             href="/register"
                             className="text-primary text-sm font-semibold hover:underline"
                         >
-                            Đăng ký ngay
+                            {t("registerNow")}
                         </Link>
                     </CardFooter>
                 </Card>
 
                 <p className="text-muted-foreground px-8 text-center text-sm">
-                    Bằng cách tiếp tục, bạn đồng ý với{" "}
+                    {t("agreementPrefix")}{" "}
                     <Link
                         href="/terms"
                         className="hover:text-primary underline underline-offset-4"
                     >
-                        Điều khoản dịch vụ
+                        {t("termsOfService")}
                     </Link>{" "}
-                    của chúng tôi;
+                    {t("agreementSuffix")}
                 </p>
             </div>
         </div>

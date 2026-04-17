@@ -24,47 +24,41 @@ import {
     Sparkles,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useTranslations, useLocale } from "next-intl";
+import { fDateTime } from "@/lib/format-date-time";
 
-// Dữ liệu từ file cũ của bạn
-const DATA_COLLECTION = [
+const DATA_COLLECTION_KEYS = [
     {
-        type: "Thông tin cá nhân",
-        example: "Họ tên, SĐT, Email",
-        purpose: "Xác thực & Hỗ trợ",
+        key: "personal",
         color: "bg-blue-50 text-blue-600",
     },
     {
-        type: "Thông tin giao hàng",
-        example: "Địa chỉ, Tỉnh/Thành",
-        purpose: "Vận chuyển",
+        key: "delivery",
         color: "bg-emerald-50 text-emerald-600",
     },
     {
-        type: "Dữ liệu hệ thống",
-        example: "IP, Thiết bị",
-        purpose: "Bảo mật & UX",
+        key: "system",
         color: "bg-purple-50 text-purple-600",
     },
 ];
 
-const USAGE_INFO = [
+const USAGE_INFO_KEYS = [
     {
-        title: "Xử lý giao dịch",
-        content: "Hoàn tất đơn hàng và tích lũy điểm thưởng thành viên.",
+        key: "transaction",
         icon: RefreshCcw,
         gradient: "from-blue-500 to-cyan-400",
     },
     {
-        title: "Thông báo",
-        content:
-            "Gửi cập nhật về tình trạng đơn hàng hoặc thay đổi quan trọng.",
+        key: "notification",
         icon: Mail,
         gradient: "from-purple-500 to-indigo-400",
     },
 ];
 
 export default function PrivacyPolicy() {
-    const lastUpdated = "21/01/2026"; //
+    const t = useTranslations("user.privacy");
+    const locale = useLocale();
+    const lastUpdated = fDateTime("2026-01-21", "dd/MM/yyyy");
 
     return (
         <div className="min-h-screen bg-slate-50/50 pb-20 dark:bg-slate-950">
@@ -73,23 +67,23 @@ export default function PrivacyPolicy() {
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
                 <div className="relative z-10 container mx-auto max-w-4xl space-y-6 text-center">
                     <Badge className="border border-indigo-500/30 bg-indigo-500/20 px-4 py-1 text-indigo-200 backdrop-blur-md hover:bg-indigo-500/30">
-                        <Sparkles className="mr-2 inline size-3" /> Bảo mật dữ
-                        liệu chuẩn 4.0
+                        <Sparkles className="mr-2 inline size-3" /> {t("badge")}
                     </Badge>
                     <h1 className="text-4xl leading-tight font-black tracking-tight text-white md:text-6xl">
-                        Quyền Riêng Tư Của Bạn <br />
-                        LÀ{" "}
-                        <span className="bg-gradient-to-r from-cyan-400 to-emerald-400 bg-clip-text text-transparent italic">
-                            Ưu Tiên Số 1
-                        </span>
+                        {t.rich("title", {
+                            blue: (chunks) => (
+                                <span className="bg-gradient-to-r from-cyan-400 to-emerald-400 bg-clip-text text-transparent italic">
+                                    {chunks}
+                                </span>
+                            ),
+                        })}
                     </h1>
                     <p className="mx-auto max-w-2xl text-lg leading-relaxed font-medium text-slate-300 md:text-xl">
-                        Chúng tôi cam kết minh bạch trong việc thu thập và sử
-                        dụng dữ liệu để mang lại trải nghiệm tốt nhất cho bạn.
+                        {t("description")}
                     </p>
-                    <div className="flex items-center justify-center gap-3 text-sm font-semibold tracking-wider text-slate-400">
-                        <Lock className="size-4 text-emerald-400" /> CẬP NHẬT
-                        LẦN CUỐI: {lastUpdated}
+                    <div className="flex items-center justify-center gap-3 text-sm font-semibold tracking-wider text-slate-400 uppercase">
+                        <Lock className="size-4 text-emerald-400" />{" "}
+                        {t("lastUpdated", { date: lastUpdated })}
                     </div>
                 </div>
 
@@ -110,7 +104,7 @@ export default function PrivacyPolicy() {
                                             <Database className="size-7" />
                                         </div>
                                         <h2 className="text-3xl font-black tracking-tight text-slate-800 uppercase dark:text-slate-100">
-                                            1. Dữ liệu thu thập
+                                            {t("sections.dataCollection.title")}
                                         </h2>
                                     </div>
                                     <div className="overflow-hidden rounded-[2rem] border border-slate-100 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
@@ -118,18 +112,24 @@ export default function PrivacyPolicy() {
                                             <TableHeader className="bg-slate-50/50 dark:bg-slate-950/50">
                                                 <TableRow className="hover:bg-transparent dark:border-slate-800">
                                                     <TableHead className="h-14 font-bold text-slate-800 dark:text-slate-200">
-                                                        Loại dữ liệu
+                                                        {t(
+                                                            "sections.dataCollection.table.type"
+                                                        )}
                                                     </TableHead>
                                                     <TableHead className="h-14 font-bold text-slate-800 dark:text-slate-200">
-                                                        Ví dụ cụ thể
+                                                        {t(
+                                                            "sections.dataCollection.table.example"
+                                                        )}
                                                     </TableHead>
                                                     <TableHead className="h-14 pr-8 text-right font-bold text-slate-800 dark:text-slate-200">
-                                                        Mục đích
+                                                        {t(
+                                                            "sections.dataCollection.table.purpose"
+                                                        )}
                                                     </TableHead>
                                                 </TableRow>
                                             </TableHeader>
                                             <TableBody>
-                                                {DATA_COLLECTION.map(
+                                                {DATA_COLLECTION_KEYS.map(
                                                     (item, index) => (
                                                         <TableRow
                                                             key={index}
@@ -139,14 +139,20 @@ export default function PrivacyPolicy() {
                                                                 <span
                                                                     className={`rounded-xl px-4 py-1.5 text-xs tracking-wider uppercase ${item.color} dark:bg-opacity-20`}
                                                                 >
-                                                                    {item.type}
+                                                                    {t(
+                                                                        `sections.dataCollection.table.items.${item.key}.type`
+                                                                    )}
                                                                 </span>
                                                             </TableCell>
                                                             <TableCell className="font-medium text-slate-700 dark:text-slate-300">
-                                                                {item.example}
+                                                                {t(
+                                                                    `sections.dataCollection.table.items.${item.key}.example`
+                                                                )}
                                                             </TableCell>
                                                             <TableCell className="pr-8 text-right text-sm text-slate-500 italic dark:text-slate-500">
-                                                                {item.purpose}
+                                                                {t(
+                                                                    `sections.dataCollection.table.items.${item.key}.purpose`
+                                                                )}
                                                             </TableCell>
                                                         </TableRow>
                                                     )
@@ -163,11 +169,11 @@ export default function PrivacyPolicy() {
                                             <Eye className="size-7" />
                                         </div>
                                         <h2 className="text-3xl font-black tracking-tight text-slate-800 uppercase dark:text-slate-100">
-                                            2. Cách thức sử dụng
+                                            {t("sections.usage.title")}
                                         </h2>
                                     </div>
                                     <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-                                        {USAGE_INFO.map((item, index) => (
+                                        {USAGE_INFO_KEYS.map((item, index) => (
                                             <div
                                                 key={index}
                                                 className="group relative rounded-[2rem] border border-slate-100 bg-white p-8 transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-500/10 dark:border-slate-800 dark:bg-slate-800 dark:hover:shadow-indigo-950/50"
@@ -183,10 +189,14 @@ export default function PrivacyPolicy() {
                                                     </div>
                                                     <div>
                                                         <h4 className="mb-2 text-xl font-black text-slate-900 italic dark:text-slate-100">
-                                                            {item.title}
+                                                            {t(
+                                                                `sections.usage.items.${item.key}.title`
+                                                            )}
                                                         </h4>
                                                         <p className="text-sm leading-relaxed font-medium text-slate-500 dark:text-slate-400">
-                                                            {item.content}
+                                                            {t(
+                                                                `sections.usage.items.${item.key}.content`
+                                                            )}
                                                         </p>
                                                     </div>
                                                 </div>
@@ -202,7 +212,7 @@ export default function PrivacyPolicy() {
                                             <Share2 className="size-7" />
                                         </div>
                                         <h2 className="text-3xl font-black tracking-tight text-slate-800 uppercase dark:text-slate-100">
-                                            3. Chia sẻ dữ liệu
+                                            {t("sections.sharing.title")}
                                         </h2>
                                     </div>
                                     <div className="flex flex-col items-center gap-8 rounded-[2.5rem] border border-emerald-100 bg-emerald-50/50 p-10 md:flex-row dark:border-emerald-900/30 dark:bg-emerald-950/20">
@@ -211,13 +221,12 @@ export default function PrivacyPolicy() {
                                         </div>
                                         <div className="space-y-3 text-center md:text-left">
                                             <h4 className="text-xl font-black text-emerald-900 uppercase dark:text-emerald-400">
-                                                Cam kết không bán dữ liệu
+                                                {t(
+                                                    "sections.sharing.commitment"
+                                                )}
                                             </h4>
                                             <p className="leading-relaxed font-medium text-slate-700 dark:text-slate-300">
-                                                Chúng tôi chỉ cung cấp thông tin
-                                                cần thiết (Địa chỉ & SĐT) cho
-                                                đối tác vận chuyển để đơn hàng
-                                                có thể tới tay bạn nhanh nhất.
+                                                {t("sections.sharing.content")}
                                             </p>
                                         </div>
                                     </div>
@@ -229,20 +238,26 @@ export default function PrivacyPolicy() {
                                         <div className="space-y-3">
                                             <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-[10px] font-black tracking-[0.2em] text-cyan-400 uppercase">
                                                 <UserCheck className="size-3" />{" "}
-                                                Quyền kiểm soát
+                                                {t("sections.rights.badge")}
                                             </div>
                                             <h3 className="text-3xl font-black tracking-tight uppercase italic">
-                                                Bạn có toàn quyền
+                                                {t("sections.rights.title")}
                                             </h3>
                                             <p className="max-w-lg font-medium text-slate-400 dark:text-slate-300">
-                                                Yêu cầu truy cập, chỉnh sửa hoặc
-                                                xóa vĩnh viễn dữ liệu cá nhân
-                                                bất kỳ lúc nào thông qua phần{" "}
-                                                <strong>Cài đặt</strong>.
+                                                {t.rich(
+                                                    "sections.rights.description",
+                                                    {
+                                                        strong: (chunks) => (
+                                                            <strong>
+                                                                {chunks}
+                                                            </strong>
+                                                        ),
+                                                    }
+                                                )}
                                             </p>
                                         </div>
                                         <button className="group/btn flex items-center gap-3 rounded-2xl bg-white px-8 py-4 text-sm font-black text-slate-900 shadow-2xl transition-all hover:bg-cyan-400 hover:text-white active:scale-95">
-                                            TRUY CẬP CÀI ĐẶT{" "}
+                                            {t("sections.rights.button")}{" "}
                                             <ChevronRight className="size-4 transition-transform group-hover/btn:translate-x-1" />
                                         </button>
                                     </div>
@@ -253,15 +268,17 @@ export default function PrivacyPolicy() {
                                 {/* FOOTER */}
                                 <footer className="flex flex-col items-center gap-6 border-t border-slate-100 pt-16 dark:border-slate-800">
                                     <p className="text-xs font-black tracking-[0.3em] text-slate-400 uppercase dark:text-slate-600">
-                                        Liên hệ hỗ trợ bảo mật
+                                        {t("sections.footer.question")}
                                     </p>
                                     <a
-                                        href="mailto:privacy@t7m.kmgroup.com"
+                                        href={`mailto:${t(
+                                            "sections.footer.email"
+                                        )}`}
                                         className="group inline-flex items-center gap-4 rounded-2xl bg-slate-900 px-10 py-5 text-white shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700"
                                     >
                                         <Mail className="size-5 transition-transform group-hover:scale-125" />
                                         <span className="text-sm font-black tracking-wider uppercase">
-                                            privacy@t7m.kmgroup.com
+                                            {t("sections.footer.email")}
                                         </span>
                                     </a>
                                 </footer>

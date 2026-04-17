@@ -13,6 +13,8 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { useVoucher } from "@/hooks/use-voucher";
+import { useTranslations } from "next-intl";
+import { formatCurrency } from "@/lib/format-price";
 
 interface VoucherSelectorProps {
     onApplyVoucher: (code: string) => void;
@@ -25,6 +27,7 @@ export function VoucherSelector({
 }: VoucherSelectorProps) {
     const [inputValue, setInputValue] = useState("");
     const [open, setOpen] = useState(false);
+    const t = useTranslations("checkout.voucher");
 
     const { useMyVouchers } = useVoucher();
     const { data: voucherPage, isLoading } = useMyVouchers();
@@ -37,21 +40,21 @@ export function VoucherSelector({
     };
 
     return (
-        <Card className="border-none shadow-sm">
-            <CardHeader className="pb-3">
-                <CardTitle className="flex items-center gap-2 text-lg font-bold dark:text-neutral-100">
-                    <Ticket className="h-5 w-5 text-red-500 dark:text-red-400" />
-                    Mã giảm giá
+        <Card className="dark:bg-slate-900/40 border-none bg-white shadow-sm ring-1 ring-slate-200/60 dark:ring-slate-800/50">
+            <CardHeader className="pb-3 px-6 pt-6">
+                <CardTitle className="dark:text-slate-100 flex items-center gap-2 text-lg font-bold text-slate-800">
+                    <Ticket className="dark:text-red-400 h-5 w-5 text-red-500" />
+                    {t("title")}
                 </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="p-6 pt-0 space-y-4">
                 {/* 1. Nhập mã thủ công */}
                 <div className="flex gap-2">
                     <Input
-                        placeholder="Nhập mã giảm giá..."
+                        placeholder={t("placeholder")}
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
-                        className="rounded-xl bg-slate-50/50 dark:bg-slate-900/50 dark:border-slate-800"
+                        className="dark:border-slate-800 dark:bg-slate-900/50 rounded-xl bg-slate-50/50"
                     />
                     <Button
                         variant="secondary"
@@ -59,36 +62,36 @@ export function VoucherSelector({
                         disabled={!inputValue}
                         className="rounded-xl px-6"
                     >
-                        Áp dụng
+                        {t("apply")}
                     </Button>
                 </div>
 
                 {/* 2. Chọn từ danh sách sử dụng Popover */}
                 <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
-                        <div className="group flex cursor-pointer items-center justify-between rounded-xl border border-dashed border-red-200 bg-red-50/50 p-3 transition-all hover:border-red-300 hover:bg-red-50 dark:border-red-900/50 dark:bg-red-950/20 dark:hover:border-red-800 dark:hover:bg-red-900/10">
+                        <div className="dark:border-red-900/50 dark:bg-red-950/20 dark:hover:border-red-800 dark:hover:bg-red-900/10 group flex cursor-pointer items-center justify-between rounded-xl border border-dashed border-red-200 bg-red-50/50 p-3 transition-all hover:border-red-300 hover:bg-red-50">
                             <div className="flex items-center gap-2">
-                                <Ticket className="h-4 w-4 text-red-500 dark:text-red-400" />
-                                <span className="text-sm font-medium text-red-700 dark:text-red-300">
+                                <Ticket className="dark:text-red-400 h-4 w-4 text-red-500" />
+                                <span className="dark:text-red-300 text-sm font-medium text-red-700">
                                     {appliedVoucher
-                                        ? `Đang áp dụng: ${appliedVoucher}`
-                                        : "Chọn voucher từ kho của bạn"}
+                                        ? t("applied", { code: appliedVoucher })
+                                        : t("select")}
                                 </span>
                             </div>
                             <ChevronRight
-                                className={`h-4 w-4 text-red-400 transition-transform dark:text-red-600 ${open ? "rotate-90" : ""}`}
+                                className={`dark:text-red-600 h-4 w-4 text-red-400 transition-transform ${open ? "rotate-90" : ""}`}
                             />
                         </div>
                     </PopoverTrigger>
 
                     <PopoverContent
-                        className="border-red-100 p-0 shadow-xl dark:border-red-900 dark:bg-slate-950"
+                        className="dark:border-red-900 dark:bg-slate-950 border-red-100 p-0 shadow-xl"
                         align="start"
                         style={{ width: "var(--radix-popover-trigger-width)" }}
                     >
-                        <div className="border-b bg-red-50/50 p-3 dark:bg-red-950/20 dark:border-red-900">
-                            <p className="text-sm font-bold text-red-800 dark:text-red-300">
-                                Kho Voucher của bạn
+                        <div className="dark:bg-red-950/20 dark:border-red-900 border-b bg-red-50/50 p-3">
+                            <p className="dark:text-red-300 text-sm font-bold text-red-800">
+                                {t("wallet")}
                             </p>
                         </div>
 
@@ -96,7 +99,7 @@ export function VoucherSelector({
                             {isLoading ? (
                                 <div className="flex h-full items-center justify-center p-6 text-slate-500">
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Đang tải kho voucher...
+                                    {t("loading")}
                                 </div>
                             ) : (
                                 <div className="space-y-3 p-3">
@@ -111,8 +114,8 @@ export function VoucherSelector({
                                                 key={uv.id}
                                                 className={`relative flex cursor-pointer flex-col gap-1 rounded-xl border p-4 transition-all ${
                                                     appliedVoucher === v.code
-                                                        ? "border-red-500 bg-red-50 ring-1 ring-red-500/20 dark:bg-red-950/30"
-                                                        : "border-slate-100 hover:border-red-200 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-900/50"
+                                                        ? "dark:bg-red-950/30 border-red-500 bg-red-50 ring-1 ring-red-500/20"
+                                                        : "dark:border-slate-800 dark:hover:bg-slate-900/50 border-slate-100 hover:border-red-200 hover:bg-slate-50"
                                                 }`}
                                                 onClick={() =>
                                                     handleSelectVoucher(v.code)
@@ -137,18 +140,16 @@ export function VoucherSelector({
                                                         </div>
                                                     )}
                                                 </div>
-                                                <p className="mt-2 text-sm font-bold text-slate-800 dark:text-slate-200">
+                                                <p className="dark:text-slate-200 mt-2 text-sm font-bold text-slate-800">
                                                     {v.description}
                                                 </p>
                                                 <div className="mt-1 flex items-center justify-between">
-                                                    <p className="text-muted-foreground text-[11px] dark:text-slate-500">
-                                                        Đơn tối thiểu:{" "}
-                                                        <span className="font-semibold dark:text-slate-400">
-                                                            {v.minOrder.toLocaleString(
-                                                                "vi-VN"
-                                                            )}
-                                                            đ
-                                                        </span>
+                                                    <p className="dark:text-slate-500 text-muted-foreground text-[11px]">
+                                                        {t("minOrder", {
+                                                            amount: formatCurrency(
+                                                                v.minOrder
+                                                            ),
+                                                        })}
                                                     </p>
                                                 </div>
                                             </div>
@@ -158,7 +159,7 @@ export function VoucherSelector({
                                     {myVouchers.length === 0 && (
                                         <div className="py-10 text-center">
                                             <p className="text-sm text-slate-400">
-                                                Bạn chưa có mã giảm giá nào
+                                                {t("noVouchers")}
                                             </p>
                                         </div>
                                     )}
@@ -171,3 +172,4 @@ export function VoucherSelector({
         </Card>
     );
 }
+

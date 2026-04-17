@@ -16,10 +16,15 @@ import { getStatusBadge } from "@/lib/get-order-status";
 import { useEffect } from "react";
 import { BackButton } from "@/components/common/ui/back-button";
 
+import { useLocale, useTranslations } from "next-intl";
+
 export default function OrderDetail() {
     const params = useParams();
     const searchParams = useSearchParams();
     const orderId = params?.id as string;
+    const locale = useLocale();
+    const t = useTranslations("user.orders.detail");
+    const tStatus = useTranslations("user.orders.statuses");
 
     const responseCode = searchParams.get("vnp_ResponseCode");
 
@@ -28,13 +33,13 @@ export default function OrderDetail() {
 
     const products: OrderItem[] = orderDetails?.items || [];
     const getShippingMethodLabel = (method?: string) => {
-        if (!method) return "Chưa xác định";
+        if (!method) return t("unknown");
 
         switch (method.toLowerCase()) {
             case "standard":
-                return "Giao hàng tiêu chuẩn";
+                return t("shippingStandard");
             case "express":
-                return "Giao hàng hỏa tốc";
+                return t("shippingExpress");
             default:
                 return method;
         }
@@ -45,9 +50,9 @@ export default function OrderDetail() {
 
         if (responseCode) {
             if (responseCode === "00") {
-                toast.success("Thanh toán đơn hàng thành công!");
+                toast.success(t("paySuccess"));
             } else {
-                toast.error("Thanh toán thất bại hoặc đã bị hủy.");
+                toast.error(t("payFailed"));
             }
 
             window.history.replaceState(
@@ -62,7 +67,7 @@ export default function OrderDetail() {
             <div className="mx-auto flex min-h-screen max-w-7xl items-center justify-center p-4 dark:bg-slate-950">
                 <div className="text-muted-foreground flex flex-col items-center gap-2 dark:text-slate-400">
                     <Loader2 className="h-8 w-8 animate-spin" />
-                    <p>Đang tải thông tin đơn hàng...</p>
+                    <p>{t("loading")}</p>
                 </div>
             </div>
         );
@@ -73,7 +78,7 @@ export default function OrderDetail() {
             <div className="mx-auto min-h-screen max-w-7xl p-4 md:p-6 dark:bg-slate-950">
                 <div className="mt-4 rounded-lg border bg-white p-6 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <p className="text-secondary-dark text-lg font-medium dark:text-slate-100">
-                        Không tìm thấy đơn hàng với ID: {orderId}
+                        {t("notFound", { id: orderId })}
                     </p>
                     <BackButton />
                 </div>
@@ -95,13 +100,13 @@ export default function OrderDetail() {
                                 <ChevronLeft className="size-5" />
                             </Link>
                             <CardTitle className="text-xl font-bold dark:text-slate-100">
-                                Chi tiết đơn hàng
+                                {t("title")}
                             </CardTitle>
                         </div>
 
                         <div className="space-y-1">
                             <p className="text-secondary-dark text-lg font-bold dark:text-slate-100">
-                                Mã đơn hàng: {orderDetails?.orderId || "N/A"}
+                                {t("idLabel")} {orderDetails?.orderId || "N/A"}
                             </p>
                             <div className="text-secondary-dark mt-2 flex items-start gap-2 text-sm dark:text-slate-400">
                                 <MapPin className="mt-0.5 size-4 shrink-0 text-blue-600 dark:text-blue-400" />
@@ -118,7 +123,7 @@ export default function OrderDetail() {
                                         }
                                     </span>
                                     <p className="text-secondary-dark mt-1 leading-relaxed dark:text-slate-400">
-                                        Địa chỉ:{" "}
+                                        {t("addressLabel")}{" "}
                                         {
                                             orderDetails?.deliveryAddress
                                                 ?.location
@@ -133,15 +138,18 @@ export default function OrderDetail() {
                         <div className="space-y-4 text-sm">
                             <div className="flex items-center justify-between">
                                 <span className="text-secondary-dark font-semibold dark:text-slate-300">
-                                    Trạng thái đơn hàng
+                                    {t("statusLabel")}
                                 </span>
                                 <span className="font-medium text-red-500 dark:text-red-400">
-                                    {getStatusBadge(orderDetails?.status)}
+                                    {getStatusBadge(
+                                        orderDetails?.status,
+                                        tStatus
+                                    )}
                                 </span>
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-secondary-dark font-semibold dark:text-slate-300">
-                                    Phương thức thanh toán
+                                    {t("paymentMethodLabel")}
                                 </span>
                                 <span className="text-secondary-dark dark:text-slate-400">
                                     {orderDetails?.paymentMethod}
@@ -149,7 +157,7 @@ export default function OrderDetail() {
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-secondary-dark font-semibold dark:text-slate-300">
-                                    Phương thức vận chuyển
+                                    {t("shippingMethodLabel")}
                                 </span>
                                 <span className="text-secondary-dark dark:text-slate-400">
                                     {getShippingMethodLabel(
@@ -163,47 +171,52 @@ export default function OrderDetail() {
 
                         <div className="space-y-2 text-sm">
                             <div className="text-secondary-dark flex justify-between dark:text-slate-400">
-                                <span>Tổng tiền sản phẩm</span>
+                                <span>{t("subtotal")}</span>
                                 <span className="text-secondary-dark dark:text-slate-200">
                                     {formatCurrency(
-                                        orderDetails?.totalAmount || 0
+                                        orderDetails?.totalAmount || 0,
+                                        locale
                                     )}
                                 </span>
                             </div>
                             <div className="text-secondary-dark flex justify-between dark:text-slate-400">
-                                <span>Ưu đãi thành viên (đã giảm)</span>
+                                <span>{t("memberDiscount")}</span>
                                 <span className="text-secondary-dark dark:text-slate-200">
                                     {formatCurrency(
-                                        orderDetails?.pointDiscount
+                                        orderDetails?.pointDiscount,
+                                        locale
                                     )}
                                 </span>
                             </div>
                             <div className="text-secondary-dark flex justify-between dark:text-slate-400">
-                                <span>Ưu đãi sản phẩm (đã giảm)</span>
+                                <span>{t("productDiscount")}</span>
                                 <span className="text-secondary-dark dark:text-slate-200">
                                     {formatCurrency(
-                                        orderDetails?.productDiscount
+                                        orderDetails?.productDiscount,
+                                        locale
                                     )}
                                 </span>
                             </div>
                             <div className="text-secondary-dark flex justify-between dark:text-slate-400">
-                                <span>Giảm giá voucher</span>
+                                <span>{t("voucherDiscount")}</span>
                                 <span className="text-secondary-dark dark:text-slate-200">
                                     {formatCurrency(
-                                        orderDetails?.voucherDiscount
+                                        orderDetails?.voucherDiscount,
+                                        locale
                                     )}
                                 </span>
                             </div>
                             <div className="text-secondary-dark flex justify-between dark:text-slate-400">
-                                <span>Phí vận chuyển</span>
+                                <span>{t("shippingCost")}</span>
                                 {orderDetails?.shippingCost === 0 ? (
                                     <span className="text-secondary-dark text-xs dark:text-green-400">
-                                        Miễn phí
+                                        {t("free")}
                                     </span>
                                 ) : (
                                     <span className="text-secondary-dark dark:text-slate-200">
                                         {formatCurrency(
-                                            orderDetails?.shippingCost
+                                            orderDetails?.shippingCost,
+                                            locale
                                         )}
                                     </span>
                                 )}
@@ -215,28 +228,30 @@ export default function OrderDetail() {
                         <div className="space-y-2 text-sm">
                             <div className="flex items-center justify-between">
                                 <span className="text-secondary-dark text-base font-light dark:text-slate-400">
-                                    Tổng tiền giảm giá
+                                    {t("totalDiscount")}
                                 </span>
                                 <span className="text-secondary-dark text-base font-light dark:text-slate-200">
                                     {formatCurrency(
-                                        orderDetails?.totalDiscount || 0
+                                        orderDetails?.totalDiscount || 0,
+                                        locale
                                     )}
                                 </span>
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-secondary-dark text-base font-bold dark:text-slate-100">
-                                    Tổng tiền thanh toán
+                                    {t("finalAmount")}
                                 </span>
                                 <span className="text-secondary-dark text-xl font-bold dark:text-green-500">
                                     {formatCurrency(
-                                        orderDetails?.finalAmount || 0
+                                        orderDetails?.finalAmount || 0,
+                                        locale
                                     )}
                                 </span>
                             </div>
 
                             <div className="flex items-center justify-between">
                                 <span className="text-secondary-dark text-xs font-light dark:text-slate-500">
-                                    Thời gian đặt hàng
+                                    {t("createdAt")}
                                 </span>
                                 <span className="text-secondary-dark text-xs font-light dark:text-slate-500">
                                     {fDateTime(
@@ -248,7 +263,7 @@ export default function OrderDetail() {
                             {orderDetails?.cancelledAt && (
                                 <div className="flex items-center justify-between">
                                     <span className="text-secondary-dark text-xs font-light dark:text-slate-500">
-                                        Thời gian hủy đơn
+                                        {t("cancelledAt")}
                                     </span>
                                     <span className="text-secondary-dark text-xs font-light dark:text-slate-500">
                                         {fDateTime(
@@ -261,7 +276,7 @@ export default function OrderDetail() {
                             {orderDetails?.confirmedAt && (
                                 <div className="flex items-center justify-between">
                                     <span className="text-secondary-dark text-xs font-light dark:text-slate-500">
-                                        Thời gian xác nhận đơn
+                                        {t("confirmedAt")}
                                     </span>
                                     <span className="text-secondary-dark text-xs font-light dark:text-slate-500">
                                         {fDateTime(
@@ -274,7 +289,7 @@ export default function OrderDetail() {
                             {orderDetails?.deliveredAt && (
                                 <div className="flex items-center justify-between">
                                     <span className="text-secondary-dark text-xs font-light dark:text-slate-500">
-                                        Thời gian giao hàng
+                                        {t("deliveredAt")}
                                     </span>
                                     <span className="text-secondary-dark text-xs font-light dark:text-slate-500">
                                         {fDateTime(
@@ -293,10 +308,10 @@ export default function OrderDetail() {
                     <CardHeader className="pb-4">
                         <CardTitle className="flex items-center gap-2 text-lg font-bold dark:text-slate-100">
                             <ShoppingBag className="size-5" />
-                            Danh sách sản phẩm
+                            {t("productListTitle")}
                         </CardTitle>
                         <p className="text-secondary-dark text-sm dark:text-slate-400">
-                            {products.length} món
+                            {t("itemCount", { count: products.length })}
                         </p>
                     </CardHeader>
 
@@ -327,15 +342,21 @@ export default function OrderDetail() {
                                     </div>
 
                                     <p className="text-secondary-dark line-clamp-1 text-xs dark:text-slate-400">
-                                        SKU: {product.skuCode}
+                                        {t("skuLabel")} {product.skuCode}
                                     </p>
 
                                     <div className="flex items-center gap-2 pt-1">
                                         <span className="text-sm font-bold text-red-500 dark:text-red-400">
-                                            {formatCurrency(product.salePrice)}
+                                            {formatCurrency(
+                                                product.salePrice,
+                                                locale
+                                            )}
                                         </span>
                                         <span className="text-secondary-dark text-xs line-through decoration-gray-400 dark:text-slate-500 dark:decoration-slate-600">
-                                            {formatCurrency(product.price)}
+                                            {formatCurrency(
+                                                product.price,
+                                                locale
+                                            )}
                                         </span>
                                     </div>
                                 </div>

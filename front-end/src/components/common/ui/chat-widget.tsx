@@ -5,6 +5,7 @@ import { Circle, Loader2, MessageCircle, Send, X } from "lucide-react";
 import { useChat } from "@/hooks/use-chat";
 import { useAuthStore } from "@/store/useAuthStore";
 import { ChatMessage } from "@/type/chat-type";
+import { useTranslations } from "next-intl";
 
 const MessageList = memo(
     ({
@@ -17,6 +18,7 @@ const MessageList = memo(
         isLoading: boolean;
     }) => {
         const scrollRef = useRef<HTMLDivElement>(null);
+        const t = useTranslations("chat.widget");
 
         useEffect(() => {
             if (scrollRef.current) {
@@ -43,10 +45,10 @@ const MessageList = memo(
                 {messages.length === 0 ? (
                     <div className="mt-10 text-center">
                         <p className="text-sm font-medium text-gray-500 dark:text-slate-400">
-                            Xin chào! 👋
+                            {t("welcome")}
                         </p>
                         <p className="text-[12px] text-gray-400 dark:text-slate-500">
-                            Bạn cần hỗ trợ gì không?
+                            {t("subtitle")}
                         </p>
                     </div>
                 ) : (
@@ -77,7 +79,7 @@ const MessageList = memo(
                                                   hour: "2-digit",
                                                   minute: "2-digit",
                                               })
-                                            : "Vừa xong"}
+                                            : t("justNow")}
                                     </span>
                                 </div>
                             );
@@ -95,6 +97,7 @@ const ChatWidget = () => {
     const user = useAuthStore((state) => state.user);
     const CURRENT_USER_ID = String(user?.id ?? "");
     const RECIPIENT_ID = "2";
+    const t = useTranslations("chat.widget");
 
     const [isOpen, setIsOpen] = useState(false);
     const [messageInput, setMessageInput] = useState("");
@@ -127,12 +130,12 @@ const ChatWidget = () => {
                             </div>
                             <div>
                                 <h3 className="text-sm font-bold">
-                                    Hỗ trợ T7M Online
+                                    {t("header")}
                                 </h3>
                                 <p className="text-[10px] opacity-80">
                                     {isConnected
-                                        ? "Đang trực tuyến"
-                                        : "Đang kết nối..."}
+                                        ? t("online")
+                                        : t("connecting")}
                                 </p>
                             </div>
                         </div>
@@ -168,7 +171,7 @@ const ChatWidget = () => {
                                 onChange={(e) =>
                                     setMessageInput(e.target.value)
                                 }
-                                placeholder="Viết tin nhắn..."
+                                placeholder={t("inputPlaceholder")}
                                 disabled={!isConnected || isLoading}
                                 className="flex-1 rounded-2xl bg-gray-100 px-4 py-2.5 text-[13.5px] transition-all outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/10 disabled:opacity-50 dark:bg-slate-950 dark:border-slate-800 dark:text-slate-100 dark:focus:bg-slate-950"
                             />

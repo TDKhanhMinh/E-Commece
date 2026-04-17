@@ -31,6 +31,7 @@ export function UserOrderItem({
 }: UserOrderItemProps) {
     const router = useRouter();
     const t = useTranslations("common.user.order");
+    const tStatus = useTranslations("user.orders.statuses");
 
     return (
         <div
@@ -56,7 +57,7 @@ export function UserOrderItem({
                     >
                         <Hash className="mr-1 size-3" /> {id}
                     </Badge>
-                    {getStatusBadge(status)}
+                    {getStatusBadge(status, tStatus)}
                 </div>
 
                 <h3 className="line-clamp-2 text-base font-semibold text-slate-800 transition-colors group-hover:text-blue-600 dark:text-slate-100 dark:group-hover:text-blue-400 md:line-clamp-1">

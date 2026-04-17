@@ -10,7 +10,7 @@ import { useProducts } from "@/hooks/use-products";
 import { PageResponse } from "@/type/api-type";
 
 export default function HomeSaleProducts() {
-    const t = useTranslations("HomePage");
+    const t = useTranslations("home.sale");
     const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
     const { data, isLoading } = useProducts({
@@ -29,10 +29,10 @@ export default function HomeSaleProducts() {
                 <div className="container mx-auto h-full px-4 text-center">
                     <div className="mx-auto mb-12 max-w-3xl">
                         <span className="mb-12 bg-gradient-to-r from-orange-500 via-indigo-500 to-green-500 bg-clip-text text-xl font-bold tracking-tighter text-transparent uppercase">
-                            Handpicked for you
+                            {t("badge")}
                         </span>
                         <h2 className="mt-0.5 font-bold uppercase text-slate-900 md:text-4xl dark:text-slate-100">
-                            Tech you'll love – Top picks for you
+                            {t("title")}
                         </h2>
                     </div>
 
@@ -49,7 +49,7 @@ export default function HomeSaleProducts() {
                                         : "hover:bg-primary hover:text-white dark:border-zinc-700 dark:bg-zinc-900 dark:text-slate-200 dark:hover:bg-zinc-800"
                                 }`}
                             >
-                                {category}
+                                {t(`categories.${category}`)}
                             </Button>
                         ))}
                     </div>
@@ -58,13 +58,13 @@ export default function HomeSaleProducts() {
                     {isLoading ? (
                         <div className="flex h-64 items-center justify-center">
                             <div className="text-lg text-gray-500">
-                                Đang tải sản phẩm...
+                                {t("loading")}
                             </div>
                         </div>
                     ) : products.length === 0 ? (
                         <div className="flex h-64 items-center justify-center">
                             <div className="text-lg text-gray-500">
-                                Không có sản phẩm nào
+                                {t("noProducts")}
                             </div>
                         </div>
                     ) : (
@@ -83,10 +83,11 @@ export default function HomeSaleProducts() {
             <div className="container mx-auto px-4 text-center">
                 <Link href="/products">
                     <Button className="cursor-pointer rounded-full bg-green-900 px-16 py-4 text-lg font-bold text-white transition-colors hover:bg-green-800/80">
-                        View all
+                        {t("viewAll")}
                     </Button>
                 </Link>
             </div>
         </div>
     );
 }
+

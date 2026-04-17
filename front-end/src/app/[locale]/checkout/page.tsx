@@ -7,6 +7,7 @@ import { CheckoutItemRequest, CheckoutResponse } from "@/type/order-type";
 import { useDefaultDeliveryAddress } from "@/hooks/use-delivery-address";
 import { useVoucher } from "@/hooks/use-voucher";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 // Các UI Components
 import { Button } from "@/components/ui/button"; // <-- Thêm import Button
@@ -27,6 +28,7 @@ import { usePayment } from "@/hooks/use-payment";
 import PayPalCheckoutButton from "@/components/common/checkout/paypal-checkout-button";
 
 export default function CheckoutPage() {
+    const t = useTranslations("checkout.page");
     const router = useRouter();
     const { user } = useAuthStore();
     const userId = user?.id ? parseInt(user.id) : 0;
@@ -64,14 +66,14 @@ export default function CheckoutPage() {
                 const parsed = JSON.parse(data);
                 setCheckoutData(parsed);
             } catch (error) {
-                toast.error("Không thể tải thông tin đơn hàng");
+                toast.error(t("loadError"));
                 router.push("/cart");
             }
         } else {
-            toast.error("Không có thông tin đơn hàng");
+            toast.error(t("noData"));
             router.push("/cart");
         }
-    }, [router]);
+    }, [router, t]);
 
     const handleChangePoints = (points: number, discountValue: number) => {
         setPointsUsed(points);
@@ -89,7 +91,7 @@ export default function CheckoutPage() {
             {
                 onSuccess: (voucherData) => {
                     setVoucherCode(code);
-                    toast.success(`Đã áp dụng mã: ${code}`);
+                    toast.success(t("voucherApplied", { code }));
 
                     let discountAmount = 0;
                     if (voucherData.discountType === "PERCENTAGE") {
@@ -109,8 +111,7 @@ export default function CheckoutPage() {
                 },
                 onError: (error: any) => {
                     const msg =
-                        error?.message ||
-                        "Mã giảm giá không đủ điều kiện áp dụng";
+                        error?.message || t("voucherConditionError");
                     toast.error(msg);
                     setVoucherCode("");
                     setVoucherDiscount(0);
@@ -123,7 +124,7 @@ export default function CheckoutPage() {
         if (!checkoutData || !user?.id) return;
 
         if (!defaultAddress) {
-            toast.error("Vui lòng thêm địa chỉ giao hàng trước khi đặt hàng");
+            toast.error(t("addressRequired"));
             router.push("/user/address-delivery");
             return;
         }
@@ -154,14 +155,14 @@ export default function CheckoutPage() {
 
             if (paymentMethod === "COD" || response?.paymentMethod === "COD") {
                 toast.success(
-                    `Đặt hàng thành công! Mã đơn hàng: #${response.orderId}`
+                    t("orderSuccess", { orderId: response.orderId })
                 );
                 router.push(`/user/orders/${response.orderId}`);
             } else if (
                 paymentMethod === "VNPAY" ||
                 response?.paymentMethod === "VNPAY"
             ) {
-                toast.info("Đang khởi tạo giao dịch VNPay, vui lòng đợi...");
+                toast.info(t("vnpayInit"));
                 createPaymentUrlMutation.mutate({
                     orderId: response.orderId,
                     amount: response.finalAmount,
@@ -170,9 +171,7 @@ export default function CheckoutPage() {
                 paymentMethod === "PAYPAL" ||
                 response?.paymentMethod === "PAYPAL"
             ) {
-                toast.info(
-                    "Đơn hàng đã được tạo. Vui lòng hoàn tất thanh toán qua PayPal..."
-                );
+                toast.info(t("paypalInit"));
                 setPaypalPaymentData({
                     orderId: response.orderId,
                     amount: response.finalAmount,
@@ -182,7 +181,7 @@ export default function CheckoutPage() {
             }
         } catch (error: any) {
             console.error("Checkout error:", error);
-            toast.error("Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại.");
+            toast.error(t("orderError"));
         }
     };
 
@@ -198,18 +197,17 @@ export default function CheckoutPage() {
     return (
         <div className="container mx-auto max-w-6xl px-4 py-8">
             {paypalPaymentData ? (
-                <div className="animate-in fade-in flex flex-col items-center justify-center space-y-6 py-16 duration-500">
+                <div className="animate-in fade-in py-16 duration-500 flex flex-col items-center justify-center space-y-6">
                     <div className="space-y-2 text-center">
-                        <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100">
-                            Thanh toán đơn hàng #{paypalPaymentData.orderId}
+                        <h2 className="dark:text-slate-100 text-3xl font-bold text-slate-800">
+                            {t("paypalTitle", { orderId: paypalPaymentData.orderId })}
                         </h2>
-                        <p className="text-slate-600 dark:text-slate-400">
-                            Vui lòng nhấp vào nút bên dưới để hoàn tất thanh
-                            toán an toàn qua PayPal
+                        <p className="dark:text-slate-400 text-slate-600">
+                            {t("paypalDescription")}
                         </p>
                     </div>
 
-                    <div className="w-full max-w-md rounded-2xl border border-slate-100 bg-slate-50 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/50">
+                    <div className="dark:border-slate-800 dark:bg-slate-900/50 w-full max-w-md rounded-2xl border border-slate-100 bg-slate-50 p-6 shadow-sm">
                         <PayPalCheckoutButton
                             orderId={paypalPaymentData.orderId}
                             totalAmountVnd={paypalPaymentData.amount}
@@ -218,14 +216,14 @@ export default function CheckoutPage() {
 
                     <Button
                         variant="ghost"
-                        className="text-slate-500 underline hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
+                        className="dark:text-slate-400 dark:hover:text-slate-200 text-slate-500 underline hover:text-slate-800"
                         onClick={() =>
                             router.push(
                                 `/user/orders/${paypalPaymentData.orderId}`
                             )
                         }
                     >
-                        Thanh toán sau (Quản lý đơn hàng)
+                        {t("payLater")}
                     </Button>
                 </div>
             ) : (
@@ -280,3 +278,4 @@ export default function CheckoutPage() {
         </div>
     );
 }
+

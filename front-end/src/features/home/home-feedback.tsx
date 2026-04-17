@@ -1,12 +1,13 @@
 "use client";
-
 import SimpleBar from "simplebar-react";
 import { ReviewCard } from "@/components/common/product/review-card";
 import { useReviewsByProduct } from "@/hooks/use-review";
 import { Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 
 export default function HomeFeedBack() {
+    const t = useTranslations("home.feedback");
     const randomSlug = "iphone-15-pro";
     const router = useRouter();
     const { data, isLoading, isError } = useReviewsByProduct(randomSlug, {
@@ -15,7 +16,7 @@ export default function HomeFeedBack() {
         sortBy: "reviewDate",
         sortDirection: "DESC",
     });
-    console.log(" ~ HomeFeedBack ~ data:", data);
+
     // @ts-ignore
     const reviews = data?.content || [];
     const handlerMoreReviewsClick = (productSlug: string) => {
@@ -27,10 +28,10 @@ export default function HomeFeedBack() {
                 <div className="container mx-auto h-full px-4 text-center">
                     <div className="mx-auto mb-12 max-w-5xl">
                         <span className="mb-12 bg-linear-to-r from-orange-500 via-indigo-500 to-green-500 bg-clip-text text-xl font-bold tracking-tighter text-transparent uppercase">
-                            TRUSTED BY MANY, LOVED BY ALL
+                            {t("badge")}
                         </span>
                         <h2 className="my-1 font-bold uppercase text-slate-900 md:text-4xl dark:text-slate-100">
-                            Real experiences. Real satisfaction.
+                            {t("title")}
                         </h2>
                     </div>
 
@@ -40,7 +41,7 @@ export default function HomeFeedBack() {
                         </div>
                     ) : isError || reviews.length === 0 ? (
                         <div className="text-muted-foreground py-10">
-                            Chưa có đánh giá nào được hiển thị.
+                            {t("noReviews")}
                         </div>
                     ) : (
                         <SimpleBar autoHide={true} style={{ maxWidth: "100%" }}>
@@ -75,3 +76,4 @@ export default function HomeFeedBack() {
         </div>
     );
 }
+

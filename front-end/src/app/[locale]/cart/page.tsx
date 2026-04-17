@@ -21,7 +21,10 @@ import { CartResponse } from "@/type/cart-type";
 import { toast } from "sonner";
 import { CheckoutData } from "@/components/common/checkout/types";
 
+import { useTranslations } from "next-intl";
+
 export default function CartPage() {
+    const t = useTranslations("cart.page");
     const router = useRouter();
     const { data: cartData, isLoading, error } = useCart();
     const cart = cartData as unknown as CartResponse;
@@ -81,13 +84,13 @@ export default function CartPage() {
 
     const handleCheckout = () => {
         if (!isAuthenticated || !user) {
-            toast.error("Vui lòng đăng nhập để tiếp tục đặt hàng");
+            toast.error(t("loginRequired"));
             router.push("/login?redirect=/cart");
             return;
         }
 
         if (checkedItems.length === 0) {
-            toast.error("Vui lòng chọn ít nhất một sản phẩm để đặt hàng");
+            toast.error(t("selectRequired"));
             return;
         }
 
@@ -99,7 +102,7 @@ export default function CartPage() {
         );
 
         if (outOfStockItems && outOfStockItems.length > 0) {
-            toast.error("Một số sản phẩm đã hết hàng hoặc không đủ số lượng");
+            toast.error(t("outOfStockError"));
             return;
         }
 

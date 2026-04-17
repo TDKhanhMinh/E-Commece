@@ -3,10 +3,12 @@ import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import SimpleBar from "simplebar-react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { MOCK_CAROUSEL_ITEMS } from "../../../mock";
+import { useTranslations } from "next-intl";
 
 export default function HomeCarousel() {
+    const t = useTranslations("home.carousel");
     const router = useRouter();
     return (
         <div className="flex flex-col gap-20 pb-20">
@@ -14,10 +16,10 @@ export default function HomeCarousel() {
                 <div className="container mx-auto h-full px-4 text-center">
                     <div className="mx-auto mb-12 max-w-3xl text-slate-900 dark:text-slate-100">
                         <span className="mb-12 bg-linear-to-r from-orange-500 via-indigo-500 to-green-500 bg-clip-text text-xl font-bold tracking-tighter text-transparent uppercase">
-                            Trusted by Many, Loved by All
+                            {t("badge")}
                         </span>
                         <h2 className="mt-0.5 font-bold uppercase md:text-4xl">
-                            Explore our Top Tech
+                            {t("title")}
                         </h2>
                     </div>
 
@@ -36,7 +38,7 @@ export default function HomeCarousel() {
                                     </Label>
 
                                     <div className="text-center text-2xl font-bold">
-                                        {item.title}
+                                        {t(`items.${item.label}`)}
                                     </div>
 
                                     <Image
@@ -55,3 +57,4 @@ export default function HomeCarousel() {
         </div>
     );
 }
+

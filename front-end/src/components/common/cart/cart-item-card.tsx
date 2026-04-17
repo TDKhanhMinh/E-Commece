@@ -4,6 +4,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { CartItemResponse } from "@/type/cart-type";
 import { formatCurrency } from "@/lib/format-price";
+import { useTranslations } from "next-intl";
 
 interface CartItemCardProps {
     item: CartItemResponse;
@@ -29,6 +30,7 @@ export function CartItemCard({
     isUpdating,
     isRemoving,
 }: CartItemCardProps) {
+    const t = useTranslations("cart.item");
     console.log("Rendering CartItemCard for SKU:", item);
     const totalPrice = item.salePrice
         ? item.salePrice * item.quantity
@@ -37,7 +39,7 @@ export function CartItemCard({
     const outOfStock = item.quantity > item.stock;
 
     return (
-        <Card className="overflow-hidden border-none bg-slate-50/50 shadow-sm dark:bg-slate-900/50 dark:border dark:border-slate-800 dark:shadow-slate-950/50">
+        <Card className="bg-slate-50/50 dark:bg-slate-900/50 dark:shadow-slate-950/50 dark:border-slate-800 overflow-hidden border-none shadow-sm dark:border">
             <CardContent className="p-4">
                 <div className="flex items-start gap-4">
                     <div className="flex shrink-0 items-start">
@@ -50,7 +52,7 @@ export function CartItemCard({
                         />
                     </div>
 
-                    <div className="h-24 w-24 shrink-0 rounded-lg border bg-white p-2 dark:bg-slate-800 dark:border-slate-700">
+                    <div className="dark:bg-slate-800 dark:border-slate-700 h-24 w-24 shrink-0 rounded-lg border bg-white p-2">
                         <img
                             src={item.image || "/placeholder.png"}
                             alt={item.productName}
@@ -62,10 +64,10 @@ export function CartItemCard({
                         <div>
                             <div className="flex justify-between">
                                 <div>
-                                    <h3 className="text-lg font-semibold dark:text-slate-100">
+                                    <h3 className="dark:text-slate-100 text-lg font-semibold">
                                         {item.productName}
                                     </h3>
-                                    <p className="text-muted-foreground text-xs dark:text-slate-500">
+                                    <p className="dark:text-slate-500 text-muted-foreground text-xs">
                                         SKU: {item.skuCode}
                                     </p>
                                 </div>
@@ -86,7 +88,7 @@ export function CartItemCard({
                                     ([key, value]) => (
                                         <span
                                             key={key}
-                                            className="text-muted-foreground rounded border bg-white px-2 py-0.5 text-[10px] font-semibold tracking-wider uppercase dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400"
+                                            className="text-muted-foreground dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400 rounded border bg-white px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
                                         >
                                             {key}: {value}
                                         </span>
@@ -94,18 +96,18 @@ export function CartItemCard({
                                 )}
                             </div>
                             {outOfStock && (
-                                <p className="text-destructive mt-2 text-sm dark:text-red-400">
-                                    Sản phẩm tạm hết hàng / Không đủ số lượng
+                                <p className="text-destructive dark:text-red-400 mt-2 text-sm">
+                                    {t("outOfStock")}
                                 </p>
                             )}
                         </div>
 
                         <div className="mt-4 flex items-end justify-between">
-                            <div className="flex items-center rounded-md border bg-white dark:bg-slate-800 dark:border-slate-700">
+                            <div className="dark:bg-slate-800 dark:border-slate-700 flex items-center rounded-md border bg-white">
                                 <Button
                                     variant="ghost"
                                     size="icon"
-                                    className="h-8 w-8 rounded-none border-r dark:border-slate-700 dark:hover:bg-slate-700"
+                                    className="dark:border-slate-700 dark:hover:bg-slate-700 h-8 w-8 rounded-none border-r"
                                     onClick={() =>
                                         onUpdateQuantity(
                                             item.skuId,
@@ -116,15 +118,15 @@ export function CartItemCard({
                                     }
                                     disabled={item.quantity <= 1 || isUpdating}
                                 >
-                                    <Minus className="h-3 w-3 dark:text-slate-300" />
+                                    <Minus className="dark:text-slate-300 h-3 w-3" />
                                 </Button>
-                                <span className="w-10 text-center text-sm font-medium dark:text-slate-100">
+                                <span className="dark:text-slate-100 w-10 text-center text-sm font-medium">
                                     {item.quantity}
                                 </span>
                                 <Button
                                     variant="ghost"
                                     size="icon"
-                                    className="h-8 w-8 rounded-none border-l dark:border-slate-700 dark:hover:bg-slate-700"
+                                    className="dark:border-slate-700 dark:hover:bg-slate-700 h-8 w-8 rounded-none border-l"
                                     onClick={() => {
                                         onUpdateQuantity(
                                             item.skuId,
@@ -138,22 +140,24 @@ export function CartItemCard({
                                         isUpdating
                                     }
                                 >
-                                    <Plus className="h-3 w-3 dark:text-slate-300" />
+                                    <Plus className="dark:text-slate-300 h-3 w-3" />
                                 </Button>
                             </div>
                             <div className="text-right">
                                 {item.discountPercent &&
                                     item.discountPercent > 0 && (
-                                        <p className="text-muted-foreground mb-1 text-xs line-through dark:text-slate-500">
+                                        <p className="dark:text-slate-500 text-muted-foreground mb-1 text-xs line-through">
                                             {formatCurrency(item.price)}
                                         </p>
                                     )}
-                                <p className="text-primary text-lg font-bold dark:text-blue-400">
+                                <p className="text-primary dark:text-blue-400 text-lg font-bold">
                                     {formatCurrency(item.salePrice) ||
                                         formatCurrency(item.price)}
                                 </p>
-                                <p className="text-muted-foreground text-xs dark:text-slate-500">
-                                    Tổng: {formatCurrency(totalPrice)}
+                                <p className="dark:text-slate-500 text-muted-foreground text-xs">
+                                    {t("total", {
+                                        price: formatCurrency(totalPrice),
+                                    })}
                                 </p>
                             </div>
                         </div>
@@ -163,3 +167,4 @@ export function CartItemCard({
         </Card>
     );
 }
+

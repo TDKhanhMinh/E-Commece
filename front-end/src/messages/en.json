@@ -3,13 +3,59 @@
         "save": "Save",
         "cancel": "Cancel",
         "search": "Search",
+        "globalSearch": {
+            "placeholder": "Search products...",
+            "loading": "Searching...",
+            "suggestedTitle": "Suggested Products",
+            "viewAll": "View all results for \"{query}\"",
+            "noResults": "No products found matching \"{query}\"."
+        },
         "themes": {
             "light": "Light",
             "dark": "Dark",
             "system": "System"
         },
         "auth": {
-            "login": "Login"
+            "login": {
+                "title": "Login",
+                "description": "Enter your email to access your T7M Online account",
+                "google": "Google",
+                "github": "Github",
+                "orContinueWith": "Or continue with",
+                "emailLabel": "Email",
+                "passwordLabel": "Password",
+                "forgotPassword": "Forgot password?",
+                "submit": "Login",
+                "loggingIn": "Logging in...",
+                "noAccount": "Don't have an account?",
+                "registerNow": "Register now",
+                "agreementPrefix": "By continuing, you agree to our",
+                "termsOfService": "Terms of Service",
+                "agreementSuffix": "of us.",
+                "successToast": "Login successful!"
+            },
+            "register": {
+                "title": "Create new account",
+                "description": "Start shopping at T7M Online today",
+                "orRegisterWithEmail": "Or register with Email",
+                "nameLabel": "Full Name",
+                "namePlaceholder": "John Doe",
+                "emailLabel": "Email",
+                "emailPlaceholder": "name@example.com",
+                "phoneLabel": "Phone",
+                "phonePlaceholder": "0123456789",
+                "passwordLabel": "Password",
+                "confirmPasswordLabel": "Confirm Password",
+                "passwordPlaceholder": "••••••••",
+                "submit": "Create Account",
+                "creatingAccount": "Creating account...",
+                "haveAccount": "Already have an account?",
+                "loginNow": "Login now",
+                "agreementPrefix": "By creating an account, you agree to our",
+                "privacyPolicy": "Privacy Policy",
+                "agreementSuffix": "of us.",
+                "successToast": "Registration successful!"
+            }
         },
         "roles": {
             "admin": "Admin",
@@ -59,6 +105,54 @@
                 "ignore": "Ignore",
                 "confirmCancel": "Confirm Cancel"
             }
+        },
+        "navigation": {
+            "back": "Back to previous page"
+        },
+        "registerDialog": {
+            "trigger": "Add new user",
+            "title": "Create new account",
+            "description": "Add account for Customer or internal Shipper",
+            "google": "Google",
+            "github": "Github",
+            "orWithEmail": "Or register with Email",
+            "nameLabel": "Full Name",
+            "namePlaceholder": "John Doe",
+            "emailLabel": "Email",
+            "emailPlaceholder": "name@example.com",
+            "phoneLabel": "Phone",
+            "phonePlaceholder": "0123456789",
+            "roleLabel": "Role",
+            "rolePlaceholder": "Choose role",
+            "roles": {
+                "user": "Customer (USER)",
+                "shipper": "Delivery Staff (SHIPPER)"
+            },
+            "passwordLabel": "Password",
+            "passwordPlaceholder": "••••••••",
+            "confirmPasswordLabel": "Confirm Password",
+            "submit": "Create Account",
+            "creating": "Creating account...",
+            "success": "Account created successfully!",
+            "error": "An error occurred!"
+        },
+        "reviewDialog": {
+            "trigger": "Write your review",
+            "title": "Product Review",
+            "description": "Share your feelings about <strong>{productName}</strong>.",
+            "ratingLabel": "Satisfaction level",
+            "titleLabel": "Title",
+            "titlePlaceholder": "Example: Very satisfied, Beautiful as new...",
+            "contentLabel": "Detailed content",
+            "contentPlaceholder": "How do you feel about this product? (Battery, performance, appearance...)",
+            "cancel": "Cancel",
+            "submitting": "Sending...",
+            "submit": "Submit Review",
+            "validation": {
+                "titleMin": "Title must be at least 5 characters",
+                "contentMin": "Review content must be at least 10 characters",
+                "ratingMin": "Please select a star rating"
+            }
         }
     },
     "admin": {
@@ -104,6 +198,282 @@
             "address": "District 7, Ho Chi Minh City"
         },
         "copyright": "© 2026 T7M Online. Built for TRAN DO KHANH MINH project"
+    },
+    "home": {
+        "hero": {
+            "badge": "Top Devices. Smart Prices.",
+            "title": "Your next iPhone starts here! Buy now!",
+            "description": "Shop premium iPhones from $119 certified by Plug, built to perform, and backed with our 12-month warranty you can count on.",
+            "button": "Shop now"
+        },
+        "vouchers": {
+            "title": "Today's Hot Deals",
+            "subtitle": "Save discount codes to your wallet before shopping!",
+            "minOrderLabel": "Min order:",
+            "expiryLabel": "Expiry:",
+            "saveButton": "Save code",
+            "collectedToast": "Saved code {code} to your wallet! 🎉",
+            "collectErrorToast": "Error occurred while saving code"
+        },
+        "welcome": {
+            "badge": "Welcome to T7M Tech Store",
+            "title1": "Your connection to reliable, Certified",
+            "title2": "Pre-Owned devices.",
+            "description": "We strongly believe the only difference between purchasing a new or Certified Pre-Owned device should be price. That’s why we rigorously hand test, clean, sanitize, and certify every device we sell.",
+            "learnMoreButton": "Learn more",
+            "items": {
+                "quality": {
+                    "title": "Certified Quality",
+                    "description": "Each device undergoes rigorous testing to ensure it meets our high standards for performance and reliability."
+                },
+                "guarantee": {
+                    "title": "30-Day \"Love It or Return It\" Guarantee",
+                    "description": "Try it, test it, love it. If not, send it back within 30 days for a full refund. Zero stress, zero risk."
+                },
+                "inspection": {
+                    "title": "Certified Quality, 90+ Point Inspection",
+                    "description": "Every device passes Plug’s rigorous testing, cleaning, and grading process for dependable performance from day one."
+                }
+            }
+        },
+        "bundles": {
+            "badge": "Bundle your favorites",
+            "title": "Get more, pay less!",
+            "description": "Why buy separately when you can save more? Grab exclusive discounts when you bundle iPhones with AirPods, MacBooks with iPads, and more.",
+            "shopNowButton": "Shop Plug Packs Now"
+        },
+        "carousel": {
+            "badge": "Trusted by Many, Loved by All",
+            "title": "Explore our Top Tech",
+            "items": {
+                "iphone": "Seamless. Secure. Simply iPhone.",
+                "android": "Explore Top Android Picks.",
+                "ipads": "Work hard. Play smart",
+                "macbooks": "Stay connected, Stay active.",
+                "audio": "Certified beats, Everyday vibes.",
+                "smartwatches": "Stay connected, Stay active.",
+                "Plug packs": "Ready make bundles, Curated by Plug."
+            }
+        },
+        "feedback": {
+            "badge": "TRUSTED BY MANY, LOVED BY ALL",
+            "title": "Real experiences. Real satisfaction.",
+            "noReviews": "No reviews have been shown yet."
+        },
+        "sale": {
+            "badge": "Handpicked for you",
+            "title": "Tech you'll love – Top picks for you",
+            "viewAll": "View all",
+            "loading": "Loading products...",
+            "noProducts": "No products found",
+            "categories": {
+                "All": "All",
+                "iPhone": "iPhone",
+                "MacBook": "MacBook",
+                "iPad": "iPad",
+                "Watch": "Watch",
+                "Audio": "Audio"
+            }
+        },
+        "deals": {
+            "badge": "Limited-Time Deals",
+            "title": "Smart upgrades start with bigger savings.",
+            "description": "The tech you want, without the new-price tag. Shop certified iPhones, AirPods, MacBooks, and iPads for less. All headache free and backed by T7M's 12-month warranty.",
+            "viewAll": "View all",
+            "from": "From"
+        },
+        "faq": {
+            "badge": "EVERYTHING YOU NEED TO KNOW",
+            "title": "Frequently Asked Questions",
+            "items": {
+                "0": {
+                    "question": "What condition are Plug devices in?",
+                    "answer": "All Plug devices are Certified Pre-Owned and graded by condition—Excellent, Good, or Fair—so you always know what to expect. Every device is cleaned, tested, and fully functional, no matter the grade."
+                },
+                "1": {
+                    "question": "Do Plug devices come with accessories?",
+                    "answer": "Yes, most devices come with high-quality charging cables and necessary accessories. Please check the specific product description for details."
+                },
+                "2": {
+                    "question": "What if I'm not happy with my orders?",
+                    "answer": "We offer a hassle-free return policy. If you're not satisfied, you can return your device within the specified timeframe for a refund or exchange."
+                },
+                "3": {
+                    "question": "How fast will my orders ship?",
+                    "answer": "Orders are typically processed within 24 hours and shipped via standard or expedited methods depending on your choice at checkout."
+                },
+                "4": {
+                    "question": "Are Plug devices original and authentic?",
+                    "answer": "Absolutely. We guarantee that all devices sold are 100% authentic and have undergone rigorous multi-point inspections."
+                }
+            }
+        },
+        "subscribe": {
+            "title": "Subscribe to keep up with our great deals.",
+            "description": "Stay ahead of the curve with exclusive offers, the latest product updates, and special discounts delivered straight to your inbox.",
+            "placeholder": "Your email...",
+            "button": "Subscribe"
+        }
+    },
+    "cart": {
+        "sheet": {
+            "title": "Your Cart",
+            "empty": {
+                "title": "Your cart is empty",
+                "description": "Find your favorite products and add them to the cart now!",
+                "button": "Shop now"
+            },
+            "loading": "Updating cart...",
+            "itemsCount": "Cart ({count})",
+            "qty": "Qty",
+            "subtotal": "Subtotal ({count} items)",
+            "discount": "Discount",
+            "total": "Grand Total",
+            "checkout": "Check out now"
+        },
+        "summary": {
+            "title": "Order Summary",
+            "subtotal": "Subtotal",
+            "discount": "Discount",
+            "total": "Total",
+            "totalItems": "Total items: {count} products",
+            "processing": "Processing...",
+            "checkout": "Checkout now",
+            "selectRequired": "Please select products to checkout"
+        },
+        "header": {
+            "title": "Your Cart ({count} products)",
+            "clearAll": "Clear all",
+            "clearing": "Clearing..."
+        },
+        "item": {
+            "outOfStock": "Product temporarily out of stock / Insufficient quantity",
+            "total": "Total: {price}",
+            "button": "Continue shopping"
+        },
+        "error": {
+            "message": "An error occurred while loading your cart. Please try again later."
+        },
+        "page": {
+            "loginRequired": "Please login to proceed with ordering",
+            "selectRequired": "Please select at least one product to order",
+            "outOfStockError": "Some products are out of stock or have insufficient quantity"
+        }
+    },
+    "checkout": {
+        "page": {
+            "loading": "Loading checkout information...",
+            "error": "Error: {message}",
+            "loadError": "Could not load order information",
+            "noData": "No order information found",
+            "voucherApplied": "Applied code: {code}",
+            "voucherConditionError": "Voucher is not eligible for application",
+            "addressRequired": "Please add a shipping address before ordering",
+            "orderSuccess": "Order successful! Order ID: #{orderId}",
+            "vnpayInit": "Initializing VNPay transaction, please wait...",
+            "paypalInit": "Order created. Please complete payment via PayPal...",
+            "orderError": "An error occurred while ordering. Please try again.",
+            "paypalTitle": "Payment for Order #{orderId}",
+            "paypalDescription": "Please click the button below to complete secure payment via PayPal",
+            "payLater": "Pay later (Order management)"
+        },
+        "header": {
+            "title": "Confirm Order"
+        },
+        "summary": {
+            "title": "Order Summary",
+            "subtotal": "Subtotal ({count} items)",
+            "shippingFee": "Shipping Fee",
+            "free": "Free",
+            "voucherDiscount": "Voucher Discount",
+            "pointsUsage": "Using Rewards Points",
+            "total": "Total Amount",
+            "vatIncluded": "(Inclusive of VAT if applicable)",
+            "confirm": "Confirm Order",
+            "processing": "Processing...",
+            "addressRequiredHint": "Please add a shipping address to continue",
+            "terms": "By placing an order, you agree to <link>our terms and conditions</link>"
+        },
+        "address": {
+            "title": "Delivery Address",
+            "change": "Change Address",
+            "add": "Add Delivery Address",
+            "empty": "No delivery address yet",
+            "emptyHint": "Please add a delivery address to continue ordering",
+            "default": "Default"
+        },
+        "items": {
+            "title": "Product ({count})",
+            "title_other": "Products ({count})"
+        },
+        "shipping": {
+            "title": "Shipping Method",
+            "standard": {
+                "name": "Standard Delivery",
+                "description": "Receive after 2-4 business days",
+                "price": "Free"
+            },
+            "express": {
+                "name": "Express Delivery",
+                "description": "Receive on the same day",
+                "price": "$1.18"
+            }
+        },
+        "payment": {
+            "title": "Payment Method",
+            "cod": {
+                "name": "Cash on Delivery (COD)",
+                "description": "Pay with cash on delivery"
+            },
+            "vnpay": {
+                "name": "Payment via VNPAY",
+                "description": "Supports ATM cards, QR Code, International cards"
+            },
+            "paypal": {
+                "name": "Payment via Paypal",
+                "description": "Supports ATM cards, QR Code, International cards"
+            }
+        },
+        "voucher": {
+            "title": "Discount Code",
+            "placeholder": "Enter discount code...",
+            "apply": "Apply",
+            "applied": "Applied: {code}",
+            "select": "Select voucher from your wallet",
+            "wallet": "Your Voucher Wallet",
+            "loading": "Loading voucher wallet...",
+            "noVouchers": "You don't have any discount codes yet",
+            "minOrder": "Min order: {amount}"
+        },
+        "points": {
+            "title": "Use Rewards Points",
+            "balance": "You have: {points} points",
+            "maxAllowed": "Max points to use (Limit: {max})",
+            "discountLabel": "Discount amount",
+            "rate": "Exchange rate: 1 point = {rate}"
+        },
+        "paypal": {
+            "errorInitiate": "Could not initiate PayPal payment.",
+            "errorNoTransaction": "No transaction ID received from the system.",
+            "processing": "Processing transaction, please do not close your browser...",
+            "success": "PayPal payment successful!",
+            "errorCapture": "Payment capture failed.",
+            "cancelled": "You cancelled the PayPal transaction.",
+            "maintenance": "PayPal payment gateway is under maintenance or experiencing issues. Please try again later."
+        }
+    },
+    "error": {
+        "title": "Something went wrong!",
+        "description": "We're sorry for the interruption. A system error occurred while processing your request.",
+        "retry": "Try again",
+        "goHome": "Go Home",
+        "idLabel": "Error ID"
+    },
+    "notFound": {
+        "title": "Page not found",
+        "description": "Sorry, we couldn't find the page you're looking for. It looks like this link has been deleted or never existed.",
+        "goHome": "Go Home",
+        "errorCodeLabel": "Error code"
     },
     "sidebar": {
         "admin": "Admin Dashboard",
@@ -244,6 +614,22 @@
             "info": "Page {page} / {total} (Total {count} orders)",
             "previous": "Previous",
             "next": "Next"
+        },
+        "details": {
+            "title": "Order Details #{id}",
+            "addressLabel": "Delivery Address",
+            "phoneLabel": "Phone",
+            "locationLabel": "Address",
+            "statusLabel": "Status",
+            "paymentMethodLabel": "Payment Method",
+            "shippingMethodLabel": "Shipping Method",
+            "orderTimeLabel": "Order Time",
+            "itemsTotal": "Items Total",
+            "discount": "Discount",
+            "totalAmount": "Total Amount",
+            "productsCount": "Products ({count})",
+            "skuLabel": "SKU",
+            "quantityLabel": "x{count}"
         }
     },
     "products": {
@@ -842,6 +1228,15 @@
         "noFound": "No conversation found",
         "loading": "Loading...",
         "error": "Connection error",
+        "widget": {
+            "welcome": "Hello! 👋",
+            "subtitle": "Need any help?",
+            "header": "T7M Online Support",
+            "online": "Online",
+            "connecting": "Connecting...",
+            "inputPlaceholder": "Write a message...",
+            "justNow": "Just now"
+        },
         "status": {
             "online": "Online",
             "offline": "Offline",
@@ -854,6 +1249,306 @@
             "description": "Are you sure you want to delete this conversation? This action cannot be undone.",
             "confirm": "Delete",
             "cancel": "Cancel"
+        }
+    },
+    "user": {
+        "profile": {
+            "title": "Personal Information",
+            "nameLabel": "Full Name",
+            "phoneLabel": "Phone Number",
+            "genderLabel": "Gender",
+            "genderPlaceholder": "Not updated",
+            "dobLabel": "Date of Birth",
+            "emailLabel": "Email",
+            "submitButton": "Update Information",
+            "updatingButton": "Updating...",
+            "loading": "Loading information...",
+            "error": "Error: {message}",
+            "successToast": "Profile updated successfully!",
+            "errorToast": "Update failed"
+        },
+        "addresses": {
+            "title": "You have <blue>{count}</blue> addresses",
+            "loading": "Loading address list...",
+            "error": "Could not load address list. Please try again later.",
+            "empty": "You haven't saved any addresses yet.",
+            "addBtn": "Add address",
+            "addTitle": "Add New Address"
+        },
+        "orders": {
+            "list": {
+                "title": "Order History",
+                "all": "All",
+                "searchPlaceholder": "Search by order number",
+                "itemTitle": "Order #{id} - {count} products",
+                "pagination": "Showing {count} of {total} orders",
+                "prev": "Previous",
+                "next": "Next",
+                "empty": "No orders yet",
+                "notFound": "No orders found"
+            },
+            "detail": {
+                "loading": "Loading order details...",
+                "notFound": "Order not found with ID: {id}",
+                "title": "Order Details",
+                "idLabel": "Order ID:",
+                "addressLabel": "Address:",
+                "statusLabel": "Order Status",
+                "paymentMethodLabel": "Payment Method",
+                "shippingMethodLabel": "Shipping Method",
+                "subtotal": "Total product amount",
+                "memberDiscount": "Member discount (applied)",
+                "productDiscount": "Product discount (applied)",
+                "voucherDiscount": "Voucher discount",
+                "shippingCost": "Shipping fee",
+                "free": "Free",
+                "totalDiscount": "Total discount amount",
+                "finalAmount": "Total payment amount",
+                "createdAt": "Order time",
+                "cancelledAt": "Cancel time",
+                "confirmedAt": "Confirmation time",
+                "deliveredAt": "Delivery time",
+                "productListTitle": "Product List",
+                "itemCount": "{count} items",
+                "skuLabel": "SKU:",
+                "shippingStandard": "Standard Shipping",
+                "shippingExpress": "Express Shipping",
+                "unknown": "Unknown",
+                "paySuccess": "Payment successful!",
+                "payFailed": "Payment failed or cancelled."
+            },
+            "statuses": {
+                "PENDING": "Pending",
+                "CONFIRMED": "Confirmed",
+                "PAID": "Paid",
+                "UNPAID": "Unpaid",
+                "SHIPPING": "Shipping",
+                "DELIVERED": "Delivered",
+                "CANCELLED": "Cancelled",
+                "FAILED": "Failed",
+                "UNKNOWN": "Unknown"
+            }
+        },
+        "memberships": {
+            "tiers": {
+                "MEMBER": "Member",
+                "SILVER": "Silver Tier",
+                "GOLD": "Gold Tier",
+                "PLATINUM": "Platinum"
+            },
+            "nextTiers": {
+                "MEMBER": "Silver",
+                "SILVER": "Gold",
+                "GOLD": "Platinum",
+                "PLATINUM": "Max"
+            },
+            "page": {
+                "loading": "Loading your privileges...",
+                "badge": "Official Member",
+                "currentAccumulatedPoints": "Current accumulated points",
+                "cardHolder": "Cardholder",
+                "customer": "Customer",
+                "redeemPointsTitle": "Redemption points",
+                "youHave": "You currently have <points /> points",
+                "useNow": "Use now",
+                "progressTitle": "Progress",
+                "accumulateMore": "Accumulate more <points /> points to upgrade!",
+                "maxTierMessage": "Maximum level reached! ✨",
+                "historyTitle": "Points History",
+                "historyLoading": "Parsing data...",
+                "balance": "Balance: {amount}",
+                "prevPage": "Previous page",
+                "nextPage": "Next page",
+                "pageInfo": "Page {current} / {total}",
+                "noHistory": "No transaction traces yet.",
+                "privilegesTitle": "Your privileges",
+                "termsLink": "View details Terms & Conditions"
+            },
+            "tabs": {
+                "member": {
+                    "label": "Member",
+                    "content": [
+                        "Receive 1 reward point for every 100,000 VND spent.",
+                        "5% discount on selected accessories (headphones, mouse, keyboard).",
+                        "Early notification of Flash Sale programs."
+                    ]
+                },
+                "silver": {
+                    "label": "Silver",
+                    "content": [
+                        "5% discount on electronics under 10 million VND.",
+                        "7% discount on accessories (headphones, mouse, chargers...).",
+                        "Free shipping for orders over 2 million VND.",
+                        "1 free online technical support/month."
+                    ]
+                },
+                "gold": {
+                    "label": "Gold",
+                    "content": [
+                        "7% discount on electronics under 15 million VND.",
+                        "10% discount on accessories and components.",
+                        "Free nationwide shipping for orders over 1 million VND.",
+                        "Extended 3-month warranty for 1 product/year.",
+                        "Priority participation in limited quantity promotions."
+                    ]
+                },
+                "platinum": {
+                    "label": "Platinum",
+                    "content": [
+                        "10% discount on any electronic product.",
+                        "12% discount on accessories and components.",
+                        "Unlimited free shipping.",
+                        "Extended 6-month warranty for 2 products/year.",
+                        "500,000 VND voucher when upgrading laptop/PC."
+                    ]
+                },
+                "diamond": {
+                    "label": "Diamond",
+                    "content": [
+                        "15% discount on all electronics and accessories.",
+                        "Extended 12-month warranty for 3 products/year.",
+                        "Free laptop cleaning/refreshing 2 times/year.",
+                        "24/7 VIP technical support.",
+                        "1,000,000 VND voucher when buying a new phone or laptop.",
+                        "Participate in product launch events and exclusive technology experiences."
+                    ]
+                }
+            }
+        },
+        "privacy": {
+            "badge": "Data Security Standard 4.0",
+            "title": "Your Privacy <br /> Is <blue>Priority #1</blue>",
+            "description": "We are committed to transparency in collecting and using data to provide the best experience for you.",
+            "lastUpdated": "LAST UPDATED: {date}",
+            "sections": {
+                "dataCollection": {
+                    "title": "1. Data Collection",
+                    "table": {
+                        "type": "Data Type",
+                        "example": "Specific examples",
+                        "purpose": "Purpose",
+                        "items": {
+                            "personal": {
+                                "type": "Personal Information",
+                                "example": "Full name, Phone, Email",
+                                "purpose": "Authentication & Support"
+                            },
+                            "delivery": {
+                                "type": "Shipping Information",
+                                "example": "Address, Province/City",
+                                "purpose": "Shipping"
+                            },
+                            "system": {
+                                "type": "System Data",
+                                "example": "IP, Device",
+                                "purpose": "Security & UX"
+                            }
+                        }
+                    }
+                },
+                "usage": {
+                    "title": "2. Usage Method",
+                    "items": {
+                        "transaction": {
+                            "title": "Transaction Processing",
+                            "content": "Complete orders and accumulate member reward points."
+                        },
+                        "notification": {
+                            "title": "Notifications",
+                            "content": "Send updates on order status or important changes."
+                        }
+                    }
+                },
+                "sharing": {
+                    "title": "3. Data Sharing",
+                    "commitment": "Commitment not to sell data",
+                    "content": "We only provide necessary information (Address & Phone) to shipping partners so orders can reach you as quickly as possible."
+                },
+                "rights": {
+                    "badge": "Control Rights",
+                    "title": "You Have Full Rights",
+                    "description": "Request access, edit or permanently delete personal data at any time through the **Settings** section.",
+                    "button": "ACCESS SETTINGS"
+                },
+                "footer": {
+                    "question": "Contact for security support",
+                    "email": "privacy@t7m.kmgroup.com"
+                }
+            }
+        },
+        "terms": {
+            "badge": "Official Legal Document",
+            "title": "Terms <blue>&</blue> Service",
+            "description": "Clear regulations on rights and responsibilities help build a civilized, transparent shopping community.",
+            "lastUpdated": "Last updated: {date}",
+            "sections": {
+                "acceptance": {
+                    "title": "Acceptance of Terms",
+                    "content": "By accessing and using our service, you agree to comply with these terms. If you do not agree with any part, please stop using the service immediately."
+                },
+                "account": {
+                    "title": "User Account",
+                    "content": "You are responsible for the security of your login information and password. Any activity that occurs under your account will be your full responsibility. We have the right to temporarily lock the account if signs of security violation are detected."
+                },
+                "points": {
+                    "title": "Point Accumulation Rules",
+                    "content": "The point accumulation system is based on actual order value after deducting promotions. Reward points have no cash value and have an expiration date according to the regulations of each membership tier."
+                },
+                "privacy": {
+                    "title": "Privacy Policy",
+                    "content": "We are committed to protecting your personal information. Address and phone number information is only used for shipping and customer support purposes according to international safety standards."
+                },
+                "changes": {
+                    "title": "Changes to Terms",
+                    "content": "We reserve the right to update these terms at any time without prior notice. Your continued use of the service constitutes acceptance of those changes."
+                }
+            },
+            "support": {
+                "title": "Need further help?",
+                "description": "If you have any questions about terms of service, our support team is always ready to listen.",
+                "button": "Contact Support Center"
+            },
+            "footer": {
+                "copyright": "© 2026 T7M Online Store - All Rights Reserved"
+            }
+        },
+        "support": {
+            "badge": "24/7 Customer Support",
+            "hello": "Hello, <nameTag>{userName}</nameTag>!",
+            "guest": "Guest",
+            "hero": {
+                "description": "How can we help with your shopping experience today?"
+            },
+            "search": {
+                "placeholder": "Enter questions, keywords you are interested in..."
+            },
+            "sections": {
+                "about": {
+                    "title": "About Us",
+                    "questions": [
+                        "Why can't I redeem my accumulated points?",
+                        "How can I accumulate points?"
+                    ]
+                },
+                "policy": {
+                    "title": "Policies",
+                    "questions": [
+                        "Use an undated invoice to accumulate points?",
+                        "Apply Member when ordering via hotline?"
+                    ]
+                }
+            },
+            "quickConnect": {
+                "title": "Quick Connect"
+            },
+            "directConsult": {
+                "title": "Need direct advice?",
+                "description": "We are always here to answer all your questions.",
+                "button": "Chat now"
+            },
+            "footer": {
+                "copyright": "© 2026 T7M Online Store - Powered by KM Group"
+            }
         }
     }
 }

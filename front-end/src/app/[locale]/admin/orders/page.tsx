@@ -63,6 +63,7 @@ import { Badge } from "@/components/ui/badge";
 
 export default function AdminOrderManagement() {
     const t = useTranslations("orders");
+    const tStatus = useTranslations("user.orders.statuses");
     const commonT = useTranslations("common");
     const [searchTerm, setSearchTerm] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -377,7 +378,8 @@ export default function AdminOrderManagement() {
                                                 </TableCell>
                                                 <TableCell className="text-center">
                                                     {getStatusBadge(
-                                                        order.status
+                                                        order.status,
+                                                        tStatus
                                                     )}
                                                 </TableCell>
                                                 <TableCell className="text-right">

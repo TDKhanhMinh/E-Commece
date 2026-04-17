@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Loader2, MessageSquarePlus, Star } from "lucide-react";
+import { useTranslations } from "next-intl";
 import {
     Dialog,
     DialogContent,
@@ -27,7 +28,7 @@ import { Button } from "@/components/ui/button";
 import { useCreateReview } from "@/hooks/use-review";
 import { reviewSchema } from "@/schema/review-schema";
 
-type ReviewFormValues = z.infer<typeof reviewSchema>;
+type ReviewFormValues = z.infer<ReturnType<typeof reviewSchema>>;
 
 interface AddReviewDialogProps {
     productId: number;
@@ -35,11 +36,12 @@ interface AddReviewDialogProps {
 }
 
 export function ReviewDialog({ productId, productName }: AddReviewDialogProps) {
+    const t = useTranslations("common.reviewDialog");
     const [open, setOpen] = useState(false);
     const { mutate: createReview, isPending } = useCreateReview();
 
     const form = useForm<ReviewFormValues>({
-        resolver: zodResolver(reviewSchema),
+        resolver: zodResolver(reviewSchema(t)),
         defaultValues: {
             title: "",
             content: "",
@@ -67,15 +69,17 @@ export function ReviewDialog({ productId, productName }: AddReviewDialogProps) {
             <DialogTrigger asChild>
                 <Button className="gap-2 rounded-full bg-green-900 font-bold hover:bg-green-800">
                     <MessageSquarePlus className="h-4 w-4" />
-                    Viết đánh giá của bạn
+                    {t("trigger")}
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-125">
                 <DialogHeader>
-                    <DialogTitle>Đánh giá sản phẩm</DialogTitle>
+                    <DialogTitle>{t("title")}</DialogTitle>
                     <DialogDescription>
-                        Chia sẻ cảm nhận của bạn về{" "}
-                        <strong>{productName}</strong>.
+                        {t.rich("description", {
+                            productName: productName,
+                            strong: (chunks) => <strong>{chunks}</strong>,
+                        })}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -90,7 +94,7 @@ export function ReviewDialog({ productId, productName }: AddReviewDialogProps) {
                             name="rating"
                             render={({ field }) => (
                                 <FormItem className="flex flex-col items-center justify-center space-y-3">
-                                    <FormLabel>Mức độ hài lòng</FormLabel>
+                                    <FormLabel>{t("ratingLabel")}</FormLabel>
                                     <FormControl>
                                         <div className="flex gap-1">
                                             {[1, 2, 3, 4, 5].map((star) => (
@@ -123,10 +127,10 @@ export function ReviewDialog({ productId, productName }: AddReviewDialogProps) {
                             name="title"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Tiêu đề</FormLabel>
+                                    <FormLabel>{t("titleLabel")}</FormLabel>
                                     <FormControl>
                                         <Input
-                                            placeholder="Ví dụ: Rất hài lòng, Máy đẹp như mới..."
+                                            placeholder={t("titlePlaceholder")}
                                             {...field}
                                         />
                                     </FormControl>
@@ -140,10 +144,10 @@ export function ReviewDialog({ productId, productName }: AddReviewDialogProps) {
                             name="content"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Nội dung chi tiết</FormLabel>
+                                    <FormLabel>{t("contentLabel")}</FormLabel>
                                     <FormControl>
                                         <Textarea
-                                            placeholder="Bạn thấy sản phẩm này thế nào? (Pin, hiệu năng, ngoại hình...)"
+                                            placeholder={t("contentPlaceholder")}
                                             className="min-h-30"
                                             {...field}
                                         />
@@ -159,7 +163,7 @@ export function ReviewDialog({ productId, productName }: AddReviewDialogProps) {
                                 variant="ghost"
                                 onClick={() => setOpen(false)}
                             >
-                                Hủy bỏ
+                                {t("cancel")}
                             </Button>
                             <Button
                                 type="submit"
@@ -169,10 +173,10 @@ export function ReviewDialog({ productId, productName }: AddReviewDialogProps) {
                                 {isPending ? (
                                     <>
                                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        Đang gửi...
+                                        {t("submitting")}
                                     </>
                                 ) : (
-                                    "Gửi đánh giá"
+                                    t("submit")
                                 )}
                             </Button>
                         </div>

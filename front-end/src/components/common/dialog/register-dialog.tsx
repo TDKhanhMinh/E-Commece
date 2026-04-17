@@ -28,12 +28,14 @@ import { toast } from "sonner";
 import { registerApi } from "@/service/auth-service";
 import { registerSchema } from "@/schema/auth-shema";
 import { FormHelperText } from "@/components/common";
+import { useTranslations } from "next-intl";
 
 interface RegisterDialogProps {
     children?: React.ReactNode;
 }
 
 export default function RegisterDialog({ children }: RegisterDialogProps) {
+    const t = useTranslations("common.registerDialog");
     const [open, setOpen] = useState(false);
     type RegisterFormData = z.infer<typeof registerSchema> & { role: string };
     const queryClient = useQueryClient();
@@ -64,14 +66,14 @@ export default function RegisterDialog({ children }: RegisterDialogProps) {
             return registerApi(payload);
         },
         onSuccess: () => {
-            toast.success("Tạo tài khoản thành công!");
+            toast.success(t("success"));
             queryClient.invalidateQueries({ queryKey: ["users"] });
             setOpen(false);
             reset();
         },
         onError: (error: any) => {
             console.error("Register failed:", error);
-            toast.error(error.message || "Có lỗi xảy ra!");
+            toast.error(error.message || t("error"));
         },
     });
 
@@ -82,16 +84,16 @@ export default function RegisterDialog({ children }: RegisterDialogProps) {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                {children || <Button>Thêm người dùng mới</Button>}
+                {children || <Button>{t("trigger")}</Button>}
             </DialogTrigger>
 
             <DialogContent className="max-h-[90vh] overflow-x-hidden overflow-y-auto sm:max-w-125">
                 <DialogHeader className="space-y-1 text-center">
                     <DialogTitle className="text-2xl font-bold tracking-tight">
-                        Tạo tài khoản mới
+                        {t("title")}
                     </DialogTitle>
                     <DialogDescription>
-                        Thêm tài khoản cho Khách hàng hoặc Shipper nội bộ
+                        {t("description")}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -99,11 +101,11 @@ export default function RegisterDialog({ children }: RegisterDialogProps) {
                     <div className="grid grid-cols-2 gap-4">
                         <Button variant="outline" className="w-full">
                             <Chrome className="mr-2 h-4 w-4" />
-                            Google
+                            {t("google")}
                         </Button>
                         <Button variant="outline" className="w-full">
                             <Github className="mr-2 h-4 w-4" />
-                            Github
+                            {t("github")}
                         </Button>
                     </div>
 
@@ -113,7 +115,7 @@ export default function RegisterDialog({ children }: RegisterDialogProps) {
                         </div>
                         <div className="relative flex justify-center text-xs uppercase">
                             <span className="bg-background text-muted-foreground px-2 dark:bg-slate-950">
-                                Hoặc đăng ký bằng Email
+                                {t("orWithEmail")}
                             </span>
                         </div>
                     </div>
@@ -123,10 +125,10 @@ export default function RegisterDialog({ children }: RegisterDialogProps) {
                         className="grid gap-4"
                     >
                         <div className="grid gap-2">
-                            <Label htmlFor="full-name">Họ và tên</Label>
+                            <Label htmlFor="full-name">{t("nameLabel")}</Label>
                             <Input
                                 id="full-name"
-                                placeholder="Nguyễn Văn A"
+                                placeholder={t("namePlaceholder")}
                                 {...register("name")}
                                 className={`h-11 ${
                                     errors.name
@@ -139,11 +141,11 @@ export default function RegisterDialog({ children }: RegisterDialogProps) {
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="email">Email</Label>
+                            <Label htmlFor="email">{t("emailLabel")}</Label>
                             <Input
                                 id="email"
                                 type="email"
-                                placeholder="name@example.com"
+                                placeholder={t("emailPlaceholder")}
                                 {...register("email")}
                                 className={`h-11 ${
                                     errors.email
@@ -156,11 +158,11 @@ export default function RegisterDialog({ children }: RegisterDialogProps) {
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="phone">Phone</Label>
+                            <Label htmlFor="phone">{t("phoneLabel")}</Label>
                             <Input
                                 id="phone"
                                 type="text"
-                                placeholder="0123456789"
+                                placeholder={t("phonePlaceholder")}
                                 {...register("phone")}
                                 className={`h-11 ${
                                     errors.phone
@@ -174,7 +176,7 @@ export default function RegisterDialog({ children }: RegisterDialogProps) {
 
                         {/* Ô CHỌN ROLE MỚI THÊM VÀO */}
                         <div className="grid w-full gap-2">
-                            <Label htmlFor="role">Vai trò</Label>
+                            <Label htmlFor="role">{t("roleLabel")}</Label>
                             <Select
                                 onValueChange={(value) =>
                                     setValue("role", value)
@@ -183,25 +185,25 @@ export default function RegisterDialog({ children }: RegisterDialogProps) {
                                 disabled={mutation.isPending}
                             >
                                 <SelectTrigger className="h-11">
-                                    <SelectValue placeholder="Chọn vai trò" />
+                                    <SelectValue placeholder={t("rolePlaceholder")} />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="USER">
-                                        Khách hàng (USER)
+                                        {t("roles.user")}
                                     </SelectItem>
                                     <SelectItem value="SHIPPER">
-                                        Nhân viên Giao hàng (SHIPPER)
+                                        {t("roles.shipper")}
                                     </SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="password">Mật khẩu</Label>
+                            <Label htmlFor="password">{t("passwordLabel")}</Label>
                             <Input
                                 id="password"
                                 type="password"
-                                placeholder="••••••••"
+                                placeholder={t("passwordPlaceholder")}
                                 {...register("password")}
                                 className={`h-11 ${
                                     errors.password
@@ -215,12 +217,12 @@ export default function RegisterDialog({ children }: RegisterDialogProps) {
 
                         <div className="grid gap-2">
                             <Label htmlFor="confirm-password">
-                                Xác nhận mật khẩu
+                                {t("confirmPasswordLabel")}
                             </Label>
                             <Input
                                 id="confirm-password"
                                 type="password"
-                                placeholder="••••••••"
+                                placeholder={t("passwordPlaceholder")}
                                 {...register("confirmPassword")}
                                 className={`h-11 ${
                                     errors.confirmPassword
@@ -238,8 +240,8 @@ export default function RegisterDialog({ children }: RegisterDialogProps) {
                             disabled={mutation.isPending}
                         >
                             {mutation.isPending
-                                ? "Đang tạo tài khoản..."
-                                : "Tạo tài khoản"}
+                                ? t("creating")
+                                : t("submit")}
                         </Button>
                     </form>
                 </div>

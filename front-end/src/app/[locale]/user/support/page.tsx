@@ -17,29 +17,35 @@ import {
     HeadphonesIcon,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-
-const HELP_SECTIONS = [
-    {
-        title: "Về Chúng tôi",
-        icon: UserCheck,
-        color: "bg-blue-500",
-        questions: [
-            "Tại sao tôi không đổi được điểm tích lũy?",
-            "Tôi có thể tích điểm như thế nào?",
-        ],
-    },
-    {
-        title: "Chính sách",
-        icon: ShieldQuestion,
-        color: "bg-purple-500",
-        questions: [
-            "Sử dụng hóa đơn chưa tích điểm để tích điểm?",
-            "Áp dụng Thành viên khi đặt hàng qua hotline?",
-        ],
-    },
-];
+import { useTranslations } from "next-intl";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export default function HelpCenter() {
+    const t = useTranslations("user.support");
+    const { user } = useAuthStore();
+    const userName = user?.name || t("guest");
+
+    const HELP_SECTIONS = [
+        {
+            title: t("sections.about.title"),
+            icon: UserCheck,
+            color: "bg-blue-500",
+            questions: [
+                t("sections.about.questions.0"),
+                t("sections.about.questions.1"),
+            ],
+        },
+        {
+            title: t("sections.policy.title"),
+            icon: ShieldQuestion,
+            color: "bg-purple-500",
+            questions: [
+                t("sections.policy.questions.0"),
+                t("sections.policy.questions.1"),
+            ],
+        },
+    ];
+
     return (
         <div className="min-h-screen bg-slate-50/50 pb-20 dark:bg-slate-950">
             {/* HERO SECTION - GRADIENT RỰC RỠ */}
@@ -48,26 +54,30 @@ export default function HelpCenter() {
                 <div className="relative z-10 container mx-auto max-w-4xl space-y-8 text-center">
                     <div className="flex justify-center">
                         <Badge className="animate-pulse border-none bg-white/20 px-6 py-1.5 text-white backdrop-blur-xl hover:bg-white/30">
-                            <Sparkles className="mr-2 size-3" /> Hỗ trợ khách
-                            hàng 24/7
+                            <Sparkles className="mr-2 size-3" /> {t("badge")}
                         </Badge>
                     </div>
 
                     <div className="space-y-4">
                         <h1 className="text-4xl font-black tracking-tight text-white md:text-6xl">
-                            Xin chào,{" "}
-                            <span className="text-yellow-300">Minh!</span>
+                            {t.rich("hello", {
+                                userName: userName,
+                                nameTag: (chunks) => (
+                                    <span className="text-yellow-300">
+                                        {chunks}
+                                    </span>
+                                ),
+                            })}
                         </h1>
                         <p className="mx-auto max-w-xl text-lg font-medium text-emerald-50 opacity-90 md:text-xl">
-                            Chúng tôi có thể giúp gì cho trải nghiệm mua sắm của
-                            bạn hôm nay?
+                            {t("hero.description")}
                         </p>
                     </div>
 
                     <div className="group relative mx-auto max-w-2xl">
                         <Input
                             className="h-16 w-full rounded-2xl border-none bg-white/95 pr-14 pl-8 text-lg text-slate-800 shadow-2xl shadow-emerald-900/20 backdrop-blur-md transition-all placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-yellow-400 dark:bg-slate-900/95 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus-visible:ring-yellow-300"
-                            placeholder="Nhập câu hỏi, từ khoá bạn quan tâm..."
+                            placeholder={t("search.placeholder")}
                         />
                         <div className="absolute top-1/2 right-4 -translate-y-1/2 cursor-pointer rounded-xl bg-green-600 p-2.5 text-white shadow-lg transition-transform group-hover:scale-110">
                             <Search className="size-6" />
@@ -131,7 +141,7 @@ export default function HelpCenter() {
                                         <HeadphonesIcon className="size-5" />
                                     </div>
                                     <h3 className="text-xl font-bold">
-                                        Kết nối nhanh
+                                        {t("quickConnect.title")}
                                     </h3>
                                 </div>
 
@@ -185,14 +195,13 @@ export default function HelpCenter() {
                         <div className="rounded-[2rem] bg-gradient-to-br from-yellow-400 to-orange-500 p-8 text-white shadow-lg shadow-orange-200">
                             <HelpCircle className="mb-4 size-10 opacity-50" />
                             <h4 className="mb-2 text-xl leading-tight font-black italic">
-                                Cần tư vấn trực tiếp?
+                                {t("directConsult.title")}
                             </h4>
                             <p className="mb-4 text-sm font-medium opacity-90">
-                                Chúng tôi luôn có mặt để giải đáp mọi thắc mắc
-                                của bạn.
+                                {t("directConsult.description")}
                             </p>
                             <button className="w-full rounded-xl bg-white py-3 font-bold text-orange-600 shadow-xl shadow-orange-900/20 transition-all hover:bg-slate-900 hover:text-white">
-                                Chat ngay bây giờ
+                                {t("directConsult.button")}
                             </button>
                         </div>
                     </div>
@@ -200,7 +209,7 @@ export default function HelpCenter() {
 
                 <div className="mt-16 space-y-4 text-center">
                     <p className="text-xs font-bold tracking-[0.3em] text-slate-400 uppercase dark:text-slate-600">
-                        &copy; 2026 T7M Online Store - Powered by KM Group
+                        {t("footer.copyright")}
                     </p>
                 </div>
             </div>

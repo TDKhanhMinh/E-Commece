@@ -3,13 +3,59 @@
         "save": "Lưu",
         "cancel": "Hủy",
         "search": "Tìm kiếm",
+        "globalSearch": {
+            "placeholder": "Tìm kiếm sản phẩm...",
+            "loading": "Đang tìm kiếm...",
+            "suggestedTitle": "Sản phẩm gợi ý",
+            "viewAll": "Xem tất cả kết quả cho \"{query}\"",
+            "noResults": "Không tìm thấy sản phẩm nào phù hợp với \"{query}\"."
+        },
         "themes": {
             "light": "Sáng",
             "dark": "Tối",
             "system": "Hệ thống"
         },
         "auth": {
-            "login": "Đăng nhập"
+            "login": {
+                "title": "Đăng nhập",
+                "description": "Nhập email của bạn để truy cập tài khoản T7M Online",
+                "google": "Google",
+                "github": "Github",
+                "orContinueWith": "Hoặc tiếp tục với",
+                "emailLabel": "Email",
+                "passwordLabel": "Mật khẩu",
+                "forgotPassword": "Quên mật khẩu?",
+                "submit": "Đăng nhập",
+                "loggingIn": "Đang đăng nhập...",
+                "noAccount": "Chưa có tài khoản?",
+                "registerNow": "Đăng ký ngay",
+                "agreementPrefix": "Bằng cách tiếp tục, bạn đồng ý với",
+                "termsOfService": "Điều khoản dịch vụ",
+                "agreementSuffix": "của chúng tôi.",
+                "successToast": "Đăng nhập thành công!"
+            },
+            "register": {
+                "title": "Tạo tài khoản mới",
+                "description": "Bắt đầu trải nghiệm mua sắm tại T7M Online ngay hôm nay",
+                "orRegisterWithEmail": "Hoặc đăng ký bằng Email",
+                "nameLabel": "Họ và tên",
+                "namePlaceholder": "Nguyễn Văn A",
+                "emailLabel": "Email",
+                "emailPlaceholder": "name@example.com",
+                "phoneLabel": "Số điện thoại",
+                "phonePlaceholder": "0123456789",
+                "passwordLabel": "Mật khẩu",
+                "confirmPasswordLabel": "Xác nhận mật khẩu",
+                "passwordPlaceholder": "••••••••",
+                "submit": "Tạo tài khoản",
+                "creatingAccount": "Đang tạo tài khoản...",
+                "haveAccount": "Đã có tài khoản?",
+                "loginNow": "Đăng nhập",
+                "agreementPrefix": "Việc tạo tài khoản đồng nghĩa với việc bạn chấp nhận",
+                "privacyPolicy": "Chính sách bảo mật",
+                "agreementSuffix": "của chúng tôi.",
+                "successToast": "Đăng ký thành công!"
+            }
         },
         "roles": {
             "admin": "Admin",
@@ -59,6 +105,51 @@
                 "ignore": "Bỏ qua",
                 "confirmCancel": "Xác nhận hủy"
             }
+        },
+        "registerDialog": {
+            "trigger": "Thêm người dùng mới",
+            "title": "Tạo tài khoản mới",
+            "description": "Thêm tài khoản cho Khách hàng hoặc Shipper nội bộ",
+            "google": "Google",
+            "github": "Github",
+            "orWithEmail": "Hoặc đăng ký bằng Email",
+            "nameLabel": "Họ và tên",
+            "namePlaceholder": "Nguyễn Văn A",
+            "emailLabel": "Email",
+            "emailPlaceholder": "name@example.com",
+            "phoneLabel": "Số điện thoại",
+            "phonePlaceholder": "0123456789",
+            "roleLabel": "Vai trò",
+            "rolePlaceholder": "Chọn vai trò",
+            "roles": {
+                "user": "Khách hàng (USER)",
+                "shipper": "Nhân viên Giao hàng (SHIPPER)"
+            },
+            "passwordLabel": "Mật khẩu",
+            "passwordPlaceholder": "••••••••",
+            "confirmPasswordLabel": "Xác nhận mật khẩu",
+            "submit": "Tạo tài khoản",
+            "creating": "Đang tạo tài khoản...",
+            "success": "Tạo tài khoản thành công!",
+            "error": "Có lỗi xảy ra!"
+        },
+        "reviewDialog": {
+            "trigger": "Viết đánh giá của bạn",
+            "title": "Đánh giá sản phẩm",
+            "description": "Chia sẻ cảm nhận của bạn về <strong>{productName}</strong>.",
+            "ratingLabel": "Mức độ hài lòng",
+            "titleLabel": "Tiêu đề",
+            "titlePlaceholder": "Ví dụ: Rất hài lòng, Máy đẹp như mới...",
+            "contentLabel": "Nội dung chi tiết",
+            "contentPlaceholder": "Bạn thấy sản phẩm này thế nào? (Pin, hiệu năng, ngoại hình...)",
+            "cancel": "Hủy bỏ",
+            "submitting": "Đang gửi...",
+            "submit": "Gửi đánh giá",
+            "validation": {
+                "titleMin": "Tiêu đề phải có ít nhất 5 ký tự",
+                "contentMin": "Nội dung đánh giá phải có ít nhất 10 ký tự",
+                "ratingMin": "Vui lòng chọn số sao"
+            }
         }
     },
     "admin": {
@@ -104,6 +195,281 @@
             "address": "Quận 7, TP. Hồ Chí Minh"
         },
         "copyright": "© 2026 T7M Online. Built for TRAN DO KHANH MINH project"
+    },
+    "home": {
+        "hero": {
+            "badge": "Thiết bị hàng đầu. Giá thông minh.",
+            "title": "Chiếc iPhone tiếp theo của bạn bắt đầu từ đây!",
+            "description": "Mua iPhone cao cấp từ $119 được chứng nhận, hiệu năng mạnh mẽ và được bảo hành 12 tháng mà bạn có thể tin cậy.",
+            "button": "Mua ngay"
+        },
+        "vouchers": {
+            "title": "Ưu đãi HOT hôm nay",
+            "subtitle": "Lưu ngay mã giảm giá vào ví trước khi mua sắm bạn nhé!",
+            "minOrderLabel": "Đơn tối thiểu:",
+            "expiryLabel": "HSD:",
+            "saveButton": "Lưu mã",
+            "collectedToast": "Đã lưu mã {code} vào ví của bạn! 🎉",
+            "collectErrorToast": "Có lỗi xảy ra khi lưu mã"
+        },
+        "welcome": {
+            "badge": "Chào mừng đến với T7M Tech Store",
+            "title1": "Kết nối của bạn với các thiết bị",
+            "title2": "đã qua sử dụng đáng tin cậy.",
+            "description": "Chúng tôi tin rằng sự khác biệt duy nhất giữa việc mua một thiết bị mới và một thiết bị đã qua sử dụng được chứng nhận chỉ là giá cả. Đó là lý do tại sao chúng tôi kiểm tra, làm sạch, khử trùng và chứng nhận mọi thiết bị chúng tôi bán.",
+            "learnMoreButton": "Tìm hiểu thêm",
+            "items": {
+                "quality": {
+                    "title": "Chất lượng được chứng nhận",
+                    "description": "Mỗi thiết bị đều trải qua quá trình kiểm tra nghiêm ngặt để đảm bảo đáp ứng các tiêu chuẩn cao của chúng tôi về hiệu suất và độ tin cậy."
+                },
+                "guarantee": {
+                    "title": "Đảm bảo 30 ngày \"Yêu hoặc Trả lại\"",
+                    "description": "Dùng thử, kiểm tra, và yêu thích nó. Nếu không, hãy gửi lại trong vòng 30 ngày để được hoàn tiền đầy đủ. Không căng thẳng, không rủi ro."
+                },
+                "inspection": {
+                    "title": "Chất lượng chứng nhận, Kiểm tra 90+ điểm",
+                    "description": "Mọi thiết bị đều vượt qua quy trình kiểm tra, làm sạch và phân loại nghiêm ngặt của Plug để có hiệu suất đáng tin cậy ngay từ ngày đầu tiên."
+                }
+            }
+        },
+        "bundles": {
+            "badge": "Kết hợp các sản phẩm yêu thích",
+            "title": "Mua nhiều hơn, trả ít hơn!",
+            "description": "Tại sao phải mua riêng lẻ khi bạn có thể tiết kiệm nhiều hơn? Nhận ưu đãi độc quyền khi bạn kết hợp iPhone với AirPods, MacBook với iPad, v.v.",
+            "shopNowButton": "Mua Gói Plug Ngay"
+        },
+        "carousel": {
+            "badge": "Được tin tưởng bởi nhiều người, được yêu mến bởi tất cả",
+            "title": "Khám phá Công nghệ hàng đầu của chúng tôi",
+            "items": {
+                "iphone": "Mượt mà. Bảo mật. Đơn giản là iPhone.",
+                "android": "Khám phá các lựa chọn Android hàng đầu.",
+                "ipads": "Làm việc chăm chỉ. Chơi thông minh.",
+                "macbooks": "Luôn kết nối, Luôn năng động.",
+                "audio": "Âm thanh được chứng nhận, Cảm xúc mỗi ngày.",
+                "smartwatches": "Luôn kết nối, Luôn năng động.",
+                "Plug packs": "Sẵn sàng tạo gói, Được tuyển chọn bởi Plug."
+            }
+        },
+        "feedback": {
+            "badge": "ĐƯỢC TIN TƯỞNG BỞI NHIỀU NGƯỜI, ĐƯỢC YÊU MẾN BỞI TẤT CẢ",
+            "title": "Trải nghiệm thực tế. Sự hài lòng thực tế.",
+            "noReviews": "Chưa có đánh giá nào được hiển thị."
+        },
+        "sale": {
+            "badge": "Lựa chọn cho riêng bạn",
+            "title": "Công nghệ bạn sẽ thích – Ưu đãi hàng đầu",
+            "viewAll": "Xem tất cả",
+            "loading": "Đang tải sản phẩm...",
+            "noProducts": "Không có sản phẩm nào",
+            "categories": {
+                "All": "Tất cả",
+                "iPhone": "iPhone",
+                "MacBook": "MacBook",
+                "iPad": "iPad",
+                "Watch": "Đồng hồ",
+                "Audio": "Âm thanh"
+            }
+        },
+        "deals": {
+            "badge": "Ưu đãi giới hạn thời gian",
+            "title": "Nâng cấp thông minh với mức tiết kiệm lớn hơn.",
+            "description": "Công nghệ bạn muốn, không tốn quá nhiều chi phí. Mua iPhone, AirPods, MacBook và iPad được chứng nhận với giá thấp hơn. Tất cả đều không gây rắc rối và được bảo hành 12 tháng từ T7M.",
+            "viewAll": "Xem tất cả",
+            "from": "Từ"
+        },
+        "faq": {
+            "badge": "MỌI THỨ BẠN CẦN BIẾT",
+            "title": "Câu hỏi thường gặp",
+            "items": {
+                "0": {
+                    "question": "Thiết bị của Plug ở tình trạng như thế nào?",
+                    "answer": "Tất cả các thiết bị của Plug đều là hàng đã qua sử dụng được chứng nhận và phân loại theo tình trạng—Tuyệt vời, Tốt hoặc Trung bình—vì vậy bạn luôn biết mình nên mong đợi điều gì. Mỗi thiết bị đều được làm sạch, kiểm tra và hoạt động bình thường, bất kể loại nào."
+                },
+                "1": {
+                    "question": "Các thiết bị của Plug có đi kèm phụ kiện không?",
+                    "answer": "Có, hầu hết các thiết bị đều đi kèm với cáp sạc chất lượng cao và các phụ kiện cần thiết. Vui lòng kiểm tra mô tả sản phẩm cụ thể để biết thêm chi tiết."
+                },
+                "2": {
+                    "question": "Nếu tôi không hài lòng với đơn đặt hàng của mình thì sao?",
+                    "answer": "Chúng tôi cung cấp chính sách hoàn trả không rắc rối. Nếu bạn không hài lòng, bạn có thể trả lại thiết bị của mình trong khung thời gian quy định để được hoàn tiền hoặc đổi hàng."
+                },
+                "3": {
+                    "question": "Đơn hàng của tôi sẽ được vận chuyển nhanh như thế nào?",
+                    "answer": "Các đơn hàng thường được xử lý trong vòng 24 giờ và được vận chuyển thông qua các phương thức tiêu chuẩn hoặc nhanh chóng tùy thuộc vào sự lựa chọn của bạn khi thanh toán."
+                },
+                "4": {
+                    "question": "Thiết bị của Plug có phải là hàng chính hãng và nguyên bản không?",
+                    "answer": "Chắc chắn rồi. Chúng tôi đảm bảo rằng tất cả các thiết bị được bán đều là hàng chính hãng 100% và đã trải qua các cuộc kiểm tra đa điểm nghiêm ngặt."
+                }
+            }
+        },
+        "subscribe": {
+            "title": "Đăng ký để cập nhật những ưu đãi tuyệt vời của chúng tôi.",
+            "description": "Luôn đi đầu với các ưu đãi độc quyền, cập nhật sản phẩm mới nhất và giảm giá đặc biệt được gửi trực tiếp đến hộp thư đến của bạn.",
+            "placeholder": "Email của bạn...",
+            "button": "Đăng ký"
+        }
+    },
+    "cart": {
+        "sheet": {
+            "title": "Giỏ hàng của bạn",
+            "empty": {
+                "title": "Giỏ hàng trống",
+                "description": "Hãy tìm sản phẩm yêu thích và thêm vào giỏ hàng ngay nhé!",
+                "button": "Mua sắm ngay"
+            },
+            "loading": "Đang cập nhật giỏ hàng...",
+            "itemsCount": "Giỏ hàng ({count})",
+            "qty": "SL",
+            "subtotal": "Tạm tính ({count} món)",
+            "discount": "Giảm giá",
+            "total": "Tổng cộng",
+            "checkout": "Thanh toán ngay"
+        },
+        "summary": {
+            "title": "Tóm tắt đơn hàng",
+            "subtotal": "Tạm tính",
+            "discount": "Giảm giá",
+            "total": "Tổng cộng",
+            "totalItems": "Tổng số lượng: {count} sản phẩm",
+            "processing": "Đang xử lý...",
+            "checkout": "Thanh toán ngay",
+            "selectRequired": "Vui lòng chọn sản phẩm để thanh toán"
+        },
+        "header": {
+            "title": "Giỏ hàng của bạn ({count} sản phẩm)",
+            "clearAll": "Xóa tất cả",
+            "clearing": "Đang xóa..."
+        },
+        "item": {
+            "outOfStock": "Sản phẩm tạm hết hàng / Không đủ số lượng",
+            "total": "Tổng: {price}",
+            "button": "Tiếp tục mua sắm"
+        },
+        "error": {
+            "message": "Đã xảy ra lỗi khi tải giỏ hàng của bạn. Vui lòng thử lại sau."
+        },
+        "page": {
+            "loginRequired": "Vui lòng đăng nhập để tiếp tục đặt hàng",
+            "selectRequired": "Vui lòng chọn ít nhất một sản phẩm để đặt hàng",
+            "outOfStockError": "Một số sản phẩm đã hết hàng hoặc không đủ số lượng"
+        }
+    },
+    "checkout": {
+        "page": {
+            "loading": "Đang tải thông tin thanh toán...",
+            "error": "Lỗi: {message}",
+            "loadError": "Không thể tải thông tin đơn hàng",
+            "noData": "Không có thông tin đơn hàng",
+            "voucherApplied": "Đã áp dụng mã: {code}",
+            "voucherConditionError": "Mã giảm giá không đủ điều kiện áp dụng",
+            "addressRequired": "Vui lòng thêm địa chỉ giao hàng trước khi đặt hàng",
+            "orderSuccess": "Đặt hàng thành công! Mã đơn hàng: #{orderId}",
+            "vnpayInit": "Đang khởi tạo giao dịch VNPay, vui lòng đợi...",
+            "paypalInit": "Đơn hàng đã được tạo. Vui lòng hoàn tất thanh toán qua PayPal...",
+            "orderError": "Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại.",
+            "paypalTitle": "Thanh toán đơn hàng #{orderId}",
+            "paypalDescription": "Vui lòng nhấp vào nút bên dưới để hoàn tất thanh toán an toàn qua PayPal",
+            "payLater": "Thanh toán sau (Quản lý đơn hàng)"
+        },
+        "header": {
+            "title": "Xác nhận đơn hàng"
+        },
+        "summary": {
+            "title": "Tóm tắt đơn hàng",
+            "subtotal": "Tạm tính ({count} sản phẩm)",
+            "shippingFee": "Phí vận chuyển",
+            "free": "Miễn phí",
+            "voucherDiscount": "Voucher giảm giá",
+            "pointsUsage": "Dùng điểm thưởng",
+            "total": "Tổng cộng",
+            "vatIncluded": "(Đã bao gồm VAT nếu có)",
+            "confirm": "Xác nhận đặt hàng",
+            "processing": "Đang xử lý...",
+            "addressRequiredHint": "Vui lòng thêm địa chỉ giao hàng để tiếp tục",
+            "terms": "Bằng việc đặt hàng, bạn đồng ý với <link>điều khoản và dịch vụ</link> của chúng tôi."
+        },
+        "address": {
+            "title": "Địa chỉ giao hàng",
+            "empty": "Chưa có địa chỉ giao hàng",
+            "emptyHint": "Vui lòng thêm địa chỉ giao hàng để tiếp tục đặt hàng",
+            "add": "Thêm địa chỉ giao hàng",
+            "default": "Mặc định",
+            "change": "Thay đổi địa chỉ"
+        },
+        "items": {
+            "title": "Sản phẩm đã chọn ({count})"
+        },
+        "shipping": {
+            "title": "Phương thức vận chuyển",
+            "standard": {
+                "name": "Giao hàng tiêu chuẩn",
+                "description": "Nhận hàng sau 2-4 ngày làm việc",
+                "price": "Miễn phí"
+            },
+            "express": {
+                "name": "Giao hàng hỏa tốc",
+                "description": "Nhận hàng ngay trong ngày",
+                "price": "30.000₫"
+            }
+        },
+        "payment": {
+            "title": "Phương thức thanh toán",
+            "cod": {
+                "name": "Thanh toán khi nhận hàng (COD)",
+                "description": "Thanh toán bằng tiền mặt khi nhận hàng"
+            },
+            "vnpay": {
+                "name": "Thanh toán qua VNPAY",
+                "description": "Hỗ trợ thẻ ATM, QR Code, Thẻ quốc tế"
+            },
+            "paypal": {
+                "name": "Thanh toán qua Paypal",
+                "description": "Hỗ trợ thẻ ATM, QR Code, Thẻ quốc tế"
+            }
+        },
+        "voucher": {
+            "title": "Mã giảm giá",
+            "placeholder": "Nhập mã giảm giá...",
+            "apply": "Áp dụng",
+            "applied": "Đang áp dụng: {code}",
+            "select": "Chọn voucher từ kho của bạn",
+            "wallet": "Kho Voucher của bạn",
+            "loading": "Đang tải kho voucher...",
+            "noVouchers": "Bạn chưa có mã giảm giá nào",
+            "minOrder": "Đơn tối thiểu: {amount}"
+        },
+        "points": {
+            "title": "Dùng điểm thưởng",
+            "balance": "Bạn đang có: {points} điểm",
+            "maxAllowed": "Số điểm muốn dùng (Tối đa: {max})",
+            "discountLabel": "Số tiền được giảm",
+            "rate": "Tỉ lệ quy đổi: 1 điểm = {rate}"
+        },
+        "paypal": {
+            "errorInitiate": "Không thể khởi tạo thanh toán PayPal.",
+            "errorNoTransaction": "Không nhận được mã giao dịch từ hệ thống.",
+            "processing": "Đang xử lý giao dịch, vui lòng không đóng trình duyệt...",
+            "success": "Thanh toán PayPal thành công!",
+            "errorCapture": "Xác nhận thanh toán thất bại.",
+            "cancelled": "Bạn đã hủy giao dịch PayPal.",
+            "maintenance": "Cổng thanh toán PayPal đang bảo trì hoặc gặp sự cố. Vui lòng thử lại sau."
+        }
+    },
+    "error": {
+        "title": "Đã xảy ra sự cố!",
+        "description": "Chúng tôi rất tiếc vì sự gián đoạn này. Một lỗi hệ thống đã xảy ra trong quá trình xử lý yêu cầu của bạn.",
+        "retry": "Thử lại",
+        "goHome": "Về trang chủ",
+        "idLabel": "Mã lỗi"
+    },
+    "notFound": {
+        "title": "Không tìm thấy trang",
+        "description": "Xin lỗi, chúng tôi không thể tìm thấy trang bạn đang tìm kiếm. Có vẻ như đường dẫn này đã bị xóa hoặc chưa từng tồn tại.",
+        "goHome": "Về trang chủ",
+        "errorCodeLabel": "Mã lỗi"
     },
     "sidebar": {
         "admin": "Quản trị viên",
@@ -244,6 +610,22 @@
             "info": "Trang {page} / {total} (Tổng {count} đơn)",
             "previous": "Trước",
             "next": "Tiếp theo"
+        },
+        "details": {
+            "title": "Chi tiết đơn hàng #{id}",
+            "addressLabel": "Địa chỉ nhận hàng",
+            "phoneLabel": "Số điện thoại",
+            "locationLabel": "Địa chỉ",
+            "statusLabel": "Trạng thái",
+            "paymentMethodLabel": "Phương thức thanh toán",
+            "shippingMethodLabel": "Phương thức vận chuyển",
+            "orderTimeLabel": "Thời gian đặt hàng",
+            "itemsTotal": "Tổng tiền sản phẩm",
+            "discount": "Giảm giá",
+            "totalAmount": "Tổng thanh toán",
+            "productsCount": "Sản phẩm ({count})",
+            "skuLabel": "Mã SKU",
+            "quantityLabel": "x{count}"
         }
     },
     "products": {
@@ -854,6 +1236,306 @@
             "description": "Bạn chắc chắn muốn xóa cuộc hội thoại này? Hành động này không thể hoàn tác.",
             "confirm": "Xóa",
             "cancel": "Hủy"
+        }
+    },
+    "user": {
+        "profile": {
+            "title": "Thông tin cá nhân",
+            "nameLabel": "Họ & tên",
+            "phoneLabel": "Số điện thoại",
+            "genderLabel": "Giới tính",
+            "genderPlaceholder": "Chưa cập nhật",
+            "dobLabel": "Ngày sinh",
+            "emailLabel": "Email",
+            "submitButton": "Cập nhật thông tin",
+            "updatingButton": "Đang cập nhật...",
+            "loading": "Đang tải thông tin...",
+            "error": "Lỗi: {message}",
+            "successToast": "Cập nhật thông tin thành công!",
+            "errorToast": "Cập nhật thất bại"
+        },
+        "addresses": {
+            "title": "Bạn có <blue>{count}</blue> địa chỉ",
+            "loading": "Đang tải danh sách địa chỉ...",
+            "error": "Không thể tải danh sách địa chỉ. Vui lòng thử lại sau.",
+            "empty": "Bạn chưa lưu địa chỉ nào.",
+            "addBtn": "Thêm địa chỉ",
+            "addTitle": "Thêm địa chỉ mới"
+        },
+        "orders": {
+            "list": {
+                "title": "Lịch sử đơn hàng",
+                "all": "Tất cả",
+                "searchPlaceholder": "Tìm kiếm theo mã đơn hàng",
+                "itemTitle": "Đơn hàng #{id} - {count} sản phẩm",
+                "pagination": "Hiển thị {count} trong tổng số {total} đơn hàng",
+                "prev": "Trước",
+                "next": "Sau",
+                "empty": "Chưa có đơn hàng nào",
+                "notFound": "Không tìm thấy đơn hàng nào"
+            },
+            "detail": {
+                "loading": "Đang tải thông tin đơn hàng...",
+                "notFound": "Không tìm thấy đơn hàng với ID: {id}",
+                "title": "Chi tiết đơn hàng",
+                "idLabel": "Mã đơn hàng:",
+                "addressLabel": "Địa chỉ:",
+                "statusLabel": "Trạng thái đơn hàng",
+                "paymentMethodLabel": "Phương thức thanh toán",
+                "shippingMethodLabel": "Phương thức vận chuyển",
+                "subtotal": "Tổng tiền sản phẩm",
+                "memberDiscount": "Ưu đãi thành viên (đã giảm)",
+                "productDiscount": "Ưu đãi sản phẩm (đã giảm)",
+                "voucherDiscount": "Giảm giá voucher",
+                "shippingCost": "Phí vận chuyển",
+                "free": "Miễn phí",
+                "totalDiscount": "Tổng tiền giảm giá",
+                "finalAmount": "Tổng tiền thanh toán",
+                "createdAt": "Thời gian đặt hàng",
+                "cancelledAt": "Thời gian hủy đơn",
+                "confirmedAt": "Thời gian xác nhận đơn",
+                "deliveredAt": "Thời gian giao hàng",
+                "productListTitle": "Danh sách sản phẩm",
+                "itemCount": "{count} món",
+                "skuLabel": "SKU:",
+                "shippingStandard": "Giao hàng tiêu chuẩn",
+                "shippingExpress": "Giao hàng hỏa tốc",
+                "unknown": "Chưa xác định",
+                "paySuccess": "Thanh toán đơn hàng thành công!",
+                "payFailed": "Thanh toán thất bại hoặc đã bị hủy."
+            },
+            "statuses": {
+                "PENDING": "Chờ xác nhận",
+                "CONFIRMED": "Đã xác nhận",
+                "PAID": "Đã thanh toán",
+                "UNPAID": "Chưa thanh toán",
+                "SHIPPING": "Đang giao hàng",
+                "DELIVERED": "Giao thành công",
+                "CANCELLED": "Đã hủy",
+                "FAILED": "Thất bại",
+                "UNKNOWN": "Không rõ"
+            }
+        },
+        "memberships": {
+            "tiers": {
+                "MEMBER": "Thành viên",
+                "SILVER": "Hạng Bạc",
+                "GOLD": "Hạng Vàng",
+                "PLATINUM": "Bạch Kim"
+            },
+            "nextTiers": {
+                "MEMBER": "Bạc",
+                "SILVER": "Vàng",
+                "GOLD": "Bạch Kim",
+                "PLATINUM": "Tối đa"
+            },
+            "page": {
+                "loading": "Đang tải đặc quyền của bạn...",
+                "badge": "Thành viên chính thức",
+                "currentAccumulatedPoints": "Điểm tích lũy hiện tại",
+                "cardHolder": "Chủ thẻ",
+                "customer": "Khách hàng",
+                "redeemPointsTitle": "Điểm đổi quà",
+                "youHave": "Bạn hiện có <points /> điểm",
+                "useNow": "Sử dụng ngay",
+                "progressTitle": "Tiến trình",
+                "accumulateMore": "Tích lũy thêm <points /> điểm để nâng cấp!",
+                "maxTierMessage": "Đã đạt cấp độ tối đa! ✨",
+                "historyTitle": "Lịch sử điểm thưởng",
+                "historyLoading": "Đang bóc tách dữ liệu...",
+                "balance": "Số dư: {amount}",
+                "prevPage": "Trang trước",
+                "nextPage": "Trang sau",
+                "pageInfo": "Trang {current} / {total}",
+                "noHistory": "Chưa có dấu vết giao dịch nào.",
+                "privilegesTitle": "Đặc quyền của bạn",
+                "termsLink": "Xem chi tiết Điều khoản & Điều kiện"
+            },
+            "tabs": {
+                "member": {
+                    "label": "Thành viên",
+                    "content": [
+                        "Nhận 1 điểm thưởng cho mỗi 100.000 VNĐ chi tiêu.",
+                        "Ưu đãi giảm 5% cho một số phụ kiện chọn lọc (tai nghe, chuột, bàn phím).",
+                        "Thông báo sớm về các chương trình Flash Sale."
+                    ]
+                },
+                "silver": {
+                    "label": "Bạc",
+                    "content": [
+                        "Giảm giá 5% cho sản phẩm điện tử dưới 10 triệu VNĐ.",
+                        "Giảm giá 7% cho phụ kiện (tai nghe, chuột, sạc…).",
+                        "Miễn phí vận chuyển cho đơn hàng trên 2 triệu VNĐ.",
+                        "Hỗ trợ kỹ thuật online miễn phí 1 lần/tháng."
+                    ]
+                },
+                "gold": {
+                    "label": "Vàng",
+                    "content": [
+                        "Giảm giá 7% cho sản phẩm điện tử dưới 15 triệu VNĐ.",
+                        "Giảm giá 10% cho phụ kiện và linh kiện.",
+                        "Miễn phí vận chuyển toàn quốc cho đơn hàng trên 1 triệu VNĐ.",
+                        "Bảo hành mở rộng thêm 3 tháng cho 1 sản phẩm/năm.",
+                        "Ưu tiên tham gia các chương trình khuyến mãi giới hạn số lượng."
+                    ]
+                },
+                "platinum": {
+                    "label": "Bạch Kim",
+                    "content": [
+                        "Giảm giá 10% cho sản phẩm điện tử bất kỳ.",
+                        "Giảm giá 12% cho phụ kiện và linh kiện.",
+                        "Miễn phí vận chuyển không giới hạn.",
+                        "Bảo hành mở rộng thêm 6 tháng cho 2 sản phẩm/năm.",
+                        "Tặng voucher 500.000 VNĐ khi nâng cấp laptop/PC."
+                    ]
+                },
+                "diamond": {
+                    "label": "Kim Cương",
+                    "content": [
+                        "Giảm giá 15% cho toàn bộ sản phẩm điện tử và phụ kiện.",
+                        "Bảo hành mở rộng thêm 12 tháng cho 3 sản phẩm/năm.",
+                        "Miễn phí vệ sinh/làm mới laptop 2 lần/năm.",
+                        "Hỗ trợ kỹ thuật VIP 24/7.",
+                        "Tặng voucher 1.000.000 VNĐ khi mua điện thoại hoặc laptop mới.",
+                        "Tham gia sự kiện ra mắt sản phẩm và trải nghiệm công nghệ độc quyền."
+                    ]
+                }
+            }
+        },
+        "privacy": {
+            "badge": "Bảo mật dữ liệu chuẩn 4.0",
+            "title": "Quyền Riêng Tư Của Bạn <br /> LÀ <blue>Ưu Tiên Số 1</blue>",
+            "description": "Chúng tôi cam kết minh bạch trong việc thu thập và sử dụng dữ liệu để mang lại trải nghiệm tốt nhất cho bạn.",
+            "lastUpdated": "CẬP NHẬT LẦN CUỐI: {date}",
+            "sections": {
+                "dataCollection": {
+                    "title": "1. Dữ liệu thu thập",
+                    "table": {
+                        "type": "Loại dữ liệu",
+                        "example": "Ví dụ cụ thể",
+                        "purpose": "Mục đích",
+                        "items": {
+                            "personal": {
+                                "type": "Thông tin cá nhân",
+                                "example": "Họ tên, SĐT, Email",
+                                "purpose": "Xác thực & Hỗ trợ"
+                            },
+                            "delivery": {
+                                "type": "Thông tin giao hàng",
+                                "example": "Địa chỉ, Tỉnh/Thành",
+                                "purpose": "Vận chuyển"
+                            },
+                            "system": {
+                                "type": "Dữ liệu hệ thống",
+                                "example": "IP, Thiết bị",
+                                "purpose": "Bảo mật & UX"
+                            }
+                        }
+                    }
+                },
+                "usage": {
+                    "title": "2. Cách thức sử dụng",
+                    "items": {
+                        "transaction": {
+                            "title": "Xử lý giao dịch",
+                            "content": "Hoàn tất đơn hàng và tích lũy điểm thưởng thành viên."
+                        },
+                        "notification": {
+                            "title": "Thông báo",
+                            "content": "Gửi cập nhật về tình trạng đơn hàng hoặc thay đổi quan trọng."
+                        }
+                    }
+                },
+                "sharing": {
+                    "title": "3. Chia sẻ dữ liệu",
+                    "commitment": "Cam kết không bán dữ liệu",
+                    "content": "Chúng tôi chỉ cung cấp thông tin cần thiết (Địa chỉ & SĐT) cho đối tác vận chuyển để đơn hàng có thể tới tay bạn nhanh nhất."
+                },
+                "rights": {
+                    "badge": "Quyền kiểm soát",
+                    "title": "Bạn có toàn quyền",
+                    "description": "Yêu cầu truy cập, chỉnh sửa hoặc xóa vĩnh viễn dữ liệu cá nhân bất kỳ lúc nào thông qua phần **Cài đặt**.",
+                    "button": "TRUY CẬP CÀI ĐẶT"
+                },
+                "footer": {
+                    "question": "Liên hệ hỗ trợ bảo mật",
+                    "email": "privacy@t7m.kmgroup.com"
+                }
+            }
+        },
+        "terms": {
+            "badge": "Văn bản pháp lý chính thức",
+            "title": "Điều khoản <blue>&</blue> Dịch vụ",
+            "description": "Quy định rõ ràng về quyền lợi và trách nhiệm giúp xây dựng một cộng đồng mua sắm văn minh, minh bạch.",
+            "lastUpdated": "Cập nhật lần cuối: {date}",
+            "sections": {
+                "acceptance": {
+                    "title": "Chấp nhận điều khoản",
+                    "content": "Bằng cách truy cập và sử dụng dịch vụ của chúng tôi, bạn đồng ý tuân thủ các điều khoản này. Nếu bạn không đồng ý với bất kỳ phần nào, vui lòng ngừng sử dụng dịch vụ ngay lập tức."
+                },
+                "account": {
+                    "title": "Tài khoản người dùng",
+                    "content": "Bạn có trách nhiệm bảo mật thông tin đăng nhập và mật khẩu của mình. Mọi hoạt động xảy ra dưới tài khoản của bạn sẽ do bạn chịu trách nhiệm hoàn toàn. Chúng tôi có quyền tạm khóa tài khoản nếu phát hiện dấu hiệu vi phạm bảo mật."
+                },
+                "points": {
+                    "title": "Quy định tích lũy điểm",
+                    "content": "Hệ thống tích điểm dựa trên giá trị đơn hàng thực tế sau khi đã trừ các khuyến mãi. Điểm thưởng không có giá trị quy đổi thành tiền mặt và có thời hạn sử dụng theo quy định của từng hạng thành viên."
+                },
+                "privacy": {
+                    "title": "Chính sách bảo mật",
+                    "content": "Chúng tôi cam kết bảo vệ thông tin cá nhân của bạn. Thông tin địa chỉ và số điện thoại chỉ được sử dụng cho mục đích giao hàng và hỗ trợ khách hàng theo chuẩn an toàn quốc tế."
+                },
+                "changes": {
+                    "title": "Thay đổi điều khoản",
+                    "content": "Chúng tôi có quyền cập nhật các điều khoản này bất cứ lúc nào mà không cần thông báo trước. Việc bạn tiếp tục sử dụng dịch vụ đồng nghĩa với việc chấp nhận các thay đổi đó."
+                }
+            },
+            "support": {
+                "title": "Bạn cần hỗ trợ thêm?",
+                "description": "Nếu có bất kỳ thắc mắc nào về điều khoản dịch vụ, đội ngũ hỗ trợ của chúng tôi luôn sẵn sàng lắng nghe.",
+                "button": "Liên hệ Trung tâm hỗ trợ"
+            },
+            "footer": {
+                "copyright": "© 2026 T7M Online Store - All Rights Reserved"
+            }
+        },
+        "support": {
+            "badge": "Hỗ trợ khách hàng 24/7",
+            "hello": "Xin chào, <nameTag>{userName}</nameTag>!",
+            "guest": "Khách",
+            "hero": {
+                "description": "Chúng tôi có thể giúp gì cho trải nghiệm mua sắm của bạn hôm nay?"
+            },
+            "search": {
+                "placeholder": "Nhập câu hỏi, từ khoá bạn quan tâm..."
+            },
+            "sections": {
+                "about": {
+                    "title": "Về Chúng tôi",
+                    "questions": [
+                        "Tại sao tôi không đổi được điểm tích lũy?",
+                        "Tôi có thể tích điểm như thế nào?"
+                    ]
+                },
+                "policy": {
+                    "title": "Chính sách",
+                    "questions": [
+                        "Sử dụng hóa đơn chưa tích điểm để tích điểm?",
+                        "Áp dụng Thành viên khi đặt hàng qua hotline?"
+                    ]
+                }
+            },
+            "quickConnect": {
+                "title": "Kết nối nhanh"
+            },
+            "directConsult": {
+                "title": "Cần tư vấn trực tiếp?",
+                "description": "Chúng tôi luôn có mặt để giải đáp mọi thắc mắc của bạn.",
+                "button": "Chat ngay bây giờ"
+            },
+            "footer": {
+                "copyright": "© 2026 T7M Online Store - Powered by KM Group"
+            }
         }
     }
 }

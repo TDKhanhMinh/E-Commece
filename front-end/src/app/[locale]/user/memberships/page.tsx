@@ -5,9 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { USER_MEMBERSHIPS_TABS } from "../../../../../mock"; //
-import { usePoints } from "@/hooks/use-point"; //
-import { useAuthStore } from "@/store/useAuthStore"; //
+import { usePoints } from "@/hooks/use-point";
+import { useAuthStore } from "@/store/useAuthStore";
 import {
     ChevronRight,
     Clock,
@@ -17,22 +16,9 @@ import {
     TrendingDown,
     TrendingUp,
 } from "lucide-react";
-import { fDateTime } from "@/lib/format-date-time"; //
+import { fDateTime } from "@/lib/format-date-time";
 import { Badge } from "@/components/ui/badge";
-
-const TIER_MAP: Record<string, string> = {
-    MEMBER: "Thành viên",
-    SILVER: "Hạng Bạc",
-    GOLD: "Hạng Vàng",
-    PLATINUM: "Bạch Kim",
-}; //
-
-const NEXT_TIER_MAP: Record<string, string> = {
-    MEMBER: "Bạc",
-    SILVER: "Vàng",
-    GOLD: "Bạch Kim",
-    PLATINUM: "Tối đa",
-}; //
+import { useTranslations, useLocale } from "next-intl";
 
 // Cấu hình màu sắc Gradient cho từng hạng
 const TIER_STYLES: Record<string, string> = {
@@ -43,40 +29,45 @@ const TIER_STYLES: Record<string, string> = {
 };
 
 export default function Membership() {
-    const { user } = useAuthStore(); //
-    const userId = user?.id ? parseInt(user.id) : 0; //
-    const [page, setPage] = useState(0); //
-    const size = 5; //
+    const t = useTranslations("user.memberships");
+    const locale = useLocale();
+    const { user } = useAuthStore();
+    const userId = user?.id ? parseInt(user.id) : 0;
+    const [page, setPage] = useState(0);
+    const size = 5;
 
-    const { useMyPointSummary, useMyPointHistory } = usePoints(); //
+    const { useMyPointSummary, useMyPointHistory } = usePoints();
 
-    const { data: summary, isLoading: isLoadingSummary } = useMyPointSummary(); //
+    const { data: summary, isLoading: isLoadingSummary } = useMyPointSummary();
     const { data: historyPage, isLoading: isLoadingHistory } =
-        useMyPointHistory(userId, page, size); //
+        useMyPointHistory(userId, page, size);
 
     const calculateProgress = () => {
-        if (!summary) return 0; //
-        if (summary.membershipTier === "PLATINUM") return 100; //
-        const currentAcc = summary.totalAccumulatedPoints || 0; //
-        const missing = summary.pointsToNextTier || 0; //
-        const target = currentAcc + missing; //
-        if (target === 0) return 0; //
-        return (currentAcc / target) * 100; //
+        if (!summary) return 0;
+        if (summary.membershipTier === "PLATINUM") return 100;
+        const currentAcc = summary.totalAccumulatedPoints || 0;
+        const missing = summary.pointsToNextTier || 0;
+        const target = currentAcc + missing;
+        if (target === 0) return 0;
+        return (currentAcc / target) * 100;
     };
 
     if (isLoadingSummary) {
         return (
             <div className="flex h-screen animate-pulse items-center justify-center font-bold text-slate-500 italic">
-                Đang tải đặc quyền của bạn...
+                {t("page.loading")}
             </div>
         );
     }
 
-    const tierCode = summary?.membershipTier || "MEMBER"; //
-    const currentTierName = TIER_MAP[tierCode]; //
-    const nextTierName = NEXT_TIER_MAP[tierCode]; //
-    const isMaxTier = tierCode === "PLATINUM"; //
+    const tierCode = summary?.membershipTier || "MEMBER";
+    const currentTierName = t(`tiers.${tierCode}`);
+    const nextTierName = t(`nextTiers.${tierCode}`);
+    const isMaxTier = tierCode === "PLATINUM";
     const currentStyle = TIER_STYLES[tierCode];
+
+    // Membership tabs configuration
+    const TAB_VALUES = ["member", "silver", "gold", "platinum", "diamond"];
 
     return (
         <div className="min-h-screen space-y-8 bg-slate-50/50 p-6 dark:bg-slate-950">
@@ -91,7 +82,7 @@ export default function Membership() {
                     <div className="flex items-start justify-between">
                         <div className="space-y-1">
                             <Badge className="border-none bg-white/50 text-[10px] tracking-[0.2em] text-black uppercase backdrop-blur-md">
-                                Official Member
+                                {t("page.badge")}
                             </Badge>
                             <h2 className="text-3xl font-black tracking-tighter uppercase italic">
                                 {currentTierName}
@@ -104,20 +95,20 @@ export default function Membership() {
                         <div className="flex items-end justify-between text-black">
                             <div className="space-y-1">
                                 <p className="text-[10px] font-bold uppercase opacity-70">
-                                    Điểm tích lũy hiện tại
+                                    {t("page.currentAccumulatedPoints")}
                                 </p>
                                 <p className="text-4xl leading-none font-black tracking-tighter">
                                     {summary?.totalAccumulatedPoints?.toLocaleString(
-                                        "vi-VN"
+                                        locale
                                     ) || 0}
                                 </p>
                             </div>
                             <div className="text-right text-black">
                                 <p className="text-[10px] font-bold uppercase opacity-70">
-                                    Chủ thẻ
+                                    {t("page.cardHolder")}
                                 </p>
                                 <p className="font-bold tracking-widest uppercase italic">
-                                    {user?.name || "Khách hàng"}
+                                    {user?.name || t("page.customer")}
                                 </p>
                             </div>
                         </div>
@@ -138,20 +129,22 @@ export default function Membership() {
                                 <Star className="size-6" />
                             </div>
                             <h3 className="text-2xl font-black text-slate-800 italic dark:text-slate-100">
-                                Điểm đổi quà
+                                {t("page.redeemPointsTitle")}
                             </h3>
                             <p className="text-sm leading-relaxed font-medium text-slate-500 dark:text-slate-400">
-                                Bạn hiện có{" "}
-                                <span className="ml-2 text-3xl font-black text-blue-600 dark:text-blue-400">
-                                    {summary?.currentPoints?.toLocaleString(
-                                        "vi-VN"
-                                    ) || 0}
-                                </span>{" "}
-                                điểm
+                                {t.rich("page.youHave", {
+                                    points: (p) => (
+                                        <span className="ml-2 text-3xl font-black text-blue-600 dark:text-blue-400">
+                                            {summary?.currentPoints?.toLocaleString(
+                                                locale
+                                            ) || 0}
+                                        </span>
+                                    ),
+                                })}
                             </p>
                         </div>
                         <Button className="mt-6 h-14 w-full cursor-pointer rounded-2xl bg-slate-900 font-black tracking-widest text-white uppercase shadow-xl shadow-blue-900/10 transition-all hover:bg-blue-600 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-blue-500 dark:hover:text-white">
-                            Sử dụng ngay{" "}
+                            {t("page.useNow")}{" "}
                             <ChevronRight className="ml-2 size-4" />
                         </Button>
                     </CardContent>
@@ -162,7 +155,7 @@ export default function Membership() {
                     <CardContent className="space-y-6 p-8">
                         <div className="flex items-center justify-between">
                             <h3 className="text-2xl font-black text-slate-800 italic dark:text-slate-100">
-                                Tiến trình
+                                {t("page.progressTitle")}
                             </h3>
                             <ShieldCheck className="size-8 text-emerald-500" />
                         </div>
@@ -173,22 +166,24 @@ export default function Membership() {
                                 <span>{nextTierName}</span>
                             </div>
                             <Progress
-                                value={calculateProgress()} //
+                                value={calculateProgress()}
                                 className="h-4 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800"
                             />
                             {!isMaxTier ? (
                                 <p className="text-sm font-semibold text-slate-500 italic dark:text-slate-400">
-                                    Tích lũy thêm{" "}
-                                    <span className="font-black text-emerald-600 dark:text-emerald-400">
-                                        {summary?.pointsToNextTier?.toLocaleString(
-                                            "vi-VN"
-                                        ) || 0}
-                                    </span>{" "}
-                                    điểm để nâng cấp!
+                                    {t.rich("page.accumulateMore", {
+                                        points: (p) => (
+                                            <span className="font-black text-emerald-600 dark:text-emerald-400">
+                                                {summary?.pointsToNextTier?.toLocaleString(
+                                                    locale
+                                                ) || 0}
+                                            </span>
+                                        ),
+                                    })}
                                 </p>
                             ) : (
                                 <p className="text-sm font-black text-emerald-600 uppercase italic dark:text-emerald-400">
-                                    Đã đạt cấp độ tối đa! ✨
+                                    {t("page.maxTierMessage")}
                                 </p>
                             )}
                         </div>
@@ -203,22 +198,22 @@ export default function Membership() {
                         <div className="rounded-lg bg-slate-900 p-2 text-white dark:bg-slate-100 dark:text-slate-900">
                             <Clock className="h-6 w-6" />
                         </div>
-                        Lịch sử điểm thưởng
+                        {t("page.historyTitle")}
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="px-8 pb-8">
                     {isLoadingHistory ? (
                         <div className="py-10 text-center text-sm font-bold text-slate-400 italic">
-                            Đang bóc tách dữ liệu...
-                        </div> //
+                            {t("page.historyLoading")}
+                        </div>
                     ) : historyPage?.content &&
                       historyPage.content.length > 0 ? (
                         <div className="space-y-4">
                             {historyPage.content.map((item) => {
-                                const isEarn = item.pointDelta > 0; //
+                                const isEarn = item.pointDelta > 0;
                                 return (
                                     <div
-                                        key={item.id} //
+                                        key={item.id}
                                         className="flex items-center justify-between rounded-[1.5rem] border border-slate-100 bg-slate-50 p-5 transition-all duration-300 hover:bg-white hover:shadow-lg dark:border-slate-800 dark:bg-slate-800/50 dark:hover:bg-slate-800"
                                     >
                                         <div className="flex items-center gap-4">
@@ -238,7 +233,9 @@ export default function Membership() {
                                                 <p className="text-[10px] font-bold text-slate-400 italic">
                                                     {fDateTime(
                                                         item.createdAt,
-                                                        "HH:mm dd/MM/yyyy"
+                                                        locale === "vi"
+                                                            ? "HH:mm dd/MM/yyyy"
+                                                            : "HH:mm MM/dd/yyyy"
                                                     )}
                                                 </p>
                                             </div>
@@ -249,14 +246,15 @@ export default function Membership() {
                                             >
                                                 {isEarn ? "+" : ""}
                                                 {item.pointDelta.toLocaleString(
-                                                    "vi-VN"
+                                                    locale
                                                 )}
                                             </p>
                                             <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500">
-                                                Số dư:{" "}
-                                                {item.balanceAfter.toLocaleString(
-                                                    "vi-VN"
-                                                )}
+                                                {t("page.balance", {
+                                                    amount: item.balanceAfter.toLocaleString(
+                                                        locale
+                                                    ),
+                                                })}
                                             </p>
                                         </div>
                                     </div>
@@ -266,32 +264,35 @@ export default function Membership() {
                             <div className="flex items-center justify-between pt-6">
                                 <Button
                                     variant="outline"
-                                    disabled={page === 0} //
+                                    disabled={page === 0}
                                     onClick={() =>
                                         setPage((p) => Math.max(0, p - 1))
                                     }
                                     className="rounded-xl border-slate-200 font-bold dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100"
                                 >
-                                    Trang trước
+                                    {t("page.prevPage")}
                                 </Button>
                                 <span className="text-[10px] font-black tracking-widest text-slate-400 uppercase">
-                                    Trang {page + 1} / {historyPage.totalPages}
+                                    {t("page.pageInfo", {
+                                        current: page + 1,
+                                        total: historyPage.totalPages,
+                                    })}
                                 </span>
                                 <Button
                                     variant="outline"
                                     disabled={
                                         page >= historyPage.totalPages - 1
-                                    } //
+                                    }
                                     onClick={() => setPage((p) => p + 1)}
                                     className="rounded-xl border-slate-200 font-bold dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100"
                                 >
-                                    Trang sau
+                                    {t("page.nextPage")}
                                 </Button>
                             </div>
                         </div>
                     ) : (
                         <div className="rounded-[2rem] border-2 border-dashed border-slate-100 bg-slate-50/50 py-16 text-center text-sm font-bold text-slate-400 italic dark:border-slate-800 dark:bg-slate-950/50 dark:text-slate-500">
-                            Chưa có dấu vết giao dịch nào.
+                            {t("page.noHistory")}
                         </div>
                     )}
                 </CardContent>
@@ -301,46 +302,48 @@ export default function Membership() {
             <Card className="overflow-hidden rounded-[2rem] border-none bg-white shadow-xl shadow-slate-200/50 dark:bg-slate-900 dark:shadow-slate-950/50">
                 <CardContent className="space-y-8 p-8">
                     <h3 className="border-b pb-4 text-2xl font-black tracking-tighter text-slate-800 uppercase italic dark:border-slate-800 dark:text-slate-100">
-                        Đặc quyền của bạn
+                        {t("page.privilegesTitle")}
                     </h3>
 
                     <Tabs defaultValue="member" className="w-full">
                         <TabsList className="hide-scrollbar h-auto w-full flex-nowrap justify-start gap-8 overflow-x-auto rounded-none border-none bg-transparent p-0">
-                            {USER_MEMBERSHIPS_TABS.map((tab) => (
+                            {TAB_VALUES.map((val) => (
                                 <TabsTrigger
-                                    value={tab.value} //
-                                    key={tab.value}
+                                    value={val}
+                                    key={val}
                                     className="cursor-pointer rounded-none border-0 border-b-4 border-transparent bg-transparent px-0 py-4 text-[10px] font-black tracking-widest text-slate-300 uppercase transition-all data-[state=active]:border-slate-900 data-[state=active]:text-slate-900 dark:text-slate-600 dark:data-[state=active]:border-slate-100 dark:data-[state=active]:text-slate-100"
                                 >
-                                    {tab.label}
+                                    {t(`tabs.${val}.label`)}
                                 </TabsTrigger>
                             ))}
                         </TabsList>
 
-                        {USER_MEMBERSHIPS_TABS.map((tab) => (
+                        {TAB_VALUES.map((val) => (
                             <TabsContent
-                                value={tab.value} //
-                                key={tab.value}
+                                value={val}
+                                key={val}
                                 className="animate-in fade-in space-y-4 pt-8 duration-500"
                             >
                                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                                    {tab.content.map((item, index) => (
-                                        <div
-                                            key={index}
-                                            className="flex items-start gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/50"
-                                        >
-                                            <div className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-900 dark:bg-slate-100"></div>
-                                            <p className="text-sm leading-relaxed font-bold text-slate-600 dark:text-slate-400">
-                                                {item}
-                                            </p>
-                                        </div>
-                                    ))}
+                                    {t.raw(`tabs.${val}.content`).map(
+                                        (item: string, index: number) => (
+                                            <div
+                                                key={index}
+                                                className="flex items-start gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/50"
+                                            >
+                                                <div className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-900 dark:bg-slate-100"></div>
+                                                <p className="text-sm leading-relaxed font-bold text-slate-600 dark:text-slate-400">
+                                                    {item}
+                                                </p>
+                                            </div>
+                                        )
+                                    )}
                                 </div>
                                 <a
                                     href="#"
                                     className="inline-flex items-center pt-4 text-[10px] font-black tracking-widest text-blue-600 uppercase hover:underline"
                                 >
-                                    Xem chi tiết Điều khoản & Điều kiện
+                                    {t("page.termsLink")}
                                 </a>
                             </TabsContent>
                         ))}

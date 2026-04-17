@@ -16,6 +16,7 @@ import { formatCurrency } from "@/lib/format-price";
 import { OrderDetailResponse, OrderItem } from "@/type/order-type";
 import Image from "next/image";
 import { getStatusBadge } from "@/lib/get-order-status";
+import { useTranslations } from "next-intl";
 
 interface OrderDetailsDialogProps {
     orderId: string | null;
@@ -28,6 +29,8 @@ export function OrderDetailsDialog({
     open,
     onOpenChange,
 }: OrderDetailsDialogProps) {
+    const t = useTranslations("orders");
+    const tStatus = useTranslations("user.orders.statuses");
     const { data, isLoading } = useOrderDetail(orderId || "");
     const orderDetails = data as OrderDetailResponse | undefined;
     const products: OrderItem[] = orderDetails?.items || [];
@@ -37,7 +40,7 @@ export function OrderDetailsDialog({
             <DialogContent className="max-h-[90vh] w-full max-w-lg overflow-y-auto border-none bg-slate-50 p-0 shadow-xl dark:bg-slate-950">
                 <DialogHeader className="sticky top-0 z-10 bg-slate-50 p-6 pb-0 dark:bg-slate-950">
                     <DialogTitle className="text-2xl font-bold dark:text-slate-100">
-                        Chi tiết đơn hàng #{orderId}
+                        {t("details.title", { id: orderId ?? "" })}
                     </DialogTitle>
                 </DialogHeader>
 
@@ -64,7 +67,7 @@ export function OrderDetailsDialog({
                                             }
                                         </span>
                                         <p className="text-muted-foreground mt-1 leading-relaxed">
-                                            Địa chỉ:{" "}
+                                            {t("details.locationLabel")}:{" "}
                                             {
                                                 orderDetails?.deliveryAddress
                                                     ?.location
@@ -76,16 +79,16 @@ export function OrderDetailsDialog({
                             <CardContent className="space-y-4 text-sm">
                                 <div className="flex items-center justify-between">
                                     <span className="text-muted-foreground">
-                                        Trạng thái:
+                                        {t("details.statusLabel")}:
                                     </span>
                                     <span className="font-bold text-red-500 uppercase">
-                                        {getStatusBadge(orderDetails?.status)}
+                                        {getStatusBadge(orderDetails?.status, tStatus)}
                                     </span>
                                 </div>
 
                                 <div className="flex items-center justify-between">
                                     <span className="text-muted-foreground">
-                                        Phuơng thức thanh toán:
+                                        {t("details.paymentMethodLabel")}:
                                     </span>
                                     <span className="font-bold text-red-500 uppercase">
                                         {orderDetails?.paymentMethod}
@@ -93,7 +96,7 @@ export function OrderDetailsDialog({
                                 </div>
                                 <div className="flex items-center justify-between">
                                     <span className="text-muted-foreground">
-                                        Phuơng thức vận chuyển:
+                                        {t("details.shippingMethodLabel")}:
                                     </span>
                                     <span className="font-bold text-red-500 uppercase">
                                         {orderDetails?.shippingMethod}
@@ -101,7 +104,7 @@ export function OrderDetailsDialog({
                                 </div>
                                 <div className="flex items-center justify-between">
                                     <span className="text-muted-foreground">
-                                        Thời gian đặt:
+                                        {t("details.orderTimeLabel")}:
                                     </span>
                                     <span className="font-medium">
                                         {fDateTime(
@@ -116,7 +119,7 @@ export function OrderDetailsDialog({
                                 <div className="space-y-2">
                                     <div className="flex justify-between">
                                         <span className="text-muted-foreground">
-                                            Tổng tiền sản phẩm
+                                            {t("details.itemsTotal")}
                                         </span>
                                         <span className="font-medium">
                                             {formatCurrency(
@@ -125,7 +128,7 @@ export function OrderDetailsDialog({
                                         </span>
                                     </div>
                                     <div className="flex justify-between text-green-600">
-                                        <span>Giảm giá</span>
+                                        <span>{t("details.discount")}</span>
                                         <span>
                                             -
                                             {formatCurrency(
@@ -136,7 +139,7 @@ export function OrderDetailsDialog({
                                     <Separator className="my-1" />
                                     <div className="flex items-center justify-between pt-1">
                                         <span className="text-base font-bold dark:text-slate-100">
-                                            Tổng thanh toán
+                                            {t("details.totalAmount")}
                                         </span>
                                         <span className="text-xl font-bold text-blue-600 dark:text-blue-400">
                                             {formatCurrency(
@@ -152,7 +155,7 @@ export function OrderDetailsDialog({
                             <div className="flex items-center gap-2 px-1">
                                 <ShoppingBag className="text-secondary-dark size-4 dark:text-slate-200" />
                                 <h3 className="text-md text-secondary-dark font-bold dark:text-slate-200">
-                                    Sản phẩm ({products.length})
+                                    {t("details.productsCount", { count: products.length })}
                                 </h3>
                             </div>
 
@@ -179,7 +182,7 @@ export function OrderDetailsDialog({
                                                     {product.productName}
                                                 </h4>
                                                 <p className="text-muted-foreground text-[11px]">
-                                                    SKU: {product.skuCode}
+                                                    {t("details.skuLabel")}: {product.skuCode}
                                                 </p>
                                             </div>
                                             <div className="flex items-center justify-between">
@@ -199,7 +202,7 @@ export function OrderDetailsDialog({
                                                     )}
                                                 </div>
                                                 <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[11px] font-bold dark:bg-slate-800 dark:text-slate-300">
-                                                    x{product.quantity}
+                                                    {t("details.quantityLabel", { count: product.quantity })}
                                                 </span>
                                             </div>
                                         </div>

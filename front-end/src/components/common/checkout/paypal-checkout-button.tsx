@@ -5,6 +5,7 @@ import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { usePayPal } from "@/hooks/use-payment";
+import { useTranslations } from "next-intl";
 
 interface PayPalProps {
     totalAmountVnd: number;
@@ -17,6 +18,7 @@ export default function PayPalCheckoutButton({
 }: PayPalProps) {
     const router = useRouter();
     const { createOrderMutation, captureOrderMutation } = usePayPal();
+    const t = useTranslations("checkout.paypal");
 
     const EXCHANGE_RATE = 25000;
     const amountInUsd = Number((totalAmountVnd / EXCHANGE_RATE).toFixed(2));
@@ -36,12 +38,12 @@ export default function PayPalCheckoutButton({
             const paypalOrderId = response as unknown as string;
 
             if (!paypalOrderId) {
-                throw new Error("Không nhận được mã giao dịch từ hệ thống.");
+                throw new Error(t("errorNoTransaction"));
             }
 
             return paypalOrderId;
         } catch (error) {
-            toast.error("Không thể khởi tạo thanh toán PayPal.");
+            toast.error(t("errorInitiate"));
             throw error;
         }
     };
@@ -49,9 +51,7 @@ export default function PayPalCheckoutButton({
     // 3. Hàm xử lý khi thanh toán được phê duyệt (Approve)
     const handleApprove = async (data: Record<string, any>) => {
         try {
-            toast.info(
-                "Đang xử lý giao dịch, vui lòng không đóng trình duyệt..."
-            );
+            toast.info(t("processing"));
 
             const response = await captureOrderMutation.mutateAsync({
                 paypalOrderId: data.orderID,
@@ -62,10 +62,10 @@ export default function PayPalCheckoutButton({
 
             // @ts-ignore
             if (response === "SUCCESS") {
-                toast.success("Thanh toán PayPal thành công!");
+                toast.success(t("success"));
                 router.push(`/user/orders/${orderId}`);
             } else {
-                toast.error("Xác nhận thanh toán thất bại.");
+                toast.error(t("errorCapture"));
             }
         } catch (error) {
             console.error("Lỗi xử lý thanh toán:", error);
@@ -73,14 +73,12 @@ export default function PayPalCheckoutButton({
     };
 
     const handleCancel = () => {
-        toast.warning("Bạn đã hủy giao dịch PayPal.");
+        toast.warning(t("cancelled"));
     };
 
     const handleError = (err: Record<string, any>) => {
         console.error("PayPal Widget Error:", err);
-        toast.error(
-            "Cổng thanh toán PayPal đang bảo trì hoặc gặp sự cố. Vui lòng thử lại sau."
-        );
+        toast.error(t("maintenance"));
     };
 
     return (
@@ -95,3 +93,4 @@ export default function PayPalCheckoutButton({
         </PayPalScriptProvider>
     );
 }
+

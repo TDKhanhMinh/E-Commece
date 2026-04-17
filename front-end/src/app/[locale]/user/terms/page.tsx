@@ -15,52 +15,46 @@ import {
     ArrowRight,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useTranslations, useLocale } from "next-intl";
+import { fDateTime } from "@/lib/format-date-time";
 
 const TERMS_SECTIONS = [
     {
         id: 1,
-        title: "Chấp nhận điều khoản",
+        key: "acceptance",
         icon: CheckCircle2,
-        content:
-            "Bằng cách truy cập và sử dụng dịch vụ của chúng tôi, bạn đồng ý tuân thủ các điều khoản này. Nếu bạn không đồng ý với bất kỳ phần nào, vui lòng ngừng sử dụng dịch vụ ngay lập tức.",
         gradient: "from-blue-500 to-cyan-400",
     },
     {
         id: 2,
-        title: "Tài khoản người dùng",
+        key: "account",
         icon: UserCircle,
-        content:
-            "Bạn có trách nhiệm bảo mật thông tin đăng nhập và mật khẩu của mình. Mọi hoạt động xảy ra dưới tài khoản của bạn sẽ do bạn chịu trách nhiệm hoàn toàn. Chúng tôi có quyền tạm khóa tài khoản nếu phát hiện dấu hiệu vi phạm bảo mật.",
         gradient: "from-indigo-500 to-purple-400",
     },
     {
         id: 3,
-        title: "Quy định tích lũy điểm",
+        key: "points",
         icon: Coins,
-        content:
-            "Hệ thống tích điểm dựa trên giá trị đơn hàng thực tế sau khi đã trừ các khuyến mãi. Điểm thưởng không có giá trị quy đổi thành tiền mặt và có thời hạn sử dụng theo quy định của từng hạng thành viên.",
         gradient: "from-amber-500 to-orange-400",
     },
     {
         id: 4,
-        title: "Chính sách bảo mật",
+        key: "privacy",
         icon: Lock,
-        content:
-            "Chúng tôi cam kết bảo vệ thông tin cá nhân của bạn. Thông tin địa chỉ và số điện thoại chỉ được sử dụng cho mục đích giao hàng và hỗ trợ khách hàng theo chuẩn an toàn quốc tế.",
         gradient: "from-emerald-500 to-teal-400",
     },
     {
         id: 5,
-        title: "Thay đổi điều khoản",
+        key: "changes",
         icon: RefreshCcw,
-        content:
-            "Chúng tôi có quyền cập nhật các điều khoản này bất cứ lúc nào mà không cần thông báo trước. Việc bạn tiếp tục sử dụng dịch vụ đồng nghĩa với việc chấp nhận các thay đổi đó.",
         gradient: "from-rose-500 to-pink-400",
     },
 ];
 
 export default function TermsAndConditions() {
-    const lastUpdated = "21/01/2026";
+    const t = useTranslations("user.terms");
+    const locale = useLocale();
+    const lastUpdated = fDateTime("2026-01-21", "dd/MM/yyyy");
 
     return (
         <div className="min-h-screen bg-slate-50/50 pb-20 dark:bg-slate-950">
@@ -69,22 +63,23 @@ export default function TermsAndConditions() {
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
                 <div className="relative z-10 container mx-auto max-w-4xl space-y-6 text-center">
                     <Badge className="border border-white/20 bg-white/10 px-6 py-1.5 text-indigo-100 backdrop-blur-xl hover:bg-white/20">
-                        Văn bản pháp lý chính thức
+                        {t("badge")}
                     </Badge>
                     <h1 className="text-4xl font-black tracking-tighter text-white uppercase md:text-6xl">
-                        Điều khoản{" "}
-                        <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
-                            &
-                        </span>{" "}
-                        Dịch vụ
+                        {t.rich("title", {
+                            blue: (chunks) => (
+                                <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+                                    {chunks}
+                                </span>
+                            ),
+                        })}
                     </h1>
                     <p className="mx-auto max-w-2xl text-lg leading-relaxed font-medium text-slate-300 md:text-xl">
-                        Quy định rõ ràng về quyền lợi và trách nhiệm giúp xây
-                        dựng một cộng đồng mua sắm văn minh, minh bạch.
+                        {t("description")}
                     </p>
                     <div className="flex items-center justify-center gap-3 text-sm font-semibold tracking-wider text-slate-400 uppercase">
-                        <FileText className="size-4 text-cyan-400" /> Cập nhật
-                        lần cuối: {lastUpdated}
+                        <FileText className="size-4 text-cyan-400" />{" "}
+                        {t("lastUpdated", { date: lastUpdated })}
                     </div>
                 </div>
 
@@ -118,14 +113,21 @@ export default function TermsAndConditions() {
                                                 <div className="space-y-3">
                                                     <div className="flex items-center gap-3">
                                                         <span className="text-xs font-black tracking-widest text-slate-300 uppercase dark:text-slate-500">
-                                                            Mục {section.id}
+                                                            {t("sections.acceptance.title") ===
+                                                            "Acceptance of Terms"
+                                                                ? `Section ${section.id}`
+                                                                : `Mục ${section.id}`}
                                                         </span>
                                                         <h3 className="text-2xl leading-none font-extrabold text-slate-800 dark:text-slate-100">
-                                                            {section.title}
+                                                            {t(
+                                                                `sections.${section.key}.title`
+                                                            )}
                                                         </h3>
                                                     </div>
                                                     <p className="leading-relaxed font-medium text-slate-600 dark:text-slate-400">
-                                                        {section.content}
+                                                        {t(
+                                                            `sections.${section.key}.content`
+                                                        )}
                                                     </p>
                                                 </div>
                                             </div>
@@ -139,17 +141,14 @@ export default function TermsAndConditions() {
                                         <div className="space-y-2 text-center md:text-left">
                                             <h4 className="flex items-center justify-center gap-2 text-xl font-bold text-slate-900 md:justify-start dark:text-slate-100">
                                                 <HelpCircle className="size-6 text-indigo-500" />
-                                                Bạn cần hỗ trợ thêm?
+                                                {t("support.title")}
                                             </h4>
                                             <p className="max-w-sm text-sm text-slate-500 dark:text-slate-400">
-                                                Nếu có bất kỳ thắc mắc nào về
-                                                điều khoản dịch vụ, đội ngũ hỗ
-                                                trợ của chúng tôi luôn sẵn sàng
-                                                lắng nghe.
+                                                {t("support.description")}
                                             </p>
                                         </div>
                                         <button className="group flex items-center gap-2 rounded-2xl bg-slate-900 px-8 py-4 text-sm font-bold text-white shadow-xl transition-all duration-300 hover:bg-indigo-600 active:scale-95 dark:bg-indigo-600 dark:hover:bg-indigo-700">
-                                            Liên hệ Trung tâm hỗ trợ
+                                            {t("support.button")}
                                             <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
                                         </button>
                                     </div>
@@ -159,8 +158,7 @@ export default function TermsAndConditions() {
                                         <FileText className="size-16 text-slate-900 dark:text-slate-100" />
                                     </div>
                                     <p className="mt-8 text-center text-[10px] tracking-[0.2em] text-slate-400 uppercase dark:text-slate-600">
-                                        &copy; 2026 T7M Online Store - All
-                                        Rights Reserved
+                                        {t("footer.copyright")}
                                     </p>
                                 </div>
                             </div>

@@ -9,7 +9,14 @@ import { useMemo, useState } from "react";
 import { OrderPageResponse, OrderStatus } from "@/type/order-type";
 import { Button } from "@/components/ui/button";
 
+import { useLocale, useTranslations } from "next-intl";
+import { formatCurrency } from "@/lib/format-price";
+
 export default function OrderHistory() {
+    const locale = useLocale();
+    const t = useTranslations("user.orders.list");
+    const tStatuses = useTranslations("user.orders.statuses");
+
     const [searchQuery, setSearchQuery] = useState("");
     const [activeTab, setActiveTab] = useState<string>("all");
     const [currentPage, setCurrentPage] = useState(0);
@@ -36,15 +43,15 @@ export default function OrderHistory() {
     console.log("Fetched orders:", ordersList);
 
     const tabs = [
-        { value: "all", label: "TẤT CẢ" },
-        { value: "PENDING", label: "CHỜ XÁC NHẬN" },
-        { value: "CONFIRMED", label: "ĐÃ XÁC NHẬN" },
-        { value: "PAID", label: "ĐÃ THANH TOÁN" },
-        { value: "UNPAID", label: "CHƯA THANH TOÁN" },
-        { value: "SHIPPING", label: "ĐANG GIAO HÀNG" },
-        { value: "DELIVERED", label: "ĐÃ GIAO" },
-        { value: "CANCELLED", label: "ĐÃ HỦY" },
-        { value: "FAILED", label: "THẤT BẠI" },
+        { value: "all", label: tStatuses("UNKNOWN").toUpperCase() },
+        { value: "PENDING", label: tStatuses("PENDING").toUpperCase() },
+        { value: "CONFIRMED", label: tStatuses("CONFIRMED").toUpperCase() },
+        { value: "PAID", label: tStatuses("PAID").toUpperCase() },
+        { value: "UNPAID", label: tStatuses("UNPAID").toUpperCase() },
+        { value: "SHIPPING", label: tStatuses("SHIPPING").toUpperCase() },
+        { value: "DELIVERED", label: tStatuses("DELIVERED").toUpperCase() },
+        { value: "CANCELLED", label: tStatuses("CANCELLED").toUpperCase() },
+        { value: "FAILED", label: tStatuses("FAILED").toUpperCase() },
     ];
 
     const filteredOrders = useMemo(() => {
@@ -76,12 +83,12 @@ export default function OrderHistory() {
         <div className="w-full rounded-xl border bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <div className="mb-2 flex flex-col items-center justify-between gap-4 md:flex-row">
                 <h2 className="self-start text-xl font-bold md:self-center">
-                    Lịch sử đơn hàng
+                    {t("title")}
                 </h2>
 
                 <div className="relative w-full md:w-80">
                     <Input
-                        placeholder="Tìm kiếm theo mã đơn hàng"
+                        placeholder={t("searchPlaceholder")}
                         className="h-10 rounded-full border-gray-200 bg-gray-50 pr-10 pl-4 text-sm dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
@@ -102,7 +109,7 @@ export default function OrderHistory() {
                             value={tab.value}
                             className="shrink-0 cursor-pointer rounded-none border-t-0 border-r-0 border-b-2 border-l-0 bg-transparent px-0 py-3 text-sm font-medium text-gray-500 uppercase data-[state=active]:border-green-600 data-[state=active]:text-green-600 dark:text-slate-400 dark:data-[state=active]:text-green-500"
                         >
-                            {tab.label}
+                            {tab.value === "all" ? t("all") : tab.label}
                         </TabsTrigger>
                     ))}
                 </TabsList>
@@ -124,8 +131,14 @@ export default function OrderHistory() {
                                             >
                                                 <UserOrderItem
                                                     id={order.orderId.toString()}
-                                                    title={`Đơn hàng #${order.orderId} - ${order.items.length} sản phẩm`}
-                                                    price={`${order.finalAmount.toLocaleString("vi-VN")} đ`}
+                                                    title={t("itemTitle", {
+                                                        id: order.orderId,
+                                                        count: order.items.length,
+                                                    })}
+                                                    price={formatCurrency(
+                                                        order.finalAmount,
+                                                        locale
+                                                    )}
                                                     image={
                                                         order.items[0]?.image ||
                                                         "/placeholder.png"
@@ -143,15 +156,10 @@ export default function OrderHistory() {
                                             orderPage.totalPages > 1 && (
                                                 <div className="mt-4 flex items-center justify-between border-t pt-6 dark:border-slate-800">
                                                     <div className="text-sm text-gray-500 dark:text-slate-400">
-                                                        Hiển thị{" "}
-                                                        {
-                                                            orderPage.numberOfElements
-                                                        }{" "}
-                                                        trong tổng số{" "}
-                                                        {
-                                                            orderPage.totalElements
-                                                        }{" "}
-                                                        đơn hàng
+                                                        {t("pagination", {
+                                                            count: orderPage.numberOfElements,
+                                                            total: orderPage.totalElements,
+                                                        })}
                                                     </div>
                                                     <div className="flex gap-2">
                                                         <Button
@@ -167,7 +175,7 @@ export default function OrderHistory() {
                                                                 orderPage.first
                                                             }
                                                         >
-                                                            Trước
+                                                            {t("prev")}
                                                         </Button>
                                                         <div className="flex items-center gap-2">
                                                             {Array.from(
@@ -181,7 +189,7 @@ export default function OrderHistory() {
                                                                             currentPage ===
                                                                             i
                                                                                 ? "default"
-                                                                                : "outline"
+                                                                                 : "outline"
                                                                         }
                                                                         size="sm"
                                                                         onClick={() =>
@@ -209,7 +217,7 @@ export default function OrderHistory() {
                                                                 orderPage.last
                                                             }
                                                         >
-                                                            Sau
+                                                            {t("next")}
                                                         </Button>
                                                     </div>
                                                 </div>
@@ -219,9 +227,9 @@ export default function OrderHistory() {
                                     <div className="py-20 text-center">
                                         <p className="text-gray-400 dark:text-slate-500">
                                             {searchQuery
-                                                ? "Không tìm thấy đơn hàng nào"
-                                                : "Chưa có đơn hàng nào"}
-                                        </p>
+                                                ? t("notFound")
+                                                : t("empty")}
+                                         </p>
                                     </div>
                                 )}
                             </div>

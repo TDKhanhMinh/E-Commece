@@ -9,7 +9,7 @@ import { Loader2 } from "lucide-react";
 import { formatCurrency } from "@/lib/format-price";
 
 export default function HomeDeals() {
-    const t = useTranslations("HomePage");
+    const t = useTranslations("home.deals");
 
     const { data, isLoading, isError } = useProducts({
         page: 0,
@@ -40,16 +40,13 @@ export default function HomeDeals() {
                 <div className="container mx-auto h-full px-4 text-center">
                     <div className="mx-auto mb-12 max-w-5xl">
                         <span className="mb-12 bg-linear-to-r from-orange-500 via-indigo-500 to-green-500 bg-clip-text text-xl font-bold tracking-tighter text-transparent uppercase">
-                            Limited-Time Deals
+                            {t("badge")}
                         </span>
                         <h2 className="my-1 text-2xl font-bold uppercase text-slate-900 md:text-4xl dark:text-slate-100">
-                            Smart upgrades start with bigger savings.
+                            {t("title")}
                         </h2>
                         <p className="text-secondary mt-3 text-base dark:text-slate-400">
-                            The tech you want, without the new-price tag. Shop
-                            certified iPhones, AirPods, MacBooks, and iPads for
-                            less. All headache free and backed by T7M's 12-month
-                            warranty.
+                            {t("description")}
                         </p>
                     </div>
 
@@ -60,7 +57,7 @@ export default function HomeDeals() {
                                 <div className="flex flex-col" key={item.id}>
                                     <DealItem
                                         name={item.name}
-                                        description={`From ${formatCurrency(item.price || item.maxPrice)}. ${item.description || "Classic with all features."}`}
+                                        description={`${t("from")} ${formatCurrency(item.price || item.maxPrice)}. ${item.description || "Classic with all features."}`}
                                         productLink={`/product/${item.slug || item.id}`}
                                         imgUrl={
                                             item.image || "/placeholder.png"
@@ -83,7 +80,7 @@ export default function HomeDeals() {
                                 <DealItem
                                     key={item.id}
                                     name={item.name}
-                                    description={`From ${new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(item.price || item.minPrice || 0)}`}
+                                    description={`${t("from")} ${formatCurrency(item.price || item.minPrice || 0)}`}
                                     productLink={`/product/${item.slug || item.id}`}
                                     imgUrl={item.image || "/placeholder.png"}
                                     hoverImgUrl={
@@ -120,10 +117,11 @@ export default function HomeDeals() {
             <div className="container mx-auto px-4 text-center">
                 <Link href="/search">
                     <Button className="cursor-pointer rounded-full bg-green-900 px-16 py-4 text-lg font-bold text-white transition-colors hover:bg-green-800/80">
-                        View all
+                        {t("viewAll")}
                     </Button>
                 </Link>
             </div>
         </div>
     );
 }
+

@@ -20,6 +20,7 @@ const nextConfig: NextConfig = {
             { protocol: "https", hostname: "th.bing.com" },
             { protocol: "https", hostname: "static.vecteezy.com" },
             { protocol: "https", hostname: "tse3.mm.bing.net" },
+            { protocol: "https", hostname: "shop.plug.tech" },
         ],
     },
 };

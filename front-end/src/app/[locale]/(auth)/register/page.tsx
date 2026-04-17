@@ -18,7 +18,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/routing";
 import { registerApi } from "@/service/auth-service";
 import { registerSchema } from "@/schema/auth-shema";
 import { FormHelperText } from "@/components/common";
@@ -26,6 +27,7 @@ import { BackButton } from "@/components/common/ui/back-button";
 
 export default function RegisterPage() {
     const router = useRouter();
+    const t = useTranslations("common.auth.register");
 
     type RegisterFormData = z.infer<typeof registerSchema>;
     const {
@@ -52,7 +54,7 @@ export default function RegisterPage() {
             // @ts-ignore
             router.push("/login");
             setTimeout(() => {
-                toast.success("Đăng ký thành công!");
+                toast.success(t("successToast"));
             }, 1000);
         },
         onError: (error) => {
@@ -71,12 +73,9 @@ export default function RegisterPage() {
                 <Card className="mt-4 border-none shadow-lg">
                     <CardHeader className="space-y-1 text-center">
                         <CardTitle className="text-2xl font-bold tracking-tight">
-                            Tạo tài khoản mới
+                            {t("title")}
                         </CardTitle>
-                        <CardDescription>
-                            Bắt đầu trải nghiệm mua sắm tại T7M Online ngay hôm
-                            nay;
-                        </CardDescription>
+                        <CardDescription>{t("description")}</CardDescription>
                     </CardHeader>
                     <CardContent className="grid gap-4">
                         <div className="grid grid-cols-2 gap-4">
@@ -96,7 +95,7 @@ export default function RegisterPage() {
                             </div>
                             <div className="relative flex justify-center text-xs uppercase">
                                 <span className="bg-background text-muted-foreground px-2">
-                                    Hoặc đăng ký bằng Email
+                                    {t("orRegisterWithEmail")}
                                 </span>
                             </div>
                         </div>
@@ -106,10 +105,12 @@ export default function RegisterPage() {
                             className="grid gap-4"
                         >
                             <div className="grid gap-2">
-                                <Label htmlFor="full-name">Họ và tên</Label>
+                                <Label htmlFor="full-name">
+                                    {t("nameLabel")}
+                                </Label>
                                 <Input
                                     id="full-name"
-                                    placeholder="Nguyễn Văn A"
+                                    placeholder={t("namePlaceholder")}
                                     {...register("name")}
                                     className={`h-11 ${
                                         errors.name
@@ -121,11 +122,11 @@ export default function RegisterPage() {
                                 <FormHelperText error={errors.name} />
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="email">Email</Label>
+                                <Label htmlFor="email">{t("emailLabel")}</Label>
                                 <Input
                                     id="email"
                                     type="email"
-                                    placeholder="name@example.com"
+                                    placeholder={t("emailPlaceholder")}
                                     {...register("email")}
                                     className={`h-11 ${
                                         errors.email
@@ -137,11 +138,13 @@ export default function RegisterPage() {
                                 <FormHelperText error={errors.email} />
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="phone">Phone</Label>
+                                <Label htmlFor="phone">
+                                    {t("phoneLabel")}
+                                </Label>
                                 <Input
                                     id="phone"
                                     type="text"
-                                    placeholder="0123456789"
+                                    placeholder={t("phonePlaceholder")}
                                     {...register("phone")}
                                     className={`h-11 ${
                                         errors.phone
@@ -153,11 +156,13 @@ export default function RegisterPage() {
                                 <FormHelperText error={errors.phone} />
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="password">Mật khẩu</Label>
+                                <Label htmlFor="password">
+                                    {t("passwordLabel")}
+                                </Label>
                                 <Input
                                     id="password"
                                     type="password"
-                                    placeholder="••••••••"
+                                    placeholder={t("passwordPlaceholder")}
                                     {...register("password")}
                                     className={`h-11 ${
                                         errors.password
@@ -170,12 +175,12 @@ export default function RegisterPage() {
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="confirm-password">
-                                    Xác nhận mật khẩu
+                                    {t("confirmPasswordLabel")}
                                 </Label>
                                 <Input
                                     id="confirm-password"
                                     type="password"
-                                    placeholder="••••••••"
+                                    placeholder={t("passwordPlaceholder")}
                                     {...register("confirmPassword")}
                                     className={`h-11 ${
                                         errors.confirmPassword
@@ -193,33 +198,33 @@ export default function RegisterPage() {
                                 className="mt-2 h-11 w-full cursor-pointer font-semibold"
                             >
                                 {mutation.isPending
-                                    ? "Đang tạo tài khoản..."
-                                    : "Tạo tài khoản"}
+                                    ? t("creatingAccount")
+                                    : t("submit")}
                             </Button>
                         </form>
                     </CardContent>
                     <CardFooter className="flex flex-wrap items-center justify-center gap-1">
                         <span className="text-muted-foreground text-sm">
-                            Đã có tài khoản?
+                            {t("haveAccount")}
                         </span>
                         <Link
                             href="/login"
                             className="text-primary text-sm font-semibold hover:underline"
                         >
-                            Đăng nhập
+                            {t("loginNow")}
                         </Link>
                     </CardFooter>
                 </Card>
 
                 <p className="text-muted-foreground px-8 text-center text-sm">
-                    Việc tạo tài khoản đồng nghĩa với việc bạn chấp nhận{" "}
+                    {t("agreementPrefix")}{" "}
                     <Link
                         href="/terms"
                         className="hover:text-primary underline underline-offset-4"
                     >
-                        Chính sách bảo mật
+                        {t("privacyPolicy")}
                     </Link>{" "}
-                    của chúng tôi;
+                    {t("agreementSuffix")}
                 </p>
             </div>
         </div>

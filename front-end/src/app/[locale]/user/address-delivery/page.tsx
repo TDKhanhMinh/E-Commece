@@ -5,8 +5,11 @@ import { useQuery } from "@tanstack/react-query";
 import { DeliveryAddress, getDeliveryAddresses } from "@/service/user-service";
 import { AddressCard, AddressDialog } from "@/components/common";
 import { BackButton } from "@/components/common/ui/back-button";
+import { useTranslations } from "next-intl";
 
 export default function AddressDelivery() {
+    const t = useTranslations("user.addresses");
+
     const {
         data: addressList,
         isLoading,
@@ -23,7 +26,7 @@ export default function AddressDelivery() {
             <div className="mx-auto w-full max-w-6xl p-4">
                 <BackButton />
                 <div className="text-muted-foreground py-10 text-center">
-                    Đang tải danh sách địa chỉ...
+                    {t("loading")}
                 </div>
             </div>
         );
@@ -34,7 +37,7 @@ export default function AddressDelivery() {
             <div className="mx-auto w-full max-w-6xl p-4">
                 <BackButton />
                 <div className="text-destructive py-10 text-center">
-                    Không thể tải danh sách địa chỉ. Vui lòng thử lại sau.
+                    {t("error")}
                 </div>
             </div>
         );
@@ -48,15 +51,18 @@ export default function AddressDelivery() {
                 <CardContent className="p-6">
                     <div className="mb-6 flex items-center justify-between">
                         <h3 className="text-lg font-bold">
-                            Bạn có{" "}
-                            <span className="text-blue-600">
-                                {addresses?.length}
-                            </span>{" "}
-                            địa chỉ
+                            {t.rich("title", {
+                                count: addresses?.length || 0,
+                                blue: (chunks) => (
+                                    <span className="text-blue-600">
+                                        {chunks}
+                                    </span>
+                                ),
+                            })}
                         </h3>
                         <AddressDialog
-                            btnText="Thêm địa chỉ"
-                            title="Thêm địa chỉ"
+                            btnText={t("addBtn")}
+                            title={t("addTitle")}
                             type="add"
                             addressId={0}
                         />
@@ -64,7 +70,7 @@ export default function AddressDelivery() {
 
                     {addresses?.length === 0 ? (
                         <div className="text-muted-foreground py-10 text-center">
-                            Bạn chưa lưu địa chỉ nào.
+                            {t("empty")}
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2">

@@ -10,7 +10,10 @@ import { Loader2, Sparkles, Ticket } from "lucide-react";
 import { toast } from "sonner";
 import { fDateTime } from "@/lib/format-date-time";
 
+import { useTranslations } from "next-intl";
+
 export function VoucherBanner() {
+    const t = useTranslations("home.vouchers");
     const { useAdminVouchers, collectVoucher } = useVoucher();
 
     const { data: voucherPage, isLoading, error } = useAdminVouchers();
@@ -22,10 +25,10 @@ export function VoucherBanner() {
             { code },
             {
                 onSuccess: () => {
-                    toast.success(`Đã lưu mã ${code} vào ví của bạn! 🎉`);
+                    toast.success(t("collectedToast", { code }));
                 },
                 onError: (err: any) => {
-                    const msg = err?.message || "Có lỗi xảy ra khi lưu mã";
+                    const msg = err?.message || t("collectErrorToast");
                     toast.error(msg);
 
                     if (err?.response?.status === 401) {
@@ -69,11 +72,10 @@ export function VoucherBanner() {
                     </div>
                     <div>
                         <h2 className="text-2xl font-bold tracking-tight text-slate-950 dark:text-slate-100">
-                            Ưu đãi HOT hôm nay
+                            {t("title")}
                         </h2>
                         <p className="text-slate-600 dark:text-slate-400">
-                            Lưu ngay mã giảm giá vào ví trước khi mua sắm bạn
-                            nhé!
+                            {t("subtitle")}
                         </p>
                     </div>
                 </div>
@@ -107,7 +109,7 @@ export function VoucherBanner() {
                                             {v.description}
                                         </h3>
                                         <p className="text-sm text-slate-600 dark:text-slate-400">
-                                            Đơn tối thiểu:{" "}
+                                            {t("minOrderLabel")}{" "}
                                             <span className="font-semibold text-slate-800 dark:text-slate-200">
                                                 {v.minOrder.toLocaleString(
                                                     "vi-VN"
@@ -116,7 +118,7 @@ export function VoucherBanner() {
                                             </span>
                                         </p>
                                         <p className="text-xs text-slate-500 dark:text-slate-500">
-                                            HSD:{" "}
+                                            {t("expiryLabel")}{" "}
                                             {fDateTime(
                                                 new Date(v.endDate),
                                                 "dd/MM/yyyy"
@@ -136,7 +138,7 @@ export function VoucherBanner() {
                                             {collectVoucher.isPending && (
                                                 <Loader2 className="h-3 w-3 animate-spin" />
                                             )}
-                                            Lưu mã
+                                            {t("saveButton")}
                                         </Button>
                                     </div>
                                 </div>

@@ -15,7 +15,10 @@ import { FormHelperText } from "@/components/common/ui/help-text";
 
 type UpdateUserFormData = z.infer<typeof updateUserSchema>;
 
+import { useTranslations } from "next-intl";
+
 export default function Profile() {
+    const t = useTranslations("user.profile");
     const queryClient = useQueryClient();
 
     const {
@@ -27,8 +30,7 @@ export default function Profile() {
         queryKey: ["profile"],
         queryFn: getProfile,
     });
-    console.log("1. Toàn bộ biến user:", user);
-    console.log("2. Bên trong user.data:", user?.data);
+
     const {
         register,
         handleSubmit,
@@ -50,16 +52,15 @@ export default function Profile() {
 
     const mutation = useMutation({
         mutationFn: (updatedData: UpdateUserFormData) => {
-            console.log("Updating user with data:", updatedData);
             return updateProfile(updatedData);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["profile"] });
-            toast.success("Cập nhật hồ sơ thành công!");
+            toast.success(t("successToast"));
         },
         onError: (error) => {
             console.error("Error updating user:", error);
-            toast.error("Cập nhật thất bại");
+            toast.error(t("errorToast"));
         },
     });
 
@@ -68,11 +69,13 @@ export default function Profile() {
     };
 
     if (isLoading || !user)
-        return <div className="p-10 text-center">Đang tải thông tin...</div>;
+        return (
+            <div className="p-10 text-center">{t("loading")}</div>
+        );
     if (isError)
         return (
             <div className="p-10 text-center text-red-500">
-                Lỗi: {error.message}
+                {t("error", { message: error.message })}
             </div>
         );
 
@@ -81,7 +84,7 @@ export default function Profile() {
             <Card className="w-full max-w-7xl border-none shadow-md dark:bg-slate-900 dark:shadow-slate-950/50">
                 <CardHeader>
                     <CardTitle className="text-2xl font-bold text-green-800 dark:text-green-400">
-                        Thông tin cá nhân
+                        {t("title")}
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -95,7 +98,7 @@ export default function Profile() {
                                     htmlFor="fullname"
                                     className="text-gray-600 dark:text-slate-400"
                                 >
-                                    Họ & tên
+                                    {t("nameLabel")}
                                 </Label>
                                 <Input
                                     id="fullname"
@@ -111,7 +114,7 @@ export default function Profile() {
                                     htmlFor="phone"
                                     className="text-gray-600 dark:text-slate-400"
                                 >
-                                    Số điện thoại
+                                    {t("phoneLabel")}
                                 </Label>
                                 <Input
                                     id="phone"
@@ -127,12 +130,12 @@ export default function Profile() {
                                     htmlFor="gender"
                                     className="text-gray-600 dark:text-slate-400"
                                 >
-                                    Giới tính
+                                    {t("genderLabel")}
                                 </Label>
                                 <Input
                                     id="gender"
                                     className="focus-visible:ring-green-600 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100"
-                                    placeholder="Chưa cập nhật"
+                                    placeholder={t("genderPlaceholder")}
                                     disabled
                                 />
                             </div>
@@ -142,7 +145,7 @@ export default function Profile() {
                                     htmlFor="dob"
                                     className="text-gray-600 dark:text-slate-400"
                                 >
-                                    Ngày sinh
+                                    {t("dobLabel")}
                                 </Label>
                                 <Input
                                     id="dob"
@@ -158,7 +161,7 @@ export default function Profile() {
                                 htmlFor="email"
                                 className="text-gray-600 dark:text-slate-400"
                             >
-                                Email
+                                {t("emailLabel")}
                             </Label>
                             <Input
                                 id="email"
@@ -176,8 +179,8 @@ export default function Profile() {
                             className="h-auto cursor-pointer bg-green-700 px-10 py-2 text-base font-semibold text-white hover:bg-green-800 dark:bg-green-600 dark:hover:bg-green-700"
                         >
                             {mutation.isPending
-                                ? "Đang cập nhật..."
-                                : "Cập nhật thông tin"}
+                                ? t("updatingButton")
+                                : t("submitButton")}
                         </Button>
                     </form>
                 </CardContent>

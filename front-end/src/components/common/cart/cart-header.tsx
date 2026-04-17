@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import { BackButton } from "@/components/common/ui/back-button";
+import { useTranslations } from "next-intl";
 
 interface CartHeaderProps {
     itemCount: number;
@@ -15,6 +16,8 @@ export function CartHeader({
     isClearingCart,
     hasItems,
 }: CartHeaderProps) {
+    const t = useTranslations("cart.header");
+
     return (
         <>
             <div className="mb-6 flex items-center justify-between">
@@ -28,14 +31,15 @@ export function CartHeader({
                         className="text-destructive hover:text-destructive"
                     >
                         <Trash2 className="mr-2 h-4 w-4" />
-                        {isClearingCart ? "Đang xóa..." : "Xóa tất cả"}
+                        {isClearingCart ? t("clearing") : t("clearAll")}
                     </Button>
                 )}
             </div>
 
-            <h1 className="mb-8 text-3xl font-bold dark:text-slate-100">
-                Giỏ hàng của bạn ({itemCount} sản phẩm)
+            <h1 className="dark:text-slate-100 mb-8 text-3xl font-bold">
+                {t("title", { count: itemCount })}
             </h1>
         </>
     );
 }
+

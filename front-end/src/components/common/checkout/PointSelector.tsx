@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Coins, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { usePoints } from "@/hooks/use-point";
+import { useTranslations } from "next-intl";
+import { formatCurrency } from "@/lib/format-price";
 
 interface PointSelectorProps {
     totalAmount: number;
@@ -20,6 +22,7 @@ export function PointSelector({
 }: PointSelectorProps) {
     const { useMyPointSummary } = usePoints();
     const { data: summary, isLoading } = useMyPointSummary();
+    const t = useTranslations("checkout.points");
 
     const [isUsed, setIsUsed] = useState(false);
     const [pointsInput, setPointsInput] = useState<number>(0);
@@ -62,33 +65,27 @@ export function PointSelector({
     if (isLoading || !summary) return null;
 
     return (
-        <Card className="border-none bg-amber-50/30 shadow-sm dark:bg-amber-950/20 dark:border dark:border-amber-900/30">
+        <Card className="dark:bg-amber-950/20 dark:border-amber-900/30 border-none bg-amber-50/30 shadow-sm transition-all border border-amber-100">
             <CardContent className="space-y-4 p-4">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className="rounded-lg bg-amber-100 p-2 dark:bg-amber-900/50">
-                            <Coins className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                        <div className="dark:bg-amber-900/50 rounded-lg bg-amber-100 p-2">
+                            <Coins className="dark:text-amber-400 h-5 w-5 text-amber-600" />
                         </div>
                         <div>
                             <div className="flex items-center gap-2">
-                                <span className="font-bold text-slate-900 dark:text-slate-100">
-                                    Dùng điểm thưởng
+                                <span className="dark:text-slate-100 font-bold text-slate-900">
+                                    {t("title")}
                                 </span>
                                 <Badge
                                     variant="secondary"
-                                    className="border-none bg-amber-100 text-amber-700 transition-colors hover:bg-amber-200 dark:bg-amber-900/50 dark:text-amber-300 dark:hover:bg-amber-900/80"
+                                    className="dark:bg-amber-900/50 dark:text-amber-300 border-none bg-amber-100 text-amber-700"
                                 >
                                     {summary.membershipTier}
                                 </Badge>
                             </div>
-                            <p className="text-xs text-slate-500 dark:text-slate-400">
-                                Bạn đang có:{" "}
-                                <span className="font-bold text-amber-600 dark:text-amber-400">
-                                    {summary.currentPoints
-                                        ? summary.currentPoints
-                                        : 0}
-                                </span>{" "}
-                                điểm
+                            <p className="dark:text-slate-400 text-xs text-slate-500">
+                                {t("balance", { points: summary.currentPoints || 0 })}
                             </p>
                         </div>
                     </div>
@@ -100,41 +97,36 @@ export function PointSelector({
                 </div>
 
                 {isUsed && (
-                    <div className="animate-in fade-in slide-in-from-top-1 mt-2 space-y-3 border-t border-amber-100 pt-3 dark:border-amber-900/50">
+                    <div className="animate-in fade-in slide-in-from-top-1 dark:border-amber-900/50 mt-2 space-y-3 border-t border-amber-100 pt-3">
                         <div className="flex items-center gap-4">
                             <div className="flex-1">
                                 <Label
                                     htmlFor="points"
-                                    className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400"
+                                    className="dark:text-slate-400 mb-1 block text-xs font-medium text-slate-600"
                                 >
-                                    Số điểm muốn dùng (Tối đa: {actualMaxPoints}
-                                    )
+                                    {t("maxAllowed", { max: actualMaxPoints })}
                                 </Label>
                                 <Input
                                     id="points"
                                     type="number"
                                     value={pointsInput}
                                     onChange={handleInputChange}
-                                    className="rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500 dark:border-amber-900 dark:bg-slate-900 dark:text-slate-100"
+                                    className="dark:border-amber-900 dark:bg-slate-900 dark:text-slate-100 rounded-xl border-amber-200 bg-white focus-visible:ring-amber-500"
                                 />
                             </div>
                             <div className="text-right">
-                                <p className="mb-1 text-xs font-medium text-slate-600 dark:text-slate-400">
-                                    Số tiền được giảm
+                                <p className="dark:text-slate-400 mb-1 text-xs font-medium text-slate-600">
+                                    {t("discountLabel")}
                                 </p>
-                                <p className="text-lg font-bold text-amber-600 dark:text-amber-400">
-                                    -
-                                    {(
-                                        pointsInput * POINT_EXCHANGE_RATE
-                                    ).toLocaleString("vi-VN")}
-                                    đ
+                                <p className="dark:text-amber-400 text-lg font-bold text-amber-600">
+                                    -{formatCurrency(pointsInput * POINT_EXCHANGE_RATE)}
                                 </p>
                             </div>
                         </div>
-                        <div className="flex items-center gap-2 rounded-lg bg-amber-100/50 p-2 text-[11px] font-medium text-amber-800 dark:bg-amber-900/20 dark:text-amber-300">
+                        <div className="dark:bg-amber-900/20 dark:text-amber-300 flex items-center gap-2 rounded-lg bg-amber-100/50 p-2 text-[11px] font-medium text-amber-800">
                             <TrendingUp className="h-3.5 w-3.5" />
                             <span>
-                                Tỉ lệ quy đổi: 1 điểm = {POINT_EXCHANGE_RATE}đ
+                                {t("rate", { rate: formatCurrency(POINT_EXCHANGE_RATE) })}
                             </span>
                         </div>
                     </div>
@@ -143,3 +135,4 @@ export function PointSelector({
         </Card>
     );
 }
+

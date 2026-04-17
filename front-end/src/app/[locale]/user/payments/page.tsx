@@ -23,46 +23,47 @@ import {
     UserCheck,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-
-const DATA_COLLECTION = [
-    {
-        type: "Thông tin cá nhân",
-        example: "Họ tên, SĐT, Email",
-        purpose: "Xác thực & Hỗ trợ",
-        color: "bg-blue-50 text-blue-600",
-    },
-    {
-        type: "Thông tin giao hàng",
-        example: "Địa chỉ, Tỉnh/Thành",
-        purpose: "Vận chuyển",
-        color: "bg-emerald-50 text-emerald-600",
-    },
-    {
-        type: "Dữ liệu hệ thống",
-        example: "IP, Thiết bị",
-        purpose: "Bảo mật & UX",
-        color: "bg-purple-50 text-purple-600",
-    },
-];
-
-const USAGE_INFO = [
-    {
-        title: "Xử lý giao dịch",
-        content: "Hoàn tất đơn hàng và tích lũy điểm thưởng thành viên.",
-        icon: RefreshCcw,
-        gradient: "from-blue-500 to-cyan-400",
-    },
-    {
-        title: "Thông báo",
-        content:
-            "Gửi cập nhật về tình trạng đơn hàng hoặc thay đổi quan trọng.",
-        icon: Mail,
-        gradient: "from-purple-500 to-indigo-400",
-    },
-];
+import { useTranslations } from "next-intl";
 
 export default function PrivacyPolicy() {
+    const t = useTranslations("user.privacy");
     const lastUpdated = "21/01/2026";
+
+    const DATA_COLLECTION = [
+        {
+            type: t("sections.dataCollection.table.items.personal.type"),
+            example: t("sections.dataCollection.table.items.personal.example"),
+            purpose: t("sections.dataCollection.table.items.personal.purpose"),
+            color: "bg-blue-50 text-blue-600",
+        },
+        {
+            type: t("sections.dataCollection.table.items.delivery.type"),
+            example: t("sections.dataCollection.table.items.delivery.example"),
+            purpose: t("sections.dataCollection.table.items.delivery.purpose"),
+            color: "bg-emerald-50 text-emerald-600",
+        },
+        {
+            type: t("sections.dataCollection.table.items.system.type"),
+            example: t("sections.dataCollection.table.items.system.example"),
+            purpose: t("sections.dataCollection.table.items.system.purpose"),
+            color: "bg-purple-50 text-purple-600",
+        },
+    ];
+
+    const USAGE_INFO = [
+        {
+            title: t("sections.usage.items.transaction.title"),
+            content: t("sections.usage.items.transaction.content"),
+            icon: RefreshCcw,
+            gradient: "from-blue-500 to-cyan-400",
+        },
+        {
+            title: t("sections.usage.items.notification.title"),
+            content: t("sections.usage.items.notification.content"),
+            icon: Mail,
+            gradient: "from-purple-500 to-indigo-400",
+        },
+    ];
 
     return (
         <div className="min-h-screen bg-slate-50/50 pb-20 dark:bg-slate-950">
@@ -71,22 +72,17 @@ export default function PrivacyPolicy() {
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
                 <div className="relative z-10 container mx-auto max-w-4xl space-y-6 text-center">
                     <Badge className="border border-indigo-500/30 bg-indigo-500/20 px-4 py-1 text-indigo-200 backdrop-blur-md hover:bg-indigo-500/30">
-                        Bảo mật dữ liệu chuẩn quốc tế
+                        {t("badge")}
                     </Badge>
-                    <h1 className="text-4xl font-extrabold tracking-tight text-white md:text-5xl">
-                        Quyền Riêng Tư Của Bạn <br />
-                        Là{" "}
-                        <span className="bg-gradient-to-r from-cyan-400 to-emerald-400 bg-clip-text text-transparent">
-                            Ưu Tiên Hàng Đầu
-                        </span>
-                    </h1>
+                    <h1 
+                        className="text-4xl font-extrabold tracking-tight text-white md:text-5xl"
+                        dangerouslySetInnerHTML={{ __html: t.raw("title") }}
+                    />
                     <p className="mx-auto max-w-2xl text-lg leading-relaxed text-slate-300">
-                        Chúng tôi cam kết bảo vệ thông tin cá nhân và minh bạch
-                        trong mọi hoạt động xử lý dữ liệu của bạn.
+                        {t("description")}
                     </p>
                     <div className="flex items-center justify-center gap-2 text-sm text-slate-400 italic">
-                        <Lock className="size-4" /> Phiên bản cập nhật mới nhất:{" "}
-                        {lastUpdated}
+                        <Lock className="size-4" /> {t("lastUpdated", { date: lastUpdated })}
                     </div>
                 </div>
             </div>
@@ -103,7 +99,7 @@ export default function PrivacyPolicy() {
                                             <Database className="size-6" />
                                         </div>
                                         <h2 className="text-2xl font-bold text-slate-800 italic dark:text-slate-100">
-                                            1. Dữ liệu chúng tôi thu thập
+                                            {t("sections.dataCollection.title")}
                                         </h2>
                                     </div>
                                     <div className="overflow-hidden rounded-2xl border border-slate-100 shadow-sm dark:border-slate-800">
@@ -111,13 +107,13 @@ export default function PrivacyPolicy() {
                                             <TableHeader className="bg-slate-50/50 dark:bg-slate-950/50">
                                                 <TableRow className="dark:border-slate-800">
                                                     <TableHead className="font-bold text-slate-700 dark:text-slate-300">
-                                                        Loại dữ liệu
+                                                        {t("sections.dataCollection.table.type")}
                                                     </TableHead>
                                                     <TableHead className="font-bold text-slate-700 dark:text-slate-300">
-                                                        Ví dụ cụ thể
+                                                        {t("sections.dataCollection.table.example")}
                                                     </TableHead>
                                                     <TableHead className="font-bold text-slate-700 dark:text-slate-300">
-                                                        Mục đích
+                                                        {t("sections.dataCollection.table.purpose")}
                                                     </TableHead>
                                                 </TableRow>
                                             </TableHeader>
@@ -151,12 +147,12 @@ export default function PrivacyPolicy() {
 
                                 {/* 2. CÁCH SỬ DỤNG THÔNG TIN */}
                                 <section className="space-y-6">
-                                    <div className="flex items-center gap-3 border-b border-slate-100 pb-4 dark:border-slate-800">
+                                    <div className="flex items-center gap-4 border-b border-slate-100 pb-4 dark:border-slate-800">
                                         <div className="rounded-lg bg-purple-100 p-2 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
                                             <Eye className="size-6" />
                                         </div>
                                         <h2 className="text-2xl font-bold text-slate-800 italic dark:text-slate-100">
-                                            2. Cách chúng tôi sử dụng thông tin
+                                            {t("sections.usage.title")}
                                         </h2>
                                     </div>
                                     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -195,20 +191,15 @@ export default function PrivacyPolicy() {
                                             <Share2 className="size-6" />
                                         </div>
                                         <h2 className="text-2xl font-bold text-slate-800 italic dark:text-slate-100">
-                                            3. Chia sẻ dữ liệu với bên thứ ba
+                                            {t("sections.sharing.title")}
                                         </h2>
                                     </div>
                                     <div className="flex items-start gap-4 rounded-2xl border border-emerald-100 bg-emerald-50/50 p-6 dark:border-emerald-900/30 dark:bg-emerald-950/20">
                                         <ShieldCheck className="mt-1 h-8 w-8 shrink-0 text-emerald-600 dark:text-emerald-500" />
-                                        <p className="text-sm leading-relaxed text-slate-700 md:text-base dark:text-slate-300">
-                                            Chúng tôi <strong>không bán</strong>{" "}
-                                            dữ liệu của bạn cho bất kỳ ai. Chúng
-                                            tôi chỉ chia sẻ những thông tin cần
-                                            thiết tối thiểu (như Địa chỉ & SĐT)
-                                            với các đối tác vận chuyển để đơn
-                                            hàng có thể tới tay bạn một cách
-                                            chính xác nhất.
-                                        </p>
+                                        <p 
+                                            className="text-sm leading-relaxed text-slate-700 md:text-base dark:text-slate-300"
+                                            dangerouslySetInnerHTML={{ __html: t.raw("sections.sharing.content") }}
+                                        />
                                     </div>
                                 </section>
 
@@ -218,20 +209,17 @@ export default function PrivacyPolicy() {
                                         <div className="space-y-2">
                                             <div className="inline-flex items-center gap-2 rounded-full bg-white/20 px-3 py-1 text-xs font-bold tracking-widest text-white uppercase">
                                                 <UserCheck className="size-3" />{" "}
-                                                Kiểm soát dữ liệu
+                                                {t("sections.rights.badge")}
                                             </div>
                                             <h3 className="text-2xl font-bold">
-                                                Quyền hạn của bạn
+                                                {t("sections.rights.title")}
                                             </h3>
                                             <p className="max-w-lg text-sm text-indigo-100">
-                                                Bạn có quyền yêu cầu truy cập,
-                                                chỉnh sửa hoặc xóa vĩnh viễn dữ
-                                                liệu cá nhân bất kỳ lúc nào
-                                                thông qua Cài đặt hoặc Hỗ trợ.
+                                                {t("sections.rights.description")}
                                             </p>
                                         </div>
                                         <button className="flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-bold text-indigo-600 shadow-lg transition-colors hover:bg-yellow-300">
-                                            Cài đặt tài khoản{" "}
+                                            {t("sections.rights.button")}{" "}
                                             <ChevronRight className="size-4" />
                                         </button>
                                     </div>
@@ -242,16 +230,15 @@ export default function PrivacyPolicy() {
                                 {/* FOOTER */}
                                 <footer className="space-y-6 border-t border-slate-100 pt-10 text-center dark:border-slate-800">
                                     <p className="text-sm text-slate-500 dark:text-slate-400">
-                                        Mọi thắc mắc về chính sách bảo mật vui
-                                        lòng gửi về hòm thư:
+                                        {t("sections.footer.question")}
                                     </p>
                                     <a
-                                        href="mailto:privacy@t7m.kmgroup.com"
+                                        href={`mailto:${t("sections.footer.email")}`}
                                         className="group inline-flex items-center gap-3 rounded-2xl bg-slate-900 px-8 py-4 text-white shadow-xl transition-all duration-300 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700"
                                     >
                                         <Mail className="size-5 transition-transform group-hover:scale-110" />
                                         <span className="font-bold tracking-wide">
-                                            privacy@t7m.kmgroup.com
+                                            {t("sections.footer.email")}
                                         </span>
                                     </a>
                                 </footer>
