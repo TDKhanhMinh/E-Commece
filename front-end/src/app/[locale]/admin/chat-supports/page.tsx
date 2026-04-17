@@ -36,7 +36,7 @@ const AdminChat = () => {
     };
 
     return (
-        <div className="flex h-[calc(100vh-100px)] w-full overflow-hidden rounded-2xl border border-gray-200 bg-white font-sans shadow-sm">
+        <div className="flex h-[calc(100vh-100px)] w-full overflow-hidden rounded-2xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-950 font-sans shadow-sm">
             <ChatRoomList
                 chatRooms={chatRooms}
                 isLoading={isLoadingRooms}
@@ -50,19 +50,19 @@ const AdminChat = () => {
                 onRefetch={fetchRooms}
             />
 
-            <div className="flex flex-1 flex-col bg-white">
+            <div className="flex flex-1 flex-col bg-white dark:bg-slate-900">
                 {selectedUser ? (
                     <ActiveChatWindow
                         adminId={ADMIN_ID}
                         selectedUser={selectedUser}
                     />
                 ) : (
-                    <div className="flex h-full flex-col items-center justify-center text-gray-400">
+                    <div className="flex h-full flex-col items-center justify-center text-gray-400 dark:text-slate-600">
                         <MessageCircle
                             size={60}
-                            className="mb-4 text-gray-200"
+                            className="mb-4 text-gray-200 dark:text-slate-800"
                         />
-                        <p className="text-lg font-medium text-gray-500">
+                        <p className="text-lg font-medium text-gray-500 dark:text-slate-400">
                             Chọn một cuộc trò chuyện để bắt đầu
                         </p>
                     </div>

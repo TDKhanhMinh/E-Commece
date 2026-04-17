@@ -7,8 +7,8 @@ export function CartError() {
             <div className="mb-6">
                 <BackButton />
             </div>
-            <Card className="p-8 text-center">
-                <p className="text-destructive text-lg">
+            <Card className="p-8 text-center dark:bg-slate-900 dark:border-slate-800">
+                <p className="text-destructive text-lg font-medium dark:text-red-400">
                     Không thể tải giỏ hàng. Vui lòng thử lại sau.
                 </p>
             </Card>

@@ -105,8 +105,8 @@ export function ReviewDialog({ productId, productName }: AddReviewDialogProps) {
                                                     <Star
                                                         className={`h-9 w-9 ${
                                                             star <= field.value
-                                                                ? "fill-yellow-400 text-yellow-400"
-                                                                : "text-gray-300"
+                                                                  ? "fill-yellow-400 text-yellow-400"
+                                                                  : "text-gray-300 dark:text-slate-700"
                                                         }`}
                                                     />
                                                 </button>

@@ -10,12 +10,27 @@ import {
     YAxis,
 } from "recharts";
 import { formatCurrency } from "@/lib/format-price";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 interface RevenueChartProps {
     data: { date: string; revenue: number }[];
 }
 
 export function RevenueAreaChart({ data }: RevenueChartProps) {
+    const { resolvedTheme } = useTheme();
+    const [isDarkMode, setIsDarkMode] = useState(false);
+
+    useEffect(() => {
+        setIsDarkMode(resolvedTheme === "dark");
+    }, [resolvedTheme]);
+
+    const chartColor = isDarkMode ? "#3b82f6" : "#000"; // blue-500 for dark, black for light
+    const gridColor = isDarkMode ? "#1e293b" : "#e5e7eb"; // slate-800 for dark
+    const textColor = isDarkMode ? "#94a3b8" : "#6b7280"; // slate-400 for dark
+    const tooltipBg = isDarkMode ? "#0f172a" : "#fff"; // slate-900 for dark
+    const tooltipBorder = isDarkMode ? "#1e293b" : "#e5e7eb";
+
     // @ts-ignore
     return (
         <div className="h-75 w-full">
@@ -34,12 +49,12 @@ export function RevenueAreaChart({ data }: RevenueChartProps) {
                         >
                             <stop
                                 offset="5%"
-                                stopColor="#000"
-                                stopOpacity={0.1}
+                                stopColor={chartColor}
+                                stopOpacity={0.3}
                             />
                             <stop
                                 offset="95%"
-                                stopColor="#000"
+                                stopColor={chartColor}
                                 stopOpacity={0}
                             />
                         </linearGradient>
@@ -48,31 +63,32 @@ export function RevenueAreaChart({ data }: RevenueChartProps) {
                     <CartesianGrid
                         strokeDasharray="3 3"
                         vertical={false}
-                        stroke="#e5e7eb"
+                        stroke={gridColor}
                     />
 
                     <XAxis
                         dataKey="date"
                         axisLine={false}
                         tickLine={false}
-                        tick={{ fontSize: 12, fill: "#6b7280" }}
+                        tick={{ fontSize: 12, fill: textColor }}
                         dy={10}
                     />
 
                     <YAxis
                         axisLine={false}
                         tickLine={false}
-                        tick={{ fontSize: 12, fill: "#6b7280" }}
+                        tick={{ fontSize: 12, fill: textColor }}
                         tickFormatter={(value) => `${value / 1000000}M`}
                         width={40}
                     />
 
                     <Tooltip
                         contentStyle={{
-                            backgroundColor: "#fff",
+                            backgroundColor: tooltipBg,
                             borderRadius: "8px",
-                            border: "1px solid #e5e7eb",
+                            border: `1px solid ${tooltipBorder}`,
                             boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                            color: isDarkMode ? "#f8fafc" : "#0f172a",
                         }}
                         // @ts-ignore
                         formatter={(value: number) => [
@@ -84,7 +100,7 @@ export function RevenueAreaChart({ data }: RevenueChartProps) {
                     <Area
                         type="monotone"
                         dataKey="revenue"
-                        stroke="#000"
+                        stroke={chartColor}
                         strokeWidth={2}
                         fillOpacity={1}
                         fill="url(#colorRevenue)"

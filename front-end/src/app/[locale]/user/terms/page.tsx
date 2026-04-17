@@ -63,7 +63,7 @@ export default function TermsAndConditions() {
     const lastUpdated = "21/01/2026";
 
     return (
-        <div className="min-h-screen bg-slate-50/50 pb-20">
+        <div className="min-h-screen bg-slate-50/50 pb-20 dark:bg-slate-950">
             {/* HERO SECTION - TIÊU ĐỀ RỰC RỠ */}
             <div className="relative overflow-hidden bg-gradient-to-br from-indigo-900 via-slate-900 to-blue-900 px-4 py-24">
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
@@ -94,7 +94,7 @@ export default function TermsAndConditions() {
             </div>
 
             <div className="relative z-20 container mx-auto -mt-16 max-w-5xl px-4">
-                <Card className="overflow-hidden rounded-[2rem] border-none bg-white/90 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.14)] backdrop-blur-2xl">
+                <Card className="overflow-hidden rounded-[2rem] border-none bg-white/90 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.14)] backdrop-blur-2xl dark:border-slate-800 dark:bg-slate-900/90">
                     <CardContent className="p-0">
                         <ScrollArea className="h-[800px] w-full">
                             <div className="space-y-12 p-8 md:p-16">
@@ -102,7 +102,7 @@ export default function TermsAndConditions() {
                                     {TERMS_SECTIONS.map((section) => (
                                         <section
                                             key={section.id}
-                                            className="group relative rounded-[1.5rem] border border-slate-100 bg-white p-8 transition-all duration-500 hover:border-transparent hover:shadow-2xl hover:shadow-indigo-500/10"
+                                            className="group relative rounded-[1.5rem] border border-slate-100 bg-white p-8 transition-all duration-500 hover:border-transparent hover:shadow-2xl hover:shadow-indigo-500/10 dark:border-slate-800 dark:bg-slate-800 dark:hover:shadow-indigo-950/50"
                                         >
                                             <div
                                                 className={`absolute top-0 left-0 h-full w-2 rounded-l-[1.5rem] bg-gradient-to-b ${section.gradient}`}
@@ -117,14 +117,14 @@ export default function TermsAndConditions() {
 
                                                 <div className="space-y-3">
                                                     <div className="flex items-center gap-3">
-                                                        <span className="text-xs font-black tracking-widest text-slate-300 uppercase">
+                                                        <span className="text-xs font-black tracking-widest text-slate-300 uppercase dark:text-slate-500">
                                                             Mục {section.id}
                                                         </span>
-                                                        <h3 className="text-2xl leading-none font-extrabold text-slate-800">
+                                                        <h3 className="text-2xl leading-none font-extrabold text-slate-800 dark:text-slate-100">
                                                             {section.title}
                                                         </h3>
                                                     </div>
-                                                    <p className="leading-relaxed font-medium text-slate-600">
+                                                    <p className="leading-relaxed font-medium text-slate-600 dark:text-slate-400">
                                                         {section.content}
                                                     </p>
                                                 </div>
@@ -134,31 +134,31 @@ export default function TermsAndConditions() {
                                 </div>
 
                                 {/* FOOTER SECTION */}
-                                <div className="mt-16 border-t border-slate-100 pt-10">
-                                    <div className="flex flex-col items-center justify-between gap-8 rounded-3xl bg-gradient-to-r from-slate-50 to-indigo-50/30 p-8 md:flex-row">
+                                <div className="mt-16 border-t border-slate-100 pt-10 dark:border-slate-800">
+                                    <div className="flex flex-col items-center justify-between gap-8 rounded-3xl bg-gradient-to-r from-slate-50 to-indigo-50/30 p-8 md:flex-row dark:from-slate-800 dark:to-indigo-950/30">
                                         <div className="space-y-2 text-center md:text-left">
-                                            <h4 className="flex items-center justify-center gap-2 text-xl font-bold text-slate-900 md:justify-start">
+                                            <h4 className="flex items-center justify-center gap-2 text-xl font-bold text-slate-900 md:justify-start dark:text-slate-100">
                                                 <HelpCircle className="size-6 text-indigo-500" />
                                                 Bạn cần hỗ trợ thêm?
                                             </h4>
-                                            <p className="max-w-sm text-sm text-slate-500">
+                                            <p className="max-w-sm text-sm text-slate-500 dark:text-slate-400">
                                                 Nếu có bất kỳ thắc mắc nào về
                                                 điều khoản dịch vụ, đội ngũ hỗ
                                                 trợ của chúng tôi luôn sẵn sàng
                                                 lắng nghe.
                                             </p>
                                         </div>
-                                        <button className="group flex items-center gap-2 rounded-2xl bg-slate-900 px-8 py-4 text-sm font-bold text-white shadow-xl transition-all duration-300 hover:bg-indigo-600 active:scale-95">
+                                        <button className="group flex items-center gap-2 rounded-2xl bg-slate-900 px-8 py-4 text-sm font-bold text-white shadow-xl transition-all duration-300 hover:bg-indigo-600 active:scale-95 dark:bg-indigo-600 dark:hover:bg-indigo-700">
                                             Liên hệ Trung tâm hỗ trợ
                                             <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
                                         </button>
                                     </div>
 
-                                    <div className="mt-12 flex justify-center gap-8 opacity-20">
-                                        <ShieldCheck className="size-16 text-slate-900" />
-                                        <FileText className="size-16 text-slate-900" />
+                                    <div className="mt-12 flex justify-center gap-8 opacity-20 dark:opacity-40">
+                                        <ShieldCheck className="size-16 text-slate-900 dark:text-slate-100" />
+                                        <FileText className="size-16 text-slate-900 dark:text-slate-100" />
                                     </div>
-                                    <p className="mt-8 text-center text-[10px] tracking-[0.2em] text-slate-400 uppercase">
+                                    <p className="mt-8 text-center text-[10px] tracking-[0.2em] text-slate-400 uppercase dark:text-slate-600">
                                         &copy; 2026 T7M Online Store - All
                                         Rights Reserved
                                     </p>

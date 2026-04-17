@@ -90,7 +90,7 @@ export function MainNavigator() {
           tabBarIcon: ({ color, size }) => (
             <TabIcon name="package-variant" color={color} size={size} />
           ),
-          tabBarBadge: totalOrder,
+          tabBarBadge: totalOrder == 0 ? null : totalOrder,
           tabBarBadgeStyle: { fontSize: 10 },
         }}
       />

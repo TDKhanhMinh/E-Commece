@@ -52,7 +52,7 @@ const AdminReviewPage = () => {
 
     if (isLoading)
         return (
-            <div className="p-10 text-center text-gray-500">Đang tải...</div>
+            <div className="p-10 text-center text-gray-500 dark:text-slate-400">Đang tải...</div>
         );
     if (isError)
         return (
@@ -64,7 +64,7 @@ const AdminReviewPage = () => {
             <div className="flex items-center justify-between">
                 <h1 className="text-2xl font-bold">Quản lý Đánh giá</h1>
                 <div className="relative w-64">
-                    <Search className="absolute top-2.5 left-2 h-4 w-4 text-gray-400" />
+                    <Search className="absolute top-2.5 left-2 h-4 w-4 text-gray-400 dark:text-slate-500" />
                     <Input
                         placeholder="Tìm theo sản phẩm..."
                         className="pl-8"
@@ -77,7 +77,7 @@ const AdminReviewPage = () => {
                 </div>
             </div>
 
-            <div className="rounded-md border bg-white">
+            <div className="rounded-md border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-950">
                 <Table>
                     <TableHeader>{/* Table Header giữ nguyên */}</TableHeader>
                     <TableBody>
@@ -85,7 +85,7 @@ const AdminReviewPage = () => {
                             reviews.map((review: any) => (
                                 <TableRow
                                     key={review.id}
-                                    className="transition-colors hover:bg-gray-50"
+                                    className="transition-colors hover:bg-gray-50 dark:hover:bg-slate-900 border-b border-gray-100 dark:border-slate-800/50"
                                 >
                                     {/* Cột Khách hàng: Hiển thị Avatar và Tên */}
                                     <TableCell>
@@ -93,14 +93,14 @@ const AdminReviewPage = () => {
                                             <img
                                                 src={review.reviewerImage}
                                                 alt={review.reviewerName}
-                                                className="h-10 w-10 rounded-full border object-cover"
+                                                className="h-10 w-10 rounded-full border border-gray-200 dark:border-slate-800 object-cover"
                                             />
                                             <div className="flex flex-col">
                                                 <span className="text-sm leading-none font-semibold">
                                                     {review.reviewerName}
                                                 </span>
                                                 {review.isVerified && (
-                                                    <span className="mt-1 text-[10px] font-medium text-green-600">
+                                                    <span className="mt-1 text-[10px] font-medium text-green-600 dark:text-green-500">
                                                         ✓ Đã mua hàng
                                                     </span>
                                                 )}
@@ -114,7 +114,7 @@ const AdminReviewPage = () => {
                                             <span className="text-sm font-medium">
                                                 {review.productName}
                                             </span>
-                                            <span className="text-xs text-gray-400">
+                                            <span className="text-xs text-gray-400 dark:text-slate-500">
                                                 Slug: {review.productSlug}
                                             </span>
                                         </div>
@@ -136,14 +136,14 @@ const AdminReviewPage = () => {
                                             <span className="truncate text-sm font-semibold">
                                                 {review.title}
                                             </span>
-                                            <p className="mt-1 line-clamp-2 text-xs text-gray-500 italic">
+                                            <p className="mt-1 line-clamp-2 text-xs text-gray-500 dark:text-slate-400 italic">
                                                 "{review.content}"
                                             </p>
                                         </div>
                                     </TableCell>
 
                                     {/* Cột Ngày tạo */}
-                                    <TableCell className="text-xs text-gray-500">
+                                    <TableCell className="text-xs text-gray-500 dark:text-slate-400">
                                         {new Date(
                                             review.reviewDate
                                         ).toLocaleString("vi-VN", {
@@ -162,7 +162,7 @@ const AdminReviewPage = () => {
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
-                                                    className="text-red-500 hover:bg-red-50 hover:text-red-700"
+                                                    className="text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 hover:text-red-700 dark:hover:text-red-400"
                                                 >
                                                     <Trash2 className="h-4 w-4" />
                                                 </Button>
@@ -216,7 +216,7 @@ const AdminReviewPage = () => {
                             <TableRow>
                                 <TableCell
                                     colSpan={6}
-                                    className="h-24 text-center text-gray-500"
+                                    className="h-24 text-center text-gray-500 dark:text-slate-400"
                                 >
                                     Không có dữ liệu đánh giá nào.
                                 </TableCell>
@@ -225,8 +225,8 @@ const AdminReviewPage = () => {
                     </TableBody>
                 </Table>
 
-                <div className="flex items-center justify-between border-t px-4 py-4">
-                    <div className="text-sm text-gray-500">
+                <div className="flex items-center justify-between border-t border-gray-200 dark:border-slate-800 px-4 py-4">
+                    <div className="text-sm text-gray-500 dark:text-slate-400">
                         Hiển thị {reviews.length} trên tổng số{" "}
                         {
                             //@ts-ignore
@@ -249,7 +249,7 @@ const AdminReviewPage = () => {
                             <span className="text-sm font-medium">
                                 Trang {page + 1}
                             </span>
-                            <span className="text-sm text-gray-500">
+                            <span className="text-sm text-gray-500 dark:text-slate-400">
                                 / {totalPages}
                             </span>
                         </div>

@@ -30,7 +30,7 @@ interface ProductGeneralInfoProps {
 export const ProductGeneralInfo = memo(
     ({ control, categories, brands }: ProductGeneralInfoProps) => {
         return (
-            <Card>
+            <Card className="dark:bg-slate-950 dark:border-slate-800">
                 <CardContent className="grid grid-cols-2 gap-6 pt-6">
                     <FormField
                         control={control}

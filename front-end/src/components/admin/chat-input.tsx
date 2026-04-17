@@ -19,10 +19,10 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     isDisabled = false,
 }) => {
     return (
-        <div className="border-t border-gray-200 bg-white p-4">
+        <div className="border-t border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4">
             <form
                 onSubmit={onSend}
-                className="flex items-center gap-3 rounded-2xl border border-gray-200 bg-gray-50 p-1 pl-4 focus-within:border-blue-500 focus-within:ring-1"
+                className="flex items-center gap-3 rounded-2xl border border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-950 p-1 pl-4 focus-within:border-blue-500 focus-within:ring-1"
             >
                 <input
                     type="text"
@@ -30,7 +30,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
                     onChange={(e) => onMessageChange(e.target.value)}
                     placeholder={`${selectedUserName}...`}
                     disabled={isDisabled}
-                    className="flex-1 bg-transparent py-2 text-[14.5px] outline-none disabled:opacity-50"
+                    className="flex-1 bg-transparent py-2 text-[14.5px] outline-none disabled:opacity-50 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-600"
                 />
                 <button
                     type="submit"

@@ -200,16 +200,16 @@ export default function CheckoutPage() {
             {paypalPaymentData ? (
                 <div className="animate-in fade-in flex flex-col items-center justify-center space-y-6 py-16 duration-500">
                     <div className="space-y-2 text-center">
-                        <h2 className="text-3xl font-bold text-slate-800">
+                        <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100">
                             Thanh toán đơn hàng #{paypalPaymentData.orderId}
                         </h2>
-                        <p className="text-slate-600">
+                        <p className="text-slate-600 dark:text-slate-400">
                             Vui lòng nhấp vào nút bên dưới để hoàn tất thanh
                             toán an toàn qua PayPal
                         </p>
                     </div>
 
-                    <div className="w-full max-w-md rounded-2xl border border-slate-100 bg-slate-50 p-6 shadow-sm">
+                    <div className="w-full max-w-md rounded-2xl border border-slate-100 bg-slate-50 p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/50">
                         <PayPalCheckoutButton
                             orderId={paypalPaymentData.orderId}
                             totalAmountVnd={paypalPaymentData.amount}
@@ -218,7 +218,7 @@ export default function CheckoutPage() {
 
                     <Button
                         variant="ghost"
-                        className="text-slate-500 underline hover:text-slate-800"
+                        className="text-slate-500 underline hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
                         onClick={() =>
                             router.push(
                                 `/user/orders/${paypalPaymentData.orderId}`

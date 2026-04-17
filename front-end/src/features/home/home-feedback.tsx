@@ -29,7 +29,7 @@ export default function HomeFeedBack() {
                         <span className="mb-12 bg-linear-to-r from-orange-500 via-indigo-500 to-green-500 bg-clip-text text-xl font-bold tracking-tighter text-transparent uppercase">
                             TRUSTED BY MANY, LOVED BY ALL
                         </span>
-                        <h2 className="my-1 font-bold uppercase md:text-4xl">
+                        <h2 className="my-1 font-bold uppercase text-slate-900 md:text-4xl dark:text-slate-100">
                             Real experiences. Real satisfaction.
                         </h2>
                     </div>

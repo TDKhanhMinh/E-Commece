@@ -42,14 +42,14 @@ export const ChatRoomList: React.FC<ChatRoomListProps> = ({
     });
 
     return (
-        <div className="flex w-87.5 flex-col border-r border-gray-200 bg-gray-50/50">
-            <div className="border-b border-gray-200 p-4">
-                <h2 className="text-lg font-bold text-gray-800">
+        <div className="flex w-87.5 flex-col border-r border-gray-200 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-950/50">
+            <div className="border-b border-gray-200 dark:border-slate-800 p-4">
+                <h2 className="text-lg font-bold text-gray-800 dark:text-slate-100">
                     Tin nhắn hỗ trợ
                 </h2>
                 <div className="relative mt-3">
                     <Search
-                        className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400"
+                        className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400 dark:text-slate-500"
                         size={18}
                     />
                     <input
@@ -57,7 +57,7 @@ export const ChatRoomList: React.FC<ChatRoomListProps> = ({
                         placeholder="Tìm kiếm người dùng..."
                         value={searchQuery}
                         onChange={(e) => onSearchChange(e.target.value)}
-                        className="w-full rounded-xl border border-gray-200 bg-white py-2.5 pr-4 pl-10 text-sm outline-none focus:border-blue-500"
+                        className="w-full rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-2.5 pr-4 pl-10 text-sm outline-none focus:border-blue-500 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500"
                     />
                 </div>
             </div>
@@ -87,7 +87,7 @@ export const ChatRoomList: React.FC<ChatRoomListProps> = ({
                         );
                     })
                 ) : (
-                    <div className="p-8 text-center text-sm text-gray-400">
+                    <div className="p-8 text-center text-sm text-gray-400 dark:text-slate-600">
                         Không tìm thấy hội thoại
                     </div>
                 )}

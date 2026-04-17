@@ -34,9 +34,9 @@ export function OrderDetailsDialog({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-h-[90vh] w-full max-w-lg overflow-y-auto border-none bg-slate-50 p-0 shadow-xl">
-                <DialogHeader className="sticky top-0 z-10 bg-slate-50 p-6 pb-0">
-                    <DialogTitle className="text-2xl font-bold">
+            <DialogContent className="max-h-[90vh] w-full max-w-lg overflow-y-auto border-none bg-slate-50 p-0 shadow-xl dark:bg-slate-950">
+                <DialogHeader className="sticky top-0 z-10 bg-slate-50 p-6 pb-0 dark:bg-slate-950">
+                    <DialogTitle className="text-2xl font-bold dark:text-slate-100">
                         Chi tiết đơn hàng #{orderId}
                     </DialogTitle>
                 </DialogHeader>
@@ -47,12 +47,12 @@ export function OrderDetailsDialog({
                     </div>
                 ) : (
                     <div className="flex flex-col gap-6 p-6">
-                        <Card className="border-none shadow-sm">
+                        <Card className="border-none shadow-sm dark:bg-slate-900 dark:border dark:border-slate-800">
                             <CardHeader className="">
                                 <div className="flex items-start gap-2 text-sm">
-                                    <MapPin className="mt-0.5 size-4 shrink-0 text-blue-600" />
+                                    <MapPin className="mt-0.5 size-4 shrink-0 text-blue-600 dark:text-blue-400" />
                                     <div>
-                                        <span className="text-secondary-dark text-lg font-semibold">
+                                        <span className="text-secondary-dark text-lg font-semibold dark:text-slate-100">
                                             {
                                                 orderDetails?.deliveryAddress
                                                     ?.userName
@@ -135,10 +135,10 @@ export function OrderDetailsDialog({
                                     </div>
                                     <Separator className="my-1" />
                                     <div className="flex items-center justify-between pt-1">
-                                        <span className="text-base font-bold">
+                                        <span className="text-base font-bold dark:text-slate-100">
                                             Tổng thanh toán
                                         </span>
-                                        <span className="text-xl font-bold text-blue-600">
+                                        <span className="text-xl font-bold text-blue-600 dark:text-blue-400">
                                             {formatCurrency(
                                                 orderDetails?.finalAmount || 0
                                             )}
@@ -150,8 +150,8 @@ export function OrderDetailsDialog({
 
                         <div className="space-y-3">
                             <div className="flex items-center gap-2 px-1">
-                                <ShoppingBag className="text-secondary-dark size-4" />
-                                <h3 className="text-md text-secondary-dark font-bold">
+                                <ShoppingBag className="text-secondary-dark size-4 dark:text-slate-200" />
+                                <h3 className="text-md text-secondary-dark font-bold dark:text-slate-200">
                                     Sản phẩm ({products.length})
                                 </h3>
                             </div>
@@ -160,9 +160,9 @@ export function OrderDetailsDialog({
                                 {products.map((product, index) => (
                                     <div
                                         key={product.skuCode || index}
-                                        className="flex gap-4 rounded-xl border bg-white p-3 shadow-sm"
+                                        className="flex gap-4 rounded-xl border bg-white p-3 shadow-sm dark:bg-slate-900 dark:border-slate-800"
                                     >
-                                        <div className="relative h-16 w-16 shrink-0 rounded-lg border bg-slate-50 p-1">
+                                        <div className="relative h-16 w-16 shrink-0 rounded-lg border bg-slate-50 p-1 dark:bg-slate-800 dark:border-slate-700">
                                             <Image
                                                 src={
                                                     product.image ||
@@ -175,7 +175,7 @@ export function OrderDetailsDialog({
                                         </div>
                                         <div className="flex min-w-0 flex-1 flex-col justify-between">
                                             <div>
-                                                <h4 className="text-secondary-dark line-clamp-1 text-sm font-semibold">
+                                                <h4 className="text-secondary-dark line-clamp-1 text-sm font-semibold dark:text-slate-200">
                                                     {product.productName}
                                                 </h4>
                                                 <p className="text-muted-foreground text-[11px]">
@@ -198,7 +198,7 @@ export function OrderDetailsDialog({
                                                         </span>
                                                     )}
                                                 </div>
-                                                <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[11px] font-bold">
+                                                <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[11px] font-bold dark:bg-slate-800 dark:text-slate-300">
                                                     x{product.quantity}
                                                 </span>
                                             </div>

@@ -151,14 +151,14 @@ export default function AdminOrderManagement() {
                 </div>
             </div>
 
-            <Card className="border-none bg-white shadow-sm">
+            <Card className="border-none bg-white dark:bg-slate-950 shadow-sm">
                 <CardHeader className="pb-3">
                     <div className="flex flex-col justify-between gap-4 sm:flex-row">
                         <div className="relative w-full sm:w-80">
                             <Search className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
                             <Input
                                 placeholder="Tìm kiếm mã ĐH, khách hàng..."
-                                className="bg-slate-50/50 pl-9"
+                                className="bg-slate-50/50 dark:bg-slate-900/50 pl-9"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
@@ -166,7 +166,7 @@ export default function AdminOrderManagement() {
                                 <Button
                                     variant="ghost"
                                     size="sm"
-                                    className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 p-0 text-gray-400 hover:text-gray-600"
+                                    className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 p-0 text-gray-400 hover:text-gray-600 dark:text-slate-500 dark:hover:text-slate-300"
                                     onClick={() => setSearchTerm("")}
                                 >
                                     <X className="h-4 w-4" />
@@ -212,7 +212,7 @@ export default function AdminOrderManagement() {
                                                     { label: "Đã hủy", value: "CANCELLED" },
                                                     { label: "Thanh toán thất bại", value: "FAILED" },
                                                 ].map((item) => (
-                                                    <div key={item.value} className="flex items-center space-x-2 rounded-md border p-2 transition-colors hover:bg-slate-50">
+                                                    <div key={item.value} className="flex items-center space-x-2 rounded-md border p-2 transition-colors hover:bg-slate-50 dark:hover:bg-slate-900 dark:border-slate-800">
                                                         <RadioGroupItem value={item.value} id={`status-${item.value}`} />
                                                         <Label htmlFor={`status-${item.value}`} className="flex-1 cursor-pointer text-sm font-normal">
                                                             {item.label}
@@ -274,7 +274,7 @@ export default function AdminOrderManagement() {
                                         <Button 
                                             variant="outline" 
                                             onClick={handleResetFilters}
-                                            className="text-red-500 hover:text-red-600 hover:bg-red-50 border-red-200"
+                                            className="text-red-500 hover:text-red-600 hover:bg-red-50 border-red-200 dark:border-red-900/50 dark:hover:bg-red-950/20"
                                         >
                                             <RefreshCcw className="mr-2 h-4 w-4" />
                                             Đặt lại
@@ -307,7 +307,7 @@ export default function AdminOrderManagement() {
                         <>
                             <div className="rounded-md border">
                                 <Table>
-                                    <TableHeader className="bg-slate-50">
+                                    <TableHeader className="bg-slate-50 dark:bg-slate-900">
                                         <TableRow>
                                             <TableHead className="font-semibold">
                                                 Mã ĐH
@@ -336,7 +336,7 @@ export default function AdminOrderManagement() {
                                         {orders.map((order) => (
                                             <TableRow
                                                 key={order.id || order.orderId}
-                                                className="transition-colors hover:bg-slate-50/50"
+                                                className="transition-colors hover:bg-slate-50/50 dark:hover:bg-slate-900/50"
                                             >
                                                 <TableCell className="font-medium">
                                                     {order.id || order.orderId}

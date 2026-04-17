@@ -33,7 +33,8 @@ public class AttributeController {
         Sort.Direction direction = sortDirection.equalsIgnoreCase("DESC") ? Sort.Direction.DESC : Sort.Direction.ASC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
 
-        return ResponseEntity.ok(new ApiResponse<>(200, "Success", attributeService.getAllAttributes(keyword, pageable)));
+        return ResponseEntity
+                .ok(new ApiResponse<>(200, "Success", attributeService.getAllAttributes(keyword, pageable)));
     }
 
     @GetMapping("/{id}")
@@ -43,15 +44,18 @@ public class AttributeController {
 
     @PostMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<ApiResponse<AttributeResponse>> createAttribute(@Valid @RequestBody AttributeRequest request) {
+    public ResponseEntity<ApiResponse<AttributeResponse>> createAttribute(
+            @Valid @RequestBody AttributeRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ApiResponse<>(200, "Attribute created", attributeService.createAttribute(request)));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<ApiResponse<AttributeResponse>> updateAttribute(@PathVariable Long id, @Valid @RequestBody AttributeRequest request) {
-        return ResponseEntity.ok(new ApiResponse<>(200, "Attribute updated", attributeService.updateAttribute(id, request)));
+    public ResponseEntity<ApiResponse<AttributeResponse>> updateAttribute(@PathVariable Long id,
+            @Valid @RequestBody AttributeRequest request) {
+        return ResponseEntity
+                .ok(new ApiResponse<>(200, "Attribute updated", attributeService.updateAttribute(id, request)));
     }
 
     @DeleteMapping("/{id}")

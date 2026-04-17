@@ -37,7 +37,7 @@ export function CartItemCard({
     const outOfStock = item.quantity > item.stock;
 
     return (
-        <Card className="overflow-hidden border-none bg-slate-50/50 shadow-sm">
+        <Card className="overflow-hidden border-none bg-slate-50/50 shadow-sm dark:bg-slate-900/50 dark:border dark:border-slate-800 dark:shadow-slate-950/50">
             <CardContent className="p-4">
                 <div className="flex items-start gap-4">
                     <div className="flex shrink-0 items-start">
@@ -50,7 +50,7 @@ export function CartItemCard({
                         />
                     </div>
 
-                    <div className="h-24 w-24 shrink-0 rounded-lg border bg-white p-2">
+                    <div className="h-24 w-24 shrink-0 rounded-lg border bg-white p-2 dark:bg-slate-800 dark:border-slate-700">
                         <img
                             src={item.image || "/placeholder.png"}
                             alt={item.productName}
@@ -62,17 +62,17 @@ export function CartItemCard({
                         <div>
                             <div className="flex justify-between">
                                 <div>
-                                    <h3 className="text-lg font-semibold">
+                                    <h3 className="text-lg font-semibold dark:text-slate-100">
                                         {item.productName}
                                     </h3>
-                                    <p className="text-muted-foreground text-xs">
+                                    <p className="text-muted-foreground text-xs dark:text-slate-500">
                                         SKU: {item.skuCode}
                                     </p>
                                 </div>
                                 <Button
                                     variant="ghost"
                                     size="icon"
-                                    className="text-muted-foreground hover:text-destructive"
+                                    className="text-muted-foreground hover:text-destructive dark:text-slate-500 dark:hover:text-red-400"
                                     onClick={() =>
                                         onRemove(item.skuId, item.productName)
                                     }
@@ -86,7 +86,7 @@ export function CartItemCard({
                                     ([key, value]) => (
                                         <span
                                             key={key}
-                                            className="text-muted-foreground rounded border bg-white px-2 py-0.5 text-[10px] font-semibold tracking-wider uppercase"
+                                            className="text-muted-foreground rounded border bg-white px-2 py-0.5 text-[10px] font-semibold tracking-wider uppercase dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400"
                                         >
                                             {key}: {value}
                                         </span>
@@ -94,18 +94,18 @@ export function CartItemCard({
                                 )}
                             </div>
                             {outOfStock && (
-                                <p className="text-destructive mt-2 text-sm">
+                                <p className="text-destructive mt-2 text-sm dark:text-red-400">
                                     Sản phẩm tạm hết hàng / Không đủ số lượng
                                 </p>
                             )}
                         </div>
 
                         <div className="mt-4 flex items-end justify-between">
-                            <div className="flex items-center rounded-md border bg-white">
+                            <div className="flex items-center rounded-md border bg-white dark:bg-slate-800 dark:border-slate-700">
                                 <Button
                                     variant="ghost"
                                     size="icon"
-                                    className="h-8 w-8 rounded-none border-r"
+                                    className="h-8 w-8 rounded-none border-r dark:border-slate-700 dark:hover:bg-slate-700"
                                     onClick={() =>
                                         onUpdateQuantity(
                                             item.skuId,
@@ -116,15 +116,15 @@ export function CartItemCard({
                                     }
                                     disabled={item.quantity <= 1 || isUpdating}
                                 >
-                                    <Minus className="h-3 w-3" />
+                                    <Minus className="h-3 w-3 dark:text-slate-300" />
                                 </Button>
-                                <span className="w-10 text-center text-sm font-medium">
+                                <span className="w-10 text-center text-sm font-medium dark:text-slate-100">
                                     {item.quantity}
                                 </span>
                                 <Button
                                     variant="ghost"
                                     size="icon"
-                                    className="h-8 w-8 rounded-none border-l"
+                                    className="h-8 w-8 rounded-none border-l dark:border-slate-700 dark:hover:bg-slate-700"
                                     onClick={() => {
                                         onUpdateQuantity(
                                             item.skuId,
@@ -138,21 +138,21 @@ export function CartItemCard({
                                         isUpdating
                                     }
                                 >
-                                    <Plus className="h-3 w-3" />
+                                    <Plus className="h-3 w-3 dark:text-slate-300" />
                                 </Button>
                             </div>
                             <div className="text-right">
                                 {item.discountPercent &&
                                     item.discountPercent > 0 && (
-                                        <p className="text-muted-foreground mb-1 text-xs line-through">
+                                        <p className="text-muted-foreground mb-1 text-xs line-through dark:text-slate-500">
                                             {formatCurrency(item.price)}
                                         </p>
                                     )}
-                                <p className="text-primary text-lg font-bold">
+                                <p className="text-primary text-lg font-bold dark:text-blue-400">
                                     {formatCurrency(item.salePrice) ||
                                         formatCurrency(item.price)}
                                 </p>
-                                <p className="text-muted-foreground text-xs">
+                                <p className="text-muted-foreground text-xs dark:text-slate-500">
                                     Tổng: {formatCurrency(totalPrice)}
                                 </p>
                             </div>

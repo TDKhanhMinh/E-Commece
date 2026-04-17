@@ -17,16 +17,16 @@ export function CartSheet() {
     //@ts-ignore
     if (!isLoading && (!cart || !cart.items || cart.items.length === 0)) {
         return (
-            <SheetContent className="flex h-full w-full flex-col p-4 sm:max-w-lg">
-                <SheetTitle className="border-b pb-4">
+            <SheetContent className="flex h-full w-full flex-col p-4 sm:max-w-lg dark:bg-slate-900 dark:border-slate-800">
+                <SheetTitle className="border-b pb-4 dark:border-slate-800 dark:text-slate-100">
                     Giỏ hàng của bạn
                 </SheetTitle>
                 <div className="flex flex-1 flex-col items-center justify-center space-y-4">
-                    <div className="bg-muted rounded-full p-6">
-                        <ShoppingCart className="text-muted-foreground h-12 w-12" />
+                    <div className="bg-muted rounded-full p-6 dark:bg-slate-800">
+                        <ShoppingCart className="text-muted-foreground h-12 w-12 dark:text-slate-400" />
                     </div>
                     <div className="text-center">
-                        <span className="block text-lg font-semibold">
+                        <span className="block text-lg font-semibold dark:text-slate-100">
                             Giỏ hàng trống
                         </span>
                         <p className="text-muted-foreground mt-1 max-w-[280px] text-sm">
@@ -49,13 +49,13 @@ export function CartSheet() {
     // Trạng thái loading
     if (isLoading) {
         return (
-            <SheetContent className="h-full w-full p-4 sm:max-w-lg">
-                <SheetTitle className="border-b pb-4">
+            <SheetContent className="h-full w-full p-4 sm:max-w-lg dark:bg-slate-900">
+                <SheetTitle className="border-b pb-4 dark:border-slate-800 dark:text-slate-100">
                     Giỏ hàng của bạn
                 </SheetTitle>
                 <div className="flex h-full flex-col items-center justify-center gap-2">
-                    <Loader2 className="text-primary h-8 w-8 animate-spin" />
-                    <p className="text-muted-foreground text-sm font-medium">
+                    <Loader2 className="text-primary h-8 w-8 animate-spin dark:text-blue-400" />
+                    <p className="text-muted-foreground text-sm font-medium dark:text-slate-400">
                         Đang cập nhật giỏ hàng...
                     </p>
                 </div>
@@ -65,9 +65,9 @@ export function CartSheet() {
 
     return (
         // make container a flex column that can shrink (min-h-0) so the middle ScrollArea can scroll
-        <SheetContent className="flex h-full min-h-0 w-full flex-col overflow-hidden p-0 sm:max-w-lg">
-            <div className="shrink-0 border-b p-4 shadow-sm">
-                <SheetTitle className="text-xl font-bold">
+        <SheetContent className="flex h-full min-h-0 w-full flex-col overflow-hidden p-0 sm:max-w-lg dark:bg-slate-900 dark:border-slate-800">
+            <div className="shrink-0 border-b p-4 shadow-sm dark:border-slate-800 dark:shadow-slate-950/50">
+                <SheetTitle className="text-xl font-bold dark:text-slate-100">
                     Giỏ hàng ({summary.itemCount})
                 </SheetTitle>
             </div>
@@ -80,9 +80,9 @@ export function CartSheet() {
                     cart?.items.map((item: CartItemResponse) => (
                         <div
                             key={item.id}
-                            className="group bg-card hover:border-primary/50 relative flex gap-4 rounded-xl border p-3 transition-all hover:shadow-sm"
+                            className="group bg-card hover:border-primary/50 relative flex gap-4 rounded-xl border p-3 transition-all hover:shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:hover:border-blue-500/50 dark:hover:shadow-slate-950/50"
                         >
-                            <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border bg-white p-1">
+                            <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border bg-white p-1 dark:bg-slate-800 dark:border-slate-700">
                                 <img
                                     src={
                                         //@ts-ignore
@@ -95,7 +95,7 @@ export function CartSheet() {
 
                             <div className="flex flex-1 flex-col justify-between py-0.5">
                                 <div>
-                                    <h4 className="line-clamp-1 text-sm font-bold text-gray-900">
+                                    <h4 className="line-clamp-1 text-sm font-bold text-gray-900 dark:text-slate-100">
                                         {item.productName}
                                     </h4>
                                     <div className="mt-1 flex flex-wrap gap-1">
@@ -104,7 +104,7 @@ export function CartSheet() {
                                         ).map(([key, value]) => (
                                             <span
                                                 key={key}
-                                                className="bg-muted text-muted-foreground inline-flex items-center rounded-md px-1.5 py-0.5 text-[10px] font-medium"
+                                                className="bg-muted text-muted-foreground inline-flex items-center rounded-md px-1.5 py-0.5 text-[10px] font-medium dark:bg-slate-800 dark:text-slate-400"
                                             >
                                                 {value}
                                             </span>
@@ -113,20 +113,20 @@ export function CartSheet() {
                                 </div>
 
                                 <div className="mt-2 flex items-end justify-between">
-                                    <span className="text-muted-foreground rounded-full bg-slate-100 px-2 py-0.5 text-xs font-bold">
+                                    <span className="text-muted-foreground rounded-full bg-slate-100 px-2 py-0.5 text-xs font-bold dark:bg-slate-800 dark:text-slate-400">
                                         SL: {item.quantity}
                                     </span>
                                     <div className="text-right">
                                         {item.salePrice &&
                                         item.salePrice < item.price ? (
                                             <div className="flex flex-col items-end leading-tight">
-                                                <span className="text-muted-foreground text-[10px] line-through decoration-gray-400">
+                                                <span className="text-muted-foreground text-[10px] line-through decoration-gray-400 dark:text-slate-500 dark:decoration-slate-600">
                                                     {item.price.toLocaleString(
                                                         "vi-VN"
                                                     )}
                                                     đ
                                                 </span>
-                                                <span className="text-primary text-sm font-black">
+                                                <span className="text-primary text-sm font-black dark:text-blue-400">
                                                     {item.salePrice.toLocaleString(
                                                         "vi-VN"
                                                     )}
@@ -134,7 +134,7 @@ export function CartSheet() {
                                                 </span>
                                             </div>
                                         ) : (
-                                            <span className="text-primary text-sm font-black">
+                                            <span className="text-primary text-sm font-black dark:text-blue-400">
                                                 {item.price.toLocaleString(
                                                     "vi-VN"
                                                 )}
@@ -149,36 +149,35 @@ export function CartSheet() {
                 </div>
             </ScrollArea>
 
-            <div className="shrink-0 border-t bg-slate-50/80 p-5 shadow-[0_-4px_10px_rgba(0,0,0,0.03)] backdrop-blur-sm">
+            <div className="shrink-0 border-t bg-slate-50/80 p-5 shadow-[0_-4px_10px_rgba(0,0,0,0.03)] backdrop-blur-sm dark:bg-slate-900/80 dark:border-slate-800 dark:shadow-slate-950/50">
                 <div className="space-y-3">
                     <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground font-medium">
+                        <span className="text-muted-foreground font-medium dark:text-slate-400">
                             Tạm tính ({summary.itemCount} món)
                         </span>
-                        <span className="font-semibold text-gray-900">
+                        <span className="font-semibold text-gray-900 dark:text-slate-100">
                             {summary.totalAmount.toLocaleString("vi-VN")}đ
                         </span>
                     </div>
 
                     {summary.totalDiscount > 0 && (
                         <div className="flex justify-between text-sm">
-                            <span className="text-muted-foreground font-medium">
+                            <span className="text-muted-foreground font-medium dark:text-slate-400">
                                 Giảm giá
                             </span>
-                            <span className="text-destructive font-bold">
+                            <span className="text-destructive font-bold dark:text-red-400">
                                 -{summary.totalDiscount.toLocaleString("vi-VN")}
                                 đ
                             </span>
                         </div>
                     )}
 
-                    <Separator className="bg-slate-200" />
-
+                    <Separator className="bg-slate-200 dark:bg-slate-800" />
                     <div className="flex items-center justify-between pt-1">
-                        <span className="text-base font-bold text-gray-900">
+                        <span className="text-base font-bold text-gray-900 dark:text-slate-100">
                             Tổng cộng
                         </span>
-                        <span className="text-primary text-2xl font-black tracking-tight">
+                        <span className="text-primary text-2xl font-black tracking-tight dark:text-blue-400">
                             {summary.finalAmount.toLocaleString("vi-VN")}đ
                         </span>
                     </div>

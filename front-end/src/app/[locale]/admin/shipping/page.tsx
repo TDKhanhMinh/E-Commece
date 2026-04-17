@@ -83,7 +83,7 @@ const getPaymentStatusBadge = (
         return (
             <Badge
                 variant="outline"
-                className="border-green-600 bg-green-50 text-green-600"
+                className="border-green-600 dark:border-green-900/50 bg-green-50 dark:bg-green-950/30 text-green-600 dark:text-green-400"
             >
                 Đã Thanh Toán
             </Badge>
@@ -92,7 +92,7 @@ const getPaymentStatusBadge = (
     return (
         <Badge
             variant="outline"
-            className="border-red-600 bg-red-50 text-red-600"
+            className="border-red-600 dark:border-red-900/50 bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400"
         >
             Thu COD
         </Badge>
@@ -166,7 +166,7 @@ export default function DeliveryManagementPage() {
     console.log("Delivery data:", delivery);
     if (isLoading) {
         return (
-            <div className="w-full rounded-xl border bg-white p-6 shadow-sm">
+            <div className="w-full rounded-xl border dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
                 <div className="flex min-h-100 items-center justify-center">
                     <Loader2 className="text-primary h-8 w-8 animate-spin" />
                 </div>
@@ -176,14 +176,14 @@ export default function DeliveryManagementPage() {
 
     if (error) {
         return (
-            <div className="w-full rounded-xl border bg-white p-6 shadow-sm">
+            <div className="w-full rounded-xl border dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
                 <div className="flex min-h-100 items-center justify-center">
                     <div className="text-center">
-                        <p className="text-red-600">
+                        <p className="text-red-600 dark:text-red-400">
                             Không thể tải danh sách đơn vận. Xin lỗi vì sự bất
                             tiện này.
                         </p>
-                        <p className="mt-2 text-sm text-gray-500">
+                        <p className="mt-2 text-sm text-gray-500 dark:text-slate-500">
                             Vui lòng thử lại sau
                         </p>
                     </div>
@@ -204,10 +204,10 @@ export default function DeliveryManagementPage() {
                 </div>
                 <div className="flex items-center gap-4">
                     <div className="relative w-72">
-                        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-slate-500" />
                         <Input
                             placeholder="Tìm kiếm mã VĐ, khách hàng..."
-                            className="pl-10"
+                            className="bg-white dark:bg-slate-900 dark:border-slate-800 pl-10"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
@@ -215,7 +215,7 @@ export default function DeliveryManagementPage() {
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 p-0 text-gray-400 hover:text-gray-600"
+                                className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 p-0 text-gray-400 hover:text-gray-600 dark:text-slate-500 dark:hover:text-slate-300"
                                 onClick={() => setSearchQuery("")}
                             >
                                 <X className="h-4 w-4" />
@@ -257,7 +257,7 @@ export default function DeliveryManagementPage() {
                                         { label: "Thành công", value: "SUCCESS" },
                                         { label: "Đã hủy", value: "CANCELLED" },
                                     ].map((item) => (
-                                        <div key={item.value} className="flex items-center space-x-2 rounded-md border p-2 transition-colors hover:bg-slate-50">
+                                        <div key={item.value} className="flex items-center space-x-2 rounded-md border dark:border-slate-800 p-2 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800">
                                             <RadioGroupItem value={item.value} id={`status-${item.value}`} />
                                             <Label htmlFor={`status-${item.value}`} className="flex-1 cursor-pointer text-sm font-normal">
                                                 {item.label}
@@ -292,7 +292,7 @@ export default function DeliveryManagementPage() {
                             <Button 
                                 variant="outline" 
                                 onClick={handleResetFilters}
-                                className="text-red-500 hover:text-red-600 hover:bg-red-50 border-red-200"
+                                className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 border-red-200 dark:border-red-900/50"
                             >
                                 <RefreshCcw className="mr-2 h-4 w-4" />
                                 Đặt lại
@@ -306,9 +306,9 @@ export default function DeliveryManagementPage() {
                 </div>
             </div>
 
-            <div className="overflow-hidden rounded-md border bg-white shadow-sm">
+            <div className="overflow-hidden rounded-md border dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm">
                 <Table>
-                    <TableHeader className="bg-slate-50">
+                    <TableHeader className="bg-slate-50 dark:bg-slate-900">
                         <TableRow>
                             <TableHead className="w-20">Mã VĐ</TableHead>
                             <TableHead className="w-20">Mã ĐH</TableHead>
@@ -362,7 +362,7 @@ export default function DeliveryManagementPage() {
 
                                 <TableCell>
                                     {deli.shipperProfile ? (
-                                        <span className="font-medium text-slate-700">
+                                        <span className="font-medium text-slate-700 dark:text-slate-300">
                                             {deli.shipperProfile.fullName}
                                         </span>
                                     ) : (
@@ -372,7 +372,7 @@ export default function DeliveryManagementPage() {
                                     )}
                                 </TableCell>
 
-                                <TableCell className="text-right font-bold text-slate-700">
+                                <TableCell className="text-right font-bold text-slate-700 dark:text-slate-300">
                                     {formatCurrency(deli.codAmount)}
                                 </TableCell>
 
@@ -420,12 +420,12 @@ export default function DeliveryManagementPage() {
 
             {/* Pagination */}
             {totalElements > 0 && (
-                <div className="flex items-center justify-between rounded-md border bg-white p-4 shadow-sm">
+                <div className="flex items-center justify-between rounded-md border dark:border-slate-800 bg-white dark:bg-slate-950 p-4 shadow-sm">
                     <div className="flex items-center gap-2">
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-gray-600 dark:text-slate-400">
                             Trang {currentPage + 1} / {totalPages}
                         </span>
-                        <span className="text-sm text-gray-500">
+                        <span className="text-sm text-gray-500 dark:text-slate-500">
                             (Tổng cộng {totalElements} bản ghi)
                         </span>
                     </div>

@@ -37,29 +37,29 @@ export function CheckoutSummaryCard({
     );
 
     return (
-        <Card className="sticky top-4 border-none bg-white shadow-sm">
+        <Card className="sticky top-4 border-none bg-white shadow-sm dark:bg-slate-950">
             <CardHeader className="pb-4">
-                <CardTitle className="text-lg font-bold text-slate-800">
+                <CardTitle className="text-lg font-bold text-slate-800 dark:text-neutral-100">
                     Tóm tắt đơn hàng
                 </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
                 <div className="space-y-3">
                     {/* Tạm tính */}
-                    <div className="flex justify-between text-sm text-slate-600">
+                    <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400">
                         <span>Tạm tính ({summary.totalItems} sản phẩm)</span>
-                        <span className="font-medium text-slate-800">
+                        <span className="font-medium text-slate-800 dark:text-slate-200">
                             {summary.finalAmount.toLocaleString("vi-VN")}đ
                         </span>
                     </div>
 
                     {/* Phí vận chuyển */}
-                    <div className="flex justify-between text-sm text-slate-600">
+                    <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400">
                         <span className="flex items-center gap-1.5">
-                            <Truck className="h-4 w-4 text-slate-400" />
+                            <Truck className="h-4 w-4 text-slate-400 dark:text-slate-500" />
                             Phí vận chuyển
                         </span>
-                        <span className="font-medium text-slate-800">
+                        <span className="font-medium text-slate-800 dark:text-slate-200">
                             {shippingFee > 0
                                 ? `+${shippingFee.toLocaleString("vi-VN")}đ`
                                 : "Miễn phí"}
@@ -68,7 +68,7 @@ export function CheckoutSummaryCard({
 
                     {/* Giảm giá Voucher */}
                     {voucherDiscount > 0 && (
-                        <div className="flex justify-between text-sm text-emerald-600">
+                        <div className="flex justify-between text-sm text-emerald-600 dark:text-emerald-400">
                             <span className="flex items-center gap-1.5">
                                 <Ticket className="h-4 w-4" />
                                 Voucher giảm giá
@@ -81,7 +81,7 @@ export function CheckoutSummaryCard({
 
                     {/* Giảm giá Điểm thưởng */}
                     {pointsDiscount > 0 && (
-                        <div className="flex justify-between text-sm text-amber-600">
+                        <div className="flex justify-between text-sm text-amber-600 dark:text-amber-400">
                             <span className="flex items-center gap-1.5">
                                 <Coins className="h-4 w-4" />
                                 Dùng điểm thưởng
@@ -96,14 +96,14 @@ export function CheckoutSummaryCard({
 
                     {/* Tổng cộng */}
                     <div className="flex items-end justify-between">
-                        <span className="text-base font-bold text-slate-800">
+                        <span className="text-base font-bold text-slate-800 dark:text-slate-100">
                             Tổng cộng
                         </span>
                         <div className="text-right">
                             <span className="text-primary text-2xl font-bold">
                                 {displayFinalAmount.toLocaleString("vi-VN")}đ
                             </span>
-                            <p className="text-muted-foreground mt-1 text-[11px]">
+                            <p className="text-muted-foreground mt-1 text-[11px] dark:text-slate-500">
                                 (Đã bao gồm VAT nếu có)
                             </p>
                         </div>
@@ -133,12 +133,12 @@ export function CheckoutSummaryCard({
 
                 <BackButton />
 
-                <div className="rounded-lg border border-blue-100/50 bg-blue-50/50 p-3">
-                    <p className="text-[11px] leading-relaxed text-blue-800">
+                <div className="rounded-lg border border-blue-100/50 bg-blue-50/50 p-3 dark:border-blue-900/30 dark:bg-blue-950/20">
+                    <p className="text-[11px] leading-relaxed text-blue-800 dark:text-blue-300">
                         💡 Bằng việc đặt hàng, bạn đồng ý với{" "}
                         <a
                             href="#"
-                            className="font-semibold underline hover:text-blue-900"
+                            className="font-semibold underline hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
                         >
                             Điều khoản sử dụng
                         </a>{" "}

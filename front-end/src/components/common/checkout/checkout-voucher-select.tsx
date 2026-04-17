@@ -39,8 +39,8 @@ export function VoucherSelector({
     return (
         <Card className="border-none shadow-sm">
             <CardHeader className="pb-3">
-                <CardTitle className="flex items-center gap-2 text-lg font-bold">
-                    <Ticket className="h-5 w-5 text-red-500" />
+                <CardTitle className="flex items-center gap-2 text-lg font-bold dark:text-neutral-100">
+                    <Ticket className="h-5 w-5 text-red-500 dark:text-red-400" />
                     Mã giảm giá
                 </CardTitle>
             </CardHeader>
@@ -51,7 +51,7 @@ export function VoucherSelector({
                         placeholder="Nhập mã giảm giá..."
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
-                        className="rounded-xl bg-slate-50/50"
+                        className="rounded-xl bg-slate-50/50 dark:bg-slate-900/50 dark:border-slate-800"
                     />
                     <Button
                         variant="secondary"
@@ -66,28 +66,28 @@ export function VoucherSelector({
                 {/* 2. Chọn từ danh sách sử dụng Popover */}
                 <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
-                        <div className="group flex cursor-pointer items-center justify-between rounded-xl border border-dashed border-red-200 bg-red-50/50 p-3 transition-all hover:border-red-300 hover:bg-red-50">
+                        <div className="group flex cursor-pointer items-center justify-between rounded-xl border border-dashed border-red-200 bg-red-50/50 p-3 transition-all hover:border-red-300 hover:bg-red-50 dark:border-red-900/50 dark:bg-red-950/20 dark:hover:border-red-800 dark:hover:bg-red-900/10">
                             <div className="flex items-center gap-2">
-                                <Ticket className="h-4 w-4 text-red-500" />
-                                <span className="text-sm font-medium text-red-700">
+                                <Ticket className="h-4 w-4 text-red-500 dark:text-red-400" />
+                                <span className="text-sm font-medium text-red-700 dark:text-red-300">
                                     {appliedVoucher
                                         ? `Đang áp dụng: ${appliedVoucher}`
                                         : "Chọn voucher từ kho của bạn"}
                                 </span>
                             </div>
                             <ChevronRight
-                                className={`h-4 w-4 text-red-400 transition-transform ${open ? "rotate-90" : ""}`}
+                                className={`h-4 w-4 text-red-400 transition-transform dark:text-red-600 ${open ? "rotate-90" : ""}`}
                             />
                         </div>
                     </PopoverTrigger>
 
                     <PopoverContent
-                        className="border-red-100 p-0 shadow-xl"
+                        className="border-red-100 p-0 shadow-xl dark:border-red-900 dark:bg-slate-950"
                         align="start"
                         style={{ width: "var(--radix-popover-trigger-width)" }}
                     >
-                        <div className="border-b bg-red-50/50 p-3">
-                            <p className="text-sm font-bold text-red-800">
+                        <div className="border-b bg-red-50/50 p-3 dark:bg-red-950/20 dark:border-red-900">
+                            <p className="text-sm font-bold text-red-800 dark:text-red-300">
                                 Kho Voucher của bạn
                             </p>
                         </div>
@@ -111,8 +111,8 @@ export function VoucherSelector({
                                                 key={uv.id}
                                                 className={`relative flex cursor-pointer flex-col gap-1 rounded-xl border p-4 transition-all ${
                                                     appliedVoucher === v.code
-                                                        ? "border-red-500 bg-red-50 ring-1 ring-red-500/20"
-                                                        : "border-slate-100 hover:border-red-200 hover:bg-slate-50"
+                                                        ? "border-red-500 bg-red-50 ring-1 ring-red-500/20 dark:bg-red-950/30"
+                                                        : "border-slate-100 hover:border-red-200 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-900/50"
                                                 }`}
                                                 onClick={() =>
                                                     handleSelectVoucher(v.code)
@@ -137,13 +137,13 @@ export function VoucherSelector({
                                                         </div>
                                                     )}
                                                 </div>
-                                                <p className="mt-2 text-sm font-bold text-slate-800">
+                                                <p className="mt-2 text-sm font-bold text-slate-800 dark:text-slate-200">
                                                     {v.description}
                                                 </p>
                                                 <div className="mt-1 flex items-center justify-between">
-                                                    <p className="text-muted-foreground text-[11px]">
+                                                    <p className="text-muted-foreground text-[11px] dark:text-slate-500">
                                                         Đơn tối thiểu:{" "}
-                                                        <span className="font-semibold">
+                                                        <span className="font-semibold dark:text-slate-400">
                                                             {v.minOrder.toLocaleString(
                                                                 "vi-VN"
                                                             )}

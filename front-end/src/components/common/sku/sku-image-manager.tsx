@@ -22,7 +22,7 @@ const ImagePreview = memo(function ImagePreview({
     onRemove,
 }: ImagePreviewProps) {
     return (
-        <div className="group relative rounded border">
+        <div className="group relative rounded border dark:border-slate-800">
             <img
                 src={url}
                 alt="SKU product image"
@@ -138,7 +138,7 @@ export function SkuImageManager({
 
             {uploadError && (
                 <div
-                    className="rounded-md border border-red-200 bg-red-50 p-2 text-xs text-red-600"
+                    className="rounded-md border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/20 p-2 text-xs text-red-600 dark:text-red-400"
                     role="alert"
                 >
                     {uploadError}

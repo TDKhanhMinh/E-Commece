@@ -60,7 +60,7 @@ export function ProductInfo({
                     )}
 
                     <div className="mb-4 flex flex-row items-center justify-between">
-                        <div className="text-primary font-semibold">
+                        <div className="text-primary font-semibold dark:text-blue-400">
                             SKU: {selectedSku?.skuCode || "N/A"}
                         </div>
                         <div
@@ -71,12 +71,12 @@ export function ProductInfo({
                         >
                             <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                             <span
-                                className="font-medium"
+                                className="font-medium dark:text-slate-100"
                                 itemProp="ratingValue"
                             >
                                 {product.rating || 0}
                             </span>
-                            <span className="text-muted-foreground">
+                            <span className="text-muted-foreground dark:text-slate-400">
                                 (
                                 <span itemProp="reviewCount">
                                     {product.reviewCount || 0}
@@ -87,7 +87,7 @@ export function ProductInfo({
                     </div>
 
                     <h1
-                        className="text-2xl leading-tight font-bold"
+                        className="text-2xl leading-tight font-bold dark:text-slate-100"
                         itemProp="name"
                     >
                         {product.name}
@@ -102,7 +102,7 @@ export function ProductInfo({
                     />
 
                     {product.variants?.length > 1 && (
-                        <div className="text-muted-foreground mt-2 flex items-center gap-2 text-sm">
+                        <div className="text-muted-foreground mt-2 flex items-center gap-2 text-sm dark:text-slate-400">
                             <Package className="h-4 w-4" />
                             <span>{product.variants.length} phiên bản</span>
                         </div>
@@ -142,31 +142,31 @@ export function ProductInfo({
 
                     <ProductSkuInfo sku={selectedSku} />
 
-                    <Separator className="my-8" />
+                    <Separator className="my-8 dark:bg-slate-800" />
 
-                    <div className="rounded-2xl border border-gray-200 bg-gray-50 p-6 dark:bg-transparent">
+                    <div className="rounded-2xl border border-gray-200 bg-gray-50 p-6 dark:border-slate-800 dark:bg-slate-900/50">
                         {discountPercent > 0 && (
                             <Label className="mb-4 w-fit rounded-md bg-gradient-to-r from-yellow-200 to-orange-400 px-4 py-1.5 text-sm font-bold text-black uppercase">
                                 Sale {discountPercent}%
                             </Label>
                         )}
 
-                        <h2 className="mb-2 text-2xl font-bold">
+                        <h2 className="mb-2 text-2xl font-bold dark:text-slate-100">
                             {product.name}
                         </h2>
 
                         {selectedSku && (
-                            <p className="text-muted-foreground mb-4 text-sm">
+                            <p className="text-muted-foreground mb-4 text-sm dark:text-slate-400">
                                 SKU: {selectedSku.skuCode}
                             </p>
                         )}
 
                         <div className="mb-4 flex flex-row items-center gap-3">
-                            <span className="text-2xl font-bold text-red-600">
+                            <span className="text-2xl font-bold text-red-600 dark:text-red-400">
                                 {formatCurrency(salePrice)}
                             </span>
                             {discountPercent > 0 && (
-                                <span className="text-muted-foreground line-through">
+                                <span className="text-muted-foreground line-through dark:text-slate-500">
                                     {formatCurrency(originalPrice)}
                                 </span>
                             )}
@@ -190,18 +190,18 @@ export function ProductInfo({
                                   : "Hết hàng"}
                         </Button>
 
-                        <Separator className="mb-6" />
+                        <Separator className="mb-6 dark:bg-slate-800" />
 
                         <Accordion type="single" collapsible className="w-full">
                             <AccordionItem
                                 value="1"
-                                className="border-b border-slate-200"
+                                className="border-b border-slate-200 dark:border-slate-800"
                             >
-                                <AccordionTrigger className="text-left text-sm font-semibold text-slate-900 hover:no-underline md:text-lg">
+                                <AccordionTrigger className="text-left text-sm font-semibold text-slate-900 hover:no-underline md:text-lg dark:text-slate-100">
                                     Mô tả sản phẩm
                                 </AccordionTrigger>
                                 <AccordionContent
-                                    className="pb-6 text-sm leading-relaxed text-slate-600"
+                                    className="pb-6 text-sm leading-relaxed text-slate-600 dark:text-slate-300"
                                     itemProp="description"
                                 >
                                     {product.description ||
@@ -210,7 +210,7 @@ export function ProductInfo({
                             </AccordionItem>
                         </Accordion>
 
-                        <Separator className="my-6" />
+                        <Separator className="my-6 dark:bg-slate-800" />
 
                         <ProductWarranty />
                     </div>

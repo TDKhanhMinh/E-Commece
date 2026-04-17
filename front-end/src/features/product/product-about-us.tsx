@@ -15,10 +15,10 @@ export default function ProductAboutUs() {
                         <span className="mb-12 bg-gradient-to-r from-orange-500 via-indigo-500 to-green-500 bg-clip-text text-xl font-bold tracking-tighter text-transparent uppercase">
                             ABOUT US
                         </span>
-                        <h2 className="my-1 font-bold uppercase md:text-4xl">
+                        <h2 className="my-1 font-bold uppercase md:text-4xl dark:text-slate-100">
                             What makes us different?
                         </h2>
-                        <p className="text-secondary mt-3 text-base">
+                        <p className="text-secondary mt-3 text-base dark:text-slate-400">
                             We strongly believe the only difference between
                             purchasing a new or Certified Pre-Owned device
                             should be price.
@@ -27,12 +27,12 @@ export default function ProductAboutUs() {
                     <div className="mb-8 grid grid-cols-1 gap-4 text-center md:grid-cols-2">
                         {MOCK_ABOUT_US_PRODUCT_ITEMS.map((item) => (
                             <div className="flex flex-col" key={item.title}>
-                                <Card className="grid h-[300px] grid-cols-2 bg-gray-50 p-8 text-left shadow-xl transition-transform duration-300 hover:scale-[1.02]">
+                                <Card className="grid h-[300px] grid-cols-2 bg-gray-50 p-8 text-left shadow-xl transition-transform duration-300 hover:scale-[1.02] dark:border-slate-800 dark:bg-slate-900/50 dark:shadow-slate-950/50">
                                     <div className="flex flex-col items-start">
-                                        <h2 className="text-secondary-dark mb-2 text-lg font-semibold">
+                                        <h2 className="text-secondary-dark mb-2 text-lg font-semibold dark:text-slate-100">
                                             {item.title}
                                         </h2>
-                                        <p className="text-secondary text-sm">
+                                        <p className="text-secondary text-sm dark:text-slate-400">
                                             {item.description}
                                         </p>
                                     </div>
@@ -52,7 +52,7 @@ export default function ProductAboutUs() {
             </section>
             <div className="container mx-auto px-4 text-center">
                 <Link href="/product">
-                    <Button className="cursor-pointer rounded-full bg-green-900 px-32 py-4 text-lg font-bold text-white transition-colors hover:bg-green-800/80">
+                    <Button className="cursor-pointer rounded-full bg-green-900 px-32 py-4 text-lg font-bold text-white transition-colors hover:bg-green-800/80 dark:bg-green-700 dark:hover:bg-green-600">
                         View all
                     </Button>
                 </Link>

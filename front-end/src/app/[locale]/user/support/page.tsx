@@ -41,7 +41,7 @@ const HELP_SECTIONS = [
 
 export default function HelpCenter() {
     return (
-        <div className="min-h-screen bg-slate-50/50 pb-20">
+        <div className="min-h-screen bg-slate-50/50 pb-20 dark:bg-slate-950">
             {/* HERO SECTION - GRADIENT RỰC RỠ */}
             <div className="relative overflow-hidden bg-gradient-to-br from-green-600 via-emerald-600 to-teal-700 px-4 pt-24 pb-32">
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
@@ -66,7 +66,7 @@ export default function HelpCenter() {
 
                     <div className="group relative mx-auto max-w-2xl">
                         <Input
-                            className="h-16 w-full rounded-2xl border-none bg-white/95 pr-14 pl-8 text-lg text-slate-800 shadow-2xl shadow-emerald-900/20 backdrop-blur-md transition-all placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-yellow-400"
+                            className="h-16 w-full rounded-2xl border-none bg-white/95 pr-14 pl-8 text-lg text-slate-800 shadow-2xl shadow-emerald-900/20 backdrop-blur-md transition-all placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-yellow-400 dark:bg-slate-900/95 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus-visible:ring-yellow-300"
                             placeholder="Nhập câu hỏi, từ khoá bạn quan tâm..."
                         />
                         <div className="absolute top-1/2 right-4 -translate-y-1/2 cursor-pointer rounded-xl bg-green-600 p-2.5 text-white shadow-lg transition-transform group-hover:scale-110">
@@ -87,7 +87,7 @@ export default function HelpCenter() {
                         {HELP_SECTIONS.map((section, idx) => (
                             <Card
                                 key={idx}
-                                className="group overflow-hidden rounded-[2rem] border-none bg-white/80 shadow-xl shadow-slate-200/50 backdrop-blur-sm transition-all hover:shadow-2xl"
+                                className="group overflow-hidden rounded-[2rem] border-none bg-white/80 shadow-xl shadow-slate-200/50 backdrop-blur-sm transition-all hover:shadow-2xl dark:border-slate-800 dark:bg-slate-900/80 dark:shadow-slate-950/50"
                             >
                                 <CardContent className="space-y-6 p-8">
                                     <div className="flex items-center gap-4">
@@ -96,7 +96,7 @@ export default function HelpCenter() {
                                         >
                                             <section.icon className="size-6" />
                                         </div>
-                                        <h3 className="text-2xl font-black tracking-wider text-slate-800 uppercase italic">
+                                        <h3 className="text-2xl font-black tracking-wider text-slate-800 uppercase italic dark:text-slate-100">
                                             {section.title}
                                         </h3>
                                     </div>
@@ -105,11 +105,11 @@ export default function HelpCenter() {
                                         {section.questions.map((q, qIdx) => (
                                             <div
                                                 key={qIdx}
-                                                className="group/item flex cursor-pointer items-center justify-between rounded-2xl border border-transparent bg-slate-50 p-5 transition-all duration-300 hover:border-green-200 hover:bg-white hover:shadow-md"
+                                                className="group/item flex cursor-pointer items-center justify-between rounded-2xl border border-transparent bg-slate-50 p-5 transition-all duration-300 hover:border-green-200 hover:bg-white hover:shadow-md dark:border-slate-800/50 dark:bg-slate-800/50 dark:hover:border-green-900/50 dark:hover:bg-slate-800"
                                             >
                                                 <div className="flex items-center gap-4">
                                                     <div className="size-2 rounded-full bg-green-500 opacity-0 transition-opacity group-hover/item:opacity-100"></div>
-                                                    <span className="text-[15px] font-semibold text-slate-700 group-hover/item:text-green-600">
+                                                    <span className="text-[15px] font-semibold text-slate-700 group-hover/item:text-green-600 dark:text-slate-300 dark:group-hover/item:text-green-400">
                                                         {q}
                                                     </span>
                                                 </div>
@@ -199,7 +199,7 @@ export default function HelpCenter() {
                 </div>
 
                 <div className="mt-16 space-y-4 text-center">
-                    <p className="text-xs font-bold tracking-[0.3em] text-slate-400 uppercase">
+                    <p className="text-xs font-bold tracking-[0.3em] text-slate-400 uppercase dark:text-slate-600">
                         &copy; 2026 T7M Online Store - Powered by KM Group
                     </p>
                 </div>

@@ -57,7 +57,7 @@ export const ProductSpecs = memo(
         }, [currentPage, totalPages]);
 
         return (
-            <Card>
+            <Card className="dark:bg-slate-950 dark:border-slate-800">
                 <CardContent className="space-y-5 pt-6">
                     <div className="flex items-center justify-between">
                         <h3 className="text-lg font-semibold">
@@ -85,8 +85,8 @@ export const ProductSpecs = memo(
                         return (
                             <div
                                 key={item.id}
-                                className={`flex gap-4 rounded-lg border p-4 ${
-                                    isInitial ? "bg-muted/50" : "bg-background"
+                                className={`flex gap-4 rounded-lg border dark:border-slate-800 p-4 ${
+                                    isInitial ? "bg-muted/50 dark:bg-slate-900/50" : "bg-background dark:bg-slate-900"
                                 }`}
                             >
                                 <FormField
@@ -139,7 +139,7 @@ export const ProductSpecs = memo(
                                                     disabled={isInitial}
                                                     className={
                                                         isInitial
-                                                            ? "bg-muted cursor-not-allowed"
+                                                            ? "bg-muted dark:bg-slate-800 cursor-not-allowed"
                                                             : ""
                                                     }
                                                 />
@@ -160,7 +160,7 @@ export const ProductSpecs = memo(
                     })}
 
                     {fields.length === 0 && (
-                        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center">
+                        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed dark:border-slate-800 p-8 text-center">
                             <p className="text-muted-foreground text-sm">
                                 Chưa có thông số kỹ thuật nào.
                             </p>
@@ -172,7 +172,7 @@ export const ProductSpecs = memo(
 
                     {/* Pagination Controls */}
                     {totalPages > 1 && (
-                        <div className="flex items-center justify-between border-t pt-4">
+                        <div className="flex items-center justify-between border-t dark:border-slate-800 pt-4">
                             <div className="text-muted-foreground text-sm">
                                 Trang {currentPage} / {totalPages}
                             </div>

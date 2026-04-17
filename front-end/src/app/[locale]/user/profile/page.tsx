@@ -77,10 +77,10 @@ export default function Profile() {
         );
 
     return (
-        <div className="flex min-h-screen justify-center bg-gray-50 p-4">
-            <Card className="w-full max-w-7xl border-none shadow-md">
+        <div className="flex min-h-screen justify-center border-none bg-gray-50 p-4 dark:bg-slate-950">
+            <Card className="w-full max-w-7xl border-none shadow-md dark:bg-slate-900 dark:shadow-slate-950/50">
                 <CardHeader>
-                    <CardTitle className="text-2xl font-bold text-green-800">
+                    <CardTitle className="text-2xl font-bold text-green-800 dark:text-green-400">
                         Thông tin cá nhân
                     </CardTitle>
                 </CardHeader>
@@ -93,13 +93,13 @@ export default function Profile() {
                             <div className="space-y-2">
                                 <Label
                                     htmlFor="fullname"
-                                    className="text-gray-600"
+                                    className="text-gray-600 dark:text-slate-400"
                                 >
                                     Họ & tên
                                 </Label>
                                 <Input
                                     id="fullname"
-                                    className="focus-visible:ring-green-600"
+                                    className="focus-visible:ring-green-600 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100"
                                     {...register("name")}
                                     disabled={mutation.isPending}
                                 />
@@ -109,13 +109,13 @@ export default function Profile() {
                             <div className="space-y-2">
                                 <Label
                                     htmlFor="phone"
-                                    className="text-gray-600"
+                                    className="text-gray-600 dark:text-slate-400"
                                 >
                                     Số điện thoại
                                 </Label>
                                 <Input
                                     id="phone"
-                                    className="focus-visible:ring-green-600"
+                                    className="focus-visible:ring-green-600 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100"
                                     {...register("phone")}
                                     disabled={mutation.isPending}
                                 />
@@ -125,39 +125,45 @@ export default function Profile() {
                             <div className="space-y-2">
                                 <Label
                                     htmlFor="gender"
-                                    className="text-gray-600"
+                                    className="text-gray-600 dark:text-slate-400"
                                 >
                                     Giới tính
                                 </Label>
                                 <Input
                                     id="gender"
-                                    className="focus-visible:ring-green-600"
+                                    className="focus-visible:ring-green-600 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100"
                                     placeholder="Chưa cập nhật"
                                     disabled
                                 />
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="dob" className="text-gray-600">
+                                <Label
+                                    htmlFor="dob"
+                                    className="text-gray-600 dark:text-slate-400"
+                                >
                                     Ngày sinh
                                 </Label>
                                 <Input
                                     id="dob"
                                     type="date"
-                                    className="focus-visible:ring-green-600"
+                                    className="focus-visible:ring-green-600 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100"
                                     disabled
                                 />
                             </div>
                         </div>
 
                         <div className="max-w-md space-y-2">
-                            <Label htmlFor="email" className="text-gray-600">
+                            <Label
+                                htmlFor="email"
+                                className="text-gray-600 dark:text-slate-400"
+                            >
                                 Email
                             </Label>
                             <Input
                                 id="email"
                                 type="email"
-                                className="bg-gray-100 focus-visible:ring-green-600"
+                                className="bg-gray-100 focus-visible:ring-green-600 dark:bg-slate-800 dark:text-slate-400"
                                 //@ts-ignore
                                 value={user.email || ""}
                                 readOnly
@@ -167,7 +173,7 @@ export default function Profile() {
                         <Button
                             type="submit"
                             disabled={mutation.isPending}
-                            className="h-auto cursor-pointer bg-green-700 px-10 py-2 text-base font-semibold text-white hover:bg-green-800"
+                            className="h-auto cursor-pointer bg-green-700 px-10 py-2 text-base font-semibold text-white hover:bg-green-800 dark:bg-green-600 dark:hover:bg-green-700"
                         >
                             {mutation.isPending
                                 ? "Đang cập nhật..."

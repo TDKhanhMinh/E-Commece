@@ -9,7 +9,7 @@ function UserLayout({ children }: { children: React.ReactNode }) {
         <>
             <SidebarProvider>
                 <SidebarUser />
-                <div className="flex min-h-screen w-full flex-col">
+                <div className="flex min-h-screen w-full flex-col bg-white dark:bg-slate-950">
                     <Header />
                     <main className="flex w-full flex-1 flex-col">
                         {children}

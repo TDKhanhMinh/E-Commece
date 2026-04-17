@@ -162,7 +162,7 @@ export function CategoryDialog({
                                         <SelectContent>
                                             <SelectItem
                                                 value="root"
-                                                className="font-semibold text-blue-600"
+                                                className="font-semibold text-blue-600 dark:text-blue-400"
                                             >
                                                 Danh mục gốc
                                             </SelectItem>

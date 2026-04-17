@@ -88,7 +88,7 @@ export default function ReportsAnalyticsPage() {
                     </p>
                 </div>
             ) : isError ? (
-                <div className="rounded-lg border border-rose-200 bg-rose-50 p-6 text-center text-rose-600">
+                <div className="rounded-lg border border-rose-200 bg-rose-50 p-6 text-center text-rose-600 dark:border-rose-900/50 dark:bg-rose-950/20 dark:text-rose-400">
                     Không thể tải dữ liệu báo cáo. Vui lòng kiểm tra lại kết nối
                     server.
                 </div>
@@ -189,9 +189,9 @@ export default function ReportsAnalyticsPage() {
                                                             )}
                                                         </span>
                                                     </div>
-                                                    <div className="bg-muted h-2 w-full overflow-hidden rounded-full">
+                                                    <div className="bg-muted dark:bg-slate-800 h-2 w-full overflow-hidden rounded-full">
                                                         <div
-                                                            className="bg-foreground h-full rounded-full transition-all duration-500 ease-in-out"
+                                                            className="bg-foreground dark:bg-primary h-full rounded-full transition-all duration-500 ease-in-out"
                                                             style={{
                                                                 width: `${product.percentage}%`,
                                                             }}

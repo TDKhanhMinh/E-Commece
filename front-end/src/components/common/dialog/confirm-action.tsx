@@ -78,7 +78,7 @@ const ConfirmAction = ({
                 <div className="space-y-2">
                     <Label className="text-sm font-medium">
                         Nhập{" "}
-                        <span className="bg-muted rounded px-1.5 py-0.5 font-mono text-xs">
+                        <span className="bg-muted rounded px-1.5 py-0.5 font-mono text-xs dark:bg-slate-800 dark:text-slate-100">
                             {requiredText}
                         </span>{" "}
                         để xác nhận

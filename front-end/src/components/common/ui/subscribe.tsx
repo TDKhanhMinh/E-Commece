@@ -6,21 +6,21 @@ export function Subscribe() {
     return (
         <>
             <section className="mb-8 flex w-full items-center justify-center">
-                <div className="container grid grid-cols-2 rounded-3xl bg-linear-to-r from-[#F2D65C] via-[#A9C97D] to-[#5BC5A7] p-10">
+                <div className="container grid grid-cols-2 rounded-3xl bg-linear-to-r from-[#F2D65C] via-[#A9C97D] to-[#5BC5A7] p-10 dark:from-emerald-950 dark:via-teal-950 dark:to-cyan-950">
                     <div className="container mx-auto flex flex-col px-6 text-start">
-                        <h2 className="mb-4 text-3xl font-bold">
+                        <h2 className="mb-4 text-3xl font-bold text-slate-900 dark:text-slate-100">
                             Subscribe to keep up with our great deals.
                         </h2>
-                        <p className="text-muted-foreground mb-8">
+                        <p className="text-slate-700 mb-8 dark:text-slate-400">
                             Stay ahead of the curve with exclusive offers, the
                             latest product updates, and special discounts
                             delivered straight to your inbox.
                         </p>
                         <Input
                             placeholder="Email của bạn..."
-                            className="mb-4 h-12 rounded-3xl bg-white dark:bg-black"
+                            className="mb-4 h-12 rounded-3xl bg-white text-slate-900 dark:bg-zinc-800 dark:text-slate-100"
                         />
-                        <Button className="bg-success-darker hover:bg-success text-secondary-light max-w-36 cursor-pointer rounded-lg">
+                        <Button className="bg-success-darker hover:bg-success text-secondary-light max-w-36 cursor-pointer rounded-lg dark:bg-success-dark dark:hover:bg-success-main">
                             Đăng ký
                         </Button>
                     </div>

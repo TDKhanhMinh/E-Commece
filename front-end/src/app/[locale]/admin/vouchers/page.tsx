@@ -51,7 +51,7 @@ export default function AdminVoucherPage() {
         return <div className="p-8 text-center">Đang tải dữ liệu...</div>;
 
     return (
-        <div className="space-y-6 p-6">
+        <div className="bg-gray-50/50 dark:bg-slate-950 min-h-screen space-y-6 p-6">
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight">
@@ -63,16 +63,16 @@ export default function AdminVoucherPage() {
                 </div>
             </div>
             <div className="flex items-center justify-between">
-                <div className="flex max-w-sm items-center space-x-2 rounded-md border bg-white px-2 shadow-sm">
+                <div className="flex max-w-sm items-center space-x-2 rounded-md border dark:border-slate-800 bg-white dark:bg-slate-900 px-2 shadow-sm">
                     <Search className="ml-2 h-4 w-4 text-gray-500" />
                     <Input
                         placeholder="Tìm theo tên hoặc mã..."
-                        className="border-none shadow-none focus-visible:ring-0"
+                        className="border-none shadow-none focus-visible:ring-0 text-gray-900 dark:text-slate-100"
                     />
                 </div>
                 <ActionVoucherDialog />
             </div>
-            <div className="rounded-lg border bg-white shadow-sm">
+            <div className="rounded-lg border dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm">
                 <Table>
                     <TableHeader>
                         <TableRow>
@@ -92,8 +92,8 @@ export default function AdminVoucherPage() {
                             <TableRow key={v.id}>
                                 <TableCell>
                                     <div className="flex items-center gap-3">
-                                        <div className="rounded-lg bg-red-50 p-2">
-                                            <Ticket className="h-4 w-4 text-red-500" />
+                                        <div className="rounded-lg bg-red-50 dark:bg-red-950/30 p-2">
+                                            <Ticket className="h-4 w-4 text-red-500 dark:text-red-400" />
                                         </div>
                                         <div>
                                             <div className="font-bold">
@@ -112,7 +112,7 @@ export default function AdminVoucherPage() {
                                             : "Tiền mặt (đ)"}
                                     </Badge>
                                 </TableCell>
-                                <TableCell className="font-medium text-blue-600">
+                                <TableCell className="font-medium text-blue-600 dark:text-blue-400">
                                     {v.discountType === "PERCENTAGE"
                                         ? `${v.discountValue}%`
                                         : `${v.discountValue.toLocaleString()}đ`}
@@ -141,14 +141,14 @@ export default function AdminVoucherPage() {
                                 </TableCell>
                                 <TableCell>
                                     {v.active ? (
-                                        <Badge className="gap-1 border-green-200 bg-green-50 text-green-700 hover:bg-green-50">
+                                        <Badge className="gap-1 border-green-200 dark:border-green-900/50 bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-950/30">
                                             <CircleCheck className="h-3 w-3" />{" "}
                                             Hoạt động
                                         </Badge>
                                     ) : (
                                         <Badge
                                             variant="secondary"
-                                            className="gap-1"
+                                            className="gap-1 dark:bg-slate-800 dark:text-slate-400"
                                         >
                                             <CircleX className="h-3 w-3" /> Đã
                                             tắt
@@ -165,7 +165,7 @@ export default function AdminVoucherPage() {
                                                     size="icon"
                                                     className="h-8 w-8"
                                                 >
-                                                    <Pencil className="h-4 w-4 text-slate-600" />
+                                                    <Pencil className="h-4 w-4 text-slate-600 dark:text-slate-400" />
                                                 </Button>
                                             }
                                         />

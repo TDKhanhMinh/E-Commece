@@ -97,7 +97,7 @@ export function EditSkuDialog({
                     <DialogTitle>Chỉnh sửa SKU</DialogTitle>
                 </DialogHeader>
 
-                <div className="space-y-3 rounded-md border bg-gray-50 p-3">
+                <div className="space-y-3 rounded-md border dark:border-slate-800 bg-gray-50 dark:bg-slate-900/50 p-3">
                     <div className="space-y-1">
                         <Label>Mã SKU</Label>
                         <Input value={sku.skuCode} disabled />
@@ -109,7 +109,7 @@ export function EditSkuDialog({
                             {Object.entries(sku.attributes).map(([k, v]) => (
                                 <span
                                     key={k}
-                                    className="rounded bg-gray-200 px-2 py-1 text-xs"
+                                    className="rounded bg-gray-200 dark:bg-slate-800 dark:text-slate-300 px-2 py-1 text-xs"
                                 >
                                     {k}: {v}
                                 </span>
@@ -158,7 +158,7 @@ export function EditSkuDialog({
                         }}
                         placeholder="0-100"
                     />
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 dark:text-slate-500">
                         Nhập giá trị từ 0 đến 100
                     </p>
                 </div>

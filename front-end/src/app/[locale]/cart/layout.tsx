@@ -6,11 +6,11 @@ import React from "react";
 
 function CartLayout({ children }: { children: React.ReactNode }) {
     return (
-        <Fragment>
+        <div className="flex min-h-screen flex-col bg-white dark:bg-slate-950 dark:text-slate-100">
             <Header />
             <main className="flex w-full flex-1 flex-col">{children}</main>
             <Footer />
-        </Fragment>
+        </div>
     );
 }
 

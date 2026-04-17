@@ -80,7 +80,7 @@ export function UpdateStatusDialog({
                         <Label className="text-muted-foreground">
                             Mã đơn hàng
                         </Label>
-                        <span className="font-mono text-lg font-bold">
+                        <span className="font-mono text-lg font-bold dark:text-slate-100">
                             #{orderId}
                         </span>
                     </div>

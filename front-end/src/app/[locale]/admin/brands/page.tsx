@@ -90,7 +90,7 @@ export default function BrandsPage() {
     };
 
     return (
-        <div className="min-h-screen space-y-6 bg-gray-50/50 p-8">
+        <div className="min-h-screen space-y-6 bg-gray-50/50 dark:bg-slate-950 p-8">
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">
@@ -102,7 +102,7 @@ export default function BrandsPage() {
                 </div>
             </div>
             <div className="flex items-center justify-between">
-                <div className="flex max-w-sm items-center space-x-2 rounded-md border bg-white px-2 shadow-sm">
+                <div className="flex max-w-sm items-center space-x-2 rounded-md border dark:border-slate-800 bg-white dark:bg-slate-900 px-2 shadow-sm">
                     <Search className="ml-2 h-4 w-4 text-gray-500" />
                     <Input
                         placeholder="Tìm kiếm..."
@@ -119,7 +119,7 @@ export default function BrandsPage() {
                 </Button>
             </div>
 
-            <div className="rounded-md border bg-white shadow-sm">
+            <div className="rounded-md border dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm">
                 <Table>
                     <TableHeader>
                         <TableRow>
@@ -157,23 +157,23 @@ export default function BrandsPage() {
                             brands.map((brand: Brand) => (
                                 <TableRow key={brand.id}>
                                     <TableCell>
-                                        <Avatar className="h-10 w-10 rounded-lg border">
+                                        <Avatar className="h-10 w-10 rounded-lg border dark:border-slate-800">
                                             <AvatarImage
                                                 src={brand.logo}
                                                 className="object-contain"
                                             />
-                                            <AvatarFallback>
-                                                <Hexagon className="h-5 w-5 text-gray-400" />
+                                            <AvatarFallback className="bg-gray-100 dark:bg-slate-800">
+                                                <Hexagon className="h-5 w-5 text-gray-400 dark:text-slate-500" />
                                             </AvatarFallback>
                                         </Avatar>
                                     </TableCell>
                                     <TableCell className="font-medium">
                                         {brand.name}
                                     </TableCell>
-                                    <TableCell className="font-mono text-xs text-gray-500">
+                                    <TableCell className="font-mono text-xs text-gray-500 dark:text-slate-500">
                                         {brand.slug}
                                     </TableCell>
-                                    <TableCell className="hidden max-w-75 truncate text-gray-500 md:table-cell">
+                                    <TableCell className="hidden max-w-75 truncate text-gray-500 dark:text-slate-400 md:table-cell">
                                         {brand.description}
                                     </TableCell>
                                     <TableCell className="text-right">

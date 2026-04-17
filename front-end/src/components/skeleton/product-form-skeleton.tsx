@@ -13,7 +13,7 @@ function ProductFormSkeleton() {
             </div>
 
             {/* Card: Basic Info */}
-            <div className="bg-background space-y-6 rounded-lg border p-6">
+            <div className="bg-background space-y-6 rounded-lg border dark:border-slate-800 p-6">
                 <Skeleton className="h-5 w-40" />
 
                 <Skeleton className="h-10 w-full" />
@@ -27,14 +27,14 @@ function ProductFormSkeleton() {
             </div>
 
             {/* Card: Specs */}
-            <div className="bg-background space-y-4 rounded-lg border p-6">
+            <div className="bg-background space-y-4 rounded-lg border dark:border-slate-800 p-6">
                 <div className="flex items-center justify-between">
                     <Skeleton className="h-5 w-40" />
                     <Skeleton className="h-9 w-36" />
                 </div>
 
                 {[1, 2, 3].map((i) => (
-                    <div key={i} className="flex gap-4 rounded-lg border p-4">
+                    <div key={i} className="flex gap-4 rounded-lg border dark:border-slate-800 p-4">
                         <Skeleton className="h-10 w-1/3" />
                         <Skeleton className="h-10 flex-1" />
                         <Skeleton className="h-10 w-10" />

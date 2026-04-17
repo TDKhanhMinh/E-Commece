@@ -61,19 +61,19 @@ export default function ForgotPasswordPage() {
 
     // @ts-ignore
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
-            <Card className="w-full max-w-md border-none shadow-xl">
+        <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4 dark:bg-slate-950">
+            <Card className="w-full max-w-md border-none shadow-xl dark:bg-slate-900 dark:border dark:border-slate-800">
                 <>
                     <CardHeader className="space-y-1 text-center">
                         <div className="mb-2 flex justify-center">
-                            <div className="rounded-full bg-blue-100 p-3">
-                                <Mail className="h-6 w-6 text-blue-600" />
+                            <div className="rounded-full bg-blue-100 p-3 dark:bg-blue-900/30">
+                                <Mail className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                             </div>
                         </div>
-                        <CardTitle className="text-2xl font-bold">
+                        <CardTitle className="text-2xl font-bold dark:text-slate-100">
                             Quên mật khẩu?
                         </CardTitle>
-                        <CardDescription>
+                        <CardDescription className="dark:text-slate-400">
                             Đừng lo lắng! Nhập email của bạn và chúng tôi sẽ gửi
                             OTP dẫn đặt lại mật khẩu.
                         </CardDescription>
@@ -89,7 +89,9 @@ export default function ForgotPasswordPage() {
                                     name="email"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Email đăng ký</FormLabel>
+                                            <FormLabel className="dark:text-slate-300">
+                                                Email đăng ký
+                                            </FormLabel>
                                             <FormControl>
                                                 <Input
                                                     placeholder="name@example.com"
@@ -97,7 +99,7 @@ export default function ForgotPasswordPage() {
                                                     disabled={
                                                         mutation.isPending
                                                     }
-                                                    className="h-11 focus-visible:ring-blue-600"
+                                                    className="h-11 focus-visible:ring-blue-600 dark:bg-slate-950 dark:border-slate-800 dark:text-slate-100 dark:focus-visible:ring-blue-500"
                                                 />
                                             </FormControl>
                                             <FormMessage />
@@ -107,7 +109,7 @@ export default function ForgotPasswordPage() {
 
                                 <Button
                                     type="submit"
-                                    className="text-md h-11 w-full bg-blue-600 font-semibold hover:bg-blue-700"
+                                    className="text-md h-11 w-full bg-blue-600 font-semibold hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600"
                                     disabled={mutation.isPending}
                                 >
                                     {mutation.isPending ? (
@@ -124,7 +126,7 @@ export default function ForgotPasswordPage() {
                     </CardContent>
                 </>
 
-                <CardFooter className="flex justify-center rounded-b-xl border-t bg-gray-50/50 p-4">
+                <CardFooter className="flex justify-center rounded-b-xl border-t bg-gray-50/50 p-4 dark:bg-slate-900/50 dark:border-slate-800">
                     <BackButton />
                 </CardFooter>
             </Card>

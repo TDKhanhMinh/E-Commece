@@ -15,11 +15,11 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
     connectionError,
 }) => {
     return (
-        <div className="flex items-center justify-between border-b border-gray-200 bg-white p-4">
+        <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4">
             <div className="flex items-center gap-3">
-                <UserCircle size={40} className="text-gray-400" />
+                <UserCircle size={40} className="text-gray-400 dark:text-slate-500" />
                 <div>
-                    <h3 className="text-base font-bold text-gray-800">
+                    <h3 className="text-base font-bold text-gray-800 dark:text-slate-100">
                         {selectedUserName}
                     </h3>
                     <div className="flex items-center gap-1">
@@ -29,7 +29,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
                                     ? "bg-red-500"
                                     : isConnected
                                       ? "bg-green-500"
-                                      : "bg-gray-300"
+                                      : "bg-gray-300 dark:bg-slate-700"
                             }`}
                         ></span>
                         <p
@@ -38,7 +38,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
                                     ? "text-red-500"
                                     : isConnected
                                       ? "text-green-500"
-                                      : "text-gray-400"
+                                      : "text-gray-400 dark:text-slate-500"
                             }`}
                         >
                             {connectionError
@@ -50,14 +50,14 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
                     </div>
                 </div>
             </div>
-            <div className="flex gap-2 text-gray-500">
-                <button className="rounded-full p-2 hover:bg-gray-100 hover:text-blue-600">
+            <div className="flex gap-2 text-gray-500 dark:text-slate-400">
+                <button className="rounded-full p-2 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-blue-600 dark:hover:text-blue-400">
                     <Phone size={20} />
                 </button>
-                <button className="rounded-full p-2 hover:bg-gray-100 hover:text-blue-600">
+                <button className="rounded-full p-2 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-blue-600 dark:hover:text-blue-400">
                     <Video size={20} />
                 </button>
-                <button className="rounded-full p-2 hover:bg-gray-100">
+                <button className="rounded-full p-2 hover:bg-gray-100 dark:hover:bg-slate-800">
                     <MoreVertical size={20} />
                 </button>
             </div>

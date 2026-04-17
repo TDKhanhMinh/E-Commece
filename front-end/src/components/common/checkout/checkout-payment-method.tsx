@@ -17,8 +17,8 @@ export function PaymentMethodCard({
     return (
         <Card className="border-none shadow-sm">
             <CardHeader className="pb-3">
-                <CardTitle className="flex items-center gap-2 text-lg font-bold">
-                    <CreditCard className="h-5 w-5 text-blue-600" />
+                <CardTitle className="flex items-center gap-2 text-lg font-bold dark:text-neutral-100">
+                    <CreditCard className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                     Phương thức thanh toán
                 </CardTitle>
             </CardHeader>
@@ -29,18 +29,18 @@ export function PaymentMethodCard({
                     defaultValue="COD"
                     className="grid gap-4"
                 >
-                    <div className="flex items-center space-y-0 space-x-3 rounded-xl border p-4 transition-colors hover:bg-slate-50">
+                    <div className="flex items-center space-y-0 space-x-3 rounded-xl border p-4 transition-colors hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-900/50">
                         <RadioGroupItem value="COD" id="cod" />
                         <Label
                             htmlFor="cod"
                             className="flex flex-1 cursor-pointer items-center gap-3 font-normal"
                         >
-                            <Banknote className="h-5 w-5 text-green-600" />
+                            <Banknote className="h-5 w-5 text-green-600 dark:text-green-400" />
                             <div>
-                                <p className="font-bold text-gray-900">
+                                <p className="font-bold text-gray-900 dark:text-slate-100">
                                     Thanh toán khi nhận hàng (COD)
                                 </p>
-                                <p className="text-muted-foreground text-xs">
+                                <p className="text-muted-foreground text-xs dark:text-slate-400">
                                     Thanh toán bằng tiền mặt khi nhận hàng
                                 </p>
                             </div>
@@ -48,18 +48,18 @@ export function PaymentMethodCard({
                     </div>
 
                     {/* Thanh toán qua Ví điện tử / VNPAY */}
-                    <div className="flex items-center space-y-0 space-x-3 rounded-xl border p-4 transition-colors hover:bg-slate-50">
+                    <div className="flex items-center space-y-0 space-x-3 rounded-xl border p-4 transition-colors hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-900/50">
                         <RadioGroupItem value="VNPAY" id="vnpay" />
                         <Label
                             htmlFor="vnpay"
                             className="flex flex-1 cursor-pointer items-center gap-3 font-normal"
                         >
-                            <Wallet className="h-5 w-5 text-blue-500" />
+                            <Wallet className="h-5 w-5 text-blue-500 dark:text-blue-300" />
                             <div>
-                                <p className="font-bold text-gray-900">
+                                <p className="font-bold text-gray-900 dark:text-slate-100">
                                     Thanh toán qua VNPAY
                                 </p>
-                                <p className="text-muted-foreground text-xs">
+                                <p className="text-muted-foreground text-xs dark:text-slate-400">
                                     Hỗ trợ thẻ ATM, QR Code, Thẻ quốc tế
                                 </p>
                             </div>
@@ -67,18 +67,18 @@ export function PaymentMethodCard({
                     </div>
 
                     {/* Thanh toán qua Ví điện tử Paypal */}
-                    <div className="flex items-center space-y-0 space-x-3 rounded-xl border p-4 transition-colors hover:bg-slate-50">
+                    <div className="flex items-center space-y-0 space-x-3 rounded-xl border p-4 transition-colors hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-900/50">
                         <RadioGroupItem value="PAYPAL" id="paypal" />
                         <Label
                             htmlFor="paypal"
                             className="flex flex-1 cursor-pointer items-center gap-3 font-normal"
                         >
-                            <Wallet className="h-5 w-5 text-blue-500" />
+                            <Wallet className="h-5 w-5 text-blue-500 dark:text-blue-300" />
                             <div>
-                                <p className="font-bold text-gray-900">
+                                <p className="font-bold text-gray-900 dark:text-slate-100">
                                     Thanh toán qua Paypal
                                 </p>
-                                <p className="text-muted-foreground text-xs">
+                                <p className="text-muted-foreground text-xs dark:text-slate-400">
                                     Hỗ trợ thẻ ATM, QR Code, Thẻ quốc tế
                                 </p>
                             </div>

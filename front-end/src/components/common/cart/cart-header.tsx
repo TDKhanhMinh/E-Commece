@@ -33,7 +33,7 @@ export function CartHeader({
                 )}
             </div>
 
-            <h1 className="mb-8 text-3xl font-bold">
+            <h1 className="mb-8 text-3xl font-bold dark:text-slate-100">
                 Giỏ hàng của bạn ({itemCount} sản phẩm)
             </h1>
         </>

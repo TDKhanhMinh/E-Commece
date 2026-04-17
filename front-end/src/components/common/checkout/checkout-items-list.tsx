@@ -24,7 +24,7 @@ export function CheckoutItemsList({ items }: CheckoutItemsListProps) {
     return (
         <Card>
             <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 dark:text-neutral-100">
                     <ShoppingBag className="text-primary h-5 w-5" />
                     Sản phẩm đã chọn ({items.length})
                 </CardTitle>
@@ -33,7 +33,7 @@ export function CheckoutItemsList({ items }: CheckoutItemsListProps) {
                 <div className="space-y-4">
                     {items.map((item) => (
                         <div key={item.skuId} className="flex gap-4">
-                            <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg">
+                            <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-slate-100 dark:bg-slate-800">
                                 <Image
                                     src={item.image}
                                     alt={item.productName}
@@ -43,10 +43,10 @@ export function CheckoutItemsList({ items }: CheckoutItemsListProps) {
                             </div>
                             <div className="flex flex-1 flex-col justify-between">
                                 <div>
-                                    <h3 className="font-semibold">
+                                    <h3 className="font-semibold dark:text-slate-200">
                                         {item.productName}
                                     </h3>
-                                    <p className="text-muted-foreground text-sm">
+                                    <p className="text-muted-foreground text-sm dark:text-slate-400">
                                         {Object.entries(item.attributes)
                                             .map(
                                                 ([key, value]) =>
@@ -69,7 +69,7 @@ export function CheckoutItemsList({ items }: CheckoutItemsListProps) {
                                                     )}
                                                     đ
                                                 </p>
-                                                <p className="text-muted-foreground text-xs line-through">
+                                                <p className="text-muted-foreground text-xs line-through dark:text-slate-500">
                                                     {item.price.toLocaleString(
                                                         "vi-VN"
                                                     )}
@@ -77,7 +77,7 @@ export function CheckoutItemsList({ items }: CheckoutItemsListProps) {
                                                 </p>
                                             </>
                                         ) : (
-                                            <p className="font-semibold">
+                                            <p className="font-semibold dark:text-slate-200">
                                                 {item.price.toLocaleString(
                                                     "vi-VN"
                                                 )}

@@ -92,7 +92,7 @@ export function SkuTable({ product, onEdit, onToggleActive }: SkuTableProps) {
                                             ([key, val]) => (
                                                 <span
                                                     key={key}
-                                                    className="rounded bg-gray-100 px-2 py-1 text-xs"
+                                                    className="rounded bg-gray-100 dark:bg-slate-800 dark:text-slate-300 px-2 py-1 text-xs"
                                                 >
                                                     {key}: {val}
                                                 </span>
@@ -107,8 +107,8 @@ export function SkuTable({ product, onEdit, onToggleActive }: SkuTableProps) {
                                         <span
                                             className={
                                                 discountPercent > 0
-                                                    ? "text-sm text-gray-500 line-through"
-                                                    : "font-semibold"
+                                                    ? "text-sm text-gray-400 dark:text-slate-500 line-through"
+                                                    : "font-semibold text-slate-950 dark:text-slate-200"
                                             }
                                         >
                                             {originalPrice.toLocaleString()} đ
@@ -119,11 +119,11 @@ export function SkuTable({ product, onEdit, onToggleActive }: SkuTableProps) {
                                 {/* Giảm giá */}
                                 <TableCell>
                                     {discountPercent > 0 ? (
-                                        <span className="inline-block rounded-full bg-red-100 px-2 py-1 text-xs font-semibold text-red-600">
+                                        <span className="inline-block rounded-full bg-red-100 dark:bg-red-950/30 px-2 py-1 text-xs font-semibold text-red-600 dark:text-red-400">
                                             -{discountPercent}%
                                         </span>
                                     ) : (
-                                        <span className="text-sm text-gray-400">
+                                        <span className="text-sm text-gray-400 dark:text-slate-600">
                                             -
                                         </span>
                                     )}
@@ -131,7 +131,7 @@ export function SkuTable({ product, onEdit, onToggleActive }: SkuTableProps) {
 
                                 {/* Giá bán */}
                                 <TableCell>
-                                    <span className="font-semibold text-green-600">
+                                    <span className="font-semibold text-green-600 dark:text-green-400">
                                         {salePrice.toLocaleString()} đ
                                     </span>
                                 </TableCell>
@@ -141,8 +141,8 @@ export function SkuTable({ product, onEdit, onToggleActive }: SkuTableProps) {
                                     <span
                                         className={
                                             sku.stock > 0
-                                                ? "text-gray-900"
-                                                : "font-semibold text-red-500"
+                                                ? "text-gray-900 dark:text-slate-200"
+                                                : "font-semibold text-red-500 dark:text-red-400"
                                         }
                                     >
                                         {sku.stock}

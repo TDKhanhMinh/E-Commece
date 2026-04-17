@@ -42,10 +42,10 @@ export default function HomeDeals() {
                         <span className="mb-12 bg-linear-to-r from-orange-500 via-indigo-500 to-green-500 bg-clip-text text-xl font-bold tracking-tighter text-transparent uppercase">
                             Limited-Time Deals
                         </span>
-                        <h2 className="my-1 text-2xl font-bold uppercase md:text-4xl">
+                        <h2 className="my-1 text-2xl font-bold uppercase text-slate-900 md:text-4xl dark:text-slate-100">
                             Smart upgrades start with bigger savings.
                         </h2>
-                        <p className="text-secondary mt-3 text-base">
+                        <p className="text-secondary mt-3 text-base dark:text-slate-400">
                             The tech you want, without the new-price tag. Shop
                             certified iPhones, AirPods, MacBooks, and iPads for
                             less. All headache free and backed by T7M's 12-month

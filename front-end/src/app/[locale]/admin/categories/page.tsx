@@ -111,7 +111,7 @@ export default function CategoriesPage() {
     };
 
     return (
-        <div className="bg-muted/30 min-h-screen space-y-6 p-6 md:p-10">
+        <div className="bg-muted/30 dark:bg-slate-950 min-h-screen space-y-6 p-6 md:p-10">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h1 className="text-2xl font-semibold tracking-tight">
@@ -125,7 +125,7 @@ export default function CategoriesPage() {
 
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 {/* Search Input */}
-                <div className="flex max-w-sm items-center space-x-2 rounded-md border bg-white px-2 shadow-sm">
+                <div className="flex max-w-sm items-center space-x-2 rounded-md border dark:border-slate-800 bg-white dark:bg-slate-900 px-2 shadow-sm">
                     <Search className="ml-2 h-4 w-4 text-gray-500" />
                     <Input
                         placeholder="Tìm theo tên danh mục..."
@@ -140,11 +140,11 @@ export default function CategoriesPage() {
                     Thêm danh mục
                 </Button>
             </div>
-            <Card className="border-muted shadow-sm">
+            <Card className="border-muted dark:border-slate-800 shadow-sm dark:bg-slate-900/50">
                 <CardContent className="p-0">
                     <Table>
                         <TableHeader>
-                            <TableRow className="bg-muted/50">
+                            <TableRow className="bg-muted/50 dark:bg-slate-800/50">
                                 <TableHead className="w-105">
                                     Tên danh mục
                                 </TableHead>
@@ -181,7 +181,7 @@ export default function CategoriesPage() {
                                 flatCategories.map((category) => (
                                     <TableRow
                                         key={category.id}
-                                        className="hover:bg-muted/40"
+                                        className="hover:bg-muted/40 dark:hover:bg-slate-800/40"
                                     >
                                         <TableCell className="font-medium">
                                             <div
@@ -193,7 +193,7 @@ export default function CategoriesPage() {
                                                 }}
                                             >
                                                 {category.level > 0 && (
-                                                    <div className="border-muted-foreground/30 mr-2 h-4 w-4 rounded-bl border-b-2 border-l-2" />
+                                                    <div className="border-muted-foreground/30 dark:border-slate-700 mr-2 h-4 w-4 rounded-bl border-b-2 border-l-2" />
                                                 )}
                                                 <FolderTree className="text-primary mr-2 h-4 w-4" />
                                                 {category.name}

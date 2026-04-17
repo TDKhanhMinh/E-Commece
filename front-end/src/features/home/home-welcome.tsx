@@ -22,13 +22,13 @@ function HomeWelcome() {
                     <span className="mb-3 bg-gradient-to-r from-orange-500 via-indigo-500 to-green-500 bg-clip-text text-start text-xl font-bold tracking-tighter text-transparent uppercase">
                         Welcome to T7M Tech Store
                     </span>
-                    <span className="text-6xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
+                    <span className="text-6xl font-extrabold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl dark:text-slate-100">
                         Your connection to reliable, Certified
                     </span>
-                    <span className="mb-2 text-6xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
+                    <span className="mb-2 text-6xl font-extrabold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl dark:text-slate-100">
                         Pre-Owned devices.
                     </span>
-                    <p className="text-secondary-dark mb-8 text-lg">
+                    <p className="text-secondary-dark mb-8 text-lg dark:text-slate-400">
                         We strongly believe the only difference between
                         purchasing a new or Certified Pre-Owned device should be
                         price. That’s why we rigorously hand test, clean,
@@ -41,14 +41,14 @@ function HomeWelcome() {
                                 key={item.title}
                                 className="flex items-center gap-3"
                             >
-                                <div className="bg-secondary rounded-full">
+                                <div className="bg-secondary rounded-full dark:bg-secondary-dark">
                                     <ShieldCheck className="h-14 w-14 p-2 text-white" />
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="text-lg font-semibold">
+                                    <span className="text-lg font-semibold text-slate-900 dark:text-slate-200">
                                         {item.title}
                                     </span>
-                                    <span className="text-secondary-dark mt-1 text-sm">
+                                    <span className="text-secondary-dark mt-1 text-sm dark:text-slate-500">
                                         {item.description}
                                     </span>
                                 </div>
@@ -62,16 +62,16 @@ function HomeWelcome() {
                     </div>
                 </div>
             </div>
-            <div className="mx-4 mt-32 mb-8 grid grid-cols-1 rounded-2xl pl-4 text-center shadow-2xl md:grid-cols-2">
+            <div className="mx-4 mt-32 mb-8 grid grid-cols-1 rounded-2xl pl-4 text-center shadow-2xl md:grid-cols-2 dark:bg-zinc-900 dark:shadow-slate-950/50">
                 <div className="flex flex-col rounded-tl-2xl rounded-bl-2xl px-3 text-start">
                     <span className="my-3 mt-8 bg-gradient-to-r from-orange-500 via-indigo-500 to-green-500 bg-clip-text text-start text-base font-bold tracking-tighter text-transparent uppercase">
                         Bundle your favorites
                     </span>
-                    <span className="text-3xl font-extrabold tracking-tight lg:text-3xl">
+                    <span className="text-3xl font-extrabold tracking-tight text-slate-900 lg:text-3xl dark:text-slate-100">
                         Get more, pay less!
                     </span>
                     <div className="h-65"> </div>
-                    <p className="text-secondary-dark text-sm">
+                    <p className="text-secondary-dark text-sm dark:text-slate-400">
                         Why buy separately when you can save more? Grab
                         exclusive discounts when you bundle iPhones with
                         AirPods, MacBooks with iPads, and more.

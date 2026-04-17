@@ -125,11 +125,26 @@ export default function AttributesPage() {
     const renderTypeBadge = (type: string) => {
         switch (type) {
             case "SELECT":
-                return <Badge className="bg-blue-500">Select</Badge>;
+                return (
+                    <Badge className="bg-blue-500 dark:bg-blue-600 dark:text-blue-50">
+                        Select
+                    </Badge>
+                );
             case "NUMBER":
-                return <Badge className="bg-purple-500">Number</Badge>;
+                return (
+                    <Badge className="bg-purple-500 dark:bg-purple-600 dark:text-purple-50">
+                        Number
+                    </Badge>
+                );
             default:
-                return <Badge variant="secondary">Text</Badge>;
+                return (
+                    <Badge
+                        variant="secondary"
+                        className="dark:bg-slate-800 dark:text-slate-300"
+                    >
+                        Text
+                    </Badge>
+                );
         }
     };
 
@@ -138,7 +153,7 @@ export default function AttributesPage() {
      * ========================= */
     return (
         <>
-            <div className="min-h-screen space-y-6 bg-gray-50/50 p-8">
+            <div className="min-h-screen space-y-6 bg-gray-50/50 dark:bg-slate-950 p-8">
                 {/* HEADER */}
                 <div className="flex items-center justify-between">
                     <div>
@@ -154,7 +169,7 @@ export default function AttributesPage() {
 
                 <div className="flex items-center justify-between">
                     {/* SEARCH */}
-                    <div className="flex max-w-sm items-center space-x-2 rounded-md border bg-white px-2 shadow-sm">
+                    <div className="flex max-w-sm items-center space-x-2 rounded-md border dark:border-slate-800 bg-white dark:bg-slate-900 px-2 shadow-sm">
                         <Search className="ml-2 h-4 w-4 text-gray-500" />
                         <Input
                             placeholder="Tìm theo tên hoặc mã..."
@@ -171,7 +186,7 @@ export default function AttributesPage() {
                     </Button>
                 </div>
                 {/* TABLE */}
-                <div className="rounded-md border bg-white shadow-sm">
+                <div className="rounded-md border dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm">
                     <Table>
                         <TableHeader>
                             <TableRow>
@@ -212,12 +227,12 @@ export default function AttributesPage() {
                                 attributes.map((attr: Attribute) => (
                                     <TableRow key={attr.id}>
                                         <TableCell>
-                                            <Settings2 className="h-5 w-5 text-gray-400" />
+                                            <Settings2 className="h-5 w-5 text-gray-400 dark:text-slate-500" />
                                         </TableCell>
                                         <TableCell className="font-medium">
                                             {attr.name}
                                         </TableCell>
-                                        <TableCell className="font-mono text-xs text-gray-500">
+                                        <TableCell className="font-mono text-xs text-gray-500 dark:text-slate-500">
                                             {attr.code}
                                         </TableCell>
                                         <TableCell>

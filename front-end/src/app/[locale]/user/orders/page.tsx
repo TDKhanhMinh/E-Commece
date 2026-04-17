@@ -73,7 +73,7 @@ export default function OrderHistory() {
     // Loading state
 
     return (
-        <div className="w-full rounded-xl border bg-white p-6 shadow-sm">
+        <div className="w-full rounded-xl border bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <div className="mb-2 flex flex-col items-center justify-between gap-4 md:flex-row">
                 <h2 className="self-start text-xl font-bold md:self-center">
                     Lịch sử đơn hàng
@@ -82,11 +82,11 @@ export default function OrderHistory() {
                 <div className="relative w-full md:w-80">
                     <Input
                         placeholder="Tìm kiếm theo mã đơn hàng"
-                        className="h-10 rounded-full border-gray-200 bg-gray-50 pr-10 pl-4 text-sm"
+                        className="h-10 rounded-full border-gray-200 bg-gray-50 pr-10 pl-4 text-sm dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
-                    <Search className="absolute top-1/2 right-3 size-4 -translate-y-1/2 text-gray-400" />
+                    <Search className="absolute top-1/2 right-3 size-4 -translate-y-1/2 text-gray-400 dark:text-slate-500" />
                 </div>
             </div>
 
@@ -95,12 +95,12 @@ export default function OrderHistory() {
                 onValueChange={handleTabChange}
                 className="min-h-screen w-full"
             >
-                <TabsList className="scrollbar-hide mb-0 h-auto w-full flex-nowrap justify-start gap-6 overflow-x-auto rounded-none border-b bg-transparent p-0">
+                <TabsList className="scrollbar-hide mb-0 h-auto w-full flex-nowrap justify-start gap-6 overflow-x-auto rounded-none border-b bg-transparent p-0 dark:border-slate-800">
                     {tabs.map((tab) => (
                         <TabsTrigger
                             key={tab.value}
                             value={tab.value}
-                            className="shrink-0 cursor-pointer rounded-none border-t-0 border-r-0 border-b-2 border-l-0 bg-transparent px-0 py-3 text-sm font-medium text-gray-500 uppercase data-[state=active]:border-green-600 data-[state=active]:text-green-600"
+                            className="shrink-0 cursor-pointer rounded-none border-t-0 border-r-0 border-b-2 border-l-0 bg-transparent px-0 py-3 text-sm font-medium text-gray-500 uppercase data-[state=active]:border-green-600 data-[state=active]:text-green-600 dark:text-slate-400 dark:data-[state=active]:text-green-500"
                         >
                             {tab.label}
                         </TabsTrigger>
@@ -141,8 +141,8 @@ export default function OrderHistory() {
 
                                         {orderPage &&
                                             orderPage.totalPages > 1 && (
-                                                <div className="mt-4 flex items-center justify-between border-t pt-6">
-                                                    <div className="text-sm text-gray-500">
+                                                <div className="mt-4 flex items-center justify-between border-t pt-6 dark:border-slate-800">
+                                                    <div className="text-sm text-gray-500 dark:text-slate-400">
                                                         Hiển thị{" "}
                                                         {
                                                             orderPage.numberOfElements
@@ -217,7 +217,7 @@ export default function OrderHistory() {
                                     </>
                                 ) : (
                                     <div className="py-20 text-center">
-                                        <p className="text-gray-400">
+                                        <p className="text-gray-400 dark:text-slate-500">
                                             {searchQuery
                                                 ? "Không tìm thấy đơn hàng nào"
                                                 : "Chưa có đơn hàng nào"}

@@ -137,9 +137,9 @@ export function AddressDialog({
                 </Button>
             </DialogTrigger>
 
-            <DialogContent className="max-w-2xl overflow-hidden border-none p-0 shadow-2xl">
+            <DialogContent className="max-w-2xl overflow-hidden border-none p-0 shadow-2xl dark:bg-slate-950">
                 <DialogHeader className="mt-4 p-2">
-                    <DialogTitle className="text-md px-2 text-left font-semibold tracking-wide uppercase">
+                    <DialogTitle className="text-md px-2 text-left font-semibold tracking-wide uppercase dark:text-slate-100">
                         {title}
                     </DialogTitle>
                 </DialogHeader>
@@ -152,14 +152,14 @@ export function AddressDialog({
                         <div className="space-y-2">
                             <Label
                                 htmlFor="userName"
-                                className="font-medium text-gray-600"
+                                className="font-medium text-gray-600 dark:text-slate-400"
                             >
                                 Họ & tên
                             </Label>
                             <Input
                                 id="userName"
                                 placeholder="Nhập họ và tên"
-                                className="h-11 border-gray-300"
+                                className="h-11 border-gray-300 dark:border-slate-800 dark:bg-slate-900"
                                 {...register("userName")}
                                 disabled={
                                     mutationAdd.isPending ||
@@ -172,14 +172,14 @@ export function AddressDialog({
                         <div className="space-y-2">
                             <Label
                                 htmlFor="phone"
-                                className="font-medium text-gray-600"
+                                className="font-medium text-gray-600 dark:text-slate-400"
                             >
                                 Số điện thoại
                             </Label>
                             <Input
                                 id="phone"
                                 placeholder="Nhập số điện thoại"
-                                className="h-11 border-gray-300"
+                                className="h-11 border-gray-300 dark:border-slate-800 dark:bg-slate-900"
                                 {...register("phoneNumber")}
                                 disabled={
                                     mutationAdd.isPending ||
@@ -193,7 +193,7 @@ export function AddressDialog({
                     <div className="space-y-2">
                         <Label
                             htmlFor="address"
-                            className="font-medium text-gray-600"
+                            className="font-medium text-gray-600 dark:text-slate-400"
                         >
                             Địa chỉ chi tiết (Số nhà, tên đường, ...)
                         </Label>
@@ -222,7 +222,7 @@ export function AddressDialog({
                         <input type="hidden" {...register("latitude")} />
                         <input type="hidden" {...register("longitude")} />
                         {selectedLocation ? (
-                            <p className="text-muted-foreground text-sm">
+                            <p className="text-muted-foreground text-sm dark:text-slate-500">
                                 Đã chọn: {selectedLocation}
                             </p>
                         ) : null}
@@ -239,7 +239,7 @@ export function AddressDialog({
                         />
                         <Label
                             htmlFor="isDefault"
-                            className="mx-2 font-medium text-gray-600"
+                            className="mx-2 font-medium text-gray-600 dark:text-slate-400"
                         >
                             Đặt làm địa chỉ mặc định
                         </Label>

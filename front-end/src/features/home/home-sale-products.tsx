@@ -24,14 +24,14 @@ export default function HomeSaleProducts() {
     const categories = ["All", "iPhone", "MacBook", "iPad", "Watch", "Audio"];
 
     return (
-        <div className="flex flex-col gap-8 bg-zinc-50 pt-6 pb-8 dark:bg-zinc-800/50">
+        <div className="flex flex-col gap-8 bg-zinc-50 pt-6 pb-8 dark:bg-zinc-900/50">
             <section className="">
                 <div className="container mx-auto h-full px-4 text-center">
                     <div className="mx-auto mb-12 max-w-3xl">
                         <span className="mb-12 bg-gradient-to-r from-orange-500 via-indigo-500 to-green-500 bg-clip-text text-xl font-bold tracking-tighter text-transparent uppercase">
                             Handpicked for you
                         </span>
-                        <h2 className="mt-0.5 font-bold uppercase md:text-4xl">
+                        <h2 className="mt-0.5 font-bold uppercase text-slate-900 md:text-4xl dark:text-slate-100">
                             Tech you'll love – Top picks for you
                         </h2>
                     </div>
@@ -46,7 +46,7 @@ export default function HomeSaleProducts() {
                                 className={`cursor-pointer rounded-full px-6 py-3 font-semibold transition-colors ${
                                     selectedCategory === category
                                         ? "bg-primary text-white"
-                                        : "hover:bg-primary hover:text-white"
+                                        : "hover:bg-primary hover:text-white dark:border-zinc-700 dark:bg-zinc-900 dark:text-slate-200 dark:hover:bg-zinc-800"
                                 }`}
                             >
                                 {category}

@@ -29,7 +29,7 @@ const MessageList = memo(
 
         if (isLoading) {
             return (
-                <div className="flex flex-1 items-center justify-center bg-slate-50">
+                <div className="flex flex-1 items-center justify-center bg-slate-50 dark:bg-slate-950">
                     <Loader2 className="h-6 w-6 animate-spin text-blue-500" />
                 </div>
             );
@@ -38,14 +38,14 @@ const MessageList = memo(
         return (
             <div
                 ref={scrollRef}
-                className="scrollbar-thin scrollbar-thumb-gray-200 flex-1 overflow-y-auto bg-slate-50 p-5"
+                className="scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-slate-800 flex-1 overflow-y-auto bg-slate-50 p-5 dark:bg-slate-950"
             >
                 {messages.length === 0 ? (
                     <div className="mt-10 text-center">
-                        <p className="text-sm font-medium text-gray-500">
+                        <p className="text-sm font-medium text-gray-500 dark:text-slate-400">
                             Xin chào! 👋
                         </p>
-                        <p className="text-[12px] text-gray-400">
+                        <p className="text-[12px] text-gray-400 dark:text-slate-500">
                             Bạn cần hỗ trợ gì không?
                         </p>
                     </div>
@@ -64,12 +64,12 @@ const MessageList = memo(
                                         className={`max-w-[85%] px-4 py-2.5 text-[13.5px] shadow-sm ${
                                             isMyMessage
                                                 ? "rounded-2xl rounded-tr-none bg-blue-600 text-white"
-                                                : "rounded-2xl rounded-tl-none border border-white bg-white text-slate-700"
+                                                : "rounded-2xl rounded-tl-none border border-white bg-white text-slate-700 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200"
                                         }`}
                                     >
                                         {msg.content}
                                     </div>
-                                    <span className="px-1 text-[9px] font-medium text-gray-400 uppercase">
+                                    <span className="px-1 text-[9px] font-medium text-gray-400 uppercase dark:text-slate-500">
                                         {msg.timestamp
                                             ? new Date(
                                                   msg.timestamp
@@ -112,7 +112,7 @@ const ChatWidget = () => {
     return (
         <div className="fixed right-6 bottom-6 z-50 flex flex-col items-end font-sans">
             {isOpen && (
-                <div className="animate-in fade-in zoom-in-95 slide-in-from-bottom-10 mb-6 flex h-125 w-95 flex-col overflow-hidden rounded-[24px] border border-gray-100 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] duration-300">
+                <div className="animate-in fade-in zoom-in-95 slide-in-from-bottom-10 mb-6 flex h-125 w-95 flex-col overflow-hidden rounded-[24px] border border-gray-100 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] duration-300 dark:border-slate-800 dark:bg-slate-900 dark:shadow-[0_20px_50px_rgba(0,0,0,0.4)]">
                     {/* 2. Header: Cố định ở trên cùng do flex-col */}
                     <div className="flex shrink-0 items-center justify-between bg-linear-to-r from-blue-600 to-indigo-600 p-4 text-white">
                         <div className="flex items-center gap-3">
@@ -146,7 +146,7 @@ const ChatWidget = () => {
 
                     {/* 3. Chat Body: flex-1 đảm bảo nó chiếm hết chỗ trống và đẩy input xuống dưới */}
                     {connectionError && (
-                        <div className="border-b border-red-200 bg-red-50 p-3 text-sm text-red-600">
+                        <div className="border-b border-red-200 bg-red-50 p-3 text-sm text-red-600 dark:bg-red-950/20 dark:border-red-900 dark:text-red-400">
                             ⚠️ {connectionError}
                         </div>
                     )}
@@ -157,7 +157,7 @@ const ChatWidget = () => {
                     />
 
                     {/* 4. Input Area: Cố định ở dưới cùng, shrink-0 ngăn không cho nó bị ép nhỏ */}
-                    <div className="shrink-0 border-t bg-white p-4">
+                    <div className="shrink-0 border-t bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
                         <form
                             onSubmit={handleFormSubmit}
                             className="flex items-center gap-2"
@@ -170,12 +170,12 @@ const ChatWidget = () => {
                                 }
                                 placeholder="Viết tin nhắn..."
                                 disabled={!isConnected || isLoading}
-                                className="flex-1 rounded-2xl bg-gray-100 px-4 py-2.5 text-[13.5px] transition-all outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/10 disabled:opacity-50"
+                                className="flex-1 rounded-2xl bg-gray-100 px-4 py-2.5 text-[13.5px] transition-all outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/10 disabled:opacity-50 dark:bg-slate-950 dark:border-slate-800 dark:text-slate-100 dark:focus:bg-slate-950"
                             />
                             <button
                                 type="submit"
                                 disabled={!isConnected || !messageInput.trim()}
-                                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white shadow-md shadow-blue-200 transition-all hover:bg-blue-700 active:scale-95 disabled:opacity-50 disabled:shadow-none"
+                                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white shadow-md shadow-blue-200 transition-all hover:bg-blue-700 active:scale-95 disabled:opacity-50 disabled:shadow-none dark:shadow-none"
                             >
                                 <Send size={18} />
                             </button>
@@ -189,12 +189,12 @@ const ChatWidget = () => {
                 onClick={() => setIsOpen(!isOpen)}
                 className={`flex h-14 w-14 items-center justify-center rounded-2xl text-white shadow-xl transition-all duration-500 hover:scale-105 active:scale-95 ${
                     isOpen
-                        ? "rotate-90 border border-gray-100 bg-white text-slate-600 shadow-none"
-                        : "bg-linear-to-tr from-blue-600 to-indigo-500 shadow-blue-200"
+                        ? "rotate-90 border border-gray-100 bg-white text-slate-600 shadow-none dark:bg-slate-900 dark:border-slate-800 dark:text-slate-300"
+                        : "bg-linear-to-tr from-blue-600 to-indigo-500 shadow-blue-200 dark:shadow-none"
                 }`}
             >
                 {isOpen ? (
-                    <X size={28} className={"text-gray-700"} />
+                    <X size={28} className={"text-gray-700 dark:text-slate-300"} />
                 ) : (
                     <MessageCircle
                         size={28}

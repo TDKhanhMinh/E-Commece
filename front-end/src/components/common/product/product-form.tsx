@@ -167,7 +167,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
                 </TabsContent>
 
                 <TabsContent value="skus">
-                    <Card>
+                    <Card className="dark:bg-slate-950 dark:border-slate-800">
                         <CardContent className="pt-6">
                             {product && <SkuManager product={product} />}
                         </CardContent>

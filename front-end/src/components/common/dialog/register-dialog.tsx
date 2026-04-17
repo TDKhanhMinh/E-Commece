@@ -112,7 +112,7 @@ export default function RegisterDialog({ children }: RegisterDialogProps) {
                             <span className="w-full border-t" />
                         </div>
                         <div className="relative flex justify-center text-xs uppercase">
-                            <span className="bg-background text-muted-foreground px-2">
+                            <span className="bg-background text-muted-foreground px-2 dark:bg-slate-950">
                                 Hoặc đăng ký bằng Email
                             </span>
                         </div>
@@ -130,7 +130,7 @@ export default function RegisterDialog({ children }: RegisterDialogProps) {
                                 {...register("name")}
                                 className={`h-11 ${
                                     errors.name
-                                        ? "border-red-500 text-red-900 placeholder:text-red-300"
+                                        ? "border-red-500 text-red-900 placeholder:text-red-300 dark:text-red-100"
                                         : ""
                                 }`}
                                 disabled={mutation.isPending}
@@ -147,7 +147,7 @@ export default function RegisterDialog({ children }: RegisterDialogProps) {
                                 {...register("email")}
                                 className={`h-11 ${
                                     errors.email
-                                        ? "border-red-500 text-red-900 placeholder:text-red-300"
+                                        ? "border-red-500 text-red-900 placeholder:text-red-300 dark:text-red-100"
                                         : ""
                                 }`}
                                 disabled={mutation.isPending}
@@ -164,7 +164,7 @@ export default function RegisterDialog({ children }: RegisterDialogProps) {
                                 {...register("phone")}
                                 className={`h-11 ${
                                     errors.phone
-                                        ? "border-red-500 text-red-900 placeholder:text-red-300"
+                                        ? "border-red-500 text-red-900 placeholder:text-red-300 dark:text-red-100"
                                         : ""
                                 }`}
                                 disabled={mutation.isPending}
@@ -205,7 +205,7 @@ export default function RegisterDialog({ children }: RegisterDialogProps) {
                                 {...register("password")}
                                 className={`h-11 ${
                                     errors.password
-                                        ? "border-red-500 text-red-900 placeholder:text-red-300"
+                                        ? "border-red-500 text-red-900 placeholder:text-red-300 dark:text-red-100"
                                         : ""
                                 }`}
                                 disabled={mutation.isPending}
@@ -224,7 +224,7 @@ export default function RegisterDialog({ children }: RegisterDialogProps) {
                                 {...register("confirmPassword")}
                                 className={`h-11 ${
                                     errors.confirmPassword
-                                        ? "border-red-500 text-red-900 placeholder:text-red-300"
+                                        ? "border-red-500 text-red-900 placeholder:text-red-300 dark:text-red-100"
                                         : ""
                                 }`}
                                 disabled={mutation.isPending}

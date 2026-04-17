@@ -7,7 +7,9 @@ export function CheckoutHeader() {
         <Fragment>
             <BackButton />
             <div className="mb-8 flex items-center gap-4">
-                <h1 className="text-3xl font-bold">Xác nhận đơn hàng</h1>
+                <h1 className="text-3xl font-bold dark:text-neutral-100">
+                    Xác nhận đơn hàng
+                </h1>
             </div>
         </Fragment>
     );

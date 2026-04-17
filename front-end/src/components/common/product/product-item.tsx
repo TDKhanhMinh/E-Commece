@@ -111,7 +111,7 @@ function ProductItem({ item }: { item: ProductItemProps }) {
 
             <Card
                 onClick={() => navigate.push(`/product/${slug}`)}
-                className="group relative flex h-full max-w-sm cursor-pointer flex-col overflow-hidden rounded-xl border-0 bg-white shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
+                className="group relative flex h-full max-w-sm cursor-pointer flex-col overflow-hidden rounded-xl border-0 bg-white shadow-md transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl dark:border dark:border-slate-800 dark:bg-slate-900 dark:shadow-slate-950/50"
                 itemScope
                 itemType="https://schema.org/Product"
             >
@@ -132,7 +132,7 @@ function ProductItem({ item }: { item: ProductItemProps }) {
 
                 {/* Favorite Button */}
                 <Button
-                    className="absolute top-3 right-3 z-10 h-9 w-9 rounded-full bg-white/90 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white"
+                    className="absolute top-3 right-3 z-10 h-9 w-9 rounded-full bg-white/90 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white dark:bg-slate-800/90 dark:text-slate-100 dark:hover:bg-slate-700"
                     variant="ghost"
                     size="icon"
                     aria-label="Thêm vào yêu thích"
@@ -145,7 +145,7 @@ function ProductItem({ item }: { item: ProductItemProps }) {
                 </Button>
 
                 {/* Product Image */}
-                <div className="relative aspect-square w-full overflow-hidden bg-linear-to-br from-gray-50 to-gray-100 p-6">
+                <div className="relative aspect-square w-full overflow-hidden bg-linear-to-br from-gray-50 to-gray-100 p-6 dark:from-slate-800 dark:to-slate-900">
                     <Image
                         src={image || "/placeholder-product.png"}
                         alt={`${brandName} ${name} - ${categoryName}`}
@@ -200,7 +200,7 @@ function ProductItem({ item }: { item: ProductItemProps }) {
 
                     {/* Product Name */}
                     <h3
-                        className="group-hover:text-primary line-clamp-2 text-start text-base leading-tight font-semibold text-gray-900 transition-colors"
+                        className="group-hover:text-primary line-clamp-2 text-start text-base leading-tight font-semibold text-gray-900 transition-colors dark:text-slate-100 dark:group-hover:text-blue-400"
                         itemProp="name"
                         title={name}
                     >
@@ -218,7 +218,7 @@ function ProductItem({ item }: { item: ProductItemProps }) {
                             <div className="flex items-center gap-1">
                                 <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                                 <span
-                                    className="text-sm font-semibold"
+                                    className="text-sm font-semibold dark:text-slate-100"
                                     itemProp="ratingValue"
                                 >
                                     {rating.toFixed(1)}
@@ -251,7 +251,7 @@ function ProductItem({ item }: { item: ProductItemProps }) {
 
                     {/* Price Section */}
                     <div
-                        className="mt-auto border-t pt-3"
+                        className="mt-auto border-t pt-3 dark:border-slate-800"
                         itemProp="offers"
                         itemScope
                         itemType="https://schema.org/Offer"
@@ -271,13 +271,13 @@ function ProductItem({ item }: { item: ProductItemProps }) {
                             <div className="flex flex-col">
                                 {/* Sale Price */}
                                 <div className="flex items-baseline gap-2">
-                                    <span className="text-xl font-bold text-red-600">
+                                    <span className="text-xl font-bold text-red-600 dark:text-red-400">
                                         {minPrice === maxPrice
                                             ? formatPrice(salePrice)
                                             : `${formatPrice(salePrice)}`}
                                     </span>
                                     {maxPrice > minPrice && (
-                                        <span className="text-sm text-gray-500">
+                                        <span className="text-sm text-gray-500 dark:text-slate-400">
                                             - {formatPrice(maxSalePrice)}
                                         </span>
                                     )}
@@ -286,12 +286,12 @@ function ProductItem({ item }: { item: ProductItemProps }) {
                                 {/* Original Price */}
                                 {discountPercent > 0 && (
                                     <div className="flex items-center gap-2">
-                                        <span className="text-sm text-gray-400 line-through">
+                                        <span className="text-sm text-gray-400 line-through dark:text-slate-500">
                                             {formatPrice(minPrice)}
                                         </span>
                                         <Badge
                                             variant="outline"
-                                            className="border-red-200 px-2 py-0 text-xs text-red-600"
+                                            className="border-red-200 px-2 py-0 text-xs text-red-600 dark:border-red-900/30 dark:text-red-400"
                                         >
                                             Tiết kiệm{" "}
                                             {formatPrice(minPrice - salePrice)}
@@ -306,14 +306,14 @@ function ProductItem({ item }: { item: ProductItemProps }) {
                             {inStock ? (
                                 <>
                                     <div className="h-2 w-2 animate-pulse rounded-full bg-green-500"></div>
-                                    <span className="text-xs font-medium text-green-600">
+                                    <span className="text-xs font-medium text-green-600 dark:text-green-400">
                                         Còn hàng
                                     </span>
                                 </>
                             ) : (
                                 <>
                                     <div className="h-2 w-2 rounded-full bg-red-500"></div>
-                                    <span className="text-xs font-medium text-red-600">
+                                    <span className="text-xs font-medium text-red-600 dark:text-red-400">
                                         Hết hàng
                                     </span>
                                 </>
