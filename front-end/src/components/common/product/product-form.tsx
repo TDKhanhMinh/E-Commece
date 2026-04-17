@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 
@@ -27,6 +28,7 @@ import { useAttributes } from "@/hooks/use-attributes";
 import ProductFormSkeleton from "@/components/skeleton/product-form-skeleton";
 
 export default function ProductForm({ productId }: ProductFormProps) {
+    const t = useTranslations("products.form");
     const router = useRouter();
     const isEditMode = Boolean(productId);
 
@@ -113,9 +115,9 @@ export default function ProductForm({ productId }: ProductFormProps) {
     const pageTitle = useMemo(
         () =>
             isEditMode
-                ? `Sửa sản phẩm: ${product?.name ?? ""}`
-                : "Tạo sản phẩm mới",
-        [isEditMode, product?.name]
+                ? t("editTitle", { name: product?.name ?? "" })
+                : t("newTitle"),
+        [isEditMode, product?.name, t]
     );
 
     const showSkeleton =
@@ -130,9 +132,9 @@ export default function ProductForm({ productId }: ProductFormProps) {
 
             <Tabs defaultValue="general">
                 <TabsList>
-                    <TabsTrigger value="general">Thông tin chung</TabsTrigger>
+                    <TabsTrigger value="general">{t("tabs.general")}</TabsTrigger>
                     <TabsTrigger value="skus" disabled={!isEditMode}>
-                        Biến thể (SKU)
+                        {t("tabs.skus")}
                     </TabsTrigger>
                 </TabsList>
 
@@ -159,7 +161,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
                                     size="lg"
                                     className="px-10"
                                 >
-                                    Lưu sản phẩm
+                                    {t("save")}
                                 </Button>
                             </div>
                         </form>

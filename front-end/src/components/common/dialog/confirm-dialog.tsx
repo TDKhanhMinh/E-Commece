@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ReactNode } from "react";
 
+import { useTranslations } from "next-intl";
+
 interface ConfirmDialogProps {
     trigger: ReactNode;
     title: string;
@@ -28,12 +30,16 @@ export function ConfirmDialog({
     trigger,
     title,
     description,
-    confirmText = "Xác nhận",
-    cancelText = "Hủy",
+    confirmText,
+    cancelText,
     onConfirm,
     loading = false,
     destructive = false,
 }: ConfirmDialogProps) {
+    const t = useTranslations("common.confirmAction");
+    const finalConfirmText = confirmText || t("confirm");
+    const finalCancelText = cancelText || t("cancel");
+
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
@@ -50,7 +56,7 @@ export function ConfirmDialog({
 
                 <AlertDialogFooter>
                     <AlertDialogCancel disabled={loading}>
-                        {cancelText}
+                        {finalCancelText}
                     </AlertDialogCancel>
                     <AlertDialogAction
                         onClick={onConfirm}
@@ -61,7 +67,7 @@ export function ConfirmDialog({
                                 : ""
                         }
                     >
-                        {loading ? "Đang xử lý..." : confirmText}
+                        {loading ? t("processing") : finalConfirmText}
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>

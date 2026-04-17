@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { ProductDetail, SkuDto } from "@/type/product-type";
 import { SkuTable } from "./sku-table";
@@ -16,6 +17,7 @@ interface SkuManagerProps {
 }
 
 export function SkuManager({ product }: SkuManagerProps) {
+    const t = useTranslations("products.sku");
     const [isAutoDialogOpen, setIsAutoDialogOpen] = useState(false);
     const [editOpen, setEditOpen] = useState(false);
     // @ts-ignore
@@ -39,14 +41,14 @@ export function SkuManager({ product }: SkuManagerProps) {
         <div className="space-y-4">
             <div className="flex items-center justify-between">
                 <h3 className="text-lg font-medium">
-                    Danh sách biến thể (SKUs)
+                    {t("title")}
                 </h3>
                 <div className="flex gap-2">
                     <Button
                         variant="outline"
                         onClick={() => setIsAutoDialogOpen(true)}
                     >
-                        Auto Generate SKU
+                        {t("autoGenerate")}
                     </Button>
                     <ManualCreateSkuDialog productId={product.id} />
                 </div>

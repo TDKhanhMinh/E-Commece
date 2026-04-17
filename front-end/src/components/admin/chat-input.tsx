@@ -11,6 +11,8 @@ interface ChatInputProps {
     isDisabled?: boolean;
 }
 
+import { useTranslations } from "next-intl";
+
 export const ChatInput: React.FC<ChatInputProps> = ({
     messageInput,
     onMessageChange,
@@ -18,6 +20,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     selectedUserName,
     isDisabled = false,
 }) => {
+    const t = useTranslations("chat");
     return (
         <div className="border-t border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4">
             <form
@@ -28,7 +31,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
                     type="text"
                     value={messageInput}
                     onChange={(e) => onMessageChange(e.target.value)}
-                    placeholder={`${selectedUserName}...`}
+                    placeholder={t("inputPlaceholder", { name: selectedUserName })}
                     disabled={isDisabled}
                     className="flex-1 bg-transparent py-2 text-[14.5px] outline-none disabled:opacity-50 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-600"
                 />

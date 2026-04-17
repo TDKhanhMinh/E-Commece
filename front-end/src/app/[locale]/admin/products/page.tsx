@@ -9,6 +9,7 @@ import React, {
     useTransition,
 } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import {
     ChevronLeft,
     ChevronRight,
@@ -68,10 +69,11 @@ const formatCurrency = (value: number): string => {
  * Loading state component for the products table
  */
 const LoadingState = memo(function LoadingState() {
+    const t = useTranslations("products");
     return (
         <TableRow>
-            <TableCell colSpan={6} className="h-32 text-center text-gray-400">
-                Đang tải dữ liệu...
+            <TableCell colSpan={7} className="h-32 text-center text-gray-400">
+                {t("list.loading")}
             </TableCell>
         </TableRow>
     );
@@ -81,13 +83,14 @@ const LoadingState = memo(function LoadingState() {
  * Empty state component when no products are found
  */
 const EmptyState = memo(function EmptyState() {
+    const t = useTranslations("products");
     return (
         <TableRow>
             <TableCell
-                colSpan={6}
+                colSpan={7}
                 className="text-muted-foreground h-32 text-center"
             >
-                Không tìm thấy sản phẩm nào.
+                {t("list.empty")}
             </TableCell>
         </TableRow>
     );
@@ -97,16 +100,17 @@ const EmptyState = memo(function EmptyState() {
  * Table header component for products table
  */
 const ProductTableHeader = memo(function ProductTableHeader() {
+    const t = useTranslations("products.table");
     return (
         <TableHeader>
             <TableRow>
-                <TableHead className="w-20">Ảnh</TableHead>
-                <TableHead>Tên sản phẩm</TableHead>
-                <TableHead>Danh mục</TableHead>
-                <TableHead>Thương hiệu</TableHead>
-                <TableHead className="text-right">Giá Min</TableHead>
-                <TableHead className="text-right">Giá Max</TableHead>
-                <TableHead className="text-right">Hành động</TableHead>
+                <TableHead className="w-20">{t("image")}</TableHead>
+                <TableHead>{t("name")}</TableHead>
+                <TableHead>{t("category")}</TableHead>
+                <TableHead>{t("brand")}</TableHead>
+                <TableHead className="text-right">{t("minPrice")}</TableHead>
+                <TableHead className="text-right">{t("maxPrice")}</TableHead>
+                <TableHead className="text-right">{t("actions")}</TableHead>
             </TableRow>
         </TableHeader>
     );
@@ -164,28 +168,32 @@ const ProductTableRow = memo(function ProductTableRow({
                         <Button
                             variant="ghost"
                             className="h-8 w-8 cursor-pointer p-0"
-                            aria-label={`Thao tác cho ${product.name}`}
+                            aria-label={`Action for ${product.name}`}
                         >
                             <MoreHorizontal className="h-4 w-4" />
                         </Button>
                     </DropdownMenuTrigger>
+                    {(() => {
+                        const t = useTranslations("products.actions");
+                        return (
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuLabel>{t("title")}</DropdownMenuLabel>
 
-                    <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Thao tác</DropdownMenuLabel>
+                                <DropdownMenuItem onClick={() => onEdit(product.id)}>
+                                    <Pencil className="mr-2 h-4 w-4" />
+                                    {t("edit")}
+                                </DropdownMenuItem>
 
-                        <DropdownMenuItem onClick={() => onEdit(product.id)}>
-                            <Pencil className="mr-2 h-4 w-4" />
-                            Chỉnh sửa
-                        </DropdownMenuItem>
-
-                        <DropdownMenuItem
-                            className="text-red-600 focus:text-red-600"
-                            onClick={() => onDelete(product.id)}
-                        >
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Xóa
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
+                                <DropdownMenuItem
+                                    className="text-red-600 focus:text-red-600"
+                                    onClick={() => onDelete(product.id)}
+                                >
+                                    <Trash2 className="mr-2 h-4 w-4" />
+                                    {t("delete")}
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        );
+                    })()}
                 </DropdownMenu>
             </TableCell>
         </TableRow>
@@ -210,6 +218,7 @@ const PaginationControls = memo(function PaginationControls({
     onPreviousPage,
     onNextPage,
 }: PaginationControlsProps) {
+    const t = useTranslations("products.pagination");
     return (
         <div className="flex items-center justify-end space-x-2 py-4">
             <Button
@@ -217,14 +226,17 @@ const PaginationControls = memo(function PaginationControls({
                 size="sm"
                 disabled={currentPage === 0 || isLoading}
                 onClick={onPreviousPage}
-                aria-label="Trang trước"
+                aria-label={t("previous")}
             >
                 <ChevronLeft className="h-4 w-4" />
-                Trang trước
+                {t("previous")}
             </Button>
 
             <div className="text-sm font-medium">
-                Trang {currentPage + 1} / {totalPages}
+                {useTranslations("products")("pagination.pageInfo", {
+                    current: currentPage + 1,
+                    total: totalPages,
+                })}
             </div>
 
             <Button
@@ -232,9 +244,9 @@ const PaginationControls = memo(function PaginationControls({
                 size="sm"
                 disabled={isLoading || currentPage >= totalPages - 1}
                 onClick={onNextPage}
-                aria-label="Trang sau"
+                aria-label={t("next")}
             >
-                Trang sau
+                {t("next")}
                 <ChevronRight className="h-4 w-4" />
             </Button>
         </div>
@@ -247,6 +259,8 @@ const PaginationControls = memo(function PaginationControls({
  */
 export default function ProductsPage(): JSX.Element {
     const router = useRouter();
+    const t = useTranslations("products");
+    const deleteT = useTranslations("products.deleteConfirm");
 
     // State management
     const [pageIndex, setPageIndex] = useState<number>(0);
@@ -323,10 +337,10 @@ export default function ProductsPage(): JSX.Element {
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">
-                        Sản phẩm
+                        {t("title")}
                     </h1>
                     <p className="text-muted-foreground">
-                        Quản lý danh sách sản phẩm, giá và tồn kho.
+                        {t("subtitle")}
                     </p>
                 </div>
 
@@ -340,9 +354,9 @@ export default function ProductsPage(): JSX.Element {
                     <Input
                         value={keyword}
                         onChange={handleSearch}
-                        placeholder="Tìm kiếm theo tên sản phẩm..."
+                        placeholder={t("list.searchPlaceholder")}
                         className="border-none shadow-none focus-visible:ring-0"
-                        aria-label="Tìm kiếm sản phẩm"
+                        aria-label={t("list.searchPlaceholder")}
                     />
                 </div>
 
@@ -351,7 +365,7 @@ export default function ProductsPage(): JSX.Element {
                     onClick={handleAddProduct}
                 >
                     <Plus className="mr-2 h-4 w-4" />
-                    Thêm sản phẩm
+                    {t("list.addProduct")}
                 </Button>
             </div>
             {/* Products Table */}
@@ -398,17 +412,16 @@ export default function ProductsPage(): JSX.Element {
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle>
-                            Xác nhận xóa sản phẩm?
+                            {deleteT("title")}
                         </AlertDialogTitle>
                         <AlertDialogDescription>
-                            Hành động này sẽ xóa sản phẩm vĩnh viễn, bao gồm
-                            toàn bộ SKU và dữ liệu liên quan.
+                            {deleteT("description")}
                         </AlertDialogDescription>
                     </AlertDialogHeader>
 
                     <AlertDialogFooter>
                         <AlertDialogCancel disabled={deleteMutation.isPending}>
-                            Hủy
+                            {deleteT("cancel")}
                         </AlertDialogCancel>
 
                         <AlertDialogAction
@@ -417,8 +430,8 @@ export default function ProductsPage(): JSX.Element {
                             className="bg-red-600 hover:bg-red-700"
                         >
                             {deleteMutation.isPending
-                                ? "Đang xóa..."
-                                : "Xóa vĩnh viễn"}
+                                ? deleteT("deleting")
+                                : deleteT("confirm")}
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>

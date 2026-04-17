@@ -2,10 +2,858 @@
     "common": {
         "save": "Save",
         "cancel": "Cancel",
-        "search": "Search"
+        "search": "Search",
+        "themes": {
+            "light": "Light",
+            "dark": "Dark",
+            "system": "System"
+        },
+        "auth": {
+            "login": "Login"
+        },
+        "roles": {
+            "admin": "Admin",
+            "shipper": "Shipper",
+            "user": "User"
+        },
+        "reset": "Reset",
+        "confirmAction": {
+            "confirm": "Confirm",
+            "enter": "Type",
+            "toConfirm": "to confirm",
+            "cancel": "Cancel",
+            "processing": "Processing..."
+        },
+        "user": {
+            "logout": "Log out",
+            "address": {
+                "default": "Default Address",
+                "edit": "Edit",
+                "editTitle": "Edit Address",
+                "deleteTitle": "Delete Address?",
+                "deleteDesc": "This action cannot be undone. Are you sure you want to delete?",
+                "deleteBtn": "Delete",
+                "deleteSuccess": "Address deleted successfully!",
+                "deleteError": "Delete failed, please try again",
+                "deleting": "Deleting...",
+                "deleteNow": "Delete now",
+                "label": "Address:",
+                "phoneLabel": "Phone:",
+                "nameLabel": "Full Name",
+                "namePlaceholder": "Enter full name",
+                "phonePlaceholder": "Enter phone number",
+                "detailLabel": "Detailed Address (House number, street name, ...)",
+                "selected": "Selected",
+                "setDefault": "Set as default address",
+                "save": "Save Address",
+                "addSuccess": "Address added successfully!",
+                "addError": "Failed to add address",
+                "editSuccess": "Address updated successfully!"
+            },
+            "order": {
+                "paymentLabel": "Payment:",
+                "viewDetails": "Details",
+                "cancelBtn": "Cancel Order",
+                "cancelTitle": "Confirm cancel order?",
+                "cancelDesc": "This action cannot be undone. The amount (if paid) will be processed according to the refund policy.",
+                "ignore": "Ignore",
+                "confirmCancel": "Confirm Cancel"
+            }
+        }
+    },
+    "admin": {
+        "welcome": "Welcome back, Admin",
+        "overview": "System overview for your today.",
+        "quickAccess": "Quick access",
+        "stats": {
+            "users": "Users",
+            "usersDescription": "+12 this week",
+            "orders": "Orders",
+            "ordersDescription": "+5 today",
+            "products": "Products",
+            "productsDescription": "Active",
+            "security": "Security",
+            "securityValue": "Safe",
+            "securityDescription": "No warnings"
+        },
+        "actions": {
+            "manageUsers": "User Management",
+            "manageOrders": "Order Management",
+            "manageProducts": "Product Management",
+            "systemSettings": "System Settings"
+        }
+    },
+    "footer": {
+        "description": "Providing the highest quality technology products and accessories. We are committed to bringing a great shopping experience to our customers",
+        "explore": {
+            "title": "Explore",
+            "home": "Home",
+            "allProducts": "All Products",
+            "categories": "Categories",
+            "news": "Tech News"
+        },
+        "support": {
+            "title": "Support",
+            "faq": "FAQ",
+            "shipping": "Shipping Policy",
+            "privacy": "Privacy Policy",
+            "terms": "Terms of Service"
+        },
+        "contact": {
+            "title": "Contact",
+            "address": "District 7, Ho Chi Minh City"
+        },
+        "copyright": "© 2026 T7M Online. Built for TRAN DO KHANH MINH project"
+    },
+    "sidebar": {
+        "admin": "Admin Dashboard",
+        "user": "User profile",
+        "dashboard": "Dashboard",
+        "reports": "Reports & Analytics",
+        "users": "Users",
+        "orders": "Orders",
+        "products": "Products",
+        "categories": "Categories",
+        "brands": "Brands",
+        "attributes": "Attributes",
+        "vouchers": "Vouchers",
+        "shipping": "Shipping",
+        "transactions": "Transactions",
+        "chat": "Chat Support",
+        "reviews": "Comments & Reviews",
+        "roles": "Roles & Permissions",
+        "logs": "System Logs",
+        "settings": "Settings",
+        "profile": "Profile",
+        "memberships": "Memberships",
+        "addresses": "Delivery Addresses",
+        "payments": "Payment Methods",
+        "support": "Help & Support",
+        "changePassword": "Change Password",
+        "terms": "Terms & Conditions",
+        "privacy": "Privacy Policy"
+    },
+    "reports": {
+        "title": "Reports & Analytics",
+        "description": "Real-time business performance.",
+        "loading": "Aggregating data...",
+        "error": "Could not load report data. Please check your server connection.",
+        "totalRevenue": "Total Revenue",
+        "successfulOrders": "Successful Orders",
+        "conversionRate": "Conversion Rate",
+        "averageOrderValue": "Avg Order Value",
+        "revenueChart": {
+            "titlePrefix": "Revenue over time from",
+            "titleMiddle": "to",
+            "noData": "No data available to display chart."
+        },
+        "topProducts": {
+            "title": "Top Selling Products",
+            "salesCount": "sales",
+            "noData": "No top selling products data available."
+        }
     },
     "users": {
         "title": "User Management",
-        "add": "Add user"
+        "subtitle": "View, search, and manage all system accounts.",
+        "actions": {
+            "addUser": "Add New User",
+            "menuTitle": "Actions",
+            "viewDetails": "View Details",
+            "permissions": "Permissions",
+            "deleteAccount": "Delete Account",
+            "delete": "Delete",
+            "deleteConfirm": "Are you sure you want to delete this account?"
+        },
+        "list": {
+            "title": "Account List",
+            "showingCount": "Showing {count} of {total} results.",
+            "searchPlaceholder": "Search by name, email...",
+            "rowsPerPage": "Show:",
+            "rows": "rows",
+            "noData": "No matching data found"
+        },
+        "table": {
+            "userInfo": "User Information",
+            "role": "Role",
+            "email": "Email",
+            "actions": "Actions"
+        },
+        "pagination": {
+            "showing": "Showing",
+            "to": "to"
+        },
+        "errors": {
+            "loadData": "Data Loading Error",
+            "tryAgain": "Please try again later."
+        },
+        "messages": {
+            "deleteSuccess": "User deleted successfully",
+            "deleteError": "Delete failed, please try again"
+        }
+    },
+    "orders": {
+        "title": "Order Management",
+        "subtitle": "Track and process orders from the system.",
+        "list": {
+            "searchPlaceholder": "Search order ID, customer...",
+            "filter": "Filter",
+            "loading": "Loading order data...",
+            "error": "An error occurred while loading the order list.",
+            "noData": "No orders found.",
+            "anonymous": "Anonymous customer"
+        },
+        "filter": {
+            "title": "Order Filter",
+            "statusLabel": "Order Status",
+            "orderDateRange": "Order Date Range",
+            "deliveryDateRange": "Delivery Date Range",
+            "fromDate": "From date",
+            "toDate": "To date",
+            "apply": "Apply filters"
+        },
+        "status": {
+            "all": "All",
+            "pending": "Pending",
+            "confirmed": "Confirmed",
+            "paid": "Paid",
+            "unpaid": "Unpaid",
+            "shipping": "Shipping",
+            "delivered": "Delivered",
+            "cancelled": "Cancelled",
+            "failed": "Failed",
+            "notDelivered": "Not delivered"
+        },
+        "table": {
+            "orderId": "Order ID",
+            "customer": "Customer",
+            "orderDate": "Order Date",
+            "deliveryDate": "Delivery Date",
+            "totalAmount": "Total Amount",
+            "status": "Status",
+            "actions": "Actions"
+        },
+        "actions": {
+            "title": "Actions",
+            "viewDetails": "View Details",
+            "updateStatus": "Update Status",
+            "deleteOrder": "Delete Order",
+            "openMenu": "Open menu"
+        },
+        "pagination": {
+            "info": "Page {page} / {total} (Total {count} orders)",
+            "previous": "Previous",
+            "next": "Next"
+        }
+    },
+    "products": {
+        "title": "Products",
+        "subtitle": "Manage product list, pricing and inventory.",
+        "list": {
+            "searchPlaceholder": "Search by product name...",
+            "addProduct": "Add Product",
+            "loading": "Loading data...",
+            "empty": "No products found."
+        },
+        "table": {
+            "image": "Image",
+            "name": "Product Name",
+            "category": "Category",
+            "brand": "Brand",
+            "minPrice": "Min Price",
+            "maxPrice": "Max Price",
+            "actions": "Actions"
+        },
+        "actions": {
+            "edit": "Edit",
+            "delete": "Delete",
+            "title": "Actions"
+        },
+        "deleteConfirm": {
+            "title": "Confirm product deletion?",
+            "description": "This action will permanently delete the product, including all SKUs and related data.",
+            "cancel": "Cancel",
+            "confirm": "Permanently delete",
+            "deleting": "Deleting..."
+        },
+        "form": {
+            "newTitle": "Create New Product",
+            "editTitle": "Edit Product: {name}",
+            "tabs": {
+                "general": "General Info",
+                "skus": "Variants (SKU)"
+            },
+            "general": {
+                "name": "Product Name",
+                "category": "Category",
+                "categoryPlaceholder": "Select category",
+                "brand": "Brand",
+                "brandPlaceholder": "Select brand",
+                "description": "Description"
+            },
+            "specs": {
+                "title": "Technical Specifications",
+                "count": "({count} specifications)",
+                "add": "Add Specification",
+                "attribute": "Attribute",
+                "value": "Value",
+                "placeholder": "Spec Name",
+                "empty": "No technical specifications yet.",
+                "emptySubtitle": "Click \"Add Specification\" to start.",
+                "available": "Available",
+                "pagination": {
+                    "first": "First",
+                    "previous": "Prev",
+                    "next": "Next",
+                    "last": "Last"
+                }
+            },
+            "save": "Save Product"
+        },
+        "sku": {
+            "title": "Variant List (SKUs)",
+            "autoGenerate": "Auto Generate SKU",
+            "table": {
+                "code": "SKU Code",
+                "image": "Image",
+                "attributes": "Attributes",
+                "originalPrice": "Original Price",
+                "discount": "Discount",
+                "salePrice": "Sale Price",
+                "stock": "Stock",
+                "empty": "No SKUs available"
+            },
+            "dialogs": {
+                "edit": {
+                    "title": "Edit SKU",
+                    "skuCode": "SKU Code",
+                    "attributes": "Attributes",
+                    "price": "Price",
+                    "pricePlaceholder": "Enter price",
+                    "stock": "Stock",
+                    "stockPlaceholder": "Enter quantity",
+                    "discount": "Discount Percent (%)",
+                    "discountPlaceholder": "0-100",
+                    "discountHint": "Enter value from 0 to 100",
+                    "updating": "Updating...",
+                    "saveChanges": "Save Changes",
+                    "errors": {
+                        "emptyPriceStock": "Price and stock cannot be empty",
+                        "invalidDiscount": "Discount percent must be between 0 and 100"
+                    },
+                    "success": "SKU updated successfully",
+                    "error": "Failed to update SKU"
+                },
+                "auto": {
+                    "title": "Auto-generate SKU by combination",
+                    "defaultPrice": "Default Price",
+                    "defaultPricePlaceholder": "e.g., 200000",
+                    "defaultStock": "Default Stock",
+                    "defaultStockPlaceholder": "e.g., 100",
+                    "combinationAttributes": "Attributes used for combination",
+                    "addAttribute": "Add Attribute",
+                    "selectAttribute": "Select Attribute",
+                    "valuesPlaceholder": "e.g., Red, Blue, White",
+                    "note": "Each attribute can only be selected once. Enter multiple values (separated by commas) for the system to generate corresponding SKU combinations.",
+                    "generating": "Generating SKU...",
+                    "generate": "Generate SKU Auto",
+                    "errors": {
+                        "required": "Price and stock are required",
+                        "selectAttr": "Please select attribute and enter values"
+                    }
+                },
+                "manual": {
+                    "trigger": "Add SKU Manually",
+                    "title": "Create New Variant",
+                    "imageLink": "Image Link",
+                    "variantAttributes": "Variant Attributes (Color, Size...)",
+                    "valuePlaceholder": "Value (e.g., Red, XL)",
+                    "save": "Save SKU"
+                }
+            }
+        }
+    },
+    "categories": {
+        "title": "Product Categories",
+        "description": "Manage category structure and hierarchy",
+        "searchPlaceholder": "Search by category name...",
+        "addCategory": "Add Category",
+        "table": {
+            "name": "Category Name",
+            "slug": "Slug",
+            "level": "Level",
+            "actions": "Actions",
+            "empty": "No categories available",
+            "root": "Root",
+            "levelText": "Level {level}",
+            "operations": "Operations",
+            "edit": "Edit",
+            "delete": {
+                "confirmTitle": "Delete Category",
+                "btnText": "Delete",
+                "description": "This action cannot be undone",
+                "actionText": "Permanently Delete"
+            }
+        },
+        "dialog": {
+            "editTitle": "Update Category",
+            "addTitle": "Add New Category",
+            "editDescription": "Edit category information",
+            "addDescription": "Create a new category in the system",
+            "nameLabel": "Category Name",
+            "namePlaceholder": "Example: Laptop",
+            "parentLabel": "Parent Category",
+            "parentPlaceholder": "Select parent category",
+            "rootOption": "Root Category",
+            "saveChanges": "Save Changes",
+            "create": "Create New"
+        }
+    },
+    "brands": {
+        "title": "Brands",
+        "description": "Manage the list of manufacturers.",
+        "searchPlaceholder": "Search...",
+        "addBrand": "Add Brand",
+        "table": {
+            "logo": "Logo",
+            "name": "Brand Name",
+            "slug": "Slug",
+            "description": "Description",
+            "actions": "Actions",
+            "loading": "Loading...",
+            "empty": "No data found."
+        },
+        "actions": {
+            "menuTitle": "Actions",
+            "edit": "Edit",
+            "delete": {
+                "confirmTitle": "Delete Brand",
+                "btnText": "Delete",
+                "description": "Are you sure you want to delete this brand?",
+                "actionText": "Delete"
+            }
+        },
+        "dialog": {
+            "editTitle": "Update Brand",
+            "addTitle": "Add New Brand",
+            "description": "Manage partner and supplier information.",
+            "nameLabel": "Brand Name",
+            "namePlaceholder": "Apple, Samsung...",
+            "logoLabel": "Logo (URL)",
+            "logoPlaceholder": "https://example.com/logo.png",
+            "descLabel": "Description",
+            "descPlaceholder": "Additional info...",
+            "validation": {
+                "nameRequired": "Brand name cannot be empty"
+            },
+            "saveChanges": "Save Changes",
+            "create": "Create New"
+        }
+    },
+    "attributes": {
+        "title": "Product Attributes",
+        "description": "Define parameters such as Color, Size, RAM...",
+        "searchPlaceholder": "Search by name or code...",
+        "addAttribute": "Add Attribute",
+        "table": {
+            "name": "Display Name",
+            "code": "Code",
+            "type": "Data Type",
+            "actions": "Actions",
+            "loading": "Loading...",
+            "empty": "No data found.",
+            "types": {
+                "text": "Text",
+                "select": "Select",
+                "number": "Number"
+            }
+        },
+        "actions": {
+            "menuTitle": "Actions",
+            "edit": "Edit",
+            "delete": "Delete"
+        },
+        "deleteDialog": {
+            "title": "Delete Attribute?",
+            "description": "If the attribute is being used by products, deleting it may cause display errors or data loss.",
+            "deleting": "Deleting...",
+            "confirm": "Delete Permanently"
+        },
+        "dialog": {
+            "editTitle": "Update Attribute",
+            "addTitle": "Add New Attribute",
+            "description": "Define product parameters (Color, Size, RAM...).",
+            "nameLabel": "Display Name",
+            "namePlaceholder": "Example: Color",
+            "codeLabel": "Code (Used in system)",
+            "codePlaceholder": "Example: color, ram_size",
+            "typeLabel": "Data Type",
+            "typePlaceholder": "Select type",
+            "types": {
+                "text": "Text (Manual entry)",
+                "select": "Select (Pick from list)",
+                "number": "Number (Numeric)"
+            },
+            "validation": {
+                "nameRequired": "Attribute name cannot be empty",
+                "codeRequired": "Code cannot be empty",
+                "codePattern": "Code can only contain letters, numbers, and underscores",
+                "typeRequired": "Please select an attribute type"
+            },
+            "saveChanges": "Save Changes",
+            "create": "Create New"
+        }
+    },
+    "vouchers": {
+        "title": "Voucher Management",
+        "description": "Create and manage system promotion programs.",
+        "searchPlaceholder": "Search by name or code...",
+        "addVoucher": "Add New Voucher",
+        "loading": "Loading data...",
+        "empty": "No vouchers have been created yet.",
+        "table": {
+            "codeDesc": "Code / Description",
+            "discountType": "Discount Type",
+            "value": "Value",
+            "minOrder": "Min Order",
+            "validity": "Validity",
+            "status": "Status",
+            "actions": "Actions",
+            "types": {
+                "percentage": "Percentage (%)",
+                "fixed": "Fixed Amount (đ)"
+            },
+            "dateUntil": "to",
+            "statusActive": "Active",
+            "statusDisabled": "Disabled"
+        },
+        "messages": {
+            "reactivateSuccess": "Voucher reactivated",
+            "disableSuccess": "Voucher disabled",
+            "error": "An error occurred",
+            "updateSuccess": "Voucher updated successfully!",
+            "updateError": "An error occurred while updating voucher",
+            "createSuccess": "Voucher created successfully!",
+            "createError": "An error occurred while creating voucher"
+        },
+        "confirm": {
+            "disableTitle": "Disable voucher?",
+            "enableTitle": "Reactivate voucher?",
+            "disableDesc": "Are you sure you want to disable voucher \"{code}\"? Users will no longer be able to use this voucher for new orders.",
+            "enableDesc": "Are you sure you want to reactivate voucher \"{code}\"? Users will be able to save and use this voucher for orders.",
+            "disableBtn": "Disable",
+            "enableBtn": "Activate"
+        },
+        "dialog": {
+            "addTitle": "Create New Voucher",
+            "editTitle": "Update Voucher",
+            "labels": {
+                "code": "Voucher Code *",
+                "type": "Discount Type *",
+                "description": "Display Description *",
+                "value": "Discount Value *",
+                "minOrder": "Min Order *",
+                "maxDiscount": "Max Discount (Optional)",
+                "usageLimit": "Usage Limit (Optional)",
+                "startDate": "Start Date *",
+                "endDate": "End Date *"
+            },
+            "placeholders": {
+                "code": "e.g., FREESHIP2024",
+                "description": "e.g., 20k off for orders from 100k",
+                "usageLimit": "Leave empty for no limit"
+            },
+            "types": {
+                "fixed": "Fixed Amount (VNĐ)",
+                "percentage": "Percentage (%)"
+            },
+            "validation": {
+                "codeRequired": "Please enter voucher code",
+                "descRequired": "Please enter description",
+                "startRequired": "Select start date",
+                "endRequired": "Select end date"
+            },
+            "saveChanges": "Save Changes",
+            "confirmCreate": "Confirm Create"
+        }
+    },
+    "shipping": {
+        "title": "Delivery Management",
+        "description": "Track and manage shipments across the system.",
+        "searchPlaceholder": "Search by ID, customer, address...",
+        "activeFilters": "Advanced Filters",
+        "loading": "Loading delivery data...",
+        "error": "Server connection error",
+        "errorSub": "Could not load delivery list. Please try again later.",
+        "filter": {
+            "title": "Delivery Filter",
+            "statusLabel": "Shipping Status",
+            "startDate": "Start Date",
+            "endDate": "End Date",
+            "reset": "Reset",
+            "apply": "Apply",
+            "statuses": {
+                "all": "All Statuses",
+                "pending": "Pending",
+                "pickedUp": "Picked Up",
+                "delivering": "Delivering",
+                "success": "Success",
+                "cancelled": "Cancelled"
+            }
+        },
+        "table": {
+            "deliveryId": "Del ID",
+            "orderId": "Ord ID",
+            "customer": "Customer",
+            "address": "Address",
+            "shipper": "Shipper",
+            "codAmount": "COD Amount",
+            "payment": "Payment",
+            "status": "Status",
+            "createdAt": "Created At",
+            "noShipper": "Not Assigned",
+            "empty": "No delivery data found."
+        },
+        "status": {
+            "pending": "Pending",
+            "pickedUp": "Picked Up",
+            "delivering": "Delivering",
+            "success": "Success",
+            "failed": "Failed"
+        },
+        "payment": {
+            "paid": "Paid",
+            "cod": "Cash (COD)"
+        },
+        "pagination": {
+            "page": "Page {page} / {total}",
+            "total": "({total} orders)",
+            "prev": "Prev",
+            "next": "Next"
+        }
+    },
+    "transactions": {
+        "title": "Transaction Management",
+        "loading": "Loading transaction data...",
+        "error": "An error occurred while loading transaction data.",
+        "empty": "No transactions found.",
+        "filters": {
+            "button": "Filter",
+            "title": "Transaction Filter",
+            "status": "Transaction Status",
+            "startDate": "Start Date",
+            "endDate": "End Date",
+            "reset": "Default",
+            "apply": "Apply"
+        },
+        "status": {
+            "all": "All",
+            "pending": "Pending",
+            "success": "Success",
+            "failed": "Failed",
+            "rejected": "Rejected"
+        },
+        "type": {
+            "credit": "Credit (+)",
+            "debit": "Debit (-)"
+        },
+        "action": {
+            "deliveryFee": "Delivery Fee",
+            "bonus": "Bonus",
+            "withdraw": "Bank Withdrawal",
+            "penalty": "Penalty",
+            "cod": "COD Payment"
+        },
+        "table": {
+            "id": "ID",
+            "time": "Time",
+            "type": "Type",
+            "amount": "Amount",
+            "status": "Status",
+            "description": "Description",
+            "actions": "Actions"
+        },
+        "pagination": {
+            "summary": "Page {page} / {total} (Total {records} records)"
+        },
+        "dropdown": {
+            "trigger": "Options",
+            "label": "Action",
+            "view": "View detail",
+            "update": "Update status",
+            "export": "Export PDF",
+            "delete": "Delete transaction"
+        },
+        "updateDialog": {
+            "title": "Update Status for Transaction #{id}",
+            "cancel": "Cancel",
+            "confirm": "Confirm update"
+        }
+    },
+    "reviews": {
+        "title": "Review Management",
+        "searchPlaceholder": "Search by product...",
+        "loading": "Loading...",
+        "error": "An error occurred.",
+        "verified": "✓ Verified Purchase",
+        "empty": "No review data found.",
+        "table": {
+            "customer": "Customer",
+            "product": "Product",
+            "rating": "Rating",
+            "content": "Content",
+            "date": "Created At",
+            "actions": "Actions"
+        },
+        "dialog": {
+            "deleteTitle": "Confirm Delete?",
+            "deleteDescription": "Are you sure you want to delete the review by <b>{reviewer}</b> for the product <b>{product}</b>?",
+            "cancel": "Cancel",
+            "confirm": "Confirm Delete",
+            "deleting": "Deleting..."
+        },
+        "pagination": {
+            "summary": "Showing {count} out of {total} reviews",
+            "prev": "Prev",
+            "page": "Page {page}",
+            "next": "Next"
+        }
+    },
+    "roles": {
+        "title": "Roles & Permissions",
+        "subtitle": "Set up intelligent and secure permission systems for your business.",
+        "createBtn": "Create New Role",
+        "stats": {
+            "totalRoles": "Total Roles",
+            "totalUsers": "Total Users",
+            "control": "Access Control",
+            "highAdmin": "High Admin",
+            "rolesDesc": "Main permission groups",
+            "usersDesc": "Assigned personnel",
+            "controlDesc": "System access tokens",
+            "highAdminDesc": "Superuser accounts"
+        },
+        "tabs": {
+            "roles": "Roles",
+            "matrix": "Permission Matrix",
+            "users": "Personnel"
+        },
+        "tabsContent": {
+            "roles": {
+                "createNew": "Create New Role",
+                "createNewDesc": "Start setting up new permissions"
+            },
+            "matrix": {
+                "title": "System Permission Matrix",
+                "subtitle": "Detailed configuration of resource access for each entity.",
+                "lockedAdmin": "ADMIN CONFIG LOCKED",
+                "moduleAction": "MODULE & ACTION"
+            },
+            "users": {
+                "title": "Personnel Allocation",
+                "subtitle": "List of admin members and assigned roles.",
+                "searchPlaceholder": "Search personnel...",
+                "filter": "Filter",
+                "table": {
+                    "employee": "EMPLOYEE",
+                    "contact": "CONTACT INFO",
+                    "role": "ROLE",
+                    "joinedDate": "JOIN DATE",
+                    "status": "STATUS",
+                    "actions": "ACTIONS",
+                    "changeRole": "Change Role"
+                },
+                "status": {
+                    "ready": "READY",
+                    "active": "ACTIVE"
+                },
+                "viewMore": "VIEW {count} MORE EMPLOYEES"
+            }
+        },
+        "roleCard": {
+            "actions": {
+                "title": "Role Administration",
+                "edit": "Edit",
+                "viewUsers": "View Users",
+                "delete": "Delete Role"
+            },
+            "allocation": "Allocation",
+            "userCount": "{count} members",
+            "totalControl": "TOTAL CONTROL"
+        },
+        "createDialog": {
+            "title": "Set Up Admin Role",
+            "subtitle": "Define identity and model permissions for new user groups in the ecosystem.",
+            "roleName": "Role Designation",
+            "roleDesc": "Functional Description",
+            "roleDescPlaceholder": "Core responsibilities of this role...",
+            "colorProfile": "DNA Color Profile",
+            "confirm": "Initialize Role",
+            "cancel": "Cancel"
+        },
+        "data": {
+            "admin": "Administrator",
+            "adminDesc": "Full access to system configurations and sensitive data.",
+            "shipperManager": "Shipper Manager",
+            "shipperManagerDesc": "Manage delivery partners and optimize shipping routes.",
+            "orderProcessor": "Order Processor",
+            "orderProcessorDesc": "Process orders, update payment status and customer info.",
+            "inventory": "Inventory Staff",
+            "inventoryDesc": "Manage warehouse, update stock levels and product info.",
+            "modules": {
+                "orders": "Order Management",
+                "products": "Product Management",
+                "users": "User Management",
+                "transactions": "Transactions & Wallet"
+            },
+            "permissions": {
+                "ordersRead": "Read Orders",
+                "ordersReadDesc": "Allows viewing order list and details.",
+                "ordersWrite": "Process Orders",
+                "ordersWriteDesc": "Allows confirming, packing and updating orders.",
+                "ordersDelete": "Cancel Orders",
+                "ordersDeleteDesc": "Allows canceling or deleting orders from the system.",
+                "productsRead": "Read Products",
+                "productsReadDesc": "Allows viewing categories and product details.",
+                "productsWrite": "Update Products",
+                "productsWriteDesc": "Allows adding new products and editing info.",
+                "productsDelete": "Delete Products",
+                "productsDeleteDesc": "Allows deleting products from the store.",
+                "usersRead": "Read Users",
+                "usersReadDesc": "Allows viewing user lists and profiles.",
+                "usersWrite": "Edit Users",
+                "usersWriteDesc": "Allows updating info and account status.",
+                "usersDelete": "Delete Users",
+                "usersDeleteDesc": "Allows deleting user accounts.",
+                "usersRoles": "Assign Roles",
+                "usersRolesDesc": "Allows changing user roles and permissions.",
+                "transactionsRead": "Read Wallet History",
+                "transactionsReadDesc": "Allows viewing deposit/withdrawal transactions.",
+                "transactionsVerify": "Verify Transactions",
+                "transactionsVerifyDesc": "Allows approving or rejecting withdrawal requests."
+            }
+        }
+    },
+    "chat": {
+        "title": "Online Support",
+        "chatRooms": "Support Messages",
+        "searchPlaceholder": "Search users...",
+        "empty": "Select a conversation to start",
+        "noFound": "No conversation found",
+        "loading": "Loading...",
+        "error": "Connection error",
+        "status": {
+            "online": "Online",
+            "offline": "Offline",
+            "connecting": "Connecting..."
+        },
+        "inputPlaceholder": "Type a message to {name}...",
+        "noMessages": "No messages yet",
+        "deleteChat": {
+            "title": "Delete conversation",
+            "description": "Are you sure you want to delete this conversation? This action cannot be undone.",
+            "confirm": "Delete",
+            "cancel": "Cancel"
+        }
     }
 }

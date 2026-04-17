@@ -1,6 +1,7 @@
 "use client";
 
 import React, { ReactNode, useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { useVoucher } from "@/hooks/use-voucher";
 import { VoucherRequest, VoucherResponse } from "@/type/voucher-type";
@@ -27,6 +28,8 @@ export function ActionVoucherDialog({
     trigger,
 }: ActionVoucherDialogProps) {
     const [open, setOpen] = useState(false);
+    const t = useTranslations("vouchers.dialog");
+    const tVoucher = useTranslations("vouchers");
     const { adminVoucherActions } = useVoucher();
 
     const isEdit = !!voucher; // Xác định đang ở chế độ nào
@@ -95,13 +98,13 @@ export function ActionVoucherDialog({
                 { id: voucher.id, data: payload },
                 {
                     onSuccess: () => {
-                        toast.success("Cập nhật mã giảm giá thành công!");
+                        toast.success(tVoucher("messages.updateSuccess"));
                         setOpen(false);
                     },
                     onError: (error: any) => {
                         const msg =
                             error?.response?.data?.message ||
-                            "Có lỗi xảy ra khi cập nhật voucher";
+                            tVoucher("messages.updateError");
                         toast.error(msg);
                     },
                 }
@@ -110,13 +113,13 @@ export function ActionVoucherDialog({
             // Logic Tạo mới
             adminVoucherActions.create.mutate(payload, {
                 onSuccess: () => {
-                    toast.success("Tạo mã giảm giá thành công!");
+                    toast.success(tVoucher("messages.createSuccess"));
                     setOpen(false);
                 },
                 onError: (error: any) => {
                     const msg =
                         error?.response?.data?.message ||
-                        "Có lỗi xảy ra khi tạo voucher";
+                        tVoucher("messages.createError");
                     toast.error(msg);
                 },
             });
@@ -130,7 +133,7 @@ export function ActionVoucherDialog({
                     trigger
                 ) : (
                     <Button className="gap-2">
-                        Thêm Voucher mới
+                        {tVoucher("addVoucher")}
                     </Button>
                 )}
             </DialogTrigger>
@@ -138,8 +141,8 @@ export function ActionVoucherDialog({
                 <DialogHeader>
                     <DialogTitle>
                         {isEdit
-                            ? "Cập nhật mã giảm giá"
-                            : "Tạo mã giảm giá mới"}
+                            ? t("editTitle")
+                            : t("addTitle")}
                     </DialogTitle>
                 </DialogHeader>
 
@@ -149,13 +152,13 @@ export function ActionVoucherDialog({
                 >
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label htmlFor="code">Mã Voucher (Code) *</Label>
+                            <Label htmlFor="code">{t("labels.code")}</Label>
                             <Input
                                 id="code"
-                                placeholder="VD: FREESHIP2024"
+                                placeholder={t("placeholders.code")}
                                 disabled={isEdit}
                                 {...register("code", {
-                                    required: "Vui lòng nhập mã code",
+                                    required: t("validation.codeRequired"),
                                 })}
                             />
                             {errors.code && (
@@ -166,7 +169,7 @@ export function ActionVoucherDialog({
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="discountType">
-                                Loại giảm giá *
+                                {t("labels.type")}
                             </Label>
                             <select
                                 id="discountType"
@@ -174,22 +177,22 @@ export function ActionVoucherDialog({
                                 {...register("discountType")}
                             >
                                 <option value="FIXED">
-                                    Giảm tiền mặt (VNĐ)
+                                    {t("types.fixed")}
                                 </option>
                                 <option value="PERCENTAGE">
-                                    Giảm phần trăm (%)
+                                    {t("types.percentage")}
                                 </option>
                             </select>
                         </div>
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="description">Mô tả hiển thị *</Label>
+                        <Label htmlFor="description">{t("labels.description")}</Label>
                         <Input
                             id="description"
-                            placeholder="VD: Giảm 20k cho đơn từ 100k"
+                            placeholder={t("placeholders.description")}
                             {...register("description", {
-                                required: "Vui lòng nhập mô tả",
+                                required: t("validation.descRequired"),
                             })}
                         />
                     </div>
@@ -197,7 +200,7 @@ export function ActionVoucherDialog({
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="discountValue">
-                                Giá trị giảm *
+                                {t("labels.value")}
                             </Label>
                             <Input
                                 id="discountValue"
@@ -210,7 +213,7 @@ export function ActionVoucherDialog({
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="minOrder">Đơn tối thiểu *</Label>
+                            <Label htmlFor="minOrder">{t("labels.minOrder")}</Label>
                             <Input
                                 id="minOrder"
                                 type="number"
@@ -226,7 +229,7 @@ export function ActionVoucherDialog({
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="maxDiscount">
-                                Giảm tối đa (Tùy chọn)
+                                {t("labels.maxDiscount")}
                             </Label>
                             <Input
                                 id="maxDiscount"
@@ -238,13 +241,13 @@ export function ActionVoucherDialog({
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="usageLimit">
-                                Giới hạn số lượng (Tùy chọn)
+                                {t("labels.usageLimit")}
                             </Label>
                             <Input
                                 id="usageLimit"
                                 type="number"
                                 min="1"
-                                placeholder="Để trống nếu không giới hạn"
+                                placeholder={t("placeholders.usageLimit")}
                                 {...register("usageLimit")}
                             />
                         </div>
@@ -252,22 +255,22 @@ export function ActionVoucherDialog({
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label htmlFor="startDate">Ngày bắt đầu *</Label>
+                            <Label htmlFor="startDate">{t("labels.startDate")}</Label>
                             <Input
                                 id="startDate"
                                 type="datetime-local"
                                 {...register("startDate", {
-                                    required: "Chọn ngày bắt đầu",
+                                    required: t("validation.startRequired"),
                                 })}
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="endDate">Ngày kết thúc *</Label>
+                            <Label htmlFor="endDate">{t("labels.endDate")}</Label>
                             <Input
                                 id="endDate"
                                 type="datetime-local"
                                 {...register("endDate", {
-                                    required: "Chọn ngày kết thúc",
+                                    required: t("validation.endRequired"),
                                 })}
                             />
                         </div>
@@ -278,7 +281,7 @@ export function ActionVoucherDialog({
                             {isPending && (
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                             )}
-                            {isEdit ? "Lưu thay đổi" : "Xác nhận tạo"}
+                            {isEdit ? t("saveChanges") : t("confirmCreate")}
                         </Button>
                     </div>
                 </form>

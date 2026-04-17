@@ -9,8 +9,10 @@ import { endOfMonth, format, startOfMonth } from "date-fns";
 import { useReportsAndAnalytics } from "@/hooks/use-reports";
 import { formatCurrency } from "@/lib/format-price";
 import { RevenueAreaChart } from "@/components/common/ui/report-chart";
+import { useTranslations } from "next-intl";
 
 export default function ReportsAnalyticsPage() {
+    const t = useTranslations("reports");
     const [dateRange, setDateRange] = useState<DateRange | undefined>({
         from: startOfMonth(new Date()),
         to: endOfMonth(new Date()),
@@ -28,7 +30,6 @@ export default function ReportsAnalyticsPage() {
         isError,
     } = useReportsAndAnalytics(reportParams);
 
-    console.log("Report Data:", reportData);
     const kpiStats = useMemo(() => {
         //@ts-ignore
         if (!reportData?.kpis) return [];
@@ -36,27 +37,27 @@ export default function ReportsAnalyticsPage() {
         const { kpis } = reportData;
         return [
             {
-                title: "Tổng doanh thu",
+                title: t("totalRevenue"),
                 value: formatCurrency(kpis.totalRevenue),
                 isPositive: true,
             },
             {
-                title: "Đơn hàng thành công",
+                title: t("successfulOrders"),
                 value: kpis.successfulOrders.toLocaleString(),
                 isPositive: true,
             },
             {
-                title: "Tỷ lệ chốt đơn",
+                title: t("conversionRate"),
                 value: `${Math.round(kpis.conversionRate)}%`,
                 isPositive: false,
             },
             {
-                title: "Giá trị đơn TB",
+                title: t("averageOrderValue"),
                 value: formatCurrency(kpis.averageOrderValue),
                 isPositive: true,
             },
         ];
-    }, [reportData]);
+    }, [reportData, t]);
 
     return (
         <div className="mx-auto w-full space-y-12 p-6 md:p-10">
@@ -64,10 +65,10 @@ export default function ReportsAnalyticsPage() {
             <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
                 <div className="flex flex-col gap-2">
                     <h1 className="text-foreground text-3xl font-semibold tracking-tight">
-                        Báo cáo & Phân tích
+                        {t("title")}
                     </h1>
                     <p className="text-muted-foreground text-sm font-medium">
-                        Hiệu suất kinh doanh thực tế.
+                        {t("description")}
                     </p>
                 </div>
 
@@ -84,13 +85,12 @@ export default function ReportsAnalyticsPage() {
                 <div className="flex h-64 w-full flex-col items-center justify-center gap-4">
                     <Loader2 className="text-muted-foreground h-8 w-8 animate-spin" />
                     <p className="text-muted-foreground animate-pulse text-sm">
-                        Đang tổng hợp dữ liệu...
+                        {t("loading")}
                     </p>
                 </div>
             ) : isError ? (
                 <div className="rounded-lg border border-rose-200 bg-rose-50 p-6 text-center text-rose-600 dark:border-rose-900/50 dark:bg-rose-950/20 dark:text-rose-400">
-                    Không thể tải dữ liệu báo cáo. Vui lòng kiểm tra lại kết nối
-                    server.
+                    {t("error")}
                 </div>
             ) : (
                 <>
@@ -121,7 +121,7 @@ export default function ReportsAnalyticsPage() {
                             <CardHeader className="flex flex-row items-center justify-between">
                                 <div>
                                     <CardTitle className="text-base font-light">
-                                        Doanh thu theo thời gian từ{" "}
+                                        {t("revenueChart.titlePrefix")}{" "}
                                         <span
                                             className={
                                                 "text-base font-semibold"
@@ -129,7 +129,7 @@ export default function ReportsAnalyticsPage() {
                                         >
                                             {reportParams.startDate}
                                         </span>{" "}
-                                        đến{" "}
+                                        {t("revenueChart.titleMiddle")}{" "}
                                         <span
                                             className={
                                                 "text-base font-semibold"
@@ -151,8 +151,7 @@ export default function ReportsAnalyticsPage() {
                                         />
                                     ) : (
                                         <div className="text-muted-foreground flex h-64 w-full items-center justify-center">
-                                            Không có dữ liệu để hiển thị biểu
-                                            đồ.
+                                            {t("revenueChart.noData")}
                                         </div>
                                     )
                                 }
@@ -163,7 +162,7 @@ export default function ReportsAnalyticsPage() {
                         <Card className="border-border/50 bg-card/50 col-span-1 shadow-sm">
                             <CardHeader>
                                 <CardTitle className="text-base font-semibold">
-                                    Sản phẩm bán chạy
+                                    {t("topProducts.title")}
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-6">
@@ -199,14 +198,14 @@ export default function ReportsAnalyticsPage() {
                                                     </div>
                                                     <div className="text-muted-foreground text-[10px] tracking-wider uppercase">
                                                         {product.totalSales}{" "}
-                                                        lượt bán
+                                                        {t("topProducts.salesCount")}
                                                     </div>
                                                 </div>
                                             )
                                         )
                                     ) : (
                                         <div className="text-muted-foreground flex h-64 w-full items-center justify-center">
-                                            Không có dữ liệu sản phẩm bán chạy.
+                                            {t("topProducts.noData")}
                                         </div>
                                     )
                                 }

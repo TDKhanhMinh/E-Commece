@@ -26,6 +26,8 @@ import { FormHelperText } from "../ui/help-text";
 import MapAutoComplete from "../ui/map-auto-complete";
 import { AddDeliveryAddress } from "@/type/user-type";
 
+import { useTranslations } from "next-intl";
+
 type AddAddressFormData = z.infer<typeof addDeliveryAddressSchema>;
 interface AddressDialogProps {
     phoneNumber?: string;
@@ -50,6 +52,7 @@ export function AddressDialog({
     addressId,
 }: AddressDialogProps) {
     const [open, setOpen] = useState(false);
+    const t = useTranslations("common.user.address");
 
     const queryClient = useQueryClient();
 
@@ -87,13 +90,13 @@ export function AddressDialog({
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["addresses"] });
-            toast.success("Thêm địa chỉ thành công!");
+            toast.success(type === "add" ? t("addSuccess") : t("editSuccess"));
             setOpen(false);
             reset();
         },
         onError: (error) => {
             console.error("Error updating user:", error);
-            toast.error("Thêm địa chỉ thất bại");
+            toast.error(t("addError"));
         },
     });
     const mutationEdit = useMutation({
@@ -107,13 +110,13 @@ export function AddressDialog({
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["addresses"] });
-            toast.success("Chỉnh sửa địa chỉ thành công!");
+            toast.success(t("editSuccess"));
             setOpen(false);
             reset();
         },
         onError: (error) => {
             console.error("Error updating user:", error);
-            toast.error("Thêm địa chỉ thất bại");
+            toast.error(t("addError"));
         },
     });
 
@@ -154,11 +157,11 @@ export function AddressDialog({
                                 htmlFor="userName"
                                 className="font-medium text-gray-600 dark:text-slate-400"
                             >
-                                Họ & tên
+                                {t("nameLabel")}
                             </Label>
                             <Input
                                 id="userName"
-                                placeholder="Nhập họ và tên"
+                                placeholder={t("namePlaceholder")}
                                 className="h-11 border-gray-300 dark:border-slate-800 dark:bg-slate-900"
                                 {...register("userName")}
                                 disabled={
@@ -174,11 +177,11 @@ export function AddressDialog({
                                 htmlFor="phone"
                                 className="font-medium text-gray-600 dark:text-slate-400"
                             >
-                                Số điện thoại
+                                {t("phonePlaceholder")}
                             </Label>
                             <Input
                                 id="phone"
-                                placeholder="Nhập số điện thoại"
+                                placeholder={t("phonePlaceholder")}
                                 className="h-11 border-gray-300 dark:border-slate-800 dark:bg-slate-900"
                                 {...register("phoneNumber")}
                                 disabled={
@@ -195,7 +198,7 @@ export function AddressDialog({
                             htmlFor="address"
                             className="font-medium text-gray-600 dark:text-slate-400"
                         >
-                            Địa chỉ chi tiết (Số nhà, tên đường, ...)
+                            {t("detailLabel")}
                         </Label>
                         <MapAutoComplete
                             onSelect={(address) => {
@@ -223,7 +226,7 @@ export function AddressDialog({
                         <input type="hidden" {...register("longitude")} />
                         {selectedLocation ? (
                             <p className="text-muted-foreground text-sm dark:text-slate-500">
-                                Đã chọn: {selectedLocation}
+                                {t("selected")}: {selectedLocation}
                             </p>
                         ) : null}
                         <FormHelperText error={errors.location} />
@@ -241,7 +244,7 @@ export function AddressDialog({
                             htmlFor="isDefault"
                             className="mx-2 font-medium text-gray-600 dark:text-slate-400"
                         >
-                            Đặt làm địa chỉ mặc định
+                            {t("setDefault")}
                         </Label>
                     </div>
                     <div className="flex justify-end space-x-2 pt-2">
@@ -251,7 +254,7 @@ export function AddressDialog({
                             className="text-md h-auto cursor-pointer rounded-md px-12 font-semibold shadow-lg"
                             onClick={() => setOpen(false)}
                         >
-                            Hủy
+                            {t("cancel")}
                         </Button>
 
                         <Button
@@ -261,10 +264,9 @@ export function AddressDialog({
                             }
                             className="text-md h-auto cursor-pointer rounded-md bg-blue-600 px-12 font-semibold text-white shadow-lg hover:bg-blue-800"
                         >
-                            {mutationAdd.isPending
-                                ? "Đang lưu..."
-                                : "Lưu địa chỉ"}
-                            {mutationEdit.isPending ? "Đang lưu..." : ""}
+                            {mutationAdd.isPending || mutationEdit.isPending
+                                ? t("saving")
+                                : t("save")}
                         </Button>
                     </div>
                 </form>

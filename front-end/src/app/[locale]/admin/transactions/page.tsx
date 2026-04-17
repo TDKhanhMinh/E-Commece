@@ -1,7 +1,8 @@
 // app/transactions/page.tsx
 "use client";
 
-import { useState } from "react";
+import React, { useState, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import {
     Table,
     TableBody,
@@ -29,7 +30,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Download, Eye, Filter, MoreHorizontal, Pencil, RefreshCcw, Trash2, X } from "lucide-react";
+import { Download, Eye, Filter, Loader2, MoreHorizontal, Pencil, RefreshCcw, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 import {
@@ -46,7 +47,6 @@ import {
     DialogFooter,
 } from "@/components/ui/dialog";
 
-// Nhúng hook Admin vào trang
 import { useTransactionsAdmin, useUpdateTransactionStatus } from "@/hooks/use-transaction";
 import { TransactionResponse } from "@/type/transaction-type";
 import { fDateTime } from "@/lib/format-date-time";
@@ -67,84 +67,45 @@ const getStatusColor = (status: TransactionResponse["transactionStatus"]) => {
     }
 };
 
-const getActionLabel = (action: TransactionResponse["transactionAction"]) => {
-    switch (action) {
-        case "DELIVERY_FEE":
-            return "Cước giao hàng";
-        case "BONUS":
-            return "Tiền thưởng";
-        case "WITHDRAW_TO_BANK":
-            return "Rút tiền về ngân hàng";
-        case "PENALTY":
-            return "Phạt vi phạm";
-        case "COD_PAYMENT":
-            return "Thu hộ (COD)";
-        default:
-            return action;
-    }
-};
-
-// Component cho Transaction Actions Dropdown
 const TransactionActions = ({
     transaction,
 }: {
     transaction: TransactionResponse;
 }) => {
+    const t = useTranslations("transactions");
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
-
-    const handleViewDetails = () => {
-        console.log("View details for transaction:", transaction.transactionId);
-    };
-
-    const handleCopyId = () => {
-        navigator.clipboard.writeText(transaction.transactionId.toString());
-    };
-
-    const handleExport = () => {
-        console.log("Export transaction:", transaction.transactionId);
-    };
-
-    const handleDelete = () => {
-        if (
-            confirm(
-                `Bạn chắc chắn muốn xóa giao dịch #${transaction.transactionId}?`
-            )
-        ) {
-            console.log("Delete transaction:", transaction.transactionId);
-        }
-    };
 
     return (
         <>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="h-8 w-8 p-0">
-                        <span className="sr-only">Mở menu</span>
+                        <span className="sr-only">{t("dropdown.trigger")}</span>
                         <MoreHorizontal className="h-4 w-4" />
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Tính năng</DropdownMenuLabel>
+                    <DropdownMenuLabel>{t("dropdown.label")}</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleViewDetails}>
+                    <DropdownMenuItem onClick={() => {}}>
                         <Eye className="mr-2 h-4 w-4 text-blue-500" />
-                        <span>Xem chi tiết</span>
+                        <span>{t("dropdown.view")}</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => setIsUpdateOpen(true)}>
                         <Pencil className="mr-2 h-4 w-4 text-yellow-500" />
-                        <span>Cập nhật trạng thái</span>
+                        <span>{t("dropdown.update")}</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={handleExport}>
+                    <DropdownMenuItem onClick={() => {}}>
                         <Download className="mr-2 h-4 w-4 text-green-500" />
-                        <span>Xuất file</span>
+                        <span>{t("dropdown.export")}</span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
-                        onClick={handleDelete}
+                        onClick={() => {}}
                         className="text-red-600 focus:text-red-600 cursor-pointer"
                     >
                         <Trash2 className="mr-2 h-4 w-4" />
-                        <span>Xóa giao dịch</span>
+                        <span>{t("dropdown.delete")}</span>
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
@@ -158,7 +119,6 @@ const TransactionActions = ({
     );
 };
 
-// Component cập nhật trạng thái giao dịch
 const UpdateTransactionStatusDialog = ({
     transaction,
     open,
@@ -168,17 +128,14 @@ const UpdateTransactionStatusDialog = ({
     open: boolean;
     onOpenChange: (open: boolean) => void;
 }) => {
+    const t = useTranslations("transactions");
     const [selectedStatus, setSelectedStatus] = useState<string>(transaction.transactionStatus);
     const { mutate: updateStatus, isPending } = useUpdateTransactionStatus();
 
     const handleUpdate = () => {
         updateStatus(
             { transactionId: transaction.transactionId, status: selectedStatus },
-            {
-                onSuccess: () => {
-                    onOpenChange(false);
-                },
-            }
+            { onSuccess: () => onOpenChange(false) }
         );
     };
 
@@ -186,36 +143,28 @@ const UpdateTransactionStatusDialog = ({
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Cập nhật trạng thái giao dịch #{transaction.transactionId}</DialogTitle>
+                    <DialogTitle>{t("updateDialog.title", { id: transaction.transactionId })}</DialogTitle>
                 </DialogHeader>
                 <div className="py-4 space-y-4">
-                    <RadioGroup
-                        value={selectedStatus}
-                        onValueChange={setSelectedStatus}
-                        className="grid grid-cols-2 gap-2"
-                    >
+                    <RadioGroup value={selectedStatus} onValueChange={setSelectedStatus} className="grid grid-cols-2 gap-2">
                         {[
-                            { label: "Đang chờ", value: "PENDING" },
-                            { label: "Thành công", value: "SUCCESS" },
-                            { label: "Thất bại", value: "FAILED" },
-                            { label: "Bị từ chối", value: "REJECTED" },
+                            { label: t("status.pending"), value: "PENDING" },
+                            { label: t("status.success"), value: "SUCCESS" },
+                            { label: t("status.failed"), value: "FAILED" },
+                            { label: t("status.rejected"), value: "REJECTED" },
                         ].map((item) => (
                             <div key={item.value} className="flex items-center space-x-2 rounded-md border p-3 hover:bg-slate-50 transition-colors cursor-pointer">
                                 <RadioGroupItem value={item.value} id={`update-status-${item.value}`} />
-                                <Label htmlFor={`update-status-${item.value}`} className="flex-1 cursor-pointer font-medium">
-                                    {item.label}
-                                </Label>
+                                <Label htmlFor={`update-status-${item.value}`} className="flex-1 cursor-pointer font-medium">{item.label}</Label>
                             </div>
                         ))}
                     </RadioGroup>
                 </div>
                 <DialogFooter>
-                    <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isPending}>
-                        Hủy
-                    </Button>
+                    <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isPending}>{t("updateDialog.cancel")}</Button>
                     <Button onClick={handleUpdate} disabled={isPending || selectedStatus === transaction.transactionStatus}>
                         {isPending ? <RefreshCcw className="mr-2 h-4 w-4 animate-spin" /> : null}
-                        Xác nhận cập nhật
+                        {t("updateDialog.confirm")}
                     </Button>
                 </DialogFooter>
             </DialogContent>
@@ -224,6 +173,7 @@ const UpdateTransactionStatusDialog = ({
 };
 
 export default function TransactionManagement() {
+    const t = useTranslations("transactions");
     const [page, setPage] = useState(0);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [filters, setFilters] = useState({
@@ -235,13 +185,6 @@ export default function TransactionManagement() {
     });
     const [tempFilters, setTempFilters] = useState(filters);
     const size = 20;
-
-    const activeFilterCount = Object.entries(filters).reduce((acc, [key, value]) => {
-        if (key === "status" || key === "type" || key === "action") {
-            return value !== "ALL" ? acc + 1 : acc;
-        }
-        return value ? acc + 1 : acc;
-    }, 0);
 
     const {
         data: pageData,
@@ -256,6 +199,17 @@ export default function TransactionManagement() {
         startDate: filters.startDate || null,
         endDate: filters.endDate || null,
     });
+
+    const getActionLabel = (action: string) => {
+        const labels: Record<string, string> = {
+            "DELIVERY_FEE": t("action.deliveryFee"),
+            "BONUS": t("action.bonus"),
+            "WITHDRAW_TO_BANK": t("action.withdraw"),
+            "PENALTY": t("action.penalty"),
+            "COD_PAYMENT": t("action.cod"),
+        };
+        return labels[action] || action;
+    };
 
     const handleApplyFilters = () => {
         setFilters(tempFilters);
@@ -276,29 +230,26 @@ export default function TransactionManagement() {
         setPage(0);
         setIsFilterOpen(false);
     };
-    //@ts-ignore
-    // console.log("API Response in Component 1:", pageData.content);
 
-    // 4. Xử lý chuyển trang
-    const handlePageChange = (newPage: number) => {
-        if (!pageData) return;
-        //@ts-ignore
-        if (newPage < 0 || newPage >= pageData.totalPages) return;
-        setPage(newPage);
-    };
+    const activeFilterCount = Object.entries(filters).reduce((acc, [key, value]) => {
+        if (key === "status" || key === "type" || key === "action") {
+            return value !== "ALL" ? acc + 1 : acc;
+        }
+        return value ? acc + 1 : acc;
+    }, 0);
 
     return (
         <div className="space-y-6 p-6">
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                     <CardTitle className="text-2xl font-bold">
-                        Quản Lý Giao Dịch (Admin)
+                        {t("title")}
                     </CardTitle>
                     <Dialog open={isFilterOpen} onOpenChange={setIsFilterOpen}>
                         <DialogTrigger asChild>
                             <Button variant="outline" className="relative">
                                 <Filter className="mr-2 h-4 w-4" />
-                                Bộ lọc
+                                {t("filters.button")}
                                 {activeFilterCount > 0 && (
                                     <Badge 
                                         variant="destructive" 
@@ -311,22 +262,22 @@ export default function TransactionManagement() {
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[425px]">
                             <DialogHeader>
-                                <DialogTitle>Bộ lọc giao dịch</DialogTitle>
+                                <DialogTitle>{t("filters.title")}</DialogTitle>
                             </DialogHeader>
                             <div className="space-y-6 py-4">
                                 <div className="space-y-3">
-                                    <Label className="text-base font-semibold">Trạng thái</Label>
+                                    <Label className="text-base font-semibold">{t("filters.status")}</Label>
                                     <RadioGroup
                                         value={tempFilters.status}
                                         onValueChange={(value) => setTempFilters(prev => ({ ...prev, status: value }))}
                                         className="grid grid-cols-2 gap-2 sm:grid-cols-3"
                                     >
                                         {[
-                                            { label: "Tất cả", value: "ALL" },
-                                            { label: "Đang chờ", value: "PENDING" },
-                                            { label: "Thành công", value: "SUCCESS" },
-                                            { label: "Thất bại", value: "FAILED" },
-                                            { label: "Bị từ chối", value: "REJECTED" },
+                                            { label: t("status.all"), value: "ALL" },
+                                            { label: t("status.pending"), value: "PENDING" },
+                                            { label: t("status.success"), value: "SUCCESS" },
+                                            { label: t("status.failed"), value: "FAILED" },
+                                            { label: t("status.rejected"), value: "REJECTED" },
                                         ].map((item) => (
                                             <div key={item.value} className="flex items-center space-x-2 rounded-md border p-2 transition-colors hover:bg-slate-50">
                                                 <RadioGroupItem value={item.value} id={`status-${item.value}`} />
@@ -338,56 +289,9 @@ export default function TransactionManagement() {
                                     </RadioGroup>
                                 </div>
 
-                                <div className="space-y-3">
-                                    <Label className="text-base font-semibold">Loại giao dịch</Label>
-                                    <RadioGroup
-                                        value={tempFilters.type}
-                                        onValueChange={(value) => setTempFilters(prev => ({ ...prev, type: value }))}
-                                        className="grid grid-cols-2 gap-2 sm:grid-cols-3"
-                                    >
-                                        {[
-                                            { label: "Tất cả", value: "ALL" },
-                                            { label: "Cộng tiền", value: "CREDIT" },
-                                            { label: "Trừ tiền", value: "DEBIT" },
-                                        ].map((item) => (
-                                            <div key={item.value} className="flex items-center space-x-2 rounded-md border p-2 transition-colors hover:bg-slate-50">
-                                                <RadioGroupItem value={item.value} id={`type-${item.value}`} />
-                                                <Label htmlFor={`type-${item.value}`} className="flex-1 cursor-pointer text-sm">
-                                                    {item.label}
-                                                </Label>
-                                            </div>
-                                        ))}
-                                    </RadioGroup>
-                                </div>
-
-                                <div className="space-y-3">
-                                    <Label className="text-base font-semibold">Hành động</Label>
-                                    <RadioGroup
-                                        value={tempFilters.action}
-                                        onValueChange={(value) => setTempFilters(prev => ({ ...prev, action: value }))}
-                                        className="grid grid-cols-1 gap-2 sm:grid-cols-2"
-                                    >
-                                        {[
-                                            { label: "Tất cả", value: "ALL" },
-                                            { label: "Cước giao hàng", value: "DELIVERY_FEE" },
-                                            { label: "Tiền thưởng", value: "BONUS" },
-                                            { label: "Rút về ngân hàng", value: "WITHDRAW_TO_BANK" },
-                                            { label: "Phạt vi phạm", value: "PENALTY" },
-                                            { label: "Thanh toán thu hộ", value: "COD_PAYMENT" },
-                                        ].map((item) => (
-                                            <div key={item.value} className="flex items-center space-x-2 rounded-md border p-2 transition-colors hover:bg-slate-50">
-                                                <RadioGroupItem value={item.value} id={`action-${item.value}`} />
-                                                <Label htmlFor={`action-${item.value}`} className="flex-1 cursor-pointer text-sm">
-                                                    {item.label}
-                                                </Label>
-                                            </div>
-                                        ))}
-                                    </RadioGroup>
-                                </div>
-
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium">Từ ngày</label>
+                                        <Label className="text-sm font-medium">{t("filters.startDate")}</Label>
                                         <Input 
                                             type="date" 
                                             value={tempFilters.startDate}
@@ -395,7 +299,7 @@ export default function TransactionManagement() {
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium">Đến ngày</label>
+                                        <Label className="text-sm font-medium">{t("filters.endDate")}</Label>
                                         <Input 
                                             type="date" 
                                             value={tempFilters.endDate}
@@ -411,10 +315,10 @@ export default function TransactionManagement() {
                                     className="text-red-500 hover:text-red-600 hover:bg-red-50"
                                 >
                                     <RefreshCcw className="mr-2 h-4 w-4" />
-                                    Đặt lại
+                                    {t("filters.reset")}
                                 </Button>
                                 <Button onClick={handleApplyFilters}>
-                                    Áp dụng bộ lọc
+                                    {t("filters.apply")}
                                 </Button>
                             </DialogFooter>
                         </DialogContent>
@@ -426,40 +330,40 @@ export default function TransactionManagement() {
                             <TableHeader>
                                 <TableRow className="bg-muted/50">
                                     <TableHead className="w-[100px]">
-                                        Mã GD
+                                        {t("table.id")}
                                     </TableHead>
-                                    <TableHead>Thời Gian</TableHead>
-                                    <TableHead>Loại Giao Dịch</TableHead>
-                                    <TableHead>Số Tiền</TableHead>
-                                    <TableHead>Trạng Thái</TableHead>
+                                    <TableHead>{t("table.time")}</TableHead>
+                                    <TableHead>{t("table.type")}</TableHead>
+                                    <TableHead>{t("table.amount")}</TableHead>
+                                    <TableHead>{t("table.status")}</TableHead>
                                     <TableHead className="hidden md:table-cell">
-                                        Mô Tả
+                                        {t("table.description")}
                                     </TableHead>
                                     <TableHead className="w-[50px] text-right">
-                                        Hành Động
+                                        {t("table.actions")}
                                     </TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {isLoading ? (
-                                    // Hiển thị trạng thái đang tải
                                     <TableRow>
                                         <TableCell
-                                            colSpan={6}
+                                            colSpan={7}
                                             className="text-muted-foreground h-24 text-center"
                                         >
-                                            Đang tải dữ liệu...
+                                            <div className="flex items-center justify-center">
+                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                {t("loading")}
+                                            </div>
                                         </TableCell>
                                     </TableRow>
                                 ) : isError ? (
-                                    // Hiển thị trạng thái lỗi
                                     <TableRow>
                                         <TableCell
-                                            colSpan={6}
+                                            colSpan={7}
                                             className="h-24 text-center font-medium text-red-500"
                                         >
-                                            Đã có lỗi xảy ra khi tải dữ liệu
-                                            giao dịch.
+                                            {t("error")}
                                         </TableCell>
                                     </TableRow>
                                 ) : //@ts-ignore
@@ -489,8 +393,8 @@ export default function TransactionManagement() {
                                                         >
                                                             {txn.type ===
                                                             "CREDIT"
-                                                                ? "+ Cộng tiền"
-                                                                : "- Trừ tiền"}
+                                                                ? t("type.credit")
+                                                                : t("type.debit")}
                                                         </span>
                                                         <span className="text-muted-foreground text-xs">
                                                             {getActionLabel(
@@ -524,97 +428,89 @@ export default function TransactionManagement() {
                                         )
                                     )
                                 ) : (
-                                    // Hiển thị khi không có dữ liệu
                                     <TableRow>
                                         <TableCell
-                                            colSpan={6}
+                                            colSpan={7}
                                             className="text-muted-foreground h-24 text-center"
                                         >
-                                            Không có giao dịch nào.
+                                            {t("empty")}
                                         </TableCell>
                                     </TableRow>
                                 )}
                             </TableBody>
                         </Table>
                     </div>
-                    {/* Pagination Controls */}
-                    {pageData &&
-                        //@ts-ignore
-                        pageData.totalPages > 1 && (
-                            <div className="mt-4 flex items-center justify-between">
-                                <div className="text-muted-foreground text-sm">
-                                    Hiển thị trang{" "}
-                                    {
+
+                    <div className="mt-4 flex items-center justify-between">
+                        <div className="text-muted-foreground text-sm">
+                            {//@ts-ignore
+                            pageData && t("pagination.summary", { 
+                                //@ts-ignore
+                                page: pageData.number + 1, 
+                                //@ts-ignore
+                                total: pageData.totalPages, 
+                                //@ts-ignore
+                                records: pageData.totalElements 
+                            })}
+                        </div>
+                        {//@ts-ignore
+                        pageData && pageData.totalPages > 1 && (
+                            <Pagination>
+                                <PaginationContent>
+                                    <PaginationItem>
+                                        <PaginationPrevious
+                                            href="#"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                if (page > 0) setPage(page - 1);
+                                            }}
+                                            className={
+                                                //@ts-ignore
+                                                pageData.first
+                                                    ? "pointer-events-none opacity-50"
+                                                    : "cursor-pointer"
+                                            }
+                                        />
+                                    </PaginationItem>
+
+                                    {Array.from({
                                         //@ts-ignore
-                                        pageData.number + 1
-                                    }{" "}
-                                    /{" "}
-                                    {
-                                        //@ts-ignore
-                                        pageData.totalPages
-                                    }{" "}
-                                    (Tổng{" "}
-                                    {
-                                        //@ts-ignore
-                                        pageData.totalElements
-                                    }{" "}
-                                    bản ghi)
-                                </div>
-                                <Pagination>
-                                    <PaginationContent>
-                                        <PaginationItem>
-                                            <PaginationPrevious
+                                        length: pageData.totalPages,
+                                    }).map((_, index) => (
+                                        <PaginationItem key={index}>
+                                            <PaginationLink
                                                 href="#"
+                                                isActive={page === index}
                                                 onClick={(e) => {
                                                     e.preventDefault();
-                                                    handlePageChange(page - 1);
+                                                    setPage(index);
                                                 }}
-                                                className={
-                                                    //@ts-ignore
-                                                    pageData.first
-                                                        ? "pointer-events-none opacity-50"
-                                                        : "cursor-pointer"
-                                                }
-                                            />
+                                            >
+                                                {index + 1}
+                                            </PaginationLink>
                                         </PaginationItem>
+                                    ))}
 
-                                        {Array.from({
-                                            //@ts-ignore
-                                            length: pageData.totalPages,
-                                        }).map((_, index) => (
-                                            <PaginationItem key={index}>
-                                                <PaginationLink
-                                                    href="#"
-                                                    isActive={page === index}
-                                                    onClick={(e) => {
-                                                        e.preventDefault();
-                                                        handlePageChange(index);
-                                                    }}
-                                                >
-                                                    {index + 1}
-                                                </PaginationLink>
-                                            </PaginationItem>
-                                        ))}
-
-                                        <PaginationItem>
-                                            <PaginationNext
-                                                href="#"
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                    handlePageChange(page + 1);
-                                                }}
-                                                className={
-                                                    //@ts-ignore
-                                                    pageData.last
-                                                        ? "pointer-events-none opacity-50"
-                                                        : "cursor-pointer"
-                                                }
-                                            />
-                                        </PaginationItem>
-                                    </PaginationContent>
-                                </Pagination>
-                            </div>
+                                    <PaginationItem>
+                                        <PaginationNext
+                                            href="#"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                //@ts-ignore
+                                                if (page < pageData.totalPages - 1) setPage(page + 1);
+                                            }}
+                                            className={
+                                                //@ts-ignore
+                                                pageData.last
+                                                    ? "pointer-events-none opacity-50"
+                                                    : "cursor-pointer"
+                                            }
+                                        />
+                                    </PaginationItem>
+                                </PaginationContent>
+                            </Pagination>
                         )}
+                    </div>
                 </CardContent>
             </Card>
         </div>

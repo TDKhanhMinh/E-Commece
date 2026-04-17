@@ -11,6 +11,7 @@ import {
 import { Menu, Moon, ShoppingCart, Sun, User } from "lucide-react";
 import { SheetTrigger } from "../ui/sheet";
 import { UserAvatar } from "@/components/common";
+import { useTranslations } from "next-intl";
 
 interface HeaderActionsProps {
     locale: string;
@@ -31,6 +32,7 @@ export function HeaderActions({
     showCart = true,
     showMobileMenu = true,
 }: HeaderActionsProps) {
+    const t = useTranslations("common");
     return (
         <div className="flex items-center gap-2 md:gap-4">
             <DropdownMenu>
@@ -71,17 +73,17 @@ export function HeaderActions({
                     <DropdownMenuItem
                         onClick={() => setTheme("light")}
                     >
-                        Sáng
+                        {t("themes.light")}
                     </DropdownMenuItem>
                     <DropdownMenuItem
                         onClick={() => setTheme("dark")}
                     >
-                        Tối
+                        {t("themes.dark")}
                     </DropdownMenuItem>
                     <DropdownMenuItem
                         onClick={() => setTheme("system")}
                     >
-                        Hệ thống
+                        {t("themes.system")}
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
@@ -113,7 +115,7 @@ export function HeaderActions({
                         className="gap-2"
                     >
                         <User className="h-4 w-4" />
-                        Đăng nhập
+                        {t("auth.login")}
                     </Button>
                 </Link>
             )}

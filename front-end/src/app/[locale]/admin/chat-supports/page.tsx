@@ -9,7 +9,10 @@ import { ChatHeader } from "@/components/admin/chat-header";
 import { ChatMessages } from "@/components/admin/chat-messages";
 import { ChatInput } from "@/components/admin/chat-input";
 
+import { useTranslations } from "next-intl";
+
 const AdminChat = () => {
+    const t = useTranslations("chat");
     const adminUser = useAuthStore((state) => state.user);
     const ADMIN_ID = String(adminUser?.id ?? "2");
 
@@ -63,7 +66,7 @@ const AdminChat = () => {
                             className="mb-4 text-gray-200 dark:text-slate-800"
                         />
                         <p className="text-lg font-medium text-gray-500 dark:text-slate-400">
-                            Chọn một cuộc trò chuyện để bắt đầu
+                            {t("empty")}
                         </p>
                     </div>
                 )}

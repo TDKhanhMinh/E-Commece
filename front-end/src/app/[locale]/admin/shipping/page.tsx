@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useTranslations } from "next-intl";
 import {
     Table,
     TableBody,
@@ -40,52 +41,60 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
-const getDeliveryStatusBadge = (
-    status: AdminDeliveryResponseDTO["deliveryStatus"]
-) => {
+const DeliveryStatusBadge = ({
+    status,
+    t,
+}: {
+    status: AdminDeliveryResponseDTO["deliveryStatus"];
+    t: any;
+}) => {
     switch (status) {
         case "PENDING":
             return (
                 <Badge className="bg-yellow-500 hover:bg-yellow-600">
-                    Chờ Tài Xế
+                    {t("status.pending")}
                 </Badge>
             );
         case "PICKED_UP":
             return (
                 <Badge className="bg-blue-400 hover:bg-blue-500">
-                    Đã Lấy Hàng
+                    {t("status.pickedUp")}
                 </Badge>
             );
         case "DELIVERING":
             return (
                 <Badge className="bg-blue-600 hover:bg-blue-700">
-                    Đang Giao
+                    {t("status.delivering")}
                 </Badge>
             );
         case "SUCCESS":
             return (
                 <Badge className="bg-green-600 hover:bg-green-700">
-                    Thành Công
+                    {t("status.success")}
                 </Badge>
             );
         case "FAILED":
         case "CANCELLED":
-            return <Badge variant="destructive">Thất Bại/Hủy</Badge>;
+            return <Badge variant="destructive">{t("status.failed")}</Badge>;
         default:
             return <Badge variant="outline">{status}</Badge>;
     }
 };
 
-const getPaymentStatusBadge = (
-    status: AdminDeliveryResponseDTO["paymentStatus"]
-) => {
+const PaymentStatusBadge = ({
+    status,
+    t,
+}: {
+    status: AdminDeliveryResponseDTO["paymentStatus"];
+    t: any;
+}) => {
     if (status === "PAID") {
         return (
             <Badge
                 variant="outline"
                 className="border-green-600 dark:border-green-900/50 bg-green-50 dark:bg-green-950/30 text-green-600 dark:text-green-400"
             >
-                Đã Thanh Toán
+                {t("payment.paid")}
             </Badge>
         );
     }
@@ -94,7 +103,7 @@ const getPaymentStatusBadge = (
             variant="outline"
             className="border-red-600 dark:border-red-900/50 bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400"
         >
-            Thu COD
+            {t("payment.cod")}
         </Badge>
     );
 };
@@ -102,6 +111,7 @@ const getPaymentStatusBadge = (
 const ITEMS_PER_PAGE = 10;
 
 export default function DeliveryManagementPage() {
+    const t = useTranslations("shipping");
     const [currentPage, setCurrentPage] = useState(0);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [filters, setFilters] = useState({
@@ -180,11 +190,10 @@ export default function DeliveryManagementPage() {
                 <div className="flex min-h-100 items-center justify-center">
                     <div className="text-center">
                         <p className="text-red-600 dark:text-red-400">
-                            Không thể tải danh sách đơn vận. Xin lỗi vì sự bất
-                            tiện này.
+                            {t("error")}
                         </p>
                         <p className="mt-2 text-sm text-gray-500 dark:text-slate-500">
-                            Vui lòng thử lại sau
+                            {t("errorSub")}
                         </p>
                     </div>
                 </div>
@@ -196,17 +205,17 @@ export default function DeliveryManagementPage() {
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight">
-                        Quản lý Vận đơn
+                        {t("title")}
                     </h1>
                     <p className="text-muted-foreground">
-                        Theo dõi và điều phối các đơn hàng đang giao.
+                        {t("description")}
                     </p>
                 </div>
                 <div className="flex items-center gap-4">
                     <div className="relative w-72">
                         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-slate-500" />
                         <Input
-                            placeholder="Tìm kiếm mã VĐ, khách hàng..."
+                            placeholder={t("searchPlaceholder")}
                             className="bg-white dark:bg-slate-900 dark:border-slate-800 pl-10"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
@@ -226,7 +235,7 @@ export default function DeliveryManagementPage() {
                     <DialogTrigger asChild>
                         <Button variant="outline" className="relative">
                             <Filter className="mr-2 h-4 w-4" />
-                            Bộ lọc
+                            {t("activeFilters")}
                             {activeFilterCount > 0 && (
                                 <Badge 
                                     variant="destructive" 
@@ -239,23 +248,23 @@ export default function DeliveryManagementPage() {
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[425px]">
                         <DialogHeader>
-                            <DialogTitle>Bộ lọc vận đơn</DialogTitle>
+                            <DialogTitle>{t("filter.title")}</DialogTitle>
                         </DialogHeader>
                         <div className="space-y-6 py-4">
                             <div className="space-y-3">
-                                <Label className="text-base font-semibold">Trạng thái vận đơn</Label>
+                                <Label className="text-base font-semibold">{t("filter.statusLabel")}</Label>
                                 <RadioGroup
                                     value={tempFilters.status}
                                     onValueChange={(value) => setTempFilters(prev => ({ ...prev, status: value }))}
                                     className="grid grid-cols-2 gap-2"
                                 >
                                     {[
-                                        { label: "Tất cả", value: "ALL" },
-                                        { label: "Chờ lấy hàng", value: "PENDING" },
-                                        { label: "Đã lấy hàng", value: "PICKED_UP" },
-                                        { label: "Đang giao", value: "DELIVERING" },
-                                        { label: "Thành công", value: "SUCCESS" },
-                                        { label: "Đã hủy", value: "CANCELLED" },
+                                        { label: t("filter.statuses.all"), value: "ALL" },
+                                        { label: t("filter.statuses.pending"), value: "PENDING" },
+                                        { label: t("filter.statuses.pickedUp"), value: "PICKED_UP" },
+                                        { label: t("filter.statuses.delivering"), value: "DELIVERING" },
+                                        { label: t("filter.statuses.success"), value: "SUCCESS" },
+                                        { label: t("filter.statuses.cancelled"), value: "CANCELLED" },
                                     ].map((item) => (
                                         <div key={item.value} className="flex items-center space-x-2 rounded-md border dark:border-slate-800 p-2 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800">
                                             <RadioGroupItem value={item.value} id={`status-${item.value}`} />
@@ -269,7 +278,7 @@ export default function DeliveryManagementPage() {
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <Label htmlFor="startDate">Từ ngày</Label>
+                                    <Label htmlFor="startDate">{t("filter.startDate")}</Label>
                                     <Input 
                                         id="startDate"
                                         type="date" 
@@ -278,7 +287,7 @@ export default function DeliveryManagementPage() {
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="endDate">Đến ngày</Label>
+                                    <Label htmlFor="endDate">{t("filter.endDate")}</Label>
                                     <Input 
                                         id="endDate"
                                         type="date" 
@@ -295,10 +304,10 @@ export default function DeliveryManagementPage() {
                                 className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 border-red-200 dark:border-red-900/50"
                             >
                                 <RefreshCcw className="mr-2 h-4 w-4" />
-                                Đặt lại
+                                {t("filter.reset")}
                             </Button>
                             <Button onClick={handleApplyFilters}>
-                                Áp dụng bộ lọc
+                                {t("filter.apply")}
                             </Button>
                         </DialogFooter>
                     </DialogContent>
@@ -310,24 +319,24 @@ export default function DeliveryManagementPage() {
                 <Table>
                     <TableHeader className="bg-slate-50 dark:bg-slate-900">
                         <TableRow>
-                            <TableHead className="w-20">Mã VĐ</TableHead>
-                            <TableHead className="w-20">Mã ĐH</TableHead>
-                            <TableHead>Khách Hàng</TableHead>
+                            <TableHead className="w-20">{t("table.deliveryId")}</TableHead>
+                            <TableHead className="w-20">{t("table.orderId")}</TableHead>
+                            <TableHead>{t("table.customer")}</TableHead>
                             <TableHead className="min-w-50">
-                                Địa Chỉ Giao
+                                {t("table.address")}
                             </TableHead>
-                            <TableHead>Shipper</TableHead>
+                            <TableHead>{t("table.shipper")}</TableHead>
                             <TableHead className="text-right">
-                                Tiền Thu (COD)
+                                {t("table.codAmount")}
                             </TableHead>
                             <TableHead className="text-center">
-                                Thanh Toán
+                                {t("table.payment")}
                             </TableHead>
                             <TableHead className="text-center">
-                                Trạng Thái
+                                {t("table.status")}
                             </TableHead>
                             <TableHead className="text-right">
-                                Ngày Tạo
+                                {t("table.createdAt")}
                             </TableHead>
                             <TableHead className="text-right"></TableHead>
                         </TableRow>
@@ -367,7 +376,7 @@ export default function DeliveryManagementPage() {
                                         </span>
                                     ) : (
                                         <span className="text-muted-foreground text-sm italic">
-                                            Chưa có
+                                            {t("table.noShipper")}
                                         </span>
                                     )}
                                 </TableCell>
@@ -377,13 +386,11 @@ export default function DeliveryManagementPage() {
                                 </TableCell>
 
                                 <TableCell className="text-center">
-                                    {getPaymentStatusBadge(deli.paymentStatus)}
+                                    <PaymentStatusBadge status={deli.paymentStatus} t={t} />
                                 </TableCell>
 
                                 <TableCell className="text-center">
-                                    {getDeliveryStatusBadge(
-                                        deli.deliveryStatus
-                                    )}
+                                    <DeliveryStatusBadge status={deli.deliveryStatus} t={t} />
                                 </TableCell>
 
                                 <TableCell className="text-muted-foreground text-right text-sm">
@@ -409,7 +416,7 @@ export default function DeliveryManagementPage() {
                                         colSpan={9}
                                         className="text-muted-foreground h-24 text-center"
                                     >
-                                        Không có dữ liệu vận đơn nào.
+                                        {t("table.empty")}
                                     </TableCell>
                                 </TableRow>
                             )
@@ -423,10 +430,10 @@ export default function DeliveryManagementPage() {
                 <div className="flex items-center justify-between rounded-md border dark:border-slate-800 bg-white dark:bg-slate-950 p-4 shadow-sm">
                     <div className="flex items-center gap-2">
                         <span className="text-sm text-gray-600 dark:text-slate-400">
-                            Trang {currentPage + 1} / {totalPages}
+                            {t("pagination.page", { page: currentPage + 1, total: totalPages })}
                         </span>
                         <span className="text-sm text-gray-500 dark:text-slate-500">
-                            (Tổng cộng {totalElements} bản ghi)
+                            {t("pagination.total", { total: totalElements })}
                         </span>
                     </div>
                     <div className="flex items-center gap-2">
@@ -440,7 +447,7 @@ export default function DeliveryManagementPage() {
                             className="flex items-center gap-2"
                         >
                             <ChevronLeft className="h-4 w-4" />
-                            Trước
+                            {t("pagination.prev")}
                         </Button>
                         <div className="flex gap-1">
                             {Array.from(
@@ -473,7 +480,7 @@ export default function DeliveryManagementPage() {
                             disabled={currentPage === totalPages - 1}
                             className="flex items-center gap-2"
                         >
-                            Tiếp
+                            {t("pagination.next")}
                             <ChevronRight className="h-4 w-4" />
                         </Button>
                     </div>

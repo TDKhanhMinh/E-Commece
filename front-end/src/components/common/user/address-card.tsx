@@ -9,6 +9,8 @@ import { toast } from "sonner";
 import { AddressDialog } from "@/components/common";
 import { AddressCardProps } from "@/type/user-type";
 
+import { useTranslations } from "next-intl";
+
 export function AddressCard({
     id,
     name,
@@ -17,15 +19,16 @@ export function AddressCard({
     isDefault,
 }: AddressCardProps) {
     const queryClient = useQueryClient();
+    const t = useTranslations("common.user.address");
 
     const deleteMutation = useMutation({
         mutationFn: (addressId: number) => deleteDeliveryAddress(addressId),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["addresses"] });
-            toast.success("Đã xóa địa chỉ thành công");
+            toast.success(t("deleteSuccess"));
         },
         onError: () => {
-            toast.error("Xóa thất bại, vui lòng thử lại");
+            toast.error(t("deleteError"));
         },
     });
 
@@ -38,7 +41,7 @@ export function AddressCard({
             <div className="flex items-center justify-between">
                 {isDefault ? (
                     <Badge className="flex cursor-pointer gap-1 rounded-lg border-0 px-3 py-1 font-medium text-white hover:bg-blue-200">
-                        <MapPin className="size-3" /> Địa chỉ mặc định
+                        <MapPin className="size-3" /> {t("default")}
                     </Badge>
                 ) : (
                     <div className="h-7" />
@@ -46,8 +49,8 @@ export function AddressCard({
 
                 <div className="flex items-center gap-2 text-sm font-medium">
                     <AddressDialog
-                        btnText={"Chỉnh sửa"}
-                        title={"Chỉnh sửa địa chỉ"}
+                        btnText={t("edit")}
+                        title={t("editTitle")}
                         type={"edit"}
                         addressId={id}
                         phoneNumber={phone}
@@ -56,14 +59,14 @@ export function AddressCard({
                     />
 
                     <ConfirmAction
-                        title="Xóa địa chỉ?"
-                        description="Hành động này không thể hoàn tác. Bạn có chắc chắn muốn xóa không?"
-                        btnText="Xóa"
+                        title={t("deleteConfirm")}
+                        description={t("deleteConfirmDesc")}
+                        btnText={t("deleteBtn")}
                         requiredText="Delete"
                         actionText={
                             deleteMutation.isPending
-                                ? "Đang xóa..."
-                                : "Xóa ngay"
+                                ? t("deleting")
+                                : t("deleteNow")
                         }
                         onConfirm={handlerDeleteAddress}
                         isPending={deleteMutation.isPending}
@@ -77,11 +80,13 @@ export function AddressCard({
                 </h4>
                 <div className="text-secondary-dark space-y-1 text-sm">
                     <p>
-                        <span className="mr-2 font-semibold">Địa chỉ:</span>
+                        <span className="mr-2 font-semibold">{t("label")}</span>
                         {address}
                     </p>
                     <p>
-                        <span className="mr-2 font-semibold">Điện thoại:</span>
+                        <span className="mr-2 font-semibold">
+                            {t("phoneLabel")}
+                        </span>
                         {phone}
                     </p>
                 </div>

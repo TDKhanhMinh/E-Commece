@@ -18,6 +18,8 @@ interface ChatRoomListProps {
     onRefetch?: () => void;
 }
 
+import { useTranslations } from "next-intl";
+
 export const ChatRoomList: React.FC<ChatRoomListProps> = ({
     chatRooms,
     isLoading,
@@ -29,6 +31,7 @@ export const ChatRoomList: React.FC<ChatRoomListProps> = ({
     onSelectRoom,
     onDeleteRoom,
 }) => {
+    const t = useTranslations("chat");
     const filteredRooms = chatRooms.filter((room: ChatRoomResponse) => {
         const query = searchQuery.toLowerCase();
         const matchesChatId = room.chatId?.toLowerCase().includes(query);
@@ -45,7 +48,7 @@ export const ChatRoomList: React.FC<ChatRoomListProps> = ({
         <div className="flex w-87.5 flex-col border-r border-gray-200 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-950/50">
             <div className="border-b border-gray-200 dark:border-slate-800 p-4">
                 <h2 className="text-lg font-bold text-gray-800 dark:text-slate-100">
-                    Tin nhắn hỗ trợ
+                    {t("chatRooms")}
                 </h2>
                 <div className="relative mt-3">
                     <Search
@@ -54,7 +57,7 @@ export const ChatRoomList: React.FC<ChatRoomListProps> = ({
                     />
                     <input
                         type="text"
-                        placeholder="Tìm kiếm người dùng..."
+                        placeholder={t("searchPlaceholder")}
                         value={searchQuery}
                         onChange={(e) => onSearchChange(e.target.value)}
                         className="w-full rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-2.5 pr-4 pl-10 text-sm outline-none focus:border-blue-500 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500"
@@ -88,7 +91,7 @@ export const ChatRoomList: React.FC<ChatRoomListProps> = ({
                     })
                 ) : (
                     <div className="p-8 text-center text-sm text-gray-400 dark:text-slate-600">
-                        Không tìm thấy hội thoại
+                        {t("noFound")}
                     </div>
                 )}
             </div>

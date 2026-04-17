@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Plus, Trash2 } from "lucide-react";
 import { useAutoGenerateProductSku } from "@/hooks/use-products";
 import { useAttributes } from "@/hooks/use-attributes";
@@ -38,6 +39,7 @@ export function AutoGenerateSkuDialog({
     onOpenChange: (v: boolean) => void;
     productId: number;
 }) {
+    const t = useTranslations("products.sku.dialogs.auto");
     const { autoGenerateSku, isAutoGenerating } =
         useAutoGenerateProductSku(productId);
 
@@ -87,13 +89,13 @@ export function AutoGenerateSkuDialog({
 
     const handleSubmit = () => {
         if (!price || !stock) {
-            toast.error("Giá và tồn kho là bắt buộc");
+            toast.error(t("errors.required"));
             return;
         }
 
         for (const attr of attributeInputs) {
             if (!attr.attributeId || !attr.values.trim()) {
-                toast.error("Vui lòng chọn thuộc tính và nhập giá trị");
+                toast.error(t("errors.selectAttr"));
                 return;
             }
         }
@@ -124,26 +126,26 @@ export function AutoGenerateSkuDialog({
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="w-lg max-w-3xl">
                 <DialogHeader>
-                    <DialogTitle>Tự động tạo SKU theo tổ hợp</DialogTitle>
+                    <DialogTitle>{t("title")}</DialogTitle>
                 </DialogHeader>
 
                 <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                        <Label>Giá mặc định</Label>
+                        <Label>{t("defaultPrice")}</Label>
                         <Input
                             type="number"
                             value={price}
                             onChange={(e) => setPrice(e.target.value)}
-                            placeholder="VD: 200000"
+                            placeholder={t("defaultPricePlaceholder")}
                         />
                     </div>
                     <div className="space-y-2">
-                        <Label>Tồn kho mặc định</Label>
+                        <Label>{t("defaultStock")}</Label>
                         <Input
                             type="number"
                             value={stock}
                             onChange={(e) => setStock(e.target.value)}
-                            placeholder="VD: 100"
+                            placeholder={t("defaultStockPlaceholder")}
                         />
                     </div>
                 </div>
@@ -151,7 +153,7 @@ export function AutoGenerateSkuDialog({
                 <div className="mt-4 space-y-3 rounded-md border p-4">
                     <div className="flex items-center justify-between">
                         <Label className="font-medium">
-                            Thuộc tính dùng để tạo tổ hợp
+                            {t("combinationAttributes")}
                         </Label>
                         <Button
                             type="button"
@@ -160,7 +162,7 @@ export function AutoGenerateSkuDialog({
                             onClick={handleAddAttribute}
                         >
                             <Plus className="mr-1 h-4 w-4" />
-                            Thêm thuộc tính
+                            {t("addAttribute")}
                         </Button>
                     </div>
 
@@ -176,7 +178,7 @@ export function AutoGenerateSkuDialog({
                                 }
                             >
                                 <SelectTrigger className="col-span-4">
-                                    <SelectValue placeholder="Chọn thuộc tính" />
+                                    <SelectValue placeholder={t("selectAttribute")} />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {attributes?.map((a: Attribute) => (
@@ -195,7 +197,7 @@ export function AutoGenerateSkuDialog({
 
                             <Input
                                 className="col-span-7 mx-4"
-                                placeholder="VD: Đỏ, Xanh, Trắng"
+                                placeholder={t("valuesPlaceholder")}
                                 value={attr.values}
                                 onChange={(e) =>
                                     handleChange(
@@ -220,9 +222,7 @@ export function AutoGenerateSkuDialog({
                 </div>
 
                 <div className="rounded-md bg-blue-50 p-3 text-xs text-blue-700">
-                    Mỗi thuộc tính chỉ chọn một lần. Nhập nhiều giá trị (cách
-                    nhau bằng dấu phẩy) để hệ thống tạo các tổ hợp SKU tương
-                    ứng.
+                    {t("note")}
                 </div>
 
                 <Button
@@ -230,7 +230,7 @@ export function AutoGenerateSkuDialog({
                     onClick={handleSubmit}
                     disabled={isAutoGenerating}
                 >
-                    {isAutoGenerating ? "Đang tạo SKU..." : "Tạo SKU tự động"}
+                    {isAutoGenerating ? t("generating") : t("generate")}
                 </Button>
             </DialogContent>
         </Dialog>

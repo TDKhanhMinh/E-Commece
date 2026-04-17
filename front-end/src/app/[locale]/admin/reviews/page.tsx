@@ -23,7 +23,10 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
+import { useTranslations } from "next-intl";
+
 const AdminReviewPage = () => {
+    const t = useTranslations("reviews");
     const [searchTerm, setSearchTerm] = useState("");
     const [page, setPage] = useState(0);
     const pageSize = 10;
@@ -52,21 +55,23 @@ const AdminReviewPage = () => {
 
     if (isLoading)
         return (
-            <div className="p-10 text-center text-gray-500 dark:text-slate-400">Đang tải...</div>
+            <div className="p-10 text-center text-gray-500 dark:text-slate-400">
+                {t("loading")}
+            </div>
         );
     if (isError)
         return (
-            <div className="p-10 text-center text-red-500">Có lỗi xảy ra.</div>
+            <div className="p-10 text-center text-red-500">{t("error")}</div>
         );
 
     return (
         <div className="space-y-6 p-6">
             <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold">Quản lý Đánh giá</h1>
+                <h1 className="text-2xl font-bold">{t("title")}</h1>
                 <div className="relative w-64">
                     <Search className="absolute top-2.5 left-2 h-4 w-4 text-gray-400 dark:text-slate-500" />
                     <Input
-                        placeholder="Tìm theo sản phẩm..."
+                        placeholder={t("searchPlaceholder")}
                         className="pl-8"
                         value={searchTerm}
                         onChange={(e) => {
@@ -79,7 +84,28 @@ const AdminReviewPage = () => {
 
             <div className="rounded-md border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-950">
                 <Table>
-                    <TableHeader>{/* Table Header giữ nguyên */}</TableHeader>
+                    <TableHeader>
+                        <TableRow className="bg-gray-50 dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800">
+                            <TableCell className="font-bold py-4">
+                                {t("table.customer")}
+                            </TableCell>
+                            <TableCell className="font-bold">
+                                {t("table.product")}
+                            </TableCell>
+                            <TableCell className="font-bold">
+                                {t("table.rating")}
+                            </TableCell>
+                            <TableCell className="font-bold">
+                                {t("table.content")}
+                            </TableCell>
+                            <TableCell className="font-bold">
+                                {t("table.date")}
+                            </TableCell>
+                            <TableCell className="font-bold text-right">
+                                {t("table.actions")}
+                            </TableCell>
+                        </TableRow>
+                    </TableHeader>
                     <TableBody>
                         {reviews.length > 0 ? (
                             reviews.map((review: any) => (
@@ -87,7 +113,6 @@ const AdminReviewPage = () => {
                                     key={review.id}
                                     className="transition-colors hover:bg-gray-50 dark:hover:bg-slate-900 border-b border-gray-100 dark:border-slate-800/50"
                                 >
-                                    {/* Cột Khách hàng: Hiển thị Avatar và Tên */}
                                     <TableCell>
                                         <div className="flex items-center gap-3">
                                             <img
@@ -101,14 +126,13 @@ const AdminReviewPage = () => {
                                                 </span>
                                                 {review.isVerified && (
                                                     <span className="mt-1 text-[10px] font-medium text-green-600 dark:text-green-500">
-                                                        ✓ Đã mua hàng
+                                                        {t("verified")}
                                                     </span>
                                                 )}
                                             </div>
                                         </div>
                                     </TableCell>
 
-                                    {/* Cột Sản phẩm */}
                                     <TableCell>
                                         <div className="flex flex-col">
                                             <span className="text-sm font-medium">
@@ -120,7 +144,6 @@ const AdminReviewPage = () => {
                                         </div>
                                     </TableCell>
 
-                                    {/* Cột Đánh giá (Sao) */}
                                     <TableCell>
                                         <div className="flex items-center text-yellow-500">
                                             <span className="mr-1 font-bold">
@@ -130,7 +153,6 @@ const AdminReviewPage = () => {
                                         </div>
                                     </TableCell>
 
-                                    {/* Cột Nội dung: Tiêu đề và Bình luận */}
                                     <TableCell className="max-w-75">
                                         <div className="flex flex-col">
                                             <span className="truncate text-sm font-semibold">
@@ -142,11 +164,10 @@ const AdminReviewPage = () => {
                                         </div>
                                     </TableCell>
 
-                                    {/* Cột Ngày tạo */}
                                     <TableCell className="text-xs text-gray-500 dark:text-slate-400">
                                         {new Date(
                                             review.reviewDate
-                                        ).toLocaleString("vi-VN", {
+                                        ).toLocaleString(undefined, {
                                             day: "2-digit",
                                             month: "2-digit",
                                             year: "numeric",
@@ -155,7 +176,6 @@ const AdminReviewPage = () => {
                                         })}
                                     </TableCell>
 
-                                    {/* Cột Thao tác */}
                                     <TableCell className="text-right">
                                         <AlertDialog>
                                             <AlertDialogTrigger asChild>
@@ -170,26 +190,28 @@ const AdminReviewPage = () => {
                                             <AlertDialogContent>
                                                 <AlertDialogHeader>
                                                     <AlertDialogTitle>
-                                                        Xác nhận xóa?
+                                                        {t("dialog.deleteTitle")}
                                                     </AlertDialogTitle>
                                                     <AlertDialogDescription>
-                                                        Bạn có chắc chắn muốn
-                                                        xóa đánh giá của{" "}
-                                                        <b>
+                                                        {t.rich(
+                                                            "dialog.deleteDescription",
                                                             {
-                                                                review.reviewerName
+                                                                reviewer:
+                                                                    review.reviewerName,
+                                                                product:
+                                                                    review.productName,
+                                                                b: (chunks) => (
+                                                                    <b className="font-bold">
+                                                                        {chunks}
+                                                                    </b>
+                                                                ),
                                                             }
-                                                        </b>{" "}
-                                                        cho sản phẩm{" "}
-                                                        <b>
-                                                            {review.productName}
-                                                        </b>
-                                                        ?
+                                                        )}
                                                     </AlertDialogDescription>
                                                 </AlertDialogHeader>
                                                 <AlertDialogFooter>
                                                     <AlertDialogCancel>
-                                                        Hủy
+                                                        {t("dialog.cancel")}
                                                     </AlertDialogCancel>
                                                     <AlertDialogAction
                                                         onClick={() =>
@@ -203,8 +225,8 @@ const AdminReviewPage = () => {
                                                         }
                                                     >
                                                         {deleteMutation.isPending
-                                                            ? "Đang xóa..."
-                                                            : "Xác nhận xóa"}
+                                                            ? t("dialog.deleting")
+                                                            : t("dialog.confirm")}
                                                     </AlertDialogAction>
                                                 </AlertDialogFooter>
                                             </AlertDialogContent>
@@ -218,7 +240,7 @@ const AdminReviewPage = () => {
                                     colSpan={6}
                                     className="h-24 text-center text-gray-500 dark:text-slate-400"
                                 >
-                                    Không có dữ liệu đánh giá nào.
+                                    {t("empty")}
                                 </TableCell>
                             </TableRow>
                         )}
@@ -227,12 +249,12 @@ const AdminReviewPage = () => {
 
                 <div className="flex items-center justify-between border-t border-gray-200 dark:border-slate-800 px-4 py-4">
                     <div className="text-sm text-gray-500 dark:text-slate-400">
-                        Hiển thị {reviews.length} trên tổng số{" "}
-                        {
-                            //@ts-ignore
-                            data?.totalElements || 0
-                        }{" "}
-                        đánh giá
+                        {t("pagination.summary", {
+                            count: reviews.length,
+                            total:
+                                //@ts-ignore
+                                data?.totalElements || 0,
+                        })}
                     </div>
                     <div className="flex items-center space-x-2">
                         <Button
@@ -242,12 +264,12 @@ const AdminReviewPage = () => {
                             disabled={page === 0}
                         >
                             <ChevronLeft className="h-4 w-4" />
-                            Trước
+                            {t("pagination.prev")}
                         </Button>
 
                         <div className="flex items-center gap-1">
                             <span className="text-sm font-medium">
-                                Trang {page + 1}
+                                {t("pagination.page", { page: page + 1 })}
                             </span>
                             <span className="text-sm text-gray-500 dark:text-slate-400">
                                 / {totalPages}
@@ -260,7 +282,7 @@ const AdminReviewPage = () => {
                             onClick={() => handlePageChange(page + 1)}
                             disabled={page >= totalPages - 1}
                         >
-                            Tiếp
+                            {t("pagination.next")}
                             <ChevronRight className="h-4 w-4" />
                         </Button>
                     </div>

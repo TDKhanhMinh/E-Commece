@@ -16,6 +16,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 
+import { useTranslations } from "next-intl";
+
 interface ConfirmActionProps {
     title: string;
     btnText: string;
@@ -37,6 +39,7 @@ const ConfirmAction = ({
 }: ConfirmActionProps) => {
     const [open, setOpen] = useState(false);
     const [confirmText, setConfirmText] = useState("");
+    const t = useTranslations("common.confirmAction");
 
     useEffect(() => {
         if (!open) {
@@ -77,11 +80,11 @@ const ConfirmAction = ({
 
                 <div className="space-y-2">
                     <Label className="text-sm font-medium">
-                        Nhập{" "}
+                        {t("enter")}{" "}
                         <span className="bg-muted rounded px-1.5 py-0.5 font-mono text-xs dark:bg-slate-800 dark:text-slate-100">
                             {requiredText}
                         </span>{" "}
-                        để xác nhận
+                        {t("toConfirm")}
                     </Label>
 
                     <Input
@@ -99,7 +102,7 @@ const ConfirmAction = ({
                         variant="outline"
                         onClick={() => setOpen(false)}
                     >
-                        Hủy
+                        {t("cancel")}
                     </Button>
 
                     <Button
@@ -109,7 +112,7 @@ const ConfirmAction = ({
                         onClick={handleConfirm}
                         className="min-w-30"
                     >
-                        {isPending ? "Processing..." : actionText}
+                        {isPending ? t("processing") : actionText}
                     </Button>
                 </DialogFooter>
             </DialogContent>

@@ -35,8 +35,10 @@ import ConfirmAction from "@/components/common/dialog/confirm-action";
 import useDebounce from "@/hooks/use-debounce";
 import { PaginationControl } from "@/components/common/ui";
 import { PageResponse } from "@/type/api-type";
+import { useTranslations } from "next-intl";
 
 export default function BrandsPage() {
+    const t = useTranslations("brands");
     const [keyword, setKeyword] = useState("");
     const [currentPage, setCurrentPage] = useState(0); // Backend uses 0-based
     const itemsPerPage = 10;
@@ -94,10 +96,10 @@ export default function BrandsPage() {
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">
-                        Thương hiệu
+                        {t("title")}
                     </h1>
                     <p className="text-muted-foreground">
-                        Quản lý danh sách các hãng sản xuất.
+                        {t("description")}
                     </p>
                 </div>
             </div>
@@ -105,7 +107,7 @@ export default function BrandsPage() {
                 <div className="flex max-w-sm items-center space-x-2 rounded-md border dark:border-slate-800 bg-white dark:bg-slate-900 px-2 shadow-sm">
                     <Search className="ml-2 h-4 w-4 text-gray-500" />
                     <Input
-                        placeholder="Tìm kiếm..."
+                        placeholder={t("searchPlaceholder")}
                         value={keyword}
                         onChange={(e) => handleSearchChange(e.target.value)}
                         className="border-none shadow-none focus-visible:ring-0"
@@ -115,7 +117,7 @@ export default function BrandsPage() {
                     onClick={handleCreate}
                     className="bg-blue-600 hover:bg-blue-700"
                 >
-                    <Plus className="mr-2 h-4 w-4" /> Thêm thương hiệu
+                    <Plus className="mr-2 h-4 w-4" /> {t("addBrand")}
                 </Button>
             </div>
 
@@ -123,14 +125,14 @@ export default function BrandsPage() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="w-20">Logo</TableHead>
-                            <TableHead>Tên thương hiệu</TableHead>
-                            <TableHead>Slug</TableHead>
+                            <TableHead className="w-20">{t("table.logo")}</TableHead>
+                            <TableHead>{t("table.name")}</TableHead>
+                            <TableHead>{t("table.slug")}</TableHead>
                             <TableHead className="hidden md:table-cell">
-                                Mô tả
+                                {t("table.description")}
                             </TableHead>
                             <TableHead className="text-right">
-                                Hành động
+                                {t("table.actions")}
                             </TableHead>
                         </TableRow>
                     </TableHeader>
@@ -141,7 +143,7 @@ export default function BrandsPage() {
                                     colSpan={5}
                                     className="h-24 text-center"
                                 >
-                                    Đang tải...
+                                    {t("table.loading")}
                                 </TableCell>
                             </TableRow>
                         ) : brands.length === 0 ? (
@@ -150,7 +152,7 @@ export default function BrandsPage() {
                                     colSpan={5}
                                     className="h-24 text-center"
                                 >
-                                    Không tìm thấy dữ liệu.
+                                    {t("table.empty")}
                                 </TableCell>
                             </TableRow>
                         ) : (
@@ -188,7 +190,7 @@ export default function BrandsPage() {
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
                                                 <DropdownMenuLabel>
-                                                    Thao tác
+                                                    {t("actions.menuTitle")}
                                                 </DropdownMenuLabel>
                                                 <DropdownMenuItem
                                                     onClick={() =>
@@ -196,7 +198,7 @@ export default function BrandsPage() {
                                                     }
                                                 >
                                                     <Pencil className="mr-2 h-4 w-4" />{" "}
-                                                    Chỉnh sửa
+                                                    {t("actions.edit")}
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem
                                                     onSelect={(e) =>
@@ -207,14 +209,14 @@ export default function BrandsPage() {
                                                     <Trash2 className="mr-2 h-4 w-4" />{" "}
                                                     <ConfirmAction
                                                         title={
-                                                            "Xóa thương hiệu"
+                                                            t("actions.delete.confirmTitle")
                                                         }
-                                                        btnText={"Xóa"}
+                                                        btnText={t("actions.delete.btnText")}
                                                         description={
-                                                            "Bạn có chắc chắn muốn xóa thương hiệu này không"
+                                                            t("actions.delete.description")
                                                         }
                                                         requiredText={"DELETE"}
-                                                        actionText={"Xóa"}
+                                                        actionText={t("actions.delete.actionText")}
                                                         onConfirm={() =>
                                                             handleDelete(
                                                                 brand.id

@@ -18,6 +18,8 @@ interface ChatRoomItemProps {
     onDelete: (roomId: string | number) => void;
 }
 
+import { useTranslations } from "next-intl";
+
 export const ChatRoomItem: React.FC<ChatRoomItemProps> = ({
     room,
     adminId,
@@ -26,6 +28,7 @@ export const ChatRoomItem: React.FC<ChatRoomItemProps> = ({
     onSelect,
     onDelete,
 }) => {
+    const t = useTranslations("chat");
     const customerId = String(
         String(room.participantOne) === String(adminId)
             ? room.participantTwo
@@ -67,7 +70,7 @@ export const ChatRoomItem: React.FC<ChatRoomItemProps> = ({
                 </div>
                 <div className="mt-1 flex items-center justify-between">
                     <p className="truncate text-xs text-gray-500 dark:text-slate-400">
-                        {room.lastMessageContent || "Chưa có tin nhắn"}
+                        {room.lastMessageContent || t("noMessages")}
                     </p>
                     <ConfirmDialog
                         trigger={
@@ -85,10 +88,10 @@ export const ChatRoomItem: React.FC<ChatRoomItemProps> = ({
                                 )}
                             </button>
                         }
-                        title="Xóa cuộc hội thoại"
-                        description="Bạn chắc chắn muốn xóa cuộc hội thoại này? Hành động này không thể hoàn tác."
-                        confirmText="Xóa"
-                        cancelText="Hủy"
+                        title={t("deleteChat.title")}
+                        description={t("deleteChat.description")}
+                        confirmText={t("deleteChat.confirm")}
+                        cancelText={t("deleteChat.cancel")}
                         destructive
                         onConfirm={() => onDelete(room.id)}
                     />

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import {
     Dialog,
     DialogContent,
@@ -35,6 +36,7 @@ export function EditSkuDialog({
     productId,
     sku,
 }: EditSkuDialogProps) {
+    const t = useTranslations("products.sku.dialogs.edit");
     const updateMutation = useUpdateSkuDetails(productId, sku?.id || 0);
 
     const [price, setPrice] = useState("");
@@ -57,7 +59,7 @@ export function EditSkuDialog({
         if (!sku) return;
 
         if (!price || !stock) {
-            toast.error("Giá và tồn kho không được để trống");
+            toast.error(t("errors.emptyPriceStock"));
             return;
         }
 
@@ -65,7 +67,7 @@ export function EditSkuDialog({
 
         // Validate discount percent (0-100)
         if (discountValue < 0 || discountValue > 100) {
-            toast.error("Phần trăm giảm giá phải từ 0 đến 100");
+            toast.error(t("errors.invalidDiscount"));
             return;
         }
 
@@ -78,11 +80,11 @@ export function EditSkuDialog({
             },
             {
                 onSuccess: () => {
-                    toast.success("Cập nhật SKU thành công");
+                    toast.success(t("success"));
                     onOpenChange(false);
                 },
                 onError: () => {
-                    toast.error("Cập nhật SKU thất bại");
+                    toast.error(t("error"));
                 },
             }
         );
@@ -94,17 +96,17 @@ export function EditSkuDialog({
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="max-w-lg">
                 <DialogHeader>
-                    <DialogTitle>Chỉnh sửa SKU</DialogTitle>
+                    <DialogTitle>{t("title")}</DialogTitle>
                 </DialogHeader>
 
                 <div className="space-y-3 rounded-md border dark:border-slate-800 bg-gray-50 dark:bg-slate-900/50 p-3">
                     <div className="space-y-1">
-                        <Label>Mã SKU</Label>
+                        <Label>{t("skuCode")}</Label>
                         <Input value={sku.skuCode} disabled />
                     </div>
 
                     <div className="space-y-1">
-                        <Label>Thuộc tính</Label>
+                        <Label>{t("attributes")}</Label>
                         <div className="flex flex-wrap gap-2">
                             {Object.entries(sku.attributes).map(([k, v]) => (
                                 <span
@@ -120,27 +122,27 @@ export function EditSkuDialog({
 
                 <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
-                        <Label>Giá</Label>
+                        <Label>{t("price")}</Label>
                         <Input
                             type="number"
                             value={price}
                             onChange={(e) => setPrice(e.target.value)}
-                            placeholder="Nhập giá"
+                            placeholder={t("pricePlaceholder")}
                         />
                     </div>
                     <div className="space-y-1">
-                        <Label>Tồn kho</Label>
+                        <Label>{t("stock")}</Label>
                         <Input
                             type="number"
                             value={stock}
                             onChange={(e) => setStock(e.target.value)}
-                            placeholder="Nhập số lượng"
+                            placeholder={t("stockPlaceholder")}
                         />
                     </div>
                 </div>
 
                 <div className="space-y-1">
-                    <Label>Phần trăm giảm giá (%)</Label>
+                    <Label>{t("discount")}</Label>
                     <Input
                         type="number"
                         min="0"
@@ -156,10 +158,10 @@ export function EditSkuDialog({
                                 setDiscountPercent(value);
                             }
                         }}
-                        placeholder="0-100"
+                        placeholder={t("discountPlaceholder")}
                     />
                     <p className="text-xs text-gray-500 dark:text-slate-500">
-                        Nhập giá trị từ 0 đến 100
+                        {t("discountHint")}
                     </p>
                 </div>
 
@@ -176,8 +178,8 @@ export function EditSkuDialog({
                     disabled={updateMutation.isPending || isUploading}
                 >
                     {updateMutation.isPending
-                        ? "Đang cập nhật..."
-                        : "Lưu thay đổi"}
+                        ? t("updating")
+                        : t("saveChanges")}
                 </Button>
             </DialogContent>
         </Dialog>

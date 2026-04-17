@@ -2,10 +2,858 @@
     "common": {
         "save": "Lưu",
         "cancel": "Hủy",
-        "search": "Tìm kiếm"
+        "search": "Tìm kiếm",
+        "themes": {
+            "light": "Sáng",
+            "dark": "Tối",
+            "system": "Hệ thống"
+        },
+        "auth": {
+            "login": "Đăng nhập"
+        },
+        "roles": {
+            "admin": "Admin",
+            "shipper": "Giao hàng",
+            "user": "Người dùng"
+        },
+        "reset": "Đặt lại",
+        "confirmAction": {
+            "confirm": "Xác nhận",
+            "enter": "Nhập",
+            "toConfirm": "để xác nhận",
+            "cancel": "Hủy",
+            "processing": "Đang xử lý..."
+        },
+        "user": {
+            "logout": "Đăng xuất",
+            "address": {
+                "default": "Địa chỉ mặc định",
+                "edit": "Chỉnh sửa",
+                "editTitle": "Chỉnh sửa địa chỉ",
+                "deleteTitle": "Xóa địa chỉ?",
+                "deleteDesc": "Hành động này không thể hoàn tác. Bạn có chắc chắn muốn xóa không?",
+                "deleteBtn": "Xóa",
+                "deleteSuccess": "Đã xóa địa chỉ thành công!",
+                "deleteError": "Xóa thất bại, vui lòng thử lại",
+                "deleting": "Đang xóa...",
+                "deleteNow": "Xóa ngay",
+                "label": "Địa chỉ:",
+                "phoneLabel": "Điện thoại:",
+                "nameLabel": "Họ & tên",
+                "namePlaceholder": "Nhập họ và tên",
+                "phonePlaceholder": "Nhập số điện thoại",
+                "detailLabel": "Địa chỉ chi tiết (Số nhà, tên đường, ...)",
+                "selected": "Đã chọn",
+                "setDefault": "Đặt làm địa chỉ mặc định",
+                "save": "Lưu địa chỉ",
+                "addSuccess": "Thêm địa chỉ thành công!",
+                "addError": "Thêm địa chỉ thất bại",
+                "editSuccess": "Chỉnh sửa địa chỉ thành công!"
+            },
+            "order": {
+                "paymentLabel": "Thanh toán:",
+                "viewDetails": "Chi tiết",
+                "cancelBtn": "Hủy đơn",
+                "cancelTitle": "Xác nhận hủy đơn hàng?",
+                "cancelDesc": "Hành động này không thể hoàn tác. Số tiền (nếu đã thanh toán) sẽ được xử lý theo chính sách hoàn tiền.",
+                "ignore": "Bỏ qua",
+                "confirmCancel": "Xác nhận hủy"
+            }
+        }
+    },
+    "admin": {
+        "welcome": "Chào mừng trở lại, Admin",
+        "overview": "Tổng quan hệ thống của bạn hôm nay.",
+        "quickAccess": "Truy cập nhanh",
+        "stats": {
+            "users": "Người dùng",
+            "usersDescription": "+12 trong tuần này",
+            "orders": "Đơn hàng",
+            "ordersDescription": "+5 hôm nay",
+            "products": "Sản phẩm",
+            "productsDescription": "Đang hoạt động",
+            "security": "Bảo mật",
+            "securityValue": "An toàn",
+            "securityDescription": "Không có cảnh báo"
+        },
+        "actions": {
+            "manageUsers": "Quản lý người dùng",
+            "manageOrders": "Quản lý đơn hàng",
+            "manageProducts": "Quản lý sản phẩm",
+            "systemSettings": "Cài đặt hệ thống"
+        }
+    },
+    "footer": {
+        "description": "Cung cấp các sản phẩm công nghệ và phụ kiện cao cấp nhất. Chúng tôi cam kết mang lại trải nghiệm mua sắm tuyệt vời cho khách hàng;",
+        "explore": {
+            "title": "Khám phá",
+            "home": "Trang chủ",
+            "allProducts": "Tất cả sản phẩm",
+            "categories": "Danh mục",
+            "news": "Tin tức công nghệ"
+        },
+        "support": {
+            "title": "Hỗ trợ",
+            "faq": "Câu hỏi thường gặp",
+            "shipping": "Chính sách giao hàng",
+            "privacy": "Chính sách bảo mật",
+            "terms": "Điều khoản dịch vụ"
+        },
+        "contact": {
+            "title": "Liên hệ",
+            "address": "Quận 7, TP. Hồ Chí Minh"
+        },
+        "copyright": "© 2026 T7M Online. Built for TRAN DO KHANH MINH project"
+    },
+    "sidebar": {
+        "admin": "Quản trị viên",
+        "user": "Hồ sơ người dùng",
+        "dashboard": "Bảng điều khiển",
+        "reports": "Báo cáo & Phân tích",
+        "users": "Người dùng",
+        "orders": "Đơn hàng",
+        "products": "Sản phẩm",
+        "categories": "Danh mục",
+        "brands": "Thương hiệu",
+        "attributes": "Thuộc tính",
+        "vouchers": "Mã giảm giá",
+        "shipping": "Giao hàng",
+        "transactions": "Giao dịch",
+        "chat": "Hỗ trợ chat",
+        "reviews": "Bình luận & Đánh giá",
+        "roles": "Vai trò & Quyền",
+        "logs": "Nhật ký hệ thống",
+        "settings": "Cài đặt",
+        "profile": "Hồ sơ",
+        "memberships": "Thành viên",
+        "addresses": "Địa chỉ giao hàng",
+        "payments": "Phương thức thanh toán",
+        "support": "Hỗ trợ & Trợ giúp",
+        "changePassword": "Đổi mật khẩu",
+        "terms": "Điều khoản & Điều kiện",
+        "privacy": "Chính sách bảo mật"
+    },
+    "reports": {
+        "title": "Báo cáo & Phân tích",
+        "description": "Hiệu suất kinh doanh thực tế.",
+        "loading": "Đang tổng hợp dữ liệu...",
+        "error": "Không thể tải dữ liệu báo cáo. Vui lòng kiểm tra lại kết nối server.",
+        "totalRevenue": "Tổng doanh thu",
+        "successfulOrders": "Đơn hàng thành công",
+        "conversionRate": "Tỷ lệ chốt đơn",
+        "averageOrderValue": "Giá trị đơn TB",
+        "revenueChart": {
+            "titlePrefix": "Doanh thu theo thời gian từ",
+            "titleMiddle": "đến",
+            "noData": "Không có dữ liệu để hiển thị biểu đồ."
+        },
+        "topProducts": {
+            "title": "Sản phẩm bán chạy",
+            "salesCount": "lượt bán",
+            "noData": "Không có dữ liệu sản phẩm bán chạy."
+        }
     },
     "users": {
         "title": "Quản lý người dùng",
-        "add": "Thêm người dùng"
+        "subtitle": "Xem, tìm kiếm và quản lý tất cả tài khoản hệ thống.",
+        "actions": {
+            "addUser": "Thêm mới người dùng",
+            "menuTitle": "Thao tác",
+            "viewDetails": "Xem chi tiết",
+            "permissions": "Phân quyền",
+            "deleteAccount": "Xóa tài khoản",
+            "delete": "Xóa",
+            "deleteConfirm": "Bạn có chắc chắn muốn xóa tài khoản này không"
+        },
+        "list": {
+            "title": "Danh sách tài khoản",
+            "showingCount": "Hiển thị {count} trên tổng số {total} kết quả.",
+            "searchPlaceholder": "Tìm theo tên, email...",
+            "rowsPerPage": "Hiển thị:",
+            "rows": "dòng",
+            "noData": "Không tìm thấy dữ liệu phù hợp"
+        },
+        "table": {
+            "userInfo": "Thông tin người dùng",
+            "role": "Vai trò",
+            "email": "Email",
+            "actions": "Hành động"
+        },
+        "pagination": {
+            "showing": "Đang xem",
+            "to": "đến"
+        },
+        "errors": {
+            "loadData": "Lỗi tải dữ liệu",
+            "tryAgain": "Vui lòng thử lại sau."
+        },
+        "messages": {
+            "deleteSuccess": "Đã xóa người dùng thành công",
+            "deleteError": "Xóa thất bại, vui lòng thử lại"
+        }
+    },
+    "orders": {
+        "title": "Quản lý đơn hàng",
+        "subtitle": "Theo dõi và xử lý các đơn đặt hàng từ hệ thống.",
+        "list": {
+            "searchPlaceholder": "Tìm kiếm mã ĐH, khách hàng...",
+            "filter": "Bộ lọc",
+            "loading": "Đang tải dữ liệu đơn hàng...",
+            "error": "Đã xảy ra lỗi khi tải danh sách đơn hàng.",
+            "noData": "Không tìm thấy đơn hàng nào.",
+            "anonymous": "Khách hàng ẩn danh"
+        },
+        "filter": {
+            "title": "Bộ lọc đơn hàng",
+            "statusLabel": "Trạng thái đơn hàng",
+            "orderDateRange": "Khoảng thời gian đặt hàng",
+            "deliveryDateRange": "Khoảng thời gian giao hàng",
+            "fromDate": "Từ ngày",
+            "toDate": "Đến ngày",
+            "apply": "Áp dụng bộ lọc"
+        },
+        "status": {
+            "all": "Tất cả",
+            "pending": "Chưa xác nhận",
+            "confirmed": "Đã xác nhận",
+            "paid": "Đã thanh toán",
+            "unpaid": "Chưa thanh toán",
+            "shipping": "Đang giao hàng",
+            "delivered": "Đã giao hàng",
+            "cancelled": "Đã hủy",
+            "failed": "Thanh toán thất bại",
+            "notDelivered": "Chưa giao"
+        },
+        "table": {
+            "orderId": "Mã ĐH",
+            "customer": "Khách hàng",
+            "orderDate": "Ngày đặt",
+            "deliveryDate": "Ngày giao",
+            "totalAmount": "Tổng tiền",
+            "status": "Trạng thái",
+            "actions": "Thao tác"
+        },
+        "actions": {
+            "title": "Hành động",
+            "viewDetails": "Xem chi tiết",
+            "updateStatus": "Cập nhật trạng thái",
+            "deleteOrder": "Xóa đơn hàng",
+            "openMenu": "Mở menu"
+        },
+        "pagination": {
+            "info": "Trang {page} / {total} (Tổng {count} đơn)",
+            "previous": "Trước",
+            "next": "Tiếp theo"
+        }
+    },
+    "products": {
+        "title": "Sản phẩm",
+        "subtitle": "Quản lý danh sách sản phẩm, giá và tồn kho.",
+        "list": {
+            "searchPlaceholder": "Tìm kiếm theo tên sản phẩm...",
+            "addProduct": "Thêm sản phẩm",
+            "loading": "Đang tải dữ liệu...",
+            "empty": "Không tìm thấy sản phẩm nào."
+        },
+        "table": {
+            "image": "Ảnh",
+            "name": "Tên sản phẩm",
+            "category": "Danh mục",
+            "brand": "Thương hiệu",
+            "minPrice": "Giá Min",
+            "maxPrice": "Giá Max",
+            "actions": "Hành động"
+        },
+        "actions": {
+            "edit": "Chỉnh sửa",
+            "delete": "Xóa",
+            "title": "Thao tác"
+        },
+        "deleteConfirm": {
+            "title": "Xác nhận xóa sản phẩm?",
+            "description": "Hành động này sẽ xóa sản phẩm vĩnh viễn, bao gồm toàn bộ SKU và dữ liệu liên quan.",
+            "cancel": "Hủy",
+            "confirm": "Xóa vĩnh viễn",
+            "deleting": "Đang xóa..."
+        },
+        "form": {
+            "newTitle": "Tạo sản phẩm mới",
+            "editTitle": "Sửa sản phẩm: {name}",
+            "tabs": {
+                "general": "Thông tin chung",
+                "skus": "Biến thể (SKU)"
+            },
+            "general": {
+                "name": "Tên sản phẩm",
+                "category": "Danh mục",
+                "categoryPlaceholder": "Chọn danh mục",
+                "brand": "Thương hiệu",
+                "brandPlaceholder": "Chọn thương hiệu",
+                "description": "Mô tả"
+            },
+            "specs": {
+                "title": "Thông số kỹ thuật",
+                "count": "({count} thông số)",
+                "add": "Thêm thông số",
+                "attribute": "Thuộc tính",
+                "value": "Giá trị",
+                "placeholder": "Tên thông số",
+                "empty": "Chưa có thông số kỹ thuật nào.",
+                "emptySubtitle": "Nhấn \"Thêm thông số\" để bắt đầu.",
+                "available": "Có sẵn",
+                "pagination": {
+                    "first": "Đầu",
+                    "previous": "Trước",
+                    "next": "Sau",
+                    "last": "Cuối"
+                }
+            },
+            "save": "Lưu sản phẩm"
+        },
+        "sku": {
+            "title": "Danh sách biến thể (SKUs)",
+            "autoGenerate": "Tự động tạo SKU",
+            "table": {
+                "code": "Mã SKU",
+                "image": "Ảnh",
+                "attributes": "Thuộc tính",
+                "originalPrice": "Giá gốc",
+                "discount": "Giảm giá",
+                "salePrice": "Giá bán",
+                "stock": "Kho",
+                "empty": "Không có SKU nào"
+            },
+            "dialogs": {
+                "edit": {
+                    "title": "Chỉnh sửa SKU",
+                    "skuCode": "Mã SKU",
+                    "attributes": "Thuộc tính",
+                    "price": "Giá",
+                    "pricePlaceholder": "Nhập giá",
+                    "stock": "Tồn kho",
+                    "stockPlaceholder": "Nhập số lượng",
+                    "discount": "Phần trăm giảm giá (%)",
+                    "discountPlaceholder": "0-100",
+                    "discountHint": "Nhập giá trị từ 0 đến 100",
+                    "updating": "Đang cập nhật...",
+                    "saveChanges": "Lưu thay đổi",
+                    "errors": {
+                        "emptyPriceStock": "Giá và tồn kho không được để trống",
+                        "invalidDiscount": "Phần trăm giảm giá phải từ 0 đến 100"
+                    },
+                    "success": "Cập nhật SKU thành công",
+                    "error": "Cập nhật SKU thất bại"
+                },
+                "auto": {
+                    "title": "Tự động tạo SKU theo tổ hợp",
+                    "defaultPrice": "Giá mặc định",
+                    "defaultPricePlaceholder": "VD: 200000",
+                    "defaultStock": "Tồn kho mặc định",
+                    "defaultStockPlaceholder": "VD: 100",
+                    "combinationAttributes": "Thuộc tính dùng để tạo tổ hợp",
+                    "addAttribute": "Thêm thuộc tính",
+                    "selectAttribute": "Chọn thuộc tính",
+                    "valuesPlaceholder": "VD: Đỏ, Xanh, Trắng",
+                    "note": "Mỗi thuộc tính chỉ chọn một lần. Nhập nhiều giá trị (cách nhau bằng dấu phẩy) để hệ thống tạo các tổ hợp SKU tương ứng.",
+                    "generating": "Đang tạo SKU...",
+                    "generate": "Tạo SKU tự động",
+                    "errors": {
+                        "required": "Giá và tồn kho là bắt buộc",
+                        "selectAttr": "Vui lòng chọn thuộc tính và nhập giá trị"
+                    }
+                },
+                "manual": {
+                    "trigger": "Thêm thủ công SKU",
+                    "title": "Tạo biến thể mới",
+                    "imageLink": "Link ảnh",
+                    "variantAttributes": "Thuộc tính biến thể (Màu, Size...)",
+                    "valuePlaceholder": "Giá trị (Vd: Đỏ, XL)",
+                    "save": "Lưu SKU"
+                }
+            }
+        }
+    },
+    "categories": {
+        "title": "Danh mục sản phẩm",
+        "description": "Quản lý cấu trúc danh mục và phân cấp",
+        "searchPlaceholder": "Tìm theo tên danh mục...",
+        "addCategory": "Thêm danh mục",
+        "table": {
+            "name": "Tên danh mục",
+            "slug": "Slug",
+            "level": "Cấp độ",
+            "actions": "Hành động",
+            "empty": "Chưa có danh mục nào",
+            "root": "Gốc",
+            "levelText": "Cấp {level}",
+            "operations": "Thao tác",
+            "edit": "Chỉnh sửa",
+            "delete": {
+                "confirmTitle": "Xóa danh mục",
+                "btnText": "Xóa",
+                "description": "Hành động này không thể hoàn tác",
+                "actionText": "Xóa vĩnh viễn"
+            }
+        },
+        "dialog": {
+            "editTitle": "Cập nhật danh mục",
+            "addTitle": "Thêm danh mục mới",
+            "editDescription": "Chỉnh sửa thông tin danh mục",
+            "addDescription": "Tạo danh mục mới vào hệ thống",
+            "nameLabel": "Tên danh mục",
+            "namePlaceholder": "Ví dụ: Laptop",
+            "parentLabel": "Danh mục cha",
+            "parentPlaceholder": "Chọn danh mục cha",
+            "rootOption": "Danh mục gốc",
+            "saveChanges": "Lưu thay đổi",
+            "create": "Tạo mới"
+        }
+    },
+    "brands": {
+        "title": "Thương hiệu",
+        "description": "Quản lý danh sách các hãng sản xuất.",
+        "searchPlaceholder": "Tìm kiếm...",
+        "addBrand": "Thêm thương hiệu",
+        "table": {
+            "logo": "Logo",
+            "name": "Tên thương hiệu",
+            "slug": "Slug",
+            "description": "Mô tả",
+            "actions": "Hành động",
+            "loading": "Đang tải...",
+            "empty": "Không tìm thấy dữ liệu."
+        },
+        "actions": {
+            "menuTitle": "Thao tác",
+            "edit": "Chỉnh sửa",
+            "delete": {
+                "confirmTitle": "Xóa thương hiệu",
+                "btnText": "Xóa",
+                "description": "Bạn có chắc chắn muốn xóa thương hiệu này không",
+                "actionText": "Xóa"
+            }
+        },
+        "dialog": {
+            "editTitle": "Cập nhật thương hiệu",
+            "addTitle": "Thêm thương hiệu mới",
+            "description": "Quản lý thông tin đối tác và nhà cung cấp.",
+            "nameLabel": "Tên thương hiệu",
+            "namePlaceholder": "Apple, Samsung...",
+            "logoLabel": "Logo (URL)",
+            "logoPlaceholder": "https://example.com/logo.png",
+            "descLabel": "Mô tả",
+            "descPlaceholder": "Thông tin thêm...",
+            "validation": {
+                "nameRequired": "Tên thương hiệu không được để trống"
+            },
+            "saveChanges": "Lưu thay đổi",
+            "create": "Tạo mới"
+        }
+    },
+    "attributes": {
+        "title": "Thuộc tính sản phẩm",
+        "description": "Định nghĩa các thông số như Màu sắc, Kích thước, RAM...",
+        "searchPlaceholder": "Tìm theo tên hoặc mã...",
+        "addAttribute": "Thêm thuộc tính",
+        "table": {
+            "name": "Tên hiển thị",
+            "code": "Mã code",
+            "type": "Kiểu dữ liệu",
+            "actions": "Hành động",
+            "loading": "Đang tải...",
+            "empty": "Không tìm thấy dữ liệu.",
+            "types": {
+                "text": "Text",
+                "select": "Select",
+                "number": "Number"
+            }
+        },
+        "actions": {
+            "menuTitle": "Thao tác",
+            "edit": "Chỉnh sửa",
+            "delete": "Xóa"
+        },
+        "deleteDialog": {
+            "title": "Xóa thuộc tính?",
+            "description": "Nếu thuộc tính đang được sử dụng bởi sản phẩm, việc xóa có thể gây lỗi hiển thị hoặc mất dữ liệu.",
+            "deleting": "Đang xóa...",
+            "confirm": "Xóa vĩnh viễn"
+        },
+        "dialog": {
+            "editTitle": "Cập nhật thuộc tính",
+            "addTitle": "Thêm thuộc tính mới",
+            "description": "Định nghĩa các thông số cho sản phẩm (Màu, Size, RAM...).",
+            "nameLabel": "Tên hiển thị",
+            "namePlaceholder": "Ví dụ: Màu sắc",
+            "codeLabel": "Mã code (Dùng trong hệ thống)",
+            "codePlaceholder": "Ví dụ: color, ram_size",
+            "typeLabel": "Kiểu dữ liệu",
+            "typePlaceholder": "Chọn kiểu",
+            "types": {
+                "text": "Text (Nhập tay)",
+                "select": "Select (Chọn danh sách)",
+                "number": "Number (Số)"
+            },
+            "validation": {
+                "nameRequired": "Tên thuộc tính không được để trống",
+                "codeRequired": "Mã code không được để trống",
+                "codePattern": "Mã chỉ chứa chữ, số và gạch dưới",
+                "typeRequired": "Vui lòng chọn loại thuộc tính"
+            },
+            "saveChanges": "Lưu thay đổi",
+            "create": "Tạo mới"
+        }
+    },
+    "vouchers": {
+        "title": "Quản lý Voucher",
+        "description": "Tạo và quản lý các chương trình khuyến mãi hệ thống.",
+        "searchPlaceholder": "Tìm theo tên hoặc mã...",
+        "addVoucher": "Thêm Voucher mới",
+        "loading": "Đang tải dữ liệu...",
+        "empty": "Chưa có mã giảm giá nào được tạo.",
+        "table": {
+            "codeDesc": "Mã / Mô tả",
+            "discountType": "Loại giảm",
+            "value": "Giá trị",
+            "minOrder": "Đơn tối thiểu",
+            "validity": "Hiệu lực",
+            "status": "Trạng thái",
+            "actions": "Thao tác",
+            "types": {
+                "percentage": "Phần trăm (%)",
+                "fixed": "Tiền mặt (đ)"
+            },
+            "dateUntil": "đến",
+            "statusActive": "Hoạt động",
+            "statusDisabled": "Đã tắt"
+        },
+        "messages": {
+            "reactivateSuccess": "Đã kích hoạt lại mã giảm giá",
+            "disableSuccess": "Đã vô hiệu hóa mã giảm giá",
+            "error": "Có lỗi xảy ra",
+            "updateSuccess": "Cập nhật mã giảm giá thành công!",
+            "updateError": "Có lỗi xảy ra khi cập nhật voucher",
+            "createSuccess": "Tạo mã giảm giá thành công!",
+            "createError": "Có lỗi xảy ra khi tạo voucher"
+        },
+        "confirm": {
+            "disableTitle": "Vô hiệu hóa mã giảm giá?",
+            "enableTitle": "Mở lại mã giảm giá?",
+            "disableDesc": "Bạn có chắc chắn muốn vô hiệu hóa mã \"{code}\"? Người dùng sẽ không thể sử dụng mã này cho các đơn hàng mới nữa.",
+            "enableDesc": "Bạn có chắc chắn muốn mở lại mã \"{code}\"? Người dùng sẽ có thể tiếp tục lưu và sử dụng mã này cho đơn hàng.",
+            "disableBtn": "Vô hiệu hóa",
+            "enableBtn": "Kích hoạt"
+        },
+        "dialog": {
+            "addTitle": "Tạo mã giảm giá mới",
+            "editTitle": "Cập nhật mã giảm giá",
+            "labels": {
+                "code": "Mã Voucher (Code) *",
+                "type": "Loại giảm giá *",
+                "description": "Mô tả hiển thị *",
+                "value": "Giá trị giảm *",
+                "minOrder": "Đơn tối thiểu *",
+                "maxDiscount": "Giảm tối đa (Tùy chọn)",
+                "usageLimit": "Giới hạn số lượng (Tùy chọn)",
+                "startDate": "Ngày bắt đầu *",
+                "endDate": "Ngày kết thúc *"
+            },
+            "placeholders": {
+                "code": "VD: FREESHIP2024",
+                "description": "VD: Giảm 20k cho đơn từ 100k",
+                "usageLimit": "Để trống nếu không giới hạn"
+            },
+            "types": {
+                "fixed": "Giảm tiền mặt (VNĐ)",
+                "percentage": "Giảm phần trăm (%)"
+            },
+            "validation": {
+                "codeRequired": "Vui lòng nhập mã code",
+                "descRequired": "Vui lòng nhập mô tả",
+                "startRequired": "Chọn ngày bắt đầu",
+                "endRequired": "Chọn ngày kết thúc"
+            },
+            "saveChanges": "Lưu thay đổi",
+            "confirmCreate": "Xác nhận tạo"
+        }
+    },
+    "shipping": {
+        "title": "Quản lý giao hàng",
+        "description": "Theo dõi và quản lý các chuyến hàng trên toàn hệ thống.",
+        "searchPlaceholder": "Tìm kiếm theo mã, khách hàng, địa chỉ...",
+        "activeFilters": "Bộ lọc nâng cao",
+        "loading": "Đang tải dữ liệu giao hàng...",
+        "error": "Lỗi kết nối server",
+        "errorSub": "Không thể tải danh sách giao hàng. Vui lòng thử lại sau.",
+        "filter": {
+            "title": "Bộ lọc giao hàng",
+            "statusLabel": "Trạng thái vận chuyển",
+            "startDate": "Từ ngày",
+            "endDate": "Đến ngày",
+            "reset": "Đặt lại",
+            "apply": "Áp dụng",
+            "statuses": {
+                "all": "Tất cả trạng thái",
+                "pending": "Chờ xử lý (Pending)",
+                "pickedUp": "Đã lấy hàng (Picked Up)",
+                "delivering": "Đang giao hàng (Delivering)",
+                "success": "Giao thành công (Success)",
+                "cancelled": "Đã hủy (Cancelled)"
+            }
+        },
+        "table": {
+            "deliveryId": "Mã GH",
+            "orderId": "Mã ĐH",
+            "customer": "Khách hàng",
+            "address": "Địa chỉ giao",
+            "shipper": "Shipper",
+            "codAmount": "Tiền COD",
+            "payment": "Thanh toán",
+            "status": "Trạng thái",
+            "createdAt": "Ngày tạo",
+            "noShipper": "Chưa chỉ định",
+            "empty": "Không có dữ liệu vận chuyển nào."
+        },
+        "status": {
+            "pending": "Chờ xử lý",
+            "pickedUp": "Đã lấy hàng",
+            "delivering": "Đang giao",
+            "success": "Thành công",
+            "failed": "Thất bại"
+        },
+        "payment": {
+            "paid": "Đã trả",
+            "cod": "Tiền mặt (COD)"
+        },
+        "pagination": {
+            "page": "Trang {page} / {total}",
+            "total": "({total} đơn hàng)",
+            "prev": "Trước",
+            "next": "Tiếp"
+        }
+    },
+    "transactions": {
+        "title": "Quản lý giao dịch",
+        "loading": "Đang tải dữ liệu giao dịch...",
+        "error": "Đã xảy ra lỗi khi tải dữ liệu giao dịch.",
+        "empty": "Không tìm thấy giao dịch nào.",
+        "filters": {
+            "button": "Bộ lọc",
+            "title": "Bộ lọc giao dịch",
+            "status": "Trạng thái giao dịch",
+            "startDate": "Từ ngày",
+            "endDate": "Đến ngày",
+            "reset": "Mặc định",
+            "apply": "Áp dụng"
+        },
+        "status": {
+            "all": "Tất cả",
+            "pending": "Chờ xử lý",
+            "success": "Thành công",
+            "failed": "Thất bại",
+            "rejected": "Đã từ chối"
+        },
+        "type": {
+            "credit": "Nạp tiền (+)",
+            "debit": "Trừ tiền (-)"
+        },
+        "action": {
+            "deliveryFee": "Phí giao hàng",
+            "bonus": "Tiền thưởng",
+            "withdraw": "Rút tiền về ngân hàng",
+            "penalty": "Tiền phạt",
+            "cod": "Thanh toán COD"
+        },
+        "table": {
+            "id": "ID",
+            "time": "Thời gian",
+            "type": "Loại",
+            "amount": "Số tiền",
+            "status": "Trạng thái",
+            "description": "Nội dung",
+            "actions": "Thao tác"
+        },
+        "pagination": {
+            "summary": "Trang {page} / {total} (Tổng {records} bản ghi)"
+        },
+        "dropdown": {
+            "trigger": "Tùy chọn",
+            "label": "Thao tác",
+            "view": "Xem chi tiết",
+            "update": "Cập nhật trạng thái",
+            "export": "Xuất PDF",
+            "delete": "Xóa giao dịch"
+        },
+        "updateDialog": {
+            "title": "Cập nhật trạng thái giao dịch #{id}",
+            "cancel": "Hủy",
+            "confirm": "Xác nhận cập nhật"
+        }
+    },
+    "reviews": {
+        "title": "Quản lý Đánh giá",
+        "searchPlaceholder": "Tìm theo sản phẩm...",
+        "loading": "Đang tải...",
+        "error": "Có lỗi xảy ra.",
+        "verified": "✓ Đã mua hàng",
+        "empty": "Không có dữ liệu đánh giá nào.",
+        "table": {
+            "customer": "Khách hàng",
+            "product": "Sản phẩm",
+            "rating": "Đánh giá",
+            "content": "Nội dung",
+            "date": "Ngày tạo",
+            "actions": "Thao tác"
+        },
+        "dialog": {
+            "deleteTitle": "Xác nhận xóa?",
+            "deleteDescription": "Bạn có chắc chắn muốn xóa đánh giá của <b>{reviewer}</b> cho sản phẩm <b>{product}</b>?",
+            "cancel": "Hủy",
+            "confirm": "Xác nhận xóa",
+            "deleting": "Đang xóa..."
+        },
+        "pagination": {
+            "summary": "Hiển thị {count} trên tổng số {total} đánh giá",
+            "prev": "Trước",
+            "page": "Trang {page}",
+            "next": "Tiếp"
+        }
+    },
+    "roles": {
+        "title": "Vai trò & Quyền hạn",
+        "subtitle": "Thiết lập hệ thống phân quyền thông minh và bảo mật cho doanh nghiệp.",
+        "createBtn": "Tạo vai trò mới",
+        "stats": {
+            "totalRoles": "Tổng vai trò",
+            "totalUsers": "Tổng người dùng",
+            "control": "Quyền kiểm soát",
+            "highAdmin": "Admin Quyền cao",
+            "rolesDesc": "Các nhóm quyền chính",
+            "usersDesc": "Nhân sự đã được gán quyền",
+            "controlDesc": "Các token truy cập hệ thống",
+            "highAdminDesc": "Tài khoản superuser"
+        },
+        "tabs": {
+            "roles": "Vai trò",
+            "matrix": "Ma trận quyền",
+            "users": "Nhân sự"
+        },
+        "tabsContent": {
+            "roles": {
+                "createNew": "Tạo vai trò mới",
+                "createNewDesc": "Bắt đầu thiết lập quyền hạn mới"
+            },
+            "matrix": {
+                "title": "Ma trận phân quyền hệ thống",
+                "subtitle": "Cấu hình chi tiết khả năng truy cập tài nguyên cho từng đối tượng.",
+                "lockedAdmin": "ĐÃ KHÓA CẤU HÌNH ADMIN",
+                "moduleAction": "MODULE & ACTION"
+            },
+            "users": {
+                "title": "Phân bổ nhân sự",
+                "subtitle": "Danh sách thành viên quản trị và vai trò được gán.",
+                "searchPlaceholder": "Tìm nhân sự...",
+                "filter": "Bộ lọc",
+                "table": {
+                    "employee": "NHÂN VIÊN",
+                    "contact": "THÔNG TIN LIÊN HỆ",
+                    "role": "VAI TRÒ",
+                    "joinedDate": "NGÀY THAM GIA",
+                    "status": "TRẠNG THÁI",
+                    "actions": "TÁC VỤ",
+                    "changeRole": "Đổi vai trò"
+                },
+                "status": {
+                    "ready": "SẴN SÀNG",
+                    "active": "HOẠT ĐỘNG"
+                },
+                "viewMore": "XEM THÊM {count} NHÂN VIÊN KHÁC"
+            }
+        },
+        "roleCard": {
+            "actions": {
+                "title": "Quản trị Role",
+                "edit": "Chỉnh sửa",
+                "viewUsers": "Xem người dùng",
+                "delete": "Xóa vai trò"
+            },
+            "allocation": "Phân bổ",
+            "userCount": "{count} thành viên",
+            "totalControl": "TOTAL CONTROL"
+        },
+        "createDialog": {
+            "title": "Thiết lập vai trò quản trị",
+            "subtitle": "Xác định danh tính và mô hình hóa quyền lợi cho nhóm người dùng mới trong hệ sinh thái.",
+            "roleName": "Danh xưng vai trò",
+            "roleDesc": "Mô tả chức năng",
+            "roleDescPlaceholder": "Trách nhiệm cốt lõi của vai trò này...",
+            "colorProfile": "DNA Color Profile",
+            "confirm": "Khởi tạo vai trò",
+            "cancel": "Hủy"
+        },
+        "data": {
+            "admin": "Quản trị viên",
+            "adminDesc": "Toàn quyền truy cập vào cấu hình hệ thống và dữ liệu nhạy cảm.",
+            "shipperManager": "Quản lý Giao hàng",
+            "shipperManagerDesc": "Quản lý các đối tác giao hàng và tối ưu hóa tuyến đường.",
+            "orderProcessor": "Xử lý đơn hàng",
+            "orderProcessorDesc": "Thực hiện vòng đời đơn hàng từ xác minh đến hoàn tất.",
+            "inventory": "Quản lý Kho",
+            "inventoryDesc": "Duy trì mức tồn kho và tính toàn vẹn của danh mục sản phẩm.",
+            "modules": {
+                "orders": "Hệ thống Đơn hàng",
+                "products": "Danh mục Sản phẩm",
+                "users": "Tài khoản Người dùng",
+                "transactions": "Nhật ký Giao dịch"
+            },
+            "permissions": {
+                "ordersRead": "Xem đơn hàng",
+                "ordersReadDesc": "Có thể xem danh sách và chi tiết đơn hàng",
+                "ordersWrite": "Sửa đơn hàng",
+                "ordersWriteDesc": "Có thể cập nhật trạng thái và mặt hàng",
+                "ordersDelete": "Hủy đơn hàng",
+                "ordersDeleteDesc": "Có thể hủy hoặc xóa bản ghi đơn hàng",
+                "productsRead": "Duyệt sản phẩm",
+                "productsReadDesc": "Truy cập vào cơ sở dữ liệu sản phẩm",
+                "productsWrite": "Chỉnh sửa danh mục",
+                "productsWriteDesc": "Tạo hoặc chỉnh sửa thông số sản phẩm",
+                "productsDelete": "Dọn dẹp danh mục",
+                "productsDeleteDesc": "Xóa các sản phẩm không hoạt động hoặc bị lỗi",
+                "usersRead": "Kiểm tra nhân sự",
+                "usersReadDesc": "Xem danh sách nhân sự quản trị",
+                "usersWrite": "Chỉnh sửa nhân sự",
+                "usersWriteDesc": "Cập nhật hồ sơ nhân sự",
+                "usersDelete": "Sa thải nhân sự",
+                "usersDeleteDesc": "Thu hồi quyền truy cập của nhân viên",
+                "usersRoles": "Quản lý RBAC",
+                "usersRolesDesc": "Gán và chỉnh sửa quyền của vai trò",
+                "transactionsRead": "Kiểm tra nhật ký",
+                "transactionsReadDesc": "Truy cập nhật ký tài chính lịch sử",
+                "transactionsVerify": "Xác minh thanh toán",
+                "transactionsVerifyDesc": "Xác thực tính hợp lệ của giao dịch"
+            }
+        }
+    },
+    "chat": {
+        "title": "Hỗ trợ Trực tuyến",
+        "chatRooms": "Tin nhắn hỗ trợ",
+        "searchPlaceholder": "Tìm kiếm người dùng...",
+        "empty": "Chọn một cuộc trò chuyện để bắt đầu",
+        "noFound": "Không tìm thấy hội thoại",
+        "loading": "Đang tải...",
+        "error": "Lỗi kết nối",
+        "status": {
+            "online": "Đang trực tuyến",
+            "offline": "Mất kết nối",
+            "connecting": "Đang kết nối..."
+        },
+        "inputPlaceholder": "Nhập tin nhắn đến {name}...",
+        "noMessages": "Chưa có tin nhắn",
+        "deleteChat": {
+            "title": "Xóa cuộc hội thoại",
+            "description": "Bạn chắc chắn muốn xóa cuộc hội thoại này? Hành động này không thể hoàn tác.",
+            "confirm": "Xóa",
+            "cancel": "Hủy"
+        }
     }
 }

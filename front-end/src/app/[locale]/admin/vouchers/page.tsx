@@ -26,8 +26,10 @@ import { ActionVoucherDialog } from "@/components/common/dialog/action-voucher-d
 import { ConfirmDialog } from "@/components/common/dialog/confirm-dialog";
 import { Switch } from "@/components/ui/switch";
 import {Input} from "@/components/ui/input";
+import { useTranslations } from "next-intl";
 
 export default function AdminVoucherPage() {
+    const t = useTranslations("vouchers");
     const { useAdminVouchers, adminVoucherActions } = useVoucher();
     const { data: vouchers, isLoading } = useAdminVouchers();
 
@@ -37,28 +39,28 @@ export default function AdminVoucherPage() {
             {
                 onSuccess: () => {
                     if (action) {
-                        toast.success("Đã kích hoạt lại mã giảm giá");
+                        toast.success(t("messages.reactivateSuccess"));
                     } else {
-                        toast.success("Đã vô hiệu hóa mã giảm giá");
+                        toast.success(t("messages.disableSuccess"));
                     }
                 },
-                onError: () => toast.error("Có lỗi xảy ra"),
+                onError: () => toast.error(t("messages.error")),
             }
         );
     };
 
     if (isLoading)
-        return <div className="p-8 text-center">Đang tải dữ liệu...</div>;
+        return <div className="p-8 text-center">{t("loading")}</div>;
 
     return (
         <div className="bg-gray-50/50 dark:bg-slate-950 min-h-screen space-y-6 p-6">
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight">
-                        Quản lý Voucher
+                        {t("title")}
                     </h1>
                     <p className="text-muted-foreground">
-                        Tạo và quản lý các chương trình khuyến mãi hệ thống.
+                        {t("description")}
                     </p>
                 </div>
             </div>
@@ -66,7 +68,7 @@ export default function AdminVoucherPage() {
                 <div className="flex max-w-sm items-center space-x-2 rounded-md border dark:border-slate-800 bg-white dark:bg-slate-900 px-2 shadow-sm">
                     <Search className="ml-2 h-4 w-4 text-gray-500" />
                     <Input
-                        placeholder="Tìm theo tên hoặc mã..."
+                        placeholder={t("searchPlaceholder")}
                         className="border-none shadow-none focus-visible:ring-0 text-gray-900 dark:text-slate-100"
                     />
                 </div>
@@ -76,14 +78,14 @@ export default function AdminVoucherPage() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Mã / Mô tả</TableHead>
-                            <TableHead>Loại giảm</TableHead>
-                            <TableHead>Giá trị</TableHead>
-                            <TableHead>Đơn tối thiểu</TableHead>
-                            <TableHead>Hiệu lực</TableHead>
-                            <TableHead>Trạng thái</TableHead>
+                            <TableHead>{t("table.codeDesc")}</TableHead>
+                            <TableHead>{t("table.discountType")}</TableHead>
+                            <TableHead>{t("table.value")}</TableHead>
+                            <TableHead>{t("table.minOrder")}</TableHead>
+                            <TableHead>{t("table.validity")}</TableHead>
+                            <TableHead>{t("table.status")}</TableHead>
                             <TableHead className="text-right">
-                                Thao tác
+                                {t("table.actions")}
                             </TableHead>
                         </TableRow>
                     </TableHeader>
@@ -108,8 +110,8 @@ export default function AdminVoucherPage() {
                                 <TableCell>
                                     <Badge variant="outline">
                                         {v.discountType === "PERCENTAGE"
-                                            ? "Phần trăm (%)"
-                                            : "Tiền mặt (đ)"}
+                                            ? t("table.types.percentage")
+                                            : t("table.types.fixed")}
                                     </Badge>
                                 </TableCell>
                                 <TableCell className="font-medium text-blue-600 dark:text-blue-400">
@@ -131,7 +133,7 @@ export default function AdminVoucherPage() {
                                         </div>
                                         <div className="flex items-center gap-1">
                                             <div className="h-3 w-3" />
-                                            đến{" "}
+                                            {t("table.dateUntil")}{" "}
                                             {fDateTime(
                                                 new Date(v.endDate),
                                                 "dd/MM/yyyy"
@@ -143,15 +145,14 @@ export default function AdminVoucherPage() {
                                     {v.active ? (
                                         <Badge className="gap-1 border-green-200 dark:border-green-900/50 bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-950/30">
                                             <CircleCheck className="h-3 w-3" />{" "}
-                                            Hoạt động
+                                            {t("table.statusActive")}
                                         </Badge>
                                     ) : (
                                         <Badge
                                             variant="secondary"
                                             className="gap-1 dark:bg-slate-800 dark:text-slate-400"
                                         >
-                                            <CircleX className="h-3 w-3" /> Đã
-                                            tắt
+                                            <CircleX className="h-3 w-3" /> {t("table.statusDisabled")}
                                         </Badge>
                                     )}
                                 </TableCell>
@@ -173,18 +174,18 @@ export default function AdminVoucherPage() {
                                         <ConfirmDialog
                                             title={
                                                 v.active
-                                                    ? "Vô hiệu hóa mã giảm giá?"
-                                                    : "Mở lại mã giảm giá?"
+                                                    ? t("confirm.disableTitle")
+                                                    : t("confirm.enableTitle")
                                             }
                                             description={
                                                 v.active
-                                                    ? `Bạn có chắc chắn muốn vô hiệu hóa mã "${v.code}"? Người dùng sẽ không thể sử dụng mã này cho các đơn hàng mới nữa.`
-                                                    : `Bạn có chắc chắn muốn mở lại mã "${v.code}"? Người dùng sẽ có thể tiếp tục lưu và sử dụng mã này cho đơn hàng.`
+                                                    ? t("confirm.disableDesc", { code: v.code })
+                                                    : t("confirm.enableDesc", { code: v.code })
                                             }
                                             confirmText={
                                                 v.active
-                                                    ? "Vô hiệu hóa"
-                                                    : "Kích hoạt"
+                                                    ? t("confirm.disableBtn")
+                                                    : t("confirm.enableBtn")
                                             }
                                             destructive={v.active}
                                             onConfirm={() =>
@@ -210,7 +211,7 @@ export default function AdminVoucherPage() {
 
                 {vouchers?.empty && (
                     <div className="text-muted-foreground p-12 text-center">
-                        Chưa có mã giảm giá nào được tạo.
+                        {t("empty")}
                     </div>
                 )}
             </div>

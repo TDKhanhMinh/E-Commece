@@ -8,8 +8,11 @@ import {
     Phone,
     MapPin,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function Footer() {
+    const t = useTranslations("footer");
+
     return (
         <footer className="w-full border-t bg-zinc-50 dark:bg-zinc-950">
             <div className="container mx-auto px-4 py-3 md:py-4">
@@ -19,9 +22,7 @@ export default function Footer() {
                             T7M ONLINE
                         </h3>
                         <p className="text-muted-foreground text-sm leading-relaxed">
-                            Cung cấp các sản phẩm công nghệ và phụ kiện cao cấp
-                            nhất. Chúng tôi cam kết mang lại trải nghiệm mua sắm
-                            tuyệt vời cho khách hàng;
+                            {t("description")}
                         </p>
                         <div className="flex gap-4">
                             <Facebook className="hover:text-primary h-5 w-5 cursor-pointer" />
@@ -33,12 +34,12 @@ export default function Footer() {
 
                     <div>
                         <h4 className="mb-4 text-sm font-semibold tracking-wider uppercase">
-                            Khám phá
+                            {t("explore.title")}
                         </h4>
                         <ul className="text-muted-foreground space-y-2 text-sm">
                             <li>
                                 <Link href="/" className="hover:text-primary">
-                                    Trang chủ
+                                    {t("explore.home")}
                                 </Link>
                             </li>
                             <li>
@@ -46,7 +47,7 @@ export default function Footer() {
                                     href="/products"
                                     className="hover:text-primary"
                                 >
-                                    Tất cả sản phẩm
+                                    {t("explore.allProducts")}
                                 </Link>
                             </li>
                             <li>
@@ -54,7 +55,7 @@ export default function Footer() {
                                     href="/categories"
                                     className="hover:text-primary"
                                 >
-                                    Danh mục
+                                    {t("explore.categories")}
                                 </Link>
                             </li>
                             <li>
@@ -62,7 +63,7 @@ export default function Footer() {
                                     href="/blog"
                                     className="hover:text-primary"
                                 >
-                                    Tin tức công nghệ
+                                    {t("explore.news")}
                                 </Link>
                             </li>
                         </ul>
@@ -70,7 +71,7 @@ export default function Footer() {
 
                     <div>
                         <h4 className="mb-4 text-sm font-semibold tracking-wider uppercase">
-                            Hỗ trợ
+                            {t("support.title")}
                         </h4>
                         <ul className="text-muted-foreground space-y-2 text-sm">
                             <li>
@@ -78,7 +79,7 @@ export default function Footer() {
                                     href="/faq"
                                     className="hover:text-primary"
                                 >
-                                    Câu hỏi thường gặp
+                                    {t("support.faq")}
                                 </Link>
                             </li>
                             <li>
@@ -86,7 +87,7 @@ export default function Footer() {
                                     href="/shipping"
                                     className="hover:text-primary"
                                 >
-                                    Chính sách giao hàng
+                                    {t("support.shipping")}
                                 </Link>
                             </li>
                             <li>
@@ -94,7 +95,7 @@ export default function Footer() {
                                     href="/privacy"
                                     className="hover:text-primary"
                                 >
-                                    Chính sách bảo mật
+                                    {t("support.privacy")}
                                 </Link>
                             </li>
                             <li>
@@ -102,7 +103,7 @@ export default function Footer() {
                                     href="/terms"
                                     className="hover:text-primary"
                                 >
-                                    Điều khoản dịch vụ
+                                    {t("support.terms")}
                                 </Link>
                             </li>
                         </ul>
@@ -110,12 +111,11 @@ export default function Footer() {
 
                     <div>
                         <h4 className="mb-4 text-sm font-semibold tracking-wider uppercase">
-                            Liên hệ
+                            {t("contact.title")}
                         </h4>
                         <ul className="text-muted-foreground space-y-3 text-sm">
                             <li className="flex items-center gap-2">
-                                <MapPin className="h-4 w-4" /> Quận 7, TP. Hồ
-                                Chí Minh
+                                <MapPin className="h-4 w-4" /> {t("contact.address")}
                             </li>
                             <li className="flex items-center gap-2">
                                 <Phone className="h-4 w-4" /> +84 123 456 789
@@ -130,7 +130,7 @@ export default function Footer() {
 
                 <div className="text-muted-foreground mt-4 border-t text-center text-sm">
                     <p className="mt-3">
-                        © 2026 T7M Online. Built for TRAN DO KHANH MINH project
+                        {t("copyright")}
                     </p>
                 </div>
             </div>

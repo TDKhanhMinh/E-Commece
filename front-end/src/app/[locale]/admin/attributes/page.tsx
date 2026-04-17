@@ -9,6 +9,7 @@ import {
     Settings2,
     Trash2,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import {
     Table,
@@ -49,6 +50,12 @@ import { AttributeDialog, PaginationControl } from "@/components/common";
  * COMPONENT
  * ========================= */
 export default function AttributesPage() {
+    /* =========================
+     * I18N
+     * ========================= */
+    const t = useTranslations("attributes");
+    const tCommon = useTranslations("common");
+
     /* =========================
      * STATE
      * ========================= */
@@ -127,13 +134,13 @@ export default function AttributesPage() {
             case "SELECT":
                 return (
                     <Badge className="bg-blue-500 dark:bg-blue-600 dark:text-blue-50">
-                        Select
+                        {t("table.types.select")}
                     </Badge>
                 );
             case "NUMBER":
                 return (
                     <Badge className="bg-purple-500 dark:bg-purple-600 dark:text-purple-50">
-                        Number
+                        {t("table.types.number")}
                     </Badge>
                 );
             default:
@@ -142,7 +149,7 @@ export default function AttributesPage() {
                         variant="secondary"
                         className="dark:bg-slate-800 dark:text-slate-300"
                     >
-                        Text
+                        {t("table.types.text")}
                     </Badge>
                 );
         }
@@ -158,11 +165,10 @@ export default function AttributesPage() {
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">
-                            Thuộc tính sản phẩm
+                            {t("title")}
                         </h1>
                         <p className="text-muted-foreground">
-                            Định nghĩa các thông số như Màu sắc, Kích thước,
-                            RAM...
+                            {t("description")}
                         </p>
                     </div>
                 </div>
@@ -172,7 +178,7 @@ export default function AttributesPage() {
                     <div className="flex max-w-sm items-center space-x-2 rounded-md border dark:border-slate-800 bg-white dark:bg-slate-900 px-2 shadow-sm">
                         <Search className="ml-2 h-4 w-4 text-gray-500" />
                         <Input
-                            placeholder="Tìm theo tên hoặc mã..."
+                            placeholder={t("searchPlaceholder")}
                             value={keyword}
                             onChange={(e) => handleSearchChange(e.target.value)}
                             className="border-none shadow-none focus-visible:ring-0"
@@ -182,7 +188,7 @@ export default function AttributesPage() {
                         onClick={handleCreate}
                         className="cursor-pointer bg-blue-600 hover:bg-blue-700"
                     >
-                        Thêm thuộc tính
+                        {t("addAttribute")}
                     </Button>
                 </div>
                 {/* TABLE */}
@@ -191,11 +197,11 @@ export default function AttributesPage() {
                         <TableHeader>
                             <TableRow>
                                 <TableHead className="w-12.5" />
-                                <TableHead>Tên hiển thị</TableHead>
-                                <TableHead>Mã code</TableHead>
-                                <TableHead>Kiểu dữ liệu</TableHead>
+                                <TableHead>{t("table.name")}</TableHead>
+                                <TableHead>{t("table.code")}</TableHead>
+                                <TableHead>{t("table.type")}</TableHead>
                                 <TableHead className="text-right">
-                                    Hành động
+                                    {t("table.actions")}
                                 </TableHead>
                             </TableRow>
                         </TableHeader>
@@ -207,7 +213,7 @@ export default function AttributesPage() {
                                         colSpan={5}
                                         className="h-24 text-center"
                                     >
-                                        Đang tải...
+                                        {t("table.loading")}
                                     </TableCell>
                                 </TableRow>
                             )}
@@ -218,7 +224,7 @@ export default function AttributesPage() {
                                         colSpan={5}
                                         className="h-24 text-center"
                                     >
-                                        Không tìm thấy dữ liệu.
+                                        {t("table.empty")}
                                     </TableCell>
                                 </TableRow>
                             )}
@@ -250,7 +256,7 @@ export default function AttributesPage() {
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end">
                                                     <DropdownMenuLabel>
-                                                        Thao tác
+                                                        {t("actions.menuTitle")}
                                                     </DropdownMenuLabel>
                                                     <DropdownMenuItem
                                                         onClick={() =>
@@ -258,7 +264,7 @@ export default function AttributesPage() {
                                                         }
                                                     >
                                                         <Pencil className="mr-2 h-4 w-4" />{" "}
-                                                        Chỉnh sửa
+                                                        {t("actions.edit")}
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem
                                                         className="text-red-600"
@@ -269,7 +275,7 @@ export default function AttributesPage() {
                                                         }
                                                     >
                                                         <Trash2 className="mr-2 h-4 w-4" />{" "}
-                                                        Xóa
+                                                        {t("actions.delete")}
                                                     </DropdownMenuItem>
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
@@ -306,15 +312,14 @@ export default function AttributesPage() {
             >
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>Xóa thuộc tính?</AlertDialogTitle>
+                        <AlertDialogTitle>{t("deleteDialog.title")}</AlertDialogTitle>
                         <AlertDialogDescription>
-                            Nếu thuộc tính đang được sử dụng bởi sản phẩm, việc
-                            xóa có thể gây lỗi hiển thị hoặc mất dữ liệu.
+                            {t("deleteDialog.description")}
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel disabled={deleteMutation.isPending}>
-                            Hủy
+                            {tCommon("cancel")}
                         </AlertDialogCancel>
                         <AlertDialogAction
                             onClick={handleDelete}
@@ -322,8 +327,8 @@ export default function AttributesPage() {
                             className="bg-red-600 hover:bg-red-700"
                         >
                             {deleteMutation.isPending
-                                ? "Đang xóa..."
-                                : "Xóa vĩnh viễn"}
+                                ? t("deleteDialog.deleting")
+                                : t("deleteDialog.confirm")}
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>

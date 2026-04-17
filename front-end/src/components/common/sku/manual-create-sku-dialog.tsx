@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useFieldArray, useForm } from "react-hook-form";
 import { Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -37,6 +38,7 @@ interface ManualCreateSkuDialogProps {
 export function ManualCreateSkuDialog({
     productId,
 }: ManualCreateSkuDialogProps) {
+    const t = useTranslations("products.sku.dialogs.manual");
     const [isOpen, setIsOpen] = useState(false);
     const { data: attributesData } = useAttributes({ size: 1000 });
     const attributes = (attributesData as any)?.content || [];
@@ -77,12 +79,12 @@ export function ManualCreateSkuDialog({
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
                 <Button>
-                    <Plus className="mr-2 h-4 w-4" /> Thêm thủ công SKU
+                    <Plus className="mr-2 h-4 w-4" /> {t("trigger")}
                 </Button>
             </DialogTrigger>
             <DialogContent className="max-w-2xl">
                 <DialogHeader>
-                    <DialogTitle>Tạo biến thể mới</DialogTitle>
+                    <DialogTitle>{t("title")}</DialogTitle>
                 </DialogHeader>
                 <Form {...form}>
                     <form
@@ -95,7 +97,7 @@ export function ManualCreateSkuDialog({
                                 name="skuCode"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Mã SKU</FormLabel>
+                                        <FormLabel>{useTranslations("products.sku.table")("code")}</FormLabel>
                                         <FormControl>
                                             <Input {...field} />
                                         </FormControl>
@@ -107,7 +109,7 @@ export function ManualCreateSkuDialog({
                                 name="price"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Giá</FormLabel>
+                                        <FormLabel>{useTranslations("products.sku.dialogs.edit")("price")}</FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="number"
@@ -127,7 +129,7 @@ export function ManualCreateSkuDialog({
                                 name="stock"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Tồn kho</FormLabel>
+                                        <FormLabel>{useTranslations("products.sku.dialogs.edit")("stock")}</FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="number"
@@ -147,7 +149,7 @@ export function ManualCreateSkuDialog({
                                 name="image"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Link ảnh</FormLabel>
+                                        <FormLabel>{t("imageLink")}</FormLabel>
                                         <FormControl>
                                             <Input {...field} />
                                         </FormControl>
@@ -159,7 +161,7 @@ export function ManualCreateSkuDialog({
                         <div className="space-y-3 rounded-md border p-4">
                             <div className="flex justify-between">
                                 <h4 className="font-medium">
-                                    Thuộc tính biến thể (Màu, Size...)
+                                    {t("variantAttributes")}
                                 </h4>
                                 <Button
                                     type="button"
@@ -169,7 +171,7 @@ export function ManualCreateSkuDialog({
                                         append({ attributeId: "", value: "" })
                                     }
                                 >
-                                    Thêm thuộc tính
+                                    {useTranslations("products.sku.dialogs.auto")("addAttribute")}
                                 </Button>
                             </div>
                             {fields.map((field, index) => (
@@ -190,7 +192,7 @@ export function ManualCreateSkuDialog({
                                                 >
                                                     <FormControl>
                                                         <SelectTrigger>
-                                                            <SelectValue placeholder="Chọn thuộc tính" />
+                                                            <SelectValue placeholder={useTranslations("products.sku.dialogs.auto")("selectAttribute")} />
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <SelectContent>
@@ -220,7 +222,7 @@ export function ManualCreateSkuDialog({
                                             <FormItem className="w-1/2">
                                                 <FormControl>
                                                     <Input
-                                                        placeholder="Giá trị (Vd: Đỏ, XL)"
+                                                        placeholder={t("valuePlaceholder")}
                                                         {...field}
                                                     />
                                                 </FormControl>
@@ -239,7 +241,7 @@ export function ManualCreateSkuDialog({
                             ))}
                         </div>
                         <Button type="submit" className="w-full">
-                            Lưu SKU
+                            {t("save")}
                         </Button>
                     </form>
                 </Form>

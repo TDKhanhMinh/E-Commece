@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -53,6 +54,20 @@ export function AttributeDialog({
     onOpenChange,
     attributeToEdit,
 }: AttributeDialogProps) {
+    const t = useTranslations("attributes.dialog");
+    const tCommon = useTranslations("common");
+
+    const formSchema = z.object({
+        name: z.string().min(1, t("validation.nameRequired")),
+        code: z
+            .string()
+            .min(1, t("validation.codeRequired"))
+            .regex(/^[a-zA-Z0-9_]+$/, t("validation.codePattern")),
+        type: z.enum(["TEXT", "SELECT", "NUMBER"] as const, {
+            error: t("validation.typeRequired"),
+        }),
+    });
+
     const createMutation = useCreateAttribute();
     const updateMutation = useUpdateAttribute();
     const isEditing = !!attributeToEdit;
@@ -92,12 +107,11 @@ export function AttributeDialog({
                 <DialogHeader>
                     <DialogTitle>
                         {isEditing
-                            ? "Cập nhật thuộc tính"
-                            : "Thêm thuộc tính mới"}
+                            ? t("editTitle")
+                            : t("addTitle")}
                     </DialogTitle>
                     <DialogDescription>
-                        Định nghĩa các thông số cho sản phẩm (Màu, Size,
-                        RAM...).
+                        {t("description")}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -111,10 +125,10 @@ export function AttributeDialog({
                             name="name"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Tên hiển thị</FormLabel>
+                                    <FormLabel>{t("nameLabel")}</FormLabel>
                                     <FormControl>
                                         <Input
-                                            placeholder="Ví dụ: Màu sắc"
+                                            placeholder={t("namePlaceholder")}
                                             {...field}
                                         />
                                     </FormControl>
@@ -129,11 +143,11 @@ export function AttributeDialog({
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>
-                                        Mã code (Dùng trong hệ thống)
+                                        {t("codeLabel")}
                                     </FormLabel>
                                     <FormControl>
                                         <Input
-                                            placeholder="Ví dụ: color, ram_size"
+                                            placeholder={t("codePlaceholder")}
                                             {...field}
                                         />
                                     </FormControl>
@@ -147,25 +161,25 @@ export function AttributeDialog({
                             name="type"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Kiểu dữ liệu</FormLabel>
+                                    <FormLabel>{t("typeLabel")}</FormLabel>
                                     <Select
                                         onValueChange={field.onChange}
                                         defaultValue={field.value}
                                     >
                                         <FormControl>
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Chọn kiểu" />
+                                                <SelectValue placeholder={t("typePlaceholder")} />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
                                             <SelectItem value="TEXT">
-                                                Text (Nhập tay)
+                                                {t("types.text")}
                                             </SelectItem>
                                             <SelectItem value="SELECT">
-                                                Select (Chọn danh sách)
+                                                {t("types.select")}
                                             </SelectItem>
                                             <SelectItem value="NUMBER">
-                                                Number (Số)
+                                                {t("types.number")}
                                             </SelectItem>
                                         </SelectContent>
                                     </Select>
@@ -180,13 +194,13 @@ export function AttributeDialog({
                                 type="button"
                                 onClick={() => onOpenChange(false)}
                             >
-                                Hủy
+                                {tCommon("cancel")}
                             </Button>
                             <Button type="submit" disabled={isLoading}>
                                 {isLoading && (
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                 )}
-                                {isEditing ? "Lưu thay đổi" : "Tạo mới"}
+                                {isEditing ? t("saveChanges") : t("create")}
                             </Button>
                         </div>
                     </form>

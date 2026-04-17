@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import {
     keepPreviousData,
     useMutation,
@@ -61,6 +62,8 @@ import ConfirmAction from "@/components/common/dialog/confirm-action";
 import { toast } from "sonner";
 
 export default function AdminUsersPage() {
+    const t = useTranslations("users");
+    const tc = useTranslations("common");
     const [pageIndex, setPageIndex] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const [sortBy, setSortBy] = useState("id");
@@ -92,10 +95,10 @@ export default function AdminUsersPage() {
         mutationFn: (id: number) => deleteUser(id),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["users"] });
-            toast.success("Đã xóa người dùng thành công");
+            toast.success(t("messages.deleteSuccess"));
         },
         onError: () => {
-            toast.error("Xóa thất bại, vui lòng thử lại");
+            toast.error(t("messages.deleteError"));
         },
     });
 
@@ -115,13 +118,13 @@ export default function AdminUsersPage() {
             case "ADMIN":
                 return (
                     <Badge className="border-red-200 bg-red-100 text-red-800 hover:bg-red-200">
-                        Admin
+                        {tc("roles.admin")}
                     </Badge>
                 );
             case "SHIPPER":
                 return (
                     <Badge className="border-blue-200 bg-blue-100 text-blue-800 hover:bg-blue-200">
-                        Shipper
+                        {tc("roles.shipper")}
                     </Badge>
                 );
             default:
@@ -130,7 +133,7 @@ export default function AdminUsersPage() {
                         variant="secondary"
                         className="bg-gray-100 text-gray-800"
                     >
-                        User
+                        {tc("roles.user")}
                     </Badge>
                 );
         }
@@ -140,8 +143,8 @@ export default function AdminUsersPage() {
         return (
             <div className="flex h-[50vh] items-center justify-center text-red-500">
                 <div className="text-center">
-                    <h3 className="text-lg font-bold">Lỗi tải dữ liệu</h3>
-                    <p>Vui lòng thử lại sau.</p>
+                    <h3 className="text-lg font-bold">{t("errors.loadData")}</h3>
+                    <p>{t("errors.tryAgain")}</p>
                 </div>
             </div>
         );
@@ -151,23 +154,25 @@ export default function AdminUsersPage() {
             <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight">
-                        Quản lý người dùng
+                        {t("title")}
                     </h1>
                     <p className="text-muted-foreground">
-                        Xem, tìm kiếm và quản lý tất cả tài khoản hệ thống.
+                        {t("subtitle")}
                     </p>
                 </div>
                 <RegisterDialog>
-                    <Button variant="default"> Thêm mới người dùng</Button>
+                    <Button variant="default"> {t("actions.addUser")}</Button>
                 </RegisterDialog>
             </div>
 
             <Card className="border-none shadow-md">
                 <CardHeader className="pb-3">
-                    <CardTitle>Danh sách tài khoản</CardTitle>
+                    <CardTitle>{t("list.title")}</CardTitle>
                     <CardDescription>
-                        Hiển thị {users.length} trên tổng số {totalElements} kết
-                        quả.
+                        {t("list.showingCount", {
+                            count: users.length,
+                            total: totalElements,
+                        })}
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -175,7 +180,7 @@ export default function AdminUsersPage() {
                         <div className="relative w-full sm:w-72">
                             <Search className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
                             <Input
-                                placeholder="Tìm theo tên, email..."
+                                placeholder={t("list.searchPlaceholder")}
                                 className="pl-9"
                                 value={searchQuery}
                                 onChange={(e) => {
@@ -187,7 +192,7 @@ export default function AdminUsersPage() {
 
                         <div className="flex items-center gap-2">
                             <span className="text-muted-foreground hidden text-sm whitespace-nowrap sm:inline">
-                                Hiển thị:
+                                {t("list.rowsPerPage")}
                             </span>
                             <Select
                                 value={pageSize.toString()}
@@ -197,13 +202,23 @@ export default function AdminUsersPage() {
                                 }}
                             >
                                 <SelectTrigger className="w-27.5">
-                                    <SelectValue placeholder="10 dòng" />
+                                    <SelectValue
+                                        placeholder={`10 ${t("list.rows")}`}
+                                    />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="5">5 dòng</SelectItem>
-                                    <SelectItem value="10">10 dòng</SelectItem>
-                                    <SelectItem value="20">20 dòng</SelectItem>
-                                    <SelectItem value="50">50 dòng</SelectItem>
+                                    <SelectItem value="5">
+                                        5 {t("list.rows")}
+                                    </SelectItem>
+                                    <SelectItem value="10">
+                                        10 {t("list.rows")}
+                                    </SelectItem>
+                                    <SelectItem value="20">
+                                        20 {t("list.rows")}
+                                    </SelectItem>
+                                    <SelectItem value="50">
+                                        50 {t("list.rows")}
+                                    </SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -214,12 +229,12 @@ export default function AdminUsersPage() {
                             <TableHeader>
                                 <TableRow className="bg-muted/50">
                                     <TableHead className="w-75">
-                                        Thông tin người dùng
+                                        {t("table.userInfo")}
                                     </TableHead>
-                                    <TableHead>Vai trò</TableHead>
-                                    <TableHead>Email</TableHead>
+                                    <TableHead>{t("table.role")}</TableHead>
+                                    <TableHead>{t("table.email")}</TableHead>
                                     <TableHead className="text-right">
-                                        Hành động
+                                        {t("table.actions")}
                                     </TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -258,8 +273,7 @@ export default function AdminUsersPage() {
                                             <div className="flex flex-col items-center justify-center gap-2">
                                                 <Filter className="h-8 w-8 text-gray-300" />
                                                 <p>
-                                                    Không tìm thấy dữ liệu phù
-                                                    hợp
+                                                    {t("list.noData")}
                                                 </p>
                                             </div>
                                         </TableCell>
@@ -315,16 +329,16 @@ export default function AdminUsersPage() {
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent align="end">
                                                         <DropdownMenuLabel>
-                                                            Thao tác
+                                                            {t("actions.menuTitle")}
                                                         </DropdownMenuLabel>
                                                         <DropdownMenuSeparator />
                                                         <DropdownMenuItem className="cursor-pointer">
                                                             <UserIcon className="text-muted-foreground mr-2 h-4 w-4" />{" "}
-                                                            Xem chi tiết
+                                                            {t("actions.viewDetails")}
                                                         </DropdownMenuItem>
                                                         <DropdownMenuItem className="cursor-pointer">
                                                             <Shield className="text-muted-foreground mr-2 h-4 w-4" />{" "}
-                                                            Phân quyền
+                                                            {t("actions.permissions")}
                                                         </DropdownMenuItem>
                                                         <DropdownMenuSeparator />
                                                         <DropdownMenuItem
@@ -334,21 +348,21 @@ export default function AdminUsersPage() {
                                                             }
                                                         >
                                                             <ConfirmAction
-                                                                title={
-                                                                    "Xóa tài khoản"
-                                                                }
-                                                                btnText={
-                                                                    "Xóa tài khoản"
-                                                                }
-                                                                description={
-                                                                    "Bạn có chắc chắn muốn xóa tài khoản này không"
-                                                                }
+                                                                title={t(
+                                                                    "actions.deleteAccount"
+                                                                )}
+                                                                btnText={t(
+                                                                    "actions.deleteAccount"
+                                                                )}
+                                                                description={t(
+                                                                    "actions.deleteConfirm"
+                                                                )}
                                                                 requiredText={
                                                                     "DELETE"
                                                                 }
-                                                                actionText={
-                                                                    "Xóa"
-                                                                }
+                                                                actionText={t(
+                                                                    "actions.delete"
+                                                                )}
                                                                 onConfirm={() =>
                                                                     handleDeleteUser(
                                                                         user.id
@@ -369,11 +383,11 @@ export default function AdminUsersPage() {
                     {!isLoading && totalElements > 0 && (
                         <div className="flex flex-col items-center justify-between gap-4 pt-4 sm:flex-row">
                             <div className="text-muted-foreground text-xs">
-                                Đang xem{" "}
+                                {t("pagination.showing")}{" "}
                                 <strong>
                                     {(pageIndex - 1) * pageSize + 1}
                                 </strong>{" "}
-                                đến{" "}
+                                {t("pagination.to")}{" "}
                                 <strong>
                                     {Math.min(
                                         pageIndex * pageSize,

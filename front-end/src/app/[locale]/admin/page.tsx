@@ -9,10 +9,14 @@ import {
     Users,
 } from "lucide-react";
 import Link from "next/link";
+import { useTranslations, useLocale } from "next-intl";
 
 export default function AdminWelcomePage() {
+    const t = useTranslations("admin");
+    const locale = useLocale();
+
     // Tự động lấy ngày hiện tại để lời chào tự nhiên hơn
-    const today = new Date().toLocaleDateString("vi-VN", {
+    const today = new Date().toLocaleDateString(locale === "vi" ? "vi-VN" : "en-US", {
         weekday: "long",
         year: "numeric",
         month: "long",
@@ -21,33 +25,33 @@ export default function AdminWelcomePage() {
 
     const stats = [
         {
-            title: "Người dùng",
+            title: t("stats.users"),
             value: "1,245",
-            description: "+12 trong tuần này",
+            description: t("stats.usersDescription"),
             icon: Users,
             color: "text-blue-600",
             bgColor: "bg-blue-600/10",
         },
         {
-            title: "Đơn hàng",
+            title: t("stats.orders"),
             value: "356",
-            description: "+5 hôm nay",
+            description: t("stats.ordersDescription"),
             icon: ShoppingCart,
             color: "text-orange-600",
             bgColor: "bg-orange-600/10",
         },
         {
-            title: "Sản phẩm",
+            title: t("stats.products"),
             value: "87",
-            description: "Đang hoạt động",
+            description: t("stats.productsDescription"),
             icon: Package,
             color: "text-emerald-600",
             bgColor: "bg-emerald-600/10",
         },
         {
-            title: "Bảo mật",
-            value: "An toàn",
-            description: "Không có cảnh báo",
+            title: t("stats.security"),
+            value: t("stats.securityValue"),
+            description: t("stats.securityDescription"),
             icon: ShieldCheck,
             color: "text-purple-600",
             bgColor: "bg-purple-600/10",
@@ -55,10 +59,10 @@ export default function AdminWelcomePage() {
     ];
 
     const quickActions = [
-        { name: "Quản lý người dùng", href: "/admin/users" },
-        { name: "Quản lý đơn hàng", href: "/admin/orders" },
-        { name: "Quản lý sản phẩm", href: "/admin/products" },
-        { name: "Cài đặt hệ thống", href: "/admin/settings" },
+        { name: t("actions.manageUsers"), href: "/admin/users" },
+        { name: t("actions.manageOrders"), href: "/admin/orders" },
+        { name: t("actions.manageProducts"), href: "/admin/products" },
+        { name: t("actions.systemSettings"), href: "/admin/settings" },
     ];
 
     return (
@@ -66,10 +70,10 @@ export default function AdminWelcomePage() {
             {/* Header / Greeting */}
             <div className="flex flex-col gap-2">
                 <h1 className="text-foreground text-3xl font-semibold tracking-tight">
-                    Chào mừng trở lại, Admin
+                    {t("welcome")}
                 </h1>
                 <p className="text-muted-foreground text-sm font-medium">
-                    {today} • Tổng quan hệ thống của bạn hôm nay.
+                    {today} • {t("overview")}
                 </p>
             </div>
 
@@ -108,7 +112,7 @@ export default function AdminWelcomePage() {
             {/* Quick Actions - Minimalist style */}
             <div className="space-y-4">
                 <h2 className="text-lg font-medium tracking-tight">
-                    Truy cập nhanh
+                    {t("quickAccess")}
                 </h2>
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     {quickActions.map((action, index) => (

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -61,6 +62,8 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 
 export default function AdminOrderManagement() {
+    const t = useTranslations("orders");
+    const commonT = useTranslations("common");
     const [searchTerm, setSearchTerm] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
     const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -143,10 +146,10 @@ export default function AdminOrderManagement() {
             <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight">
-                        Quản lý đơn hàng
+                        {t("title")}
                     </h1>
                     <p className="text-muted-foreground mt-1 text-sm">
-                        Theo dõi và xử lý các đơn đặt hàng từ hệ thống.
+                        {t("subtitle")}
                     </p>
                 </div>
             </div>
@@ -157,7 +160,7 @@ export default function AdminOrderManagement() {
                         <div className="relative w-full sm:w-80">
                             <Search className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
                             <Input
-                                placeholder="Tìm kiếm mã ĐH, khách hàng..."
+                                placeholder={t("list.searchPlaceholder")}
                                 className="bg-slate-50/50 dark:bg-slate-900/50 pl-9"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -178,7 +181,7 @@ export default function AdminOrderManagement() {
                                 <DialogTrigger asChild>
                                     <Button variant="outline" className="relative">
                                         <Filter className="mr-2 h-4 w-4" />
-                                        Bộ lọc
+                                        {t("list.filter")}
                                         {activeFilterCount > 0 && (
                                             <Badge 
                                                 variant="destructive" 
@@ -191,26 +194,26 @@ export default function AdminOrderManagement() {
                                 </DialogTrigger>
                                 <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[500px]">
                                     <DialogHeader>
-                                        <DialogTitle>Bộ lọc đơn hàng</DialogTitle>
+                                        <DialogTitle>{t("filter.title")}</DialogTitle>
                                     </DialogHeader>
                                     <div className="space-y-6 py-4">
                                         <div className="space-y-3">
-                                            <Label className="text-base font-semibold">Trạng thái đơn hàng</Label>
+                                            <Label className="text-base font-semibold">{t("filter.statusLabel")}</Label>
                                             <RadioGroup
                                                 value={tempFilters.status}
                                                 onValueChange={(value) => setTempFilters(prev => ({ ...prev, status: value }))}
                                                 className="grid grid-cols-3 gap-2"
                                             >
                                                 {[
-                                                    { label: "Tất cả", value: "ALL" },
-                                                    { label: "Chưa xác nhận", value: "PENDING" },
-                                                    { label: "Đã xác nhận", value: "CONFIRMED" },
-                                                    { label: "Đã thanh toán", value: "PAID" },
-                                                    { label: "Chưa thanh toán", value: "UNPAID" },
-                                                    { label: "Đang giao hàng", value: "SHIPPING" },
-                                                    { label: "Đã giao hàng", value: "DELIVERED" },
-                                                    { label: "Đã hủy", value: "CANCELLED" },
-                                                    { label: "Thanh toán thất bại", value: "FAILED" },
+                                                    { label: t("status.all"), value: "ALL" },
+                                                    { label: t("status.pending"), value: "PENDING" },
+                                                    { label: t("status.confirmed"), value: "CONFIRMED" },
+                                                    { label: t("status.paid"), value: "PAID" },
+                                                    { label: t("status.unpaid"), value: "UNPAID" },
+                                                    { label: t("status.shipping"), value: "SHIPPING" },
+                                                    { label: t("status.delivered"), value: "DELIVERED" },
+                                                    { label: t("status.cancelled"), value: "CANCELLED" },
+                                                    { label: t("status.failed"), value: "FAILED" },
                                                 ].map((item) => (
                                                     <div key={item.value} className="flex items-center space-x-2 rounded-md border p-2 transition-colors hover:bg-slate-50 dark:hover:bg-slate-900 dark:border-slate-800">
                                                         <RadioGroupItem value={item.value} id={`status-${item.value}`} />
@@ -223,10 +226,10 @@ export default function AdminOrderManagement() {
                                         </div>
 
                                         <div className="space-y-3 pt-2">
-                                            <Label className="text-base font-semibold">Khoảng thời gian đặt hàng</Label>
+                                            <Label className="text-base font-semibold">{t("filter.orderDateRange")}</Label>
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div className="space-y-2">
-                                                    <Label htmlFor="orderStartDate" className="text-xs text-muted-foreground">Từ ngày</Label>
+                                                    <Label htmlFor="orderStartDate" className="text-xs text-muted-foreground">{t("filter.fromDate")}</Label>
                                                     <Input 
                                                         id="orderStartDate"
                                                         type="date" 
@@ -235,7 +238,7 @@ export default function AdminOrderManagement() {
                                                     />
                                                 </div>
                                                 <div className="space-y-2">
-                                                    <Label htmlFor="orderEndDate" className="text-xs text-muted-foreground">Đến ngày</Label>
+                                                    <Label htmlFor="orderEndDate" className="text-xs text-muted-foreground">{t("filter.toDate")}</Label>
                                                     <Input 
                                                         id="orderEndDate"
                                                         type="date" 
@@ -247,10 +250,10 @@ export default function AdminOrderManagement() {
                                         </div>
 
                                         <div className="space-y-3 pt-2">
-                                            <Label className="text-base font-semibold">Khoảng thời gian giao hàng</Label>
+                                            <Label className="text-base font-semibold">{t("filter.deliveryDateRange")}</Label>
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div className="space-y-2">
-                                                    <Label htmlFor="deliveryStartDate" className="text-xs text-muted-foreground">Từ ngày</Label>
+                                                    <Label htmlFor="deliveryStartDate" className="text-xs text-muted-foreground">{t("filter.fromDate")}</Label>
                                                     <Input 
                                                         id="deliveryStartDate"
                                                         type="date" 
@@ -259,7 +262,7 @@ export default function AdminOrderManagement() {
                                                     />
                                                 </div>
                                                 <div className="space-y-2">
-                                                    <Label htmlFor="deliveryEndDate" className="text-xs text-muted-foreground">Đến ngày</Label>
+                                                    <Label htmlFor="deliveryEndDate" className="text-xs text-muted-foreground">{t("filter.toDate")}</Label>
                                                     <Input 
                                                         id="deliveryEndDate"
                                                         type="date" 
@@ -277,10 +280,10 @@ export default function AdminOrderManagement() {
                                             className="text-red-500 hover:text-red-600 hover:bg-red-50 border-red-200 dark:border-red-900/50 dark:hover:bg-red-950/20"
                                         >
                                             <RefreshCcw className="mr-2 h-4 w-4" />
-                                            Đặt lại
+                                            {commonT("reset")}
                                         </Button>
                                         <Button onClick={handleApplyFilters}>
-                                            Áp dụng bộ lọc
+                                            {t("filter.apply")}
                                         </Button>
                                     </DialogFooter>
                                 </DialogContent>
@@ -293,15 +296,15 @@ export default function AdminOrderManagement() {
                     {isLoading ? (
                         <div className="text-muted-foreground flex flex-col items-center justify-center py-10">
                             <Loader2 className="mb-2 h-8 w-8 animate-spin" />
-                            <p>Đang tải dữ liệu đơn hàng...</p>
+                            <p>{t("list.loading")}</p>
                         </div>
                     ) : isError ? (
                         <div className="text-destructive py-10 text-center">
-                            Đã xảy ra lỗi khi tải danh sách đơn hàng.
+                            {t("list.error")}
                         </div>
                     ) : orders.length === 0 ? (
                         <div className="text-muted-foreground py-10 text-center">
-                            Không tìm thấy đơn hàng nào.
+                            {t("list.noData")}
                         </div>
                     ) : (
                         <>
@@ -310,25 +313,25 @@ export default function AdminOrderManagement() {
                                     <TableHeader className="bg-slate-50 dark:bg-slate-900">
                                         <TableRow>
                                             <TableHead className="font-semibold">
-                                                Mã ĐH
+                                                {t("table.orderId")}
                                             </TableHead>
                                             <TableHead className="font-semibold">
-                                                Khách hàng
+                                                {t("table.customer")}
                                             </TableHead>
                                             <TableHead className="font-semibold">
-                                                Ngày đặt
+                                                {t("table.orderDate")}
                                             </TableHead>
                                             <TableHead className="font-semibold">
-                                                Ngày giao
+                                                {t("table.deliveryDate")}
                                             </TableHead>
                                             <TableHead className="text-right font-semibold">
-                                                Tổng tiền
+                                                {t("table.totalAmount")}
                                             </TableHead>
                                             <TableHead className="text-center font-semibold">
-                                                Trạng thái
+                                                {t("table.status")}
                                             </TableHead>
                                             <TableHead className="text-right font-semibold">
-                                                Thao tác
+                                                {t("table.actions")}
                                             </TableHead>
                                         </TableRow>
                                     </TableHeader>
@@ -347,7 +350,7 @@ export default function AdminOrderManagement() {
                                                             {order
                                                                 .deliveryAddress
                                                                 ?.userName ||
-                                                                "Khách hàng ẩn danh"}
+                                                                t("list.anonymous")}
                                                         </span>
                                                     </div>
                                                 </TableCell>
@@ -363,7 +366,7 @@ export default function AdminOrderManagement() {
                                                               order.deliveredAt,
                                                               "dd/MM/yyyy HH:mm"
                                                           )
-                                                        : "Chưa giao"}
+                                                        : t("status.notDelivered")}
                                                 </TableCell>
                                                 <TableCell className="text-primary text-right font-semibold">
                                                     {formatCurrency(
@@ -387,7 +390,7 @@ export default function AdminOrderManagement() {
                                                                 className="h-8 w-8 p-0"
                                                             >
                                                                 <span className="sr-only">
-                                                                    Mở menu
+                                                                    {t("actions.openMenu")}
                                                                 </span>
                                                                 <MoreHorizontal className="text-muted-foreground h-4 w-4" />
                                                             </Button>
@@ -397,7 +400,7 @@ export default function AdminOrderManagement() {
                                                             className="w-50"
                                                         >
                                                             <DropdownMenuLabel>
-                                                                Hành động
+                                                                {t("actions.title")}
                                                             </DropdownMenuLabel>
                                                             <DropdownMenuItem
                                                                 className="cursor-pointer"
@@ -409,7 +412,7 @@ export default function AdminOrderManagement() {
                                                                 }
                                                             >
                                                                 <Eye className="mr-2 h-4 w-4 text-blue-500" />
-                                                                Xem chi tiết
+                                                                {t("actions.viewDetails")}
                                                             </DropdownMenuItem>
                                                             <DropdownMenuItem
                                                                 className="cursor-pointer"
@@ -422,13 +425,12 @@ export default function AdminOrderManagement() {
                                                                 }
                                                             >
                                                                 <Edit className="mr-2 h-4 w-4 text-yellow-500" />
-                                                                Cập nhật trạng
-                                                                thái
+                                                                {t("actions.updateStatus")}
                                                             </DropdownMenuItem>
                                                             <DropdownMenuSeparator />
                                                             <DropdownMenuItem className="text-destructive focus:text-destructive cursor-pointer">
                                                                 <Trash2 className="mr-2 h-4 w-4" />
-                                                                Xóa đơn hàng
+                                                                {t("actions.deleteOrder")}
                                                             </DropdownMenuItem>
                                                         </DropdownMenuContent>
                                                     </DropdownMenu>
@@ -441,9 +443,11 @@ export default function AdminOrderManagement() {
 
                             <div className="flex items-center justify-between space-x-2 py-4">
                                 <div className="text-muted-foreground text-sm">
-                                    Trang <strong>{page + 1}</strong> /{" "}
-                                    <strong>{totalPages}</strong> (Tổng{" "}
-                                    {totalElements} đơn)
+                                    {t("pagination.info", {
+                                        page: page + 1,
+                                        total: totalPages,
+                                        count: totalElements,
+                                    })}
                                 </div>
                                 <div className="flex gap-2">
                                     <Button
@@ -456,7 +460,7 @@ export default function AdminOrderManagement() {
                                             )
                                         }
                                     >
-                                        Trước
+                                        {t("pagination.previous")}
                                     </Button>
                                     <Button
                                         variant="outline"
@@ -466,7 +470,7 @@ export default function AdminOrderManagement() {
                                             setPage((old) => old + 1)
                                         }
                                     >
-                                        Tiếp theo
+                                        {t("pagination.next")}
                                     </Button>
                                 </div>
                             </div>

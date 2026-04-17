@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -46,6 +47,8 @@ export function CategoryDialog({
     categoryToEdit,
     categoriesTree,
 }: CategoryDialogProps) {
+    const t = useTranslations("categories.dialog");
+    const tCommon = useTranslations("common");
     const createMutation = useCreateCategory();
     const updateMutation = useUpdateCategory();
 
@@ -113,12 +116,12 @@ export function CategoryDialog({
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>
-                        {isEditing ? "Cập nhật danh mục" : "Thêm danh mục mới"}
+                        {isEditing ? t("editTitle") : t("addTitle")}
                     </DialogTitle>
                     <DialogDescription>
                         {isEditing
-                            ? "Chỉnh sửa thông tin danh mục"
-                            : "Tạo danh mục mới vào hệ thống"}
+                            ? t("editDescription")
+                            : t("addDescription")}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -132,10 +135,10 @@ export function CategoryDialog({
                             name="name"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Tên danh mục</FormLabel>
+                                    <FormLabel>{t("nameLabel")}</FormLabel>
                                     <FormControl>
                                         <Input
-                                            placeholder="Ví dụ: Laptop"
+                                            placeholder={t("namePlaceholder")}
                                             {...field}
                                         />
                                     </FormControl>
@@ -149,14 +152,14 @@ export function CategoryDialog({
                             name="parentId"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Danh mục cha</FormLabel>
+                                    <FormLabel>{t("parentLabel")}</FormLabel>
                                     <Select
                                         onValueChange={field.onChange}
                                         value={field.value}
                                     >
                                         <FormControl>
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Chọn danh mục cha" />
+                                                <SelectValue placeholder={t("parentPlaceholder")} />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
@@ -164,7 +167,7 @@ export function CategoryDialog({
                                                 value="root"
                                                 className="font-semibold text-blue-600 dark:text-blue-400"
                                             >
-                                                Danh mục gốc
+                                                {t("rootOption")}
                                             </SelectItem>
                                             {renderCategoryOptions(
                                                 categoriesTree
@@ -182,7 +185,7 @@ export function CategoryDialog({
                                 type="button"
                                 onClick={() => onOpenChange(false)}
                             >
-                                Hủy
+                                {tCommon("cancel")}
                             </Button>
                             <Button
                                 type="submit"
@@ -192,7 +195,7 @@ export function CategoryDialog({
                                 {isLoading && (
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                 )}
-                                {isEditing ? "Lưu thay đổi" : "Tạo mới"}
+                                {isEditing ? t("saveChanges") : t("create")}
                             </Button>
                         </div>
                     </form>

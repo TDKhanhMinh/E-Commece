@@ -1,5 +1,6 @@
 "use client";
 import React, { memo, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { PlusCircle, Trash2 } from "lucide-react";
 
 import {
@@ -29,6 +30,7 @@ interface ProductSpecsProps {
 
 export const ProductSpecs = memo(
     ({ control, attributes }: ProductSpecsProps) => {
+        const t = useTranslations("products.form.specs");
         const { fields, append, remove } = useFieldArray({
             control,
             name: "specs",
@@ -61,10 +63,10 @@ export const ProductSpecs = memo(
                 <CardContent className="space-y-5 pt-6">
                     <div className="flex items-center justify-between">
                         <h3 className="text-lg font-semibold">
-                            Thông số kỹ thuật
+                            {t("title")}
                             {fields.length > 0 && (
                                 <span className="text-muted-foreground ml-2 text-sm font-normal">
-                                    ({fields.length} thông số)
+                                    {t("count", { count: fields.length })}
                                 </span>
                             )}
                         </h3>
@@ -74,7 +76,7 @@ export const ProductSpecs = memo(
                             onClick={handleAddSpec}
                         >
                             <PlusCircle className="mr-2 h-4 w-4" />
-                            Thêm thông số
+                            {t("add")}
                         </Button>
                     </div>
 
@@ -95,10 +97,10 @@ export const ProductSpecs = memo(
                                     render={({ field }) => (
                                         <FormItem className="w-1/3">
                                             <FormLabel className="flex items-center gap-2">
-                                                Thuộc tính
+                                                {t("attribute")}
                                                 {isInitial && (
                                                     <Badge variant="secondary">
-                                                        Có sẵn
+                                                        {t("available")}
                                                     </Badge>
                                                 )}
                                             </FormLabel>
@@ -109,7 +111,7 @@ export const ProductSpecs = memo(
                                             >
                                                 <FormControl>
                                                     <SelectTrigger>
-                                                        <SelectValue placeholder="Tên thông số" />
+                                                        <SelectValue placeholder={t("placeholder")} />
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
@@ -132,7 +134,7 @@ export const ProductSpecs = memo(
                                     name={`specs.${actualIndex}.value`}
                                     render={({ field }) => (
                                         <FormItem className="flex-1">
-                                            <FormLabel>Giá trị</FormLabel>
+                                            <FormLabel>{t("value")}</FormLabel>
                                             <FormControl>
                                                 <Input
                                                     {...field}
@@ -162,10 +164,10 @@ export const ProductSpecs = memo(
                     {fields.length === 0 && (
                         <div className="flex flex-col items-center justify-center rounded-lg border border-dashed dark:border-slate-800 p-8 text-center">
                             <p className="text-muted-foreground text-sm">
-                                Chưa có thông số kỹ thuật nào.
+                                {t("empty")}
                             </p>
                             <p className="text-muted-foreground mt-1 text-xs">
-                                Nhấn "Thêm thông số" để bắt đầu.
+                                {t("emptySubtitle")}
                             </p>
                         </div>
                     )}
@@ -174,7 +176,10 @@ export const ProductSpecs = memo(
                     {totalPages > 1 && (
                         <div className="flex items-center justify-between border-t dark:border-slate-800 pt-4">
                             <div className="text-muted-foreground text-sm">
-                                Trang {currentPage} / {totalPages}
+                                {t("pagination.info", {
+                                    current: currentPage,
+                                    total: totalPages,
+                                })}
                             </div>
                             <div className="flex gap-2">
                                 <Button
@@ -184,7 +189,7 @@ export const ProductSpecs = memo(
                                     onClick={() => setCurrentPage(1)}
                                     disabled={currentPage === 1}
                                 >
-                                    Đầu
+                                    {t("pagination.first")}
                                 </Button>
                                 <Button
                                     type="button"
@@ -197,7 +202,7 @@ export const ProductSpecs = memo(
                                     }
                                     disabled={currentPage === 1}
                                 >
-                                    Trước
+                                    {t("pagination.previous")}
                                 </Button>
                                 <Button
                                     type="button"
@@ -210,7 +215,7 @@ export const ProductSpecs = memo(
                                     }
                                     disabled={currentPage === totalPages}
                                 >
-                                    Sau
+                                    {t("pagination.next")}
                                 </Button>
                                 <Button
                                     type="button"
@@ -219,7 +224,7 @@ export const ProductSpecs = memo(
                                     onClick={() => setCurrentPage(totalPages)}
                                     disabled={currentPage === totalPages}
                                 >
-                                    Cuối
+                                    {t("pagination.last")}
                                 </Button>
                             </div>
                         </div>

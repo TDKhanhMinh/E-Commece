@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight, Edit, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,6 +24,7 @@ interface SkuTableProps {
 const PAGE_SIZE = 5;
 
 export function SkuTable({ product, onEdit, onToggleActive }: SkuTableProps) {
+    const t = useTranslations("products.sku.table");
     const deleteSkuMutation = useDeleteSku(product.id);
     const [page, setPage] = useState(1);
 
@@ -39,14 +41,16 @@ export function SkuTable({ product, onEdit, onToggleActive }: SkuTableProps) {
             <Table>
                 <TableHeader>
                     <TableRow>
-                        <TableHead>Mã SKU</TableHead>
-                        <TableHead>Ảnh</TableHead>
-                        <TableHead>Thuộc tính</TableHead>
-                        <TableHead>Giá gốc</TableHead>
-                        <TableHead>Giảm giá</TableHead>
-                        <TableHead>Giá bán</TableHead>
-                        <TableHead>Kho</TableHead>
-                        <TableHead className="text-right">Hành động</TableHead>
+                        <TableHead>{t("code")}</TableHead>
+                        <TableHead>{t("image")}</TableHead>
+                        <TableHead>{t("attributes")}</TableHead>
+                        <TableHead>{t("originalPrice")}</TableHead>
+                        <TableHead>{t("discount")}</TableHead>
+                        <TableHead>{t("salePrice")}</TableHead>
+                        <TableHead>{t("stock")}</TableHead>
+                        <TableHead className="text-right">
+                            {useTranslations("products.table")("actions")}
+                        </TableHead>
                     </TableRow>
                 </TableHeader>
 
@@ -57,7 +61,7 @@ export function SkuTable({ product, onEdit, onToggleActive }: SkuTableProps) {
                                 colSpan={8}
                                 className="text-muted-foreground text-center text-sm"
                             >
-                                Không có SKU nào
+                                {t("empty")}
                             </TableCell>
                         </TableRow>
                     )}
@@ -178,7 +182,10 @@ export function SkuTable({ product, onEdit, onToggleActive }: SkuTableProps) {
             {totalPages > 1 && (
                 <div className="flex items-center justify-between">
                     <span className="text-muted-foreground text-sm">
-                        Trang {page} / {totalPages}
+                        {useTranslations("products")("pagination.pageInfo", {
+                            current: page,
+                            total: totalPages,
+                        })}
                     </span>
 
                     <div className="flex gap-2">

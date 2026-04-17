@@ -1,5 +1,6 @@
 "use client";
 import { memo } from "react";
+import { useTranslations } from "next-intl";
 import { Control } from "react-hook-form";
 
 import {
@@ -29,6 +30,7 @@ interface ProductGeneralInfoProps {
 
 export const ProductGeneralInfo = memo(
     ({ control, categories, brands }: ProductGeneralInfoProps) => {
+        const t = useTranslations("products.form.general");
         return (
             <Card className="dark:bg-slate-950 dark:border-slate-800">
                 <CardContent className="grid grid-cols-2 gap-6 pt-6">
@@ -37,7 +39,7 @@ export const ProductGeneralInfo = memo(
                         name="name"
                         render={({ field }) => (
                             <FormItem className="col-span-2">
-                                <FormLabel>Tên sản phẩm</FormLabel>
+                                <FormLabel>{t("name")}</FormLabel>
                                 <FormControl>
                                     <Input {...field} />
                                 </FormControl>
@@ -51,7 +53,7 @@ export const ProductGeneralInfo = memo(
                         name="categoryId"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Danh mục</FormLabel>
+                                <FormLabel>{t("category")}</FormLabel>
                                 <Select
                                     key={field.value}
                                     onValueChange={field.onChange}
@@ -59,7 +61,7 @@ export const ProductGeneralInfo = memo(
                                 >
                                     <FormControl>
                                         <SelectTrigger className="w-full">
-                                            <SelectValue placeholder="Chọn danh mục" />
+                                            <SelectValue placeholder={t("categoryPlaceholder")} />
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
@@ -83,7 +85,7 @@ export const ProductGeneralInfo = memo(
                         name="brandId"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Thương hiệu</FormLabel>
+                                <FormLabel>{t("brand")}</FormLabel>
                                 <Select
                                     key={field.value}
                                     onValueChange={field.onChange}
@@ -91,7 +93,7 @@ export const ProductGeneralInfo = memo(
                                 >
                                     <FormControl>
                                         <SelectTrigger className="w-full">
-                                            <SelectValue placeholder="Chọn thương hiệu" />
+                                            <SelectValue placeholder={t("brandPlaceholder")} />
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
@@ -115,7 +117,7 @@ export const ProductGeneralInfo = memo(
                         name="description"
                         render={({ field }) => (
                             <FormItem className="col-span-2">
-                                <FormLabel>Mô tả</FormLabel>
+                                <FormLabel>{t("description")}</FormLabel>
                                 <FormControl>
                                     <Textarea {...field} className="h-32" />
                                 </FormControl>

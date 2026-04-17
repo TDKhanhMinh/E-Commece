@@ -13,9 +13,25 @@ import {
 } from "../../ui/sidebar";
 import { cn } from "@/lib/utils";
 import { USER_SIDEBAR_ITEMS } from "../../../../mock";
+import { useTranslations } from "next-intl";
+
+const titleToKeyMap: Record<string, string> = {
+    Profile: "profile",
+    Memberships: "memberships",
+    "Delivery Addresses": "addresses",
+    Orders: "orders",
+    "Payment Methods": "payments",
+    "Help & Support": "support",
+    "Change Password": "changePassword",
+    "Terms & Conditions": "terms",
+    "Privacy Policy": "privacy",
+    Settings: "settings",
+};
 
 function SidebarUser() {
-    const { toggleSidebar, state } = useSidebar();
+    const { toggleSidebar } = useSidebar();
+    const t = useTranslations("sidebar");
+
     return (
         <>
             <Sidebar collapsible="icon" className="h-screen">
@@ -33,7 +49,7 @@ function SidebarUser() {
 
                                 <div className="grid flex-1 text-left text-sm leading-tight">
                                     <span className="truncate font-semibold">
-                                        User profile
+                                        {t("user")}
                                     </span>
                                 </div>
                             </SidebarMenuButton>
@@ -55,7 +71,7 @@ function SidebarUser() {
                                             >
                                                 <item.icon className="h-5 w-5" />
                                                 <span className="text-sm font-medium">
-                                                    {item.title}
+                                                    {t(titleToKeyMap[item.title] || item.title)}
                                                 </span>
                                             </a>
                                         </SidebarMenuButton>

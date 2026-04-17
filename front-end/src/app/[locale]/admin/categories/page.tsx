@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import {
     FolderTree,
     MoreHorizontal,
@@ -45,6 +46,7 @@ import { Category } from "@/type/category-type";
 import { PageResponse } from "@/type/api-type";
 
 export default function CategoriesPage() {
+    const t = useTranslations("categories");
     const [keyword, setKeyword] = useState("");
     const [currentPage, setCurrentPage] = useState(0); // Backend uses 0-based
     const itemsPerPage = 10;
@@ -115,10 +117,10 @@ export default function CategoriesPage() {
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h1 className="text-2xl font-semibold tracking-tight">
-                        Danh mục sản phẩm
+                        {t("title")}
                     </h1>
                     <p className="text-muted-foreground text-sm">
-                        Quản lý cấu trúc danh mục và phân cấp
+                        {t("description")}
                     </p>
                 </div>
             </div>
@@ -128,7 +130,7 @@ export default function CategoriesPage() {
                 <div className="flex max-w-sm items-center space-x-2 rounded-md border dark:border-slate-800 bg-white dark:bg-slate-900 px-2 shadow-sm">
                     <Search className="ml-2 h-4 w-4 text-gray-500" />
                     <Input
-                        placeholder="Tìm theo tên danh mục..."
+                        placeholder={t("searchPlaceholder")}
                         value={keyword}
                         onChange={(e) => handleSearchChange(e.target.value)}
                         className="border-none shadow-none focus-visible:ring-0"
@@ -137,7 +139,7 @@ export default function CategoriesPage() {
 
                 <Button onClick={handleCreate} className="gap-2">
                     <Plus className="h-4 w-4" />
-                    Thêm danh mục
+                    {t("addCategory")}
                 </Button>
             </div>
             <Card className="border-muted dark:border-slate-800 shadow-sm dark:bg-slate-900/50">
@@ -146,12 +148,12 @@ export default function CategoriesPage() {
                         <TableHeader>
                             <TableRow className="bg-muted/50 dark:bg-slate-800/50">
                                 <TableHead className="w-105">
-                                    Tên danh mục
+                                    {t("table.name")}
                                 </TableHead>
-                                <TableHead>Slug</TableHead>
-                                <TableHead>Cấp độ</TableHead>
+                                <TableHead>{t("table.slug")}</TableHead>
+                                <TableHead>{t("table.level")}</TableHead>
                                 <TableHead className="text-right">
-                                    Hành động
+                                    {t("table.actions")}
                                 </TableHead>
                             </TableRow>
                         </TableHeader>
@@ -172,7 +174,7 @@ export default function CategoriesPage() {
                                         colSpan={4}
                                         className="text-muted-foreground h-24 text-center text-sm"
                                     >
-                                        Chưa có danh mục nào
+                                        {t("table.empty")}
                                     </TableCell>
                                 </TableRow>
                             )}
@@ -213,8 +215,10 @@ export default function CategoriesPage() {
                                                 }
                                             >
                                                 {category.level === 0
-                                                    ? "Gốc"
-                                                    : `Cấp ${category.level}`}
+                                                    ? t("table.root")
+                                                    : t("table.levelText", {
+                                                          level: category.level,
+                                                      })}
                                             </Badge>
                                         </TableCell>
 
@@ -231,7 +235,7 @@ export default function CategoriesPage() {
 
                                                 <DropdownMenuContent align="end">
                                                     <DropdownMenuLabel>
-                                                        Thao tác
+                                                        {t("table.operations")}
                                                     </DropdownMenuLabel>
 
                                                     <DropdownMenuItem
@@ -240,7 +244,7 @@ export default function CategoriesPage() {
                                                         }
                                                     >
                                                         <Pencil className="mr-2 h-4 w-4" />
-                                                        Chỉnh sửa
+                                                        {t("table.edit")}
                                                     </DropdownMenuItem>
 
                                                     <DropdownMenuItem
@@ -251,11 +255,19 @@ export default function CategoriesPage() {
                                                     >
                                                         <Trash2 className="mr-2 h-4 w-4" />
                                                         <ConfirmAction
-                                                            title="Delete Category"
-                                                            btnText="Xóa"
-                                                            description="Hành động này không thể hoàn tác"
+                                                            title={t(
+                                                                "table.delete.confirmTitle"
+                                                            )}
+                                                            btnText={t(
+                                                                "table.delete.btnText"
+                                                            )}
+                                                            description={t(
+                                                                "table.delete.description"
+                                                            )}
                                                             requiredText="DELETE"
-                                                            actionText="Xóa vĩnh viễn"
+                                                            actionText={t(
+                                                                "table.delete.actionText"
+                                                            )}
                                                             isPending={
                                                                 deleteMutation.isPending
                                                             }

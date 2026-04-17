@@ -9,11 +9,14 @@ interface ChatHeaderProps {
     connectionError?: string | null;
 }
 
+import { useTranslations } from "next-intl";
+
 export const ChatHeader: React.FC<ChatHeaderProps> = ({
     selectedUserName,
     isConnected,
     connectionError,
 }) => {
+    const t = useTranslations("chat");
     return (
         <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4">
             <div className="flex items-center gap-3">
@@ -42,10 +45,10 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
                             }`}
                         >
                             {connectionError
-                                ? "Lỗi kết nối"
+                                ? t("error")
                                 : isConnected
-                                  ? "Đang trực tuyến"
-                                  : "Đang kết nối..."}
+                                  ? t("status.online")
+                                  : t("status.connecting")}
                         </p>
                     </div>
                 </div>

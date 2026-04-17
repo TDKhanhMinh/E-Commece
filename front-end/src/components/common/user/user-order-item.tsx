@@ -18,6 +18,8 @@ import { UserOrderItemProps } from "@/type/order-type";
 import { ChevronRight, CreditCard, Hash } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
+import { useTranslations } from "next-intl";
+
 export function UserOrderItem({
     id,
     title,
@@ -28,6 +30,7 @@ export function UserOrderItem({
     handleCancelOrder,
 }: UserOrderItemProps) {
     const router = useRouter();
+    const t = useTranslations("common.user.order");
 
     return (
         <div
@@ -63,7 +66,7 @@ export function UserOrderItem({
                 <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
                     <div className="flex items-center gap-1.5">
                         <CreditCard className="size-3.5" />
-                        <span>Thanh toán:</span>
+                        <span>{t("paymentLabel")}</span>
                         <span className="font-bold text-emerald-600 dark:text-emerald-400">
                             {price}
                         </span>
@@ -75,7 +78,7 @@ export function UserOrderItem({
             <div className="flex flex-col items-start gap-4 border-t border-slate-50 pt-4 dark:border-slate-800 md:items-end md:border-none md:pt-0">
                 <div className="hidden items-center gap-1 text-gray-700 dark:text-slate-400 md:flex">
                     <span className="text-[11px] font-medium tracking-wide uppercase">
-                        Chi tiết
+                        {t("viewDetails")}
                     </span>
                     <ChevronRight className="size-4 transition-transform group-hover:translate-x-1" />
                 </div>
@@ -94,7 +97,7 @@ export function UserOrderItem({
                                     className="h-9 w-full rounded-lg border border-rose-100 bg-rose-50 px-4 text-xs font-semibold text-rose-600 transition-all hover:bg-rose-600 hover:text-white dark:border-rose-900/30 dark:bg-rose-900/20 dark:text-rose-400 dark:hover:bg-rose-600 dark:hover:text-white"
                                     disabled={isCancelling}
                                 >
-                                    Hủy đơn
+                                    {t("cancelBtn")}
                                 </Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent
@@ -103,23 +106,21 @@ export function UserOrderItem({
                             >
                                 <AlertDialogHeader>
                                     <AlertDialogTitle className="text-xl font-semibold text-slate-900 dark:text-slate-100">
-                                        Xác nhận hủy đơn hàng?
+                                        {t("cancelTitle")}
                                     </AlertDialogTitle>
                                     <AlertDialogDescription className="text-sm text-slate-500 dark:text-slate-400">
-                                        Hành động này không thể hoàn tác. Số
-                                        tiền (nếu đã thanh toán) sẽ được xử lý
-                                        theo chính sách hoàn tiền.
+                                        {t("cancelDesc")}
                                     </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter className="mt-4 gap-2">
                                     <AlertDialogCancel className="rounded-xl border-none bg-slate-100 font-medium dark:bg-slate-800 dark:text-slate-100">
-                                        Bỏ qua
+                                        {t("ignore")}
                                     </AlertDialogCancel>
                                     <AlertDialogAction
                                         onClick={() => handleCancelOrder(id)}
                                         className="rounded-xl bg-rose-600 font-medium text-white hover:bg-rose-700"
                                     >
-                                        Xác nhận hủy
+                                        {t("confirmCancel")}
                                     </AlertDialogAction>
                                 </AlertDialogFooter>
                             </AlertDialogContent>

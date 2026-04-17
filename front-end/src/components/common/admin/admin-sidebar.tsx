@@ -13,9 +13,31 @@ import {
 } from "../../ui/sidebar";
 import { cn } from "@/lib/utils";
 import { ADMIN_SIDEBAR_ITEMS } from "../../../../mock";
+import { useTranslations } from "next-intl";
+
+const titleToKeyMap: Record<string, string> = {
+    Dashboard: "dashboard",
+    "Reports & Analytics": "reports",
+    Users: "users",
+    Orders: "orders",
+    Products: "products",
+    Categories: "categories",
+    Brands: "brands",
+    Attributes: "attributes",
+    Vouchers: "vouchers",
+    Shipping: "shipping",
+    Transactions: "transactions",
+    "Chat Support": "chat",
+    "Comments & Reviews": "reviews",
+    "Roles & Permissions": "roles",
+    "System Logs": "logs",
+    Settings: "settings",
+};
 
 function AdminSidebar() {
     const { toggleSidebar } = useSidebar();
+    const t = useTranslations("sidebar");
+
     return (
         <>
             <Sidebar collapsible="icon" className="h-screen">
@@ -33,7 +55,7 @@ function AdminSidebar() {
 
                                 <div className="grid flex-1 text-left text-sm leading-tight">
                                     <span className="truncate font-semibold">
-                                        Admin Dashboard
+                                        {t("admin")}
                                     </span>
                                 </div>
                             </SidebarMenuButton>
@@ -55,7 +77,7 @@ function AdminSidebar() {
                                             >
                                                 <item.icon className="h-5 w-5" />
                                                 <span className="text-sm font-medium">
-                                                    {item.title}
+                                                    {t(titleToKeyMap[item.title] || item.title)}
                                                 </span>
                                             </a>
                                         </SidebarMenuButton>
