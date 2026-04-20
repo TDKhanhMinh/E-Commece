@@ -72,6 +72,7 @@
         },
         "user": {
             "logout": "Log out",
+            "logoutSuccess": "Logged out successfully!",
             "address": {
                 "default": "Default Address",
                 "edit": "Edit",
@@ -94,7 +95,12 @@
                 "save": "Save Address",
                 "addSuccess": "Address added successfully!",
                 "addError": "Failed to add address",
-                "editSuccess": "Address updated successfully!"
+                "editError": "Failed to edit address",
+                "editSuccess": "Address updated successfully!",
+                "cancel": "Cancel",
+                "deleteConfirm": "Delete address?",
+                "deleteConfirmDesc": "This action cannot be undone. Are you sure you want to delete?",
+                "saving": "Saving..."
             },
             "order": {
                 "paymentLabel": "Payment:",

@@ -11,6 +11,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { useRouter } from "@/i18n/routing";
 import { MOCK_USER_ACTIONS } from "../../../../mock";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 
 const titleToKeyMap: Record<string, string> = {
     Profile: "profile",
@@ -61,6 +62,7 @@ export function UserAvatar() {
                     onClick={() => {
                         logout();
                         localStorage.clear();
+                        toast.success(tUser("logoutSuccess"));
                         router.push("/");
                     }}
                 >

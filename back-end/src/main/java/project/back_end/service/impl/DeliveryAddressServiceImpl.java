@@ -55,6 +55,14 @@ public class DeliveryAddressServiceImpl implements DeliveryAddressService {
             throw new AppException(ErrorCode.UNAUTHORIZED);
         }
 
+        List<DeliveryAddress> userAddresses = deliveryAddressRepository.findByUserId(currentUser.getId());
+
+        if (userAddresses.size() == 1 && Boolean.TRUE.equals(existingAddress.getIsDefault())) {
+            if (Boolean.FALSE.equals(request.getIsDefault())) {
+                throw new AppException(ErrorCode.AT_LEAST_ONE_DEFAULT_ADDRESS_REQUIRED);
+            }
+        }
+
         if (Boolean.TRUE.equals(request.getIsDefault())) {
             Optional<DeliveryAddress> oldDefault = deliveryAddressRepository
                     .findByUserAndIsDefaultTrue(currentUser);

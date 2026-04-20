@@ -56,6 +56,7 @@ export function AddressCard({
                         phoneNumber={phone}
                         userName={name}
                         location={address}
+                        isDefault={isDefault}
                     />
 
                     <ConfirmAction

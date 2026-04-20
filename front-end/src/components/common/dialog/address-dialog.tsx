@@ -39,6 +39,7 @@ interface AddressDialogProps {
     title: string;
     type?: "add" | "edit";
     addressId: number;
+    isDefault?: boolean;
 }
 export function AddressDialog({
     phoneNumber,
@@ -50,6 +51,7 @@ export function AddressDialog({
     title,
     type,
     addressId,
+    isDefault,
 }: AddressDialogProps) {
     const [open, setOpen] = useState(false);
     const t = useTranslations("common.user.address");
@@ -69,7 +71,7 @@ export function AddressDialog({
             location: location || "",
             userName: userName || "",
             phoneNumber: phoneNumber || "",
-            isDefault: false,
+            isDefault:isDefault? true:false ,
             latitude: latitude || "",
             longitude: longitude || "",
         },
@@ -86,6 +88,7 @@ export function AddressDialog({
             if (type === "add") {
                 return addDeliveryAddress(payload);
             }
+            console.log("Edit payload ", payload);
             return updateDeliveryAddress(addressId, payload);
         },
         onSuccess: () => {
@@ -96,7 +99,11 @@ export function AddressDialog({
         },
         onError: (error) => {
             console.error("Error updating user:", error);
-            toast.error(t("addError"));
+            if(type === "add"){
+                toast.error(t("addError"));
+            }else{
+                toast.error(t("editError"));
+            }
         },
     });
     const mutationEdit = useMutation({

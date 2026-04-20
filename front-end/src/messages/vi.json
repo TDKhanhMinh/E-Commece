@@ -72,6 +72,7 @@
         },
         "user": {
             "logout": "Đăng xuất",
+            "logoutSuccess": "Đăng xuất thành công!",
             "address": {
                 "default": "Địa chỉ mặc định",
                 "edit": "Chỉnh sửa",
@@ -94,7 +95,12 @@
                 "save": "Lưu địa chỉ",
                 "addSuccess": "Thêm địa chỉ thành công!",
                 "addError": "Thêm địa chỉ thất bại",
-                "editSuccess": "Chỉnh sửa địa chỉ thành công!"
+                "editSuccess": "Chỉnh sửa địa chỉ thành công!",
+                "editError": "Chỉnh sửa địa chỉ thất bại",
+                "cancel": "Hủy",
+                "deleteConfirm": "Xóa địa chỉ?",
+                "deleteConfirmDesc": "Hành động này không thể hoàn tác. Bạn có chắc chắn muốn xóa không?",
+                "saving": "Đang lưu..."
             },
             "order": {
                 "paymentLabel": "Thanh toán:",
@@ -105,6 +111,9 @@
                 "ignore": "Bỏ qua",
                 "confirmCancel": "Xác nhận hủy"
             }
+        },
+        "navigation": {
+            "back": "Quay lại trang trước"
         },
         "registerDialog": {
             "trigger": "Thêm người dùng mới",

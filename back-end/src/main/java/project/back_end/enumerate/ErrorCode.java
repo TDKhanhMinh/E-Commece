@@ -28,7 +28,7 @@ public enum ErrorCode {
     SAME_PASSWORD(400, "The new password must be different from the current password"),
     USER_ALREADY_EXISTS(409, "A user with this email already exists"),
     USER_NOT_SHIPPER(400, "The user is not a shipper or does not have a shipper profile"),
-
+    AT_LEAST_ONE_DEFAULT_ADDRESS_REQUIRED(400, "At least one default delivery address is required"),
     /* =========================
      * PRODUCT / CATALOG
      * ========================= */
@@ -119,7 +119,7 @@ public enum ErrorCode {
     INSUFFICIENT_BALANCE(400, "Insufficient balance for withdrawal"),
     INVALID_WITHDRAW_AMOUNT(400, "Withdrawal amount must be greater than zero"),
     PENDING_WITHDRAWAL_EXISTS(400, "You already have a pending withdrawal request"),
-    
+
     /* =========================
      * REVIEW / RATING
      * ========================= */
