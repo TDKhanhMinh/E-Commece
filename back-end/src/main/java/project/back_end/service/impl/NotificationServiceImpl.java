@@ -20,7 +20,6 @@ import project.back_end.service.NotificationService;
 
 import java.util.List;
 
-
 @Service
 @AllArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
@@ -40,15 +39,18 @@ public class NotificationServiceImpl implements NotificationService {
                     .setNotification(notification)
                     .setToken(targetToken)
                     .build();
-
+            System.out.print("Sending FCM notification to token: " + targetToken);
             return FirebaseMessaging.getInstance().send(message);
         } catch (Exception e) {
             String errorMsg = e.getMessage();
             if (errorMsg != null && errorMsg.contains("PERMISSION_DENIED")) {
-                System.err.println("❌ FCM PERMISSION ERROR: Service account lacks 'cloudmessaging.messages.create' permission.");
-                System.err.println("   Fix: Add 'Firebase Cloud Messaging Admin' role to the service account in Google Cloud Console.");
+                System.err.println(
+                        "❌ FCM PERMISSION ERROR: Service account lacks 'cloudmessaging.messages.create' permission.");
+                System.err.println(
+                        "   Fix: Add 'Firebase Cloud Messaging Admin' role to the service account in Google Cloud Console.");
                 System.err.println("   Project: native-app-shipping");
-                System.err.println("   Service Account: firebase-adminsdk-fbsvc@native-app-shipping.iam.gserviceaccount.com");
+                System.err.println(
+                        "   Service Account: firebase-adminsdk-fbsvc@native-app-shipping.iam.gserviceaccount.com");
             } else if (errorMsg != null && errorMsg.contains("invalid-argument")) {
                 System.err.println("❌ FCM ERROR: Invalid device token or message format.");
             } else {
@@ -56,6 +58,22 @@ public class NotificationServiceImpl implements NotificationService {
             }
             e.printStackTrace();
             return null;
+        }
+    }
+
+    @Override
+    public void sendAndSaveNotificationToUser(User user, String title, String body, NotificationType type) {
+        project.back_end.entity.Notification notification = new project.back_end.entity.Notification();
+        notification.setUser(user);
+        notification.setTitle(title);
+        notification.setMessage(body);
+        notification.setType(type);
+        notification.setIsRead(false);
+        notificationRepository.save(notification);
+        System.out.print("Saving notification to user: " + user.getEmail());
+        if (user.getDeviceToken() != null && !user.getDeviceToken().isEmpty()) {
+            sendNotification(user.getDeviceToken(), title, body);
+            System.out.print("Sending notification to user: " + user.getEmail());
         }
     }
 
@@ -72,36 +90,59 @@ public class NotificationServiceImpl implements NotificationService {
     public Page<NotificationResponse> getNotificationsForUser(String email, Pageable pageable, String type) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-        ShipperProfile shipperProfile = user.getShipperProfile();
-        if (shipperProfile == null) {
-            throw new AppException(ErrorCode.SHIPPER_PROFILE_NOT_FOUND);
-        }
-        if (!type.equals("ALL")) {
-            NotificationType notificationType = parseNotificationType(type);
 
-            return notificationRepository.getNotificationByShipperProfileAndType(shipperProfile, notificationType, pageable)
+        if (user.getRole() == User.Role.SHIPPER) {
+            ShipperProfile shipperProfile = user.getShipperProfile();
+            if (shipperProfile == null) {
+                throw new AppException(ErrorCode.SHIPPER_PROFILE_NOT_FOUND);
+            }
+            if (type != null && !"ALL".equalsIgnoreCase(type)) {
+                NotificationType notificationType = parseNotificationType(type);
+                return notificationRepository
+                        .getNotificationByShipperProfileAndType(shipperProfile, notificationType, pageable)
+                        .map(notificationMapper::toNotificationResponse);
+            }
+            return notificationRepository.getNotificationByShipperProfile(shipperProfile, pageable)
+                    .map(notificationMapper::toNotificationResponse);
+        } else {
+            if (type != null && !"ALL".equalsIgnoreCase(type)) {
+                NotificationType notificationType = parseNotificationType(type);
+                return notificationRepository.getNotificationByUserAndType(user, notificationType, pageable)
+                        .map(notificationMapper::toNotificationResponse);
+            }
+            return notificationRepository.getNotificationByUser(user, pageable)
                     .map(notificationMapper::toNotificationResponse);
         }
-        return notificationRepository.getNotificationByShipperProfile(shipperProfile, pageable)
-                .map(notificationMapper::toNotificationResponse);
-
     }
 
     @Override
     public void markAllNotificationsAsRead(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-        ShipperProfile shipperProfile = user.getShipperProfile();
-        if (shipperProfile == null) {
-            throw new AppException(ErrorCode.SHIPPER_PROFILE_NOT_FOUND);
+
+        if (user.getRole() == User.Role.SHIPPER) {
+            ShipperProfile shipperProfile = user.getShipperProfile();
+            if (shipperProfile == null) {
+                throw new AppException(ErrorCode.SHIPPER_PROFILE_NOT_FOUND);
+            }
+
+            List<project.back_end.entity.Notification> notifications = shipperProfile.getNotifications();
+            if (notifications != null) {
+                notifications.forEach(notification -> {
+                    notification.setIsRead(true);
+                    notificationRepository.save(notification);
+                    System.out.print("Marking notification as read: " + notification.getId());
+                });
+            }
+        } else {
+            List<project.back_end.entity.Notification> notifications = user.getNotifications();
+            if (notifications != null) {
+                notifications.forEach(notification -> {
+                    notification.setIsRead(true);
+                    notificationRepository.save(notification);
+                });
+            }
         }
-
-        List<project.back_end.entity.Notification> notifications = shipperProfile.getNotifications();
-
-        notifications.forEach(notification -> {
-            notification.setIsRead(true);
-            notificationRepository.save(notification);
-        });
     }
 
     @Override

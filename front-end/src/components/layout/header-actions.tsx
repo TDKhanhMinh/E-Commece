@@ -11,6 +11,7 @@ import {
 import { Menu, Moon, ShoppingCart, Sun, User } from "lucide-react";
 import { SheetTrigger } from "../ui/sheet";
 import { UserAvatar } from "@/components/common";
+import { NotificationDropdown } from "./notification-dropdown";
 import { useTranslations } from "next-intl";
 
 interface HeaderActionsProps {
@@ -106,7 +107,10 @@ export function HeaderActions({
             )}
 
             {isAuthenticated ? (
-                <UserAvatar />
+                <>
+                    <NotificationDropdown />
+                    <UserAvatar />
+                </>
             ) : (
                 <Link href="/login" className="hidden md:block">
                     <Button

@@ -17,7 +17,8 @@ public class FirebaseConfig {
             InputStream serviceAccount = getClass().getClassLoader().getResourceAsStream("serviceAccountKey.json");
 
             if (serviceAccount == null) {
-                throw new RuntimeException("LỖI NGHIÊM TRỌNG: Không tìm thấy file serviceAccountKey.json trong thư mục src/main/resources!");
+                throw new RuntimeException(
+                        "LỖI NGHIÊM TRỌNG: Không tìm thấy file serviceAccountKey.json trong thư mục src/main/resources!");
             }
 
             FirebaseOptions options = FirebaseOptions.builder()

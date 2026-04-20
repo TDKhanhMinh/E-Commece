@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import project.back_end.entity.*;
 import project.back_end.entity.product.Sku;
 import project.back_end.enumerate.ErrorCode;
+import project.back_end.enumerate.NotificationType;
 import project.back_end.enumerate.OrderStatus;
 import project.back_end.enumerate.PointTransactionType;
 import project.back_end.exception.AppException;
@@ -45,9 +46,8 @@ public class OrderServiceImpl implements OrderService {
     private final ShippingService shippingService;
     private final VoucherService voucherService;
     private final MemberShipPointService memberShipPointService;
-    private final DeliveryRepository deliveryRepository;
-    private final GoongMapService goongMapService;
     private final ObjectProvider<DeliveryService> deliveryService;
+    private final NotificationService notificationService;
 
     @Transactional
     public OrderResponse checkout(String email, CheckoutRequest request) {
@@ -65,9 +65,9 @@ public class OrderServiceImpl implements OrderService {
         // ======================
         // 2. Init totals
         // ======================
-        BigDecimal totalAmount = BigDecimal.ZERO;     // Tổng giá niêm yết (Price)
-        BigDecimal finalAmount = BigDecimal.ZERO;     // Tổng giá sau sale của SKU (SalePrice)
-        BigDecimal totalDiscount = BigDecimal.ZERO;   // Tổng giảm giá từ SKU sale
+        BigDecimal totalAmount = BigDecimal.ZERO; // Tổng giá niêm yết (Price)
+        BigDecimal finalAmount = BigDecimal.ZERO; // Tổng giá sau sale của SKU (SalePrice)
+        BigDecimal totalDiscount = BigDecimal.ZERO; // Tổng giảm giá từ SKU sale
         BigDecimal voucherDiscount = BigDecimal.ZERO; // Tổng giảm giá từ Voucher
         BigDecimal pointDiscount = BigDecimal.ZERO; // Tổng giảm giá từ điểm thưởng
 
@@ -162,8 +162,7 @@ public class OrderServiceImpl implements OrderService {
             VoucherResponse voucher = voucherService.validateVoucher(
                     user.getId(),
                     request.getVoucherCode(),
-                    finalAmount.doubleValue()
-            );
+                    finalAmount.doubleValue());
 
             // Tính toán số tiền giảm từ Voucher
             if ("PERCENTAGE".equals(voucher.getDiscountType())) {
@@ -194,7 +193,8 @@ public class OrderServiceImpl implements OrderService {
         double pointsToRedeem = request.getPointsUsed() != null ? request.getPointsUsed() : 0.0;
         if (pointsToRedeem > 0) {
             long pointsToRedeemLong = (long) pointsToRedeem;
-            memberShipPointService.redeemPoints(user.getId(), pointsToRedeemLong, order.getId(), "Đổi điểm để giảm giá đơn hàng #" + order.getId());
+            memberShipPointService.redeemPoints(user.getId(), pointsToRedeemLong, order.getId(),
+                    "Đổi điểm để giảm giá đơn hàng #" + order.getId());
             // Ví dụ: 1 điểm = 100 VND
             pointDiscount = pointDiscount.add(BigDecimal.valueOf(pointsToRedeemLong * 100));
         }
@@ -202,14 +202,16 @@ public class OrderServiceImpl implements OrderService {
         // ======================
         // 6. Calculate Final Grand Total
         // ======================
-        double shippingFeeValue = shippingService.calculateShippingFee(request.getShippingMethod(), totalAmount.doubleValue());
+        double shippingFeeValue = shippingService.calculateShippingFee(request.getShippingMethod(),
+                totalAmount.doubleValue());
         BigDecimal shippingFee = BigDecimal.valueOf(shippingFeeValue);
 
         // Tổng cuối cùng = (Tổng sau sale SKU - Giảm giá Voucher) + Phí ship
         BigDecimal grandTotal = finalAmount.subtract(voucherDiscount).subtract(pointDiscount).add(shippingFee);
         order.setShippingCost(shippingFee);
         order.setTotalAmount(totalAmount);
-        // Tổng giảm giá = (Giảm từ SKU sale) + (Giảm từ Voucher) + (Giảm từ điểm thưởng)
+        // Tổng giảm giá = (Giảm từ SKU sale) + (Giảm từ Voucher) + (Giảm từ điểm
+        // thưởng)
         order.setProductDiscount(totalDiscount);
         order.setPointDiscount(pointDiscount);
         order.setTotalDiscount(totalDiscount.add(voucherDiscount).add(pointDiscount));
@@ -226,9 +228,14 @@ public class OrderServiceImpl implements OrderService {
             }
         });
 
+        notificationService.sendAndSaveNotificationToUser(
+                user,
+                "Đặt hàng thành công",
+                "Đơn hàng #" + order.getId() + " của bạn đã được đặt thành công.",
+                NotificationType.ORDER);
+
         return checkoutMapper.toOrderResponse(order);
     }
-
 
     @Override
     @Transactional(readOnly = true)
@@ -258,7 +265,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<OrderResponse> getAllOrders(OrderStatus status, String startDate, String endDate, String deliveryStartDate, String deliveryEndDate, Pageable pageable) {
+    public Page<OrderResponse> getAllOrders(OrderStatus status, String startDate, String endDate,
+            String deliveryStartDate, String deliveryEndDate, Pageable pageable) {
         LocalDateTime start = parseDateTime(startDate, true);
         LocalDateTime end = parseDateTime(endDate, false);
         LocalDateTime dStart = parseDateTime(deliveryStartDate, true);
@@ -284,7 +292,6 @@ public class OrderServiceImpl implements OrderService {
             return null;
         }
     }
-
 
     @Override
     @Transactional
@@ -336,9 +343,15 @@ public class OrderServiceImpl implements OrderService {
         }
         order.setStatus(newStatus);
         orderRepository.save(order);
+
+        notificationService.sendAndSaveNotificationToUser(
+                order.getUser(),
+                "Cập nhật đơn hàng",
+                "Đơn hàng #" + order.getId() + " của bạn đã được cập nhật sang trạng thái " + newStatus,
+                NotificationType.ORDER);
     }
 
-// --- CÁC HÀM HỖ TRỢ (Helper Methods) ---
+    // --- CÁC HÀM HỖ TRỢ (Helper Methods) ---
 
     private OrderStatus parseStatus(String status) {
         try {
@@ -348,7 +361,6 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-
     private void awardMembershipPoints(Order order) {
         BigDecimal amount = order.getFinalAmount();
         if (amount != null && amount.compareTo(BigDecimal.ZERO) > 0) {
@@ -356,8 +368,7 @@ public class OrderServiceImpl implements OrderService {
             if (earnedPoints > 0) {
                 memberShipPointService.managePoints(
                         order.getUser().getId(), earnedPoints, PointTransactionType.EARN,
-                        order.getId(), "Tích điểm đơn hàng #" + order.getId()
-                );
+                        order.getId(), "Tích điểm đơn hàng #" + order.getId());
             }
         }
     }
@@ -367,7 +378,6 @@ public class OrderServiceImpl implements OrderService {
             skuRepository.updateStock(item.getSkuId(), item.getQuantity());
         }
     }
-
 
     @Override
     @Transactional

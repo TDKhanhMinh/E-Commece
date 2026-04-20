@@ -24,6 +24,12 @@ public class Notification {
     @EqualsAndHashCode.Exclude
     private ShipperProfile shipperProfile;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private User user;
+
     @Enumerated(EnumType.STRING)
     private NotificationType type;
 
@@ -31,8 +37,8 @@ public class Notification {
     private String message;
     private Boolean isRead = false;
 
-    //    @Column(columnDefinition = "json")
-//    private String metadata;
+    // @Column(columnDefinition = "json")
+    // private String metadata;
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;

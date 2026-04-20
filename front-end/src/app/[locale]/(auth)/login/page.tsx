@@ -23,6 +23,7 @@ import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import { loginSchema } from "@/schema/auth-shema";
+import { NotificationService } from "@/service/notification-service";
 import { FormHelperText } from "@/components/common";
 import { BackButton } from "@/components/common/ui/back-button";
 
@@ -51,6 +52,12 @@ export default function LoginPage() {
             // @ts-ignore
             setAuth(data.token, data.user);
             console.log(data);
+
+            // Tự động đăng ký Device FCM Token ngay sau khi User đăng nhập thành công
+            NotificationService.registerDevice().catch(err => {
+                console.error("Failed to auto-register device token post-login:", err);
+            });
+
             // @ts-ignore
             if (data.role.toString().toLocaleLowerCase() === "admin") {
                 router.push("/admin");
