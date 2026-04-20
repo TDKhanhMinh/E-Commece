@@ -39,6 +39,9 @@ export function ManualCreateSkuDialog({
     productId,
 }: ManualCreateSkuDialogProps) {
     const t = useTranslations("products.sku.dialogs.manual");
+    const tTable = useTranslations("products.sku.table");
+    const tEdit = useTranslations("products.sku.dialogs.edit");
+    const tAuto = useTranslations("products.sku.dialogs.auto");
     const [isOpen, setIsOpen] = useState(false);
     const { data: attributesData } = useAttributes({ size: 1000 });
     const attributes = (attributesData as any)?.content || [];
@@ -97,7 +100,7 @@ export function ManualCreateSkuDialog({
                                 name="skuCode"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>{useTranslations("products.sku.table")("code")}</FormLabel>
+                                        <FormLabel>{tTable("code")}</FormLabel>
                                         <FormControl>
                                             <Input {...field} />
                                         </FormControl>
@@ -109,7 +112,7 @@ export function ManualCreateSkuDialog({
                                 name="price"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>{useTranslations("products.sku.dialogs.edit")("price")}</FormLabel>
+                                        <FormLabel>{tEdit("price")}</FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="number"
@@ -129,7 +132,7 @@ export function ManualCreateSkuDialog({
                                 name="stock"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>{useTranslations("products.sku.dialogs.edit")("stock")}</FormLabel>
+                                        <FormLabel>{tEdit("stock")}</FormLabel>
                                         <FormControl>
                                             <Input
                                                 type="number"
@@ -171,7 +174,7 @@ export function ManualCreateSkuDialog({
                                         append({ attributeId: "", value: "" })
                                     }
                                 >
-                                    {useTranslations("products.sku.dialogs.auto")("addAttribute")}
+                                    {tAuto("addAttribute")}
                                 </Button>
                             </div>
                             {fields.map((field, index) => (
@@ -192,7 +195,7 @@ export function ManualCreateSkuDialog({
                                                 >
                                                     <FormControl>
                                                         <SelectTrigger>
-                                                            <SelectValue placeholder={useTranslations("products.sku.dialogs.auto")("selectAttribute")} />
+                                                            <SelectValue placeholder={tAuto("selectAttribute")} />
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <SelectContent>

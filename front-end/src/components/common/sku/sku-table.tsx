@@ -25,6 +25,8 @@ const PAGE_SIZE = 5;
 
 export function SkuTable({ product, onEdit, onToggleActive }: SkuTableProps) {
     const t = useTranslations("products.sku.table");
+    const tTable = useTranslations("products.table");
+    const tCommon = useTranslations("products");
     const deleteSkuMutation = useDeleteSku(product.id);
     const [page, setPage] = useState(1);
 
@@ -49,7 +51,7 @@ export function SkuTable({ product, onEdit, onToggleActive }: SkuTableProps) {
                         <TableHead>{t("salePrice")}</TableHead>
                         <TableHead>{t("stock")}</TableHead>
                         <TableHead className="text-right">
-                            {useTranslations("products.table")("actions")}
+                            {tTable("actions")}
                         </TableHead>
                     </TableRow>
                 </TableHeader>
@@ -182,7 +184,7 @@ export function SkuTable({ product, onEdit, onToggleActive }: SkuTableProps) {
             {totalPages > 1 && (
                 <div className="flex items-center justify-between">
                     <span className="text-muted-foreground text-sm">
-                        {useTranslations("products")("pagination.pageInfo", {
+                        {tCommon("pagination.pageInfo", {
                             current: page,
                             total: totalPages,
                         })}

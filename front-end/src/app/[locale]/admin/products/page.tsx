@@ -131,6 +131,7 @@ const ProductTableRow = memo(function ProductTableRow({
     onEdit,
     onDelete,
 }: ProductTableRowProps) {
+    const tActions = useTranslations("products.actions");
     return (
         <TableRow>
             <TableCell>
@@ -173,27 +174,22 @@ const ProductTableRow = memo(function ProductTableRow({
                             <MoreHorizontal className="h-4 w-4" />
                         </Button>
                     </DropdownMenuTrigger>
-                    {(() => {
-                        const t = useTranslations("products.actions");
-                        return (
-                            <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>{t("title")}</DropdownMenuLabel>
+                    <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>{tActions("title")}</DropdownMenuLabel>
 
-                                <DropdownMenuItem onClick={() => onEdit(product.id)}>
-                                    <Pencil className="mr-2 h-4 w-4" />
-                                    {t("edit")}
-                                </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => onEdit(product.id)}>
+                            <Pencil className="mr-2 h-4 w-4" />
+                            {tActions("edit")}
+                        </DropdownMenuItem>
 
-                                <DropdownMenuItem
-                                    className="text-red-600 focus:text-red-600"
-                                    onClick={() => onDelete(product.id)}
-                                >
-                                    <Trash2 className="mr-2 h-4 w-4" />
-                                    {t("delete")}
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        );
-                    })()}
+                        <DropdownMenuItem
+                            className="text-red-600 focus:text-red-600"
+                            onClick={() => onDelete(product.id)}
+                        >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            {tActions("delete")}
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
                 </DropdownMenu>
             </TableCell>
         </TableRow>
@@ -219,6 +215,7 @@ const PaginationControls = memo(function PaginationControls({
     onNextPage,
 }: PaginationControlsProps) {
     const t = useTranslations("products.pagination");
+    const tCommon = useTranslations("products");
     return (
         <div className="flex items-center justify-end space-x-2 py-4">
             <Button
@@ -233,7 +230,7 @@ const PaginationControls = memo(function PaginationControls({
             </Button>
 
             <div className="text-sm font-medium">
-                {useTranslations("products")("pagination.pageInfo", {
+                {tCommon("pagination.pageInfo", {
                     current: currentPage + 1,
                     total: totalPages,
                 })}
