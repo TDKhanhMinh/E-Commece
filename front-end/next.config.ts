@@ -4,7 +4,7 @@ import createNextIntlPlugin from "next-intl/plugin";
 const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
-    // output: "standalone", // Tạm tắt để chạy được npm run start trên máy local
+    output: "standalone", // Bật lại để build Docker thành công
     reactCompiler: true,
     images: {
         remotePatterns: [
