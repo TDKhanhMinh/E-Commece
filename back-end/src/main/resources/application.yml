@@ -1,42 +1,12 @@
-Cloudinary:
-  cloud-name: dqioktyk4
-  api-key: 176757624714653
-  api-secret: 6oPMgHRlu02boRBJmMlwXf_9M2g
-VnPay:
-  vnp_TmnCode: 4T1A863K
-  vnp_HashSecret: EED5U80WO00HDWK4D9LUHK31BQ49Q2DJ
-  vnp_Url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
-  vnp_Returnurl: http://localhost:3000/en/user/orders
-  vnp_apiUrl: https://sandbox.vnpayment.vn/merchant_webapi/merchant_api/api/transaction
-  vnp_TxnRef: 123456
-  vnp_OrderInfo: Thanh toan don hang
-  vnp_Locale: vn
-  vnp_CurrCode: VND
-  vnp_Version: 2.1.0
-  vnp_Command: pay
-  vnp_IpAddr:
-paypal:
-  clientId: AYQHd2VMP0omE2bLwRbxU9gogyM6XtJenxk2ZUAwvKxTyAni1BDrAOAbO6kdpk8fFuk3gCw8cltkO1Tg
-  clientSecret: ECm9Pkrpw5TyiNygVNeDfPLSdQPPj3_kMx6DyEUTmNELB50xJOsZgxYPb9kpi1CtINHv9eUy7SB9PHa-
-  mode: sandbox
-  baseUrl: https://api.sandbox.paypal.com
-  returnUrl: http://localhost:3000/en/user/orders
-  cancelUrl: http://localhost:3000/en/user/orders
-  currency: USD
-  intent: sale
-goongmap:
-  api-key: dTxBSGquKN0T5txd9Kvm8dqrDWEfhiJq9PFQgkJe
-
-#
 #Cloudinary:
-#  cloud-name: ${CLOUDINARY_CLOUD_NAME}
-#  api-key: ${CLOUDINARY_API_KEY}
-#  api-secret: ${CLOUDINARY_API_SECRET}
+#  cloud-name: dqioktyk4
+#  api-key: 176757624714653
+#  api-secret: 6oPMgHRlu02boRBJmMlwXf_9M2g
 #VnPay:
-#  vnp_TmnCode: ${VNPAY_TMN_CODE}
-#  vnp_HashSecret: ${VNPAY_HASH_SECRET}
+#  vnp_TmnCode: 4T1A863K
+#  vnp_HashSecret: EED5U80WO00HDWK4D9LUHK31BQ49Q2DJ
 #  vnp_Url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
-#  vnp_Returnurl: ${VNPAY_RETURN_URL}
+#  vnp_Returnurl: http://localhost:3000/en/user/orders
 #  vnp_apiUrl: https://sandbox.vnpayment.vn/merchant_webapi/merchant_api/api/transaction
 #  vnp_TxnRef: 123456
 #  vnp_OrderInfo: Thanh toan don hang
@@ -46,11 +16,41 @@ goongmap:
 #  vnp_Command: pay
 #  vnp_IpAddr:
 #paypal:
-#  clientId: ${PAYPAL_CLIENT_ID}
-#  clientSecret: ${PAYPAL_CLIENT_SECRET}
+#  clientId: AYQHd2VMP0omE2bLwRbxU9gogyM6XtJenxk2ZUAwvKxTyAni1BDrAOAbO6kdpk8fFuk3gCw8cltkO1Tg
+#  clientSecret: ECm9Pkrpw5TyiNygVNeDfPLSdQPPj3_kMx6DyEUTmNELB50xJOsZgxYPb9kpi1CtINHv9eUy7SB9PHa-
 #  mode: sandbox
 #  baseUrl: https://api.sandbox.paypal.com
-#  returnUrl: ${PAYPAL_RETURN_URL}
-#  cancelUrl: ${PAYPAL_CANCEL_URL}
+#  returnUrl: http://localhost:3000/en/user/orders
+#  cancelUrl: http://localhost:3000/en/user/orders
 #  currency: USD
 #  intent: sale
+#goongmap:
+#  api-key: dTxBSGquKN0T5txd9Kvm8dqrDWEfhiJq9PFQgkJe
+
+
+Cloudinary:
+  cloud-name: ${CLOUDINARY_CLOUD_NAME}
+  api-key: ${CLOUDINARY_API_KEY}
+  api-secret: ${CLOUDINARY_API_SECRET}
+VnPay:
+  vnp_TmnCode: ${VNPAY_TMN_CODE}
+  vnp_HashSecret: ${VNPAY_HASH_SECRET}
+  vnp_Url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+  vnp_Returnurl: ${VNPAY_RETURN_URL}
+  vnp_apiUrl: https://sandbox.vnpayment.vn/merchant_webapi/merchant_api/api/transaction
+  vnp_TxnRef: 123456
+  vnp_OrderInfo: Thanh toan don hang
+  vnp_Locale: vn
+  vnp_CurrCode: VND
+  vnp_Version: 2.1.0
+  vnp_Command: pay
+  vnp_IpAddr:
+paypal:
+  clientId: ${PAYPAL_CLIENT_ID}
+  clientSecret: ${PAYPAL_CLIENT_SECRET}
+  mode: sandbox
+  baseUrl: https://api.sandbox.paypal.com
+  returnUrl: ${PAYPAL_RETURN_URL}
+  cancelUrl: ${PAYPAL_CANCEL_URL}
+  currency: USD
+  intent: sale
