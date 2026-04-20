@@ -266,7 +266,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(readOnly = true)
     public Page<OrderResponse> getAllOrders(OrderStatus status, String startDate, String endDate,
-            String deliveryStartDate, String deliveryEndDate, Pageable pageable) {
+                                            String deliveryStartDate, String deliveryEndDate, Pageable pageable) {
         LocalDateTime start = parseDateTime(startDate, true);
         LocalDateTime end = parseDateTime(endDate, false);
         LocalDateTime dStart = parseDateTime(deliveryStartDate, true);
@@ -385,11 +385,6 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
 
-        if (order.getStatus() != OrderStatus.PENDING) {
-            throw new AppException(ErrorCode.INVALID_REQUEST);
-        }
-
-        // Restore stock for all order items
         List<OrderItem> orderItems = orderItemRepository.findByOrderId(orderId);
         RestoreStock(orderItems);
 
