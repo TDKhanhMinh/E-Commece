@@ -57,9 +57,16 @@ jobs:
           distribution: temurin
           cache: maven
       - name: Inject Firebase Service Account Key
+        env:
+          FIREBASE_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
         run: |
+          if [ -z "$FIREBASE_KEY" ]; then
+            echo "❌ ERROR: Secret FIREBASE_SERVICE_ACCOUNT_KEY is not set or empty!"
+            exit 1
+          fi
           mkdir -p back-end/src/main/resources
-          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}" > back-end/src/main/resources/serviceAccountKey.json
+          printf '%s' "$FIREBASE_KEY" > back-end/src/main/resources/serviceAccountKey.json
+          echo "✅ serviceAccountKey.json written ($(wc -c < back-end/src/main/resources/serviceAccountKey.json) bytes)"
       - name: Build & run tests
         working-directory: back-end
         env:
@@ -146,9 +153,16 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Inject Firebase Service Account Key for Docker Build
+        env:
+          FIREBASE_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
         run: |
+          if [ -z "$FIREBASE_KEY" ]; then
+            echo "❌ ERROR: Secret FIREBASE_SERVICE_ACCOUNT_KEY is not set or empty!"
+            exit 1
+          fi
           mkdir -p back-end/src/main/resources
-          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}" > back-end/src/main/resources/serviceAccountKey.json
+          printf '%s' "$FIREBASE_KEY" > back-end/src/main/resources/serviceAccountKey.json
+          echo "✅ serviceAccountKey.json written ($(wc -c < back-end/src/main/resources/serviceAccountKey.json) bytes)"
       # ── Backend image ──────────────────────────────────────────────────────
       - name: Extract metadata for backend image
         id: meta-backend
