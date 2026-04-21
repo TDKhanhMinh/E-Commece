@@ -2,23 +2,43 @@ import Providers from "@/app/provider";
 import { Toaster } from "@/components/ui/sonner";
 import React from "react";
 import type { Metadata, Viewport } from "next";
-import PWARegistration from "@/components/pwa-registration";
 
 export const viewport: Viewport = {
-    themeColor: "#000000",
+    themeColor: "#0a0a0a",
     width: "device-width",
     initialScale: 1,
     maximumScale: 1,
 };
 
 export const metadata: Metadata = {
-    title: "E-Commerce PWA",
-    description: "Modern progressive web app with Next.js and Spring Boot",
+    title: "T7M Online Tech Store",
+    description: "High-quality technology products and accessories store.",
     manifest: "/manifest.json",
     appleWebApp: {
         capable: true,
         statusBarStyle: "default",
-        title: "E-Commerce PWA",
+        title: "T7M Online",
+    },
+    icons: {
+        icon: [
+            {
+                url: "/icons/icon-192x192.png",
+                sizes: "192x192",
+                type: "image/png",
+            },
+            {
+                url: "/icons/icon-512x512.png",
+                sizes: "512x512",
+                type: "image/png",
+            },
+        ],
+        apple: [
+            {
+                url: "/icons/icon-192x192.png",
+                sizes: "192x192",
+                type: "image/png",
+            },
+        ],
     },
 };
 
@@ -30,7 +50,6 @@ export default function RootLayout({
     return (
         <html suppressHydrationWarning>
             <body>
-                <PWARegistration />
                 <Providers>
                     <Toaster richColors position="top-right" />
                     {children}

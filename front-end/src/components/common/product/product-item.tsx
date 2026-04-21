@@ -1,10 +1,12 @@
 "use client";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Card } from "../../ui/card";
 import { Button } from "../../ui/button";
 import { HeartIcon, Package, ShoppingCart, Star, Tag } from "lucide-react";
 import Image from "next/image";
 import { Badge } from "../../ui/badge";
+import { formatCurrency } from "@/lib/format-price";
 
 export interface ProductItemProps {
     id: number;
@@ -48,15 +50,9 @@ function ProductItem({ item }: { item: ProductItemProps }) {
     } = item;
 
     const navigate = useRouter();
+    const t = useTranslations("productItem");
 
-    // Format giá tiền VND
-    const formatPrice = (price: number) => {
-        return new Intl.NumberFormat("vi-VN", {
-            style: "currency",
-            currency: "VND",
-        }).format(price);
-    };
-
+    
     // Tính giá sau khi giảm
     const calculateSalePrice = (price: number, discount: number) => {
         return price * (1 - discount / 100);
@@ -120,12 +116,12 @@ function ProductItem({ item }: { item: ProductItemProps }) {
                     {discountPercent > 0 && (
                         <Badge className="rounded-lg bg-linear-to-r from-red-500 to-pink-500 px-3 py-1.5 text-xs font-bold text-white shadow-lg">
                             <Tag className="mr-1 h-3 w-3" />
-                            SALE {discountPercent}%
+                            {t("sale")} {discountPercent}%
                         </Badge>
                     )}
                     {!inStock && (
                         <Badge className="rounded-lg bg-gray-800 px-3 py-1.5 text-xs font-bold text-white">
-                            HẾT HÀNG
+                            {t("outOfStock")}
                         </Badge>
                     )}
                 </div>
@@ -135,7 +131,7 @@ function ProductItem({ item }: { item: ProductItemProps }) {
                     className="absolute top-3 right-3 z-10 h-9 w-9 rounded-full bg-white/90 backdrop-blur-sm transition-all hover:scale-110 hover:bg-white dark:bg-slate-800/90 dark:text-slate-100 dark:hover:bg-slate-700"
                     variant="ghost"
                     size="icon"
-                    aria-label="Thêm vào yêu thích"
+                    aria-label={t("addToFavorite")}
                     onClick={(e) => {
                         e.stopPropagation();
                         // TODO: Implement favorite functionality
@@ -160,7 +156,7 @@ function ProductItem({ item }: { item: ProductItemProps }) {
                     {!inStock && (
                         <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm">
                             <span className="text-lg font-bold text-white">
-                                Tạm hết hàng
+                                {t("temporarilyOutOfStock")}
                             </span>
                         </div>
                     )}
@@ -176,7 +172,7 @@ function ProductItem({ item }: { item: ProductItemProps }) {
                             }}
                         >
                             <ShoppingCart className="mr-2 h-4 w-4" />
-                            Xem chi tiết
+                            {t("viewDetails")}
                         </Button>
                     </div>
                 </div>
@@ -230,14 +226,14 @@ function ProductItem({ item }: { item: ProductItemProps }) {
                                     <span itemProp="reviewCount">
                                         {reviewCount}
                                     </span>{" "}
-                                    đánh giá)
+                                    {t("reviews", { count: reviewCount })})
                                 </span>
                             )}
                         </div>
                     ) : (
                         <div className="text-muted-foreground flex items-center gap-1 text-xs">
                             <Star className="h-3 w-3" />
-                            <span>Chưa có đánh giá</span>
+                            <span>{t("noReviews")}</span>
                         </div>
                     )}
 
@@ -245,7 +241,7 @@ function ProductItem({ item }: { item: ProductItemProps }) {
                     {variantCount > 1 && (
                         <div className="text-muted-foreground flex items-center gap-1 text-xs">
                             <Package className="h-3 w-3" />
-                            <span>{variantCount} phiên bản</span>
+                            <span>{t("variantCount", { count: variantCount })}</span>
                         </div>
                     )}
 
@@ -273,12 +269,12 @@ function ProductItem({ item }: { item: ProductItemProps }) {
                                 <div className="flex items-baseline gap-2">
                                     <span className="text-xl font-bold text-red-600 dark:text-red-400">
                                         {minPrice === maxPrice
-                                            ? formatPrice(salePrice)
-                                            : `${formatPrice(salePrice)}`}
+                                            ? formatCurrency(salePrice)
+                                            : `${formatCurrency(salePrice)}`}
                                     </span>
                                     {maxPrice > minPrice && (
                                         <span className="text-sm text-gray-500 dark:text-slate-400">
-                                            - {formatPrice(maxSalePrice)}
+                                            - {formatCurrency(maxSalePrice)}
                                         </span>
                                     )}
                                 </div>
@@ -287,14 +283,17 @@ function ProductItem({ item }: { item: ProductItemProps }) {
                                 {discountPercent > 0 && (
                                     <div className="flex items-center gap-2">
                                         <span className="text-sm text-gray-400 line-through dark:text-slate-500">
-                                            {formatPrice(minPrice)}
+                                            {formatCurrency(minPrice)}
                                         </span>
                                         <Badge
                                             variant="outline"
                                             className="border-red-200 px-2 py-0 text-xs text-red-600 dark:border-red-900/30 dark:text-red-400"
                                         >
-                                            Tiết kiệm{" "}
-                                            {formatPrice(minPrice - salePrice)}
+                                            {t("savings", {
+                                                amount: formatCurrency(
+                                                    minPrice - salePrice
+                                                ),
+                                            })}
                                         </Badge>
                                     </div>
                                 )}
@@ -307,14 +306,14 @@ function ProductItem({ item }: { item: ProductItemProps }) {
                                 <>
                                     <div className="h-2 w-2 animate-pulse rounded-full bg-green-500"></div>
                                     <span className="text-xs font-medium text-green-600 dark:text-green-400">
-                                        Còn hàng
+                                        {t("inStock")}
                                     </span>
                                 </>
                             ) : (
                                 <>
                                     <div className="h-2 w-2 rounded-full bg-red-500"></div>
                                     <span className="text-xs font-medium text-red-600 dark:text-red-400">
-                                        Hết hàng
+                                        {t("outOfStockStatus")}
                                     </span>
                                 </>
                             )}

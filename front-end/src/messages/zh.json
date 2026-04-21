@@ -1556,5 +1556,18 @@
                 "copyright": "© 2026 T7M Online Store - 由 KM 集团支持"
             }
         }
+    },
+    "productItem": {
+        "sale": "SALE",
+        "outOfStock": "无货",
+        "temporarilyOutOfStock": "暂时缺货",
+        "addToFavorite": "添加到收藏",
+        "viewDetails": "查看详情",
+        "reviews": "{count} 条评价",
+        "noReviews": "暂无评价",
+        "variantCount": "{count} 个版本",
+        "savings": "节省 {amount}",
+        "inStock": "有货",
+        "outOfStockStatus": "无货"
     }
 }

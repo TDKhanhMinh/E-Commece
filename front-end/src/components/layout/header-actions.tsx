@@ -54,7 +54,7 @@ export function HeaderActions({
                             size="icon"
                             className="rounded-full text-lg"
                         >
-                            {locale === "vi" ? "🇻🇳" : "🇺🇸"}
+                            {locale === "vi" ? "🇻🇳" : locale === "en" ? "🇺🇸" : "🇨🇳"}
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
@@ -67,6 +67,11 @@ export function HeaderActions({
                             onClick={() => changeLocale("en")}
                         >
                             English
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                            onClick={() => changeLocale("zh")}
+                        >
+                            中文
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

@@ -1546,5 +1546,18 @@
                 "copyright": "© 2026 T7M Online Store - Powered by KM Group"
             }
         }
+    },
+    "productItem": {
+        "sale": "SALE",
+        "outOfStock": "HẾT HÀNG",
+        "temporarilyOutOfStock": "Tạm hết hàng",
+        "addToFavorite": "Thêm vào yêu thích",
+        "viewDetails": "Xem chi tiết",
+        "reviews": "{count} đánh giá",
+        "noReviews": "Chưa có đánh giá",
+        "variantCount": "{count} phiên bản",
+        "savings": "Tiết kiệm {amount}",
+        "inStock": "Còn hàng",
+        "outOfStockStatus": "Hết hàng"
     }
 }
