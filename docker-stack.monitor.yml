@@ -1,10 +1,10 @@
 version: "3.9"
 
 networks:
-  public:
+  mystack_public:
     external: true
 
-  private:
+  mystack_private:
     external: true
 
   monitoring:
@@ -21,7 +21,7 @@ services:
   prometheus:
     image: prom/prometheus:v2.48.0
     networks:
-      - public
+      - mystack_public
       - monitoring
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
@@ -60,7 +60,7 @@ services:
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: "changeme_strong_password"   # ← Đổi password này
       GF_USERS_ALLOW_SIGN_UP: "false"
-      GF_SERVER_ROOT_URL: "http://your-domain.com:3001"
+      GF_SERVER_ROOT_URL: "http://voipelearning.shop:3001"
       GF_PATHS_PROVISIONING: /etc/grafana/provisioning
     volumes:
       - grafana_data:/var/lib/grafana
@@ -82,7 +82,7 @@ services:
     command:
       - -nginx.scrape-uri=http://nginx:8080/nginx-status
     networks:
-      - public
+      - mystack_public
       - monitoring
     deploy:
       replicas: 1
@@ -98,7 +98,7 @@ services:
     environment:
       REDIS_ADDR: "redis://redis:6379"
     networks:
-      - private
+      - mystack_private
       - monitoring
     deploy:
       replicas: 1
