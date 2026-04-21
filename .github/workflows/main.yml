@@ -296,6 +296,11 @@ jobs:
               # 1. Đăng nhập vào GHCR để Swarm có thể pull images từ private registry
               echo "$GHCR_TOKEN" | docker login "$GHCR_REGISTRY" -u "$GHCR_USER" --password-stdin
 
+              # Load environment variables from .env to make CLOUDFLARE_TUNNEL_TOKEN available for docker stack
+              set -a
+              [ -f .env ] && source .env
+              set +a
+
               # 2. Triển khai App Stack và Monitoring Stack
               # Cờ --with-registry-auth gửi xác thực registry cho tất cả các node worker
               docker stack deploy -c docker-stack.yml --with-registry-auth mystack
