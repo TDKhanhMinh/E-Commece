@@ -1,0 +1,134 @@
+version: "3.9"
+
+networks:
+  public:
+    external: true
+
+  private:
+    external: true
+
+  monitoring:
+    driver: overlay
+    attachable: true
+
+volumes:
+  prometheus_data:
+  grafana_data:
+  portainer_data:
+
+services:
+
+  prometheus:
+    image: prom/prometheus:v2.48.0
+    networks:
+      - public
+      - monitoring
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=15d"
+      - "--web.enable-lifecycle"
+      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+      - "--web.console.templates=/usr/share/prometheus/consoles"
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: any
+        delay: 10s
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+        reservations:
+          memory: 256M
+
+  grafana:
+    image: grafana/grafana:10.2.0
+    ports:
+      - target: 3000
+        published: 3001
+        protocol: tcp
+        mode: host
+    networks:
+      - monitoring
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: "changeme_strong_password"   # ← Đổi password này
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_SERVER_ROOT_URL: "http://your-domain.com:3001"
+      GF_PATHS_PROVISIONING: /etc/grafana/provisioning
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: any
+        delay: 10s
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+
+  nginx-exporter:
+    image: nginx/nginx-prometheus-exporter:0.11.0
+    command:
+      - -nginx.scrape-uri=http://nginx:8080/nginx-status
+    networks:
+      - public
+      - monitoring
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 32M
+
+  redis-exporter:
+    image: oliver006/redis_exporter:v1.55.0
+    environment:
+      REDIS_ADDR: "redis://redis:6379"
+    networks:
+      - private
+      - monitoring
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 32M
+
+  portainer:
+    image: portainer/portainer-ce:2.19.4
+    ports:
+      - target: 9000
+        published: 9000
+        protocol: tcp
+        mode: host
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - monitoring
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: any
+        delay: 5s
+      resources:
+        limits:
+          cpus: "0.3"
+          memory: 128M

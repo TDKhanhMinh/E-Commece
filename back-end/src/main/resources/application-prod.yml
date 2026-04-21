@@ -1,0 +1,81 @@
+spring:
+  # ================================================================
+  # Dùng spring.config.import thay vì SecretsConfig (Cách 1 đơn giản nhất)
+  # ================================================================
+  config:
+    import: optional:configtree:/run/secrets/
+  
+  session:
+    store-type: redis
+    timeout: 3600
+    redis:
+      namespace: "logistics:session"
+
+  data:
+    redis:
+      host: redis
+      port: 6379
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          min-idle: 2
+
+  datasource:
+    url: jdbc:postgresql://postgres:5432/${DB_NAME:next_ecommerce}?sslmode=disable
+    username: ${DB_USER:springstudent}
+    password: ${db_password} # Đọc từ docker secret qua configtree
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      pool-name: HikariPool-Logistics
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      connection-test-query: SELECT 1
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          batch_size: 20
+
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: health, info, metrics, prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+      probes:
+        enabled: true
+  health:
+    redis:
+      enabled: true
+    db:
+      enabled: true
+    diskspace:
+      enabled: false
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+
+server:
+  port: 8080
+  forward-headers-strategy: framework
+  tomcat:
+    remoteip:
+      trusted-proxies: 10\.\d{1,3}\.\d{1,3}\.\d{1,3}
+      internal-proxies: 10\.\d{1,3}\.\d{1,3}\.\d{1,3}
+    max-threads: 200
+    min-spare-threads: 10
+    accept-count: 100
+    connection-timeout: 20000

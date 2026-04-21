@@ -22,6 +22,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import org.springframework.security.web.savedrequest.NullRequestCache;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -51,10 +53,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .requestCache(cache -> cache.requestCache(new NullRequestCache()))
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/actuator/health/**").permitAll()
                         .requestMatchers("/api/payment/vnpay-ipn/**").permitAll()
                         .requestMatchers("/api/payment/vnpay-return/**").permitAll()
                         .requestMatchers("/api/paypal/**").permitAll()

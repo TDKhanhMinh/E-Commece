@@ -1,0 +1,242 @@
+version: "3.9"
+
+secrets:
+  db_password:
+    external: true
+  jwt_secret:
+    external: true
+  redis_password:
+    external: true
+
+networks:
+  public:
+    driver: overlay
+    attachable: true
+
+  private:
+    driver: overlay
+    internal: true
+    attachable: false
+
+volumes:
+  redis_data:
+    external: true
+  postgres_data:
+    external: true
+
+services:
+
+  nginx:
+    image: nginx:1.25-alpine
+    ports:
+      - target: 80
+        published: 80
+        protocol: tcp
+        mode: host
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+    networks:
+      - public
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 128M
+        reservations:
+          cpus: "0.1"
+          memory: 64M
+
+  frontend:
+    image: ${FRONTEND_IMAGE:-tdkhanhminh/next-ecommerce-frontend:latest}
+    networks:
+      - public
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: https://voipelearning.shop/api
+      INTERNAL_API_URL: http://backend:8080
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 30s
+        order: start-first
+      rollback_config:
+        parallelism: 1
+        delay: 5s
+        failure_action: pause
+        order: start-first
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 60s
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+        reservations:
+          cpus: "0.1"
+          memory: 256M
+
+  backend:
+    image: ${BACKEND_IMAGE:-tdkhanhminh/next-ecommerce-backend:latest}
+    networks:
+      - public
+      - private
+    secrets:
+      - db_password
+      - jwt_secret
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_HOST: postgres
+      DB_NAME: next_ecommerce
+      DB_USER: springstudent
+      # DB_PASSWORD_FILE và JWT_SECRET_FILE trỏ đến file secret
+      # Spring Boot đọc qua configtree (spring.config.import)
+      DB_PASSWORD_FILE: /run/secrets/db_password
+      JWT_SECRET_FILE: /run/secrets/jwt_secret
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: "6379"
+      JAVA_OPTS: >-
+        -Xms256m
+        -Xmx512m
+        -XX:+UseContainerSupport
+        -XX:MaxRAMPercentage=75.0
+        -XX:+UseG1GC
+        -XX:MaxGCPauseMillis=100
+        -Djava.security.egd=file:/dev/./urandom
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-s",
+             "http://localhost:8080/actuator/health/readiness"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 45s
+    deploy:
+      replicas: 3
+      update_config:
+        parallelism: 1
+        delay: 20s
+        failure_action: rollback
+        monitor: 45s
+        order: start-first
+      rollback_config:
+        parallelism: 1
+        delay: 15s
+        failure_action: pause
+        order: start-first
+      restart_policy:
+        condition: on-failure
+        delay: 15s
+        max_attempts: 3
+        window: 120s
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 768M
+        reservations:
+          cpus: "0.25"
+          memory: 512M
+
+  redis:
+    image: redis:7.2-alpine
+    command: >
+      redis-server
+      --appendonly yes
+      --appendfsync everysec
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+      --save 900 1
+      --save 300 10
+    networks:
+      - private
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 5
+        window: 60s
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 384M
+        reservations:
+          cpus: "0.1"
+          memory: 256M
+
+  postgres:
+    image: postgres:16-alpine
+    networks:
+      - private
+    secrets:
+      - db_password
+    environment:
+      POSTGRES_DB: next_ecommerce
+      POSTGRES_USER: springstudent
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U springstudent -d next_ecommerce"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: any
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+
+  # ── Cloudflare Tunnel ──────────────────────────────────────────────────────
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate run
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+    networks:
+      - public
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - nginx

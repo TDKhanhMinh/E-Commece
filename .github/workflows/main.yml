@@ -5,7 +5,7 @@ on:
     branches: [main, master]
   pull_request:
     branches: [main, master]
-  workflow_dispatch: # Cho phép trigger thủ công
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
@@ -21,17 +21,16 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      mysql:
-        image: mysql:8.0
+      postgres:
+        image: postgres:16-alpine
         env:
-          MYSQL_ROOT_PASSWORD: rootpassword
-          MYSQL_DATABASE: next_ecommerce
-          MYSQL_USER: springstudent
-          MYSQL_PASSWORD: springstudent
+          POSTGRES_PASSWORD: rootpassword
+          POSTGRES_DB: next_ecommerce
+          POSTGRES_USER: springstudent
         ports:
-          - 3306:3306
+          - 5432:5432
         options: >-
-          --health-cmd="mysqladmin ping -h localhost -u root -prootpassword"
+          --health-cmd="pg_isready -U springstudent -d next_ecommerce"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=10
@@ -56,6 +55,7 @@ jobs:
           java-version: "17"
           distribution: temurin
           cache: maven
+          
       - name: Inject Firebase Service Account Key
         env:
           FIREBASE_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
@@ -67,12 +67,13 @@ jobs:
           mkdir -p back-end/src/main/resources
           printf '%s' "$FIREBASE_KEY" > back-end/src/main/resources/serviceAccountKey.json
           echo "✅ serviceAccountKey.json written ($(wc -c < back-end/src/main/resources/serviceAccountKey.json) bytes)"
+          
       - name: Build & run tests
         working-directory: back-end
         env:
-          SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/next_ecommerce?useSSL=false&serverTimezone=Asia/Ho_Chi_Minh&allowPublicKeyRetrieval=true
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/next_ecommerce
           SPRING_DATASOURCE_USERNAME: springstudent
-          SPRING_DATASOURCE_PASSWORD: springstudent
+          SPRING_DATASOURCE_PASSWORD: rootpassword
           SPRING_DATA_REDIS_HOST: localhost
           SPRING_DATA_REDIS_PORT: 6379
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
@@ -112,7 +113,7 @@ jobs:
 
       - name: Lint
         working-directory: front-end
-        run: npm run lint || true  # Tạm thời cho phép lint fail
+        run: npm run lint || true
 
       - name: Build (type-check + Next.js build)
         working-directory: front-end
@@ -122,8 +123,7 @@ jobs:
         run: npm run build
 
   # ─────────────────────────────────────────────────────────────────────────────
-  # JOB 3: Build & Push Docker images lên GitHub Container Registry
-  # Chỉ chạy khi push vào main/master (không chạy trên PR)
+  # JOB 3: Build & Push Docker images lên GHCR
   # ─────────────────────────────────────────────────────────────────────────────
   docker-build-push:
     name: Docker Build & Push
@@ -152,7 +152,8 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      - name: Inject Firebase Service Account Key for Docker Build
+        
+      - name: Inject Firebase Service Account Key
         env:
           FIREBASE_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
         run: |
@@ -162,7 +163,7 @@ jobs:
           fi
           mkdir -p back-end/src/main/resources
           printf '%s' "$FIREBASE_KEY" > back-end/src/main/resources/serviceAccountKey.json
-          echo "✅ serviceAccountKey.json written ($(wc -c < back-end/src/main/resources/serviceAccountKey.json) bytes)"
+
       # ── Backend image ──────────────────────────────────────────────────────
       - name: Extract metadata for backend image
         id: meta-backend
@@ -205,18 +206,21 @@ jobs:
           build-args: |
             NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
             NEXT_PUBLIC_PAYPAL_CLIENT_ID=${{ secrets.NEXT_PUBLIC_PAYPAL_CLIENT_ID }}
+            NEXT_PUBLIC_FIREBASE_API_KEY=${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
+            NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=${{ secrets.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
+            NEXT_PUBLIC_FIREBASE_PROJECT_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
+            NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=${{ secrets.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET }}
+            NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}
+            NEXT_PUBLIC_FIREBASE_APP_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_APP_ID }}
+            NEXT_PUBLIC_FIREBASE_VAPID_KEY=${{ secrets.NEXT_PUBLIC_FIREBASE_VAPID_KEY }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
   # ─────────────────────────────────────────────────────────────────────────────
-  # JOB 4: Deploy lên VPS qua Cloudflare Tunnel
-  # Yêu cầu Secrets:
-  #   DEPLOY_SSH_HOSTNAME  - SSH hostname qua Cloudflare (VD: ssh.voipelearning.shop)
-  #   DEPLOY_USER          - SSH username (VD: root)
-  #   DEPLOY_SSH_KEY       - Private SSH key
+  # JOB 4: Deploy (Docker Swarm) to VPS
   # ─────────────────────────────────────────────────────────────────────────────
   deploy:
-    name: Deploy to VPS
+    name: Deploy to VPS Docker Swarm
     runs-on: ubuntu-latest
     needs: docker-build-push
     if: github.event_name == 'push'
@@ -236,12 +240,8 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
-
-          # Ghi SSH private key
           echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-
-          # Cấu hình SSH dùng cloudflared làm ProxyCommand
           cat >> ~/.ssh/config <<EOF
           Host ${{ secrets.DEPLOY_SSH_HOSTNAME }}
             HostName ${{ secrets.DEPLOY_SSH_HOSTNAME }}
@@ -257,99 +257,61 @@ jobs:
         run: |
           ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_SSH_HOSTNAME }} "echo '✅ SSH connection successful!'"
 
-      - name: Copy docker-compose files to server
+      - name: Create deployment environment file
+        env:
+          BACKEND_IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_BACKEND }}:${{ needs.docker-build-push.outputs.backend-tag }}
+          FRONTEND_IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_FRONTEND }}:${{ needs.docker-build-push.outputs.frontend-tag }}
+          CLOUDFLARE_TUNNEL_TOKEN: ${{ secrets.CLOUDFLARE_TUNNEL_TOKEN }}
+        run: |
+          {
+            printf 'BACKEND_IMAGE=%s\n'       "$BACKEND_IMAGE"
+            printf 'FRONTEND_IMAGE=%s\n'      "$FRONTEND_IMAGE"
+            printf 'CLOUDFLARE_TUNNEL_TOKEN=%s\n' "$CLOUDFLARE_TUNNEL_TOKEN"
+          } > .env
+
+      - name: Sync deployment files to server
         run: |
           ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_SSH_HOSTNAME }} "mkdir -p ~/app"
-          scp docker-compose.prod.yml ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_SSH_HOSTNAME }}:~/app/docker-compose.prod.yml
+          scp docker-stack.yml docker-stack.monitor.yml .env ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_SSH_HOSTNAME }}:~/app/
+          scp -r nginx prometheus grafana scripts ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_SSH_HOSTNAME }}:~/app/
 
-      - name: Write .env and deploy to server
+      - name: Deploy Swarm Stacks
         env:
-          VNPAY_TMN_CODE: ${{ secrets.VNPAY_TMN_CODE }}
-          VNPAY_HASH_SECRET: ${{ secrets.VNPAY_HASH_SECRET }}
-          PAYPAL_CLIENT_ID: ${{ secrets.PAYPAL_CLIENT_ID }}
-          PAYPAL_CLIENT_SECRET: ${{ secrets.PAYPAL_CLIENT_SECRET }}
-          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
-          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
-          MYSQL_USER: ${{ secrets.MYSQL_USER }}
-          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          JWT_EXPIRATION: ${{ secrets.JWT_EXPIRATION }}
-          MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
-          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
-          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
-          NEXT_PUBLIC_PAYPAL_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_PAYPAL_CLIENT_ID }}
-          VNPAY_RETURN_URL: ${{ secrets.VNPAY_RETURN_URL }}
-          PAYPAL_RETURN_URL: ${{ secrets.PAYPAL_RETURN_URL }}
-          PAYPAL_CANCEL_URL: ${{ secrets.PAYPAL_CANCEL_URL }}
-          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
-          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
-          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
-          # Dùng IMAGE_BACKEND/FRONTEND từ workflow env (đã lowercase)
-          BACKEND_IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_BACKEND }}:latest
-          FRONTEND_IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_FRONTEND }}:latest
+          BACKEND_IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_BACKEND }}:${{ needs.docker-build-push.outputs.backend-tag }}
+          FRONTEND_IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_FRONTEND }}:${{ needs.docker-build-push.outputs.frontend-tag }}
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GHCR_USER: ${{ github.actor }}
           GHCR_REGISTRY: ${{ env.REGISTRY }}
         run: |
-          echo "Backend image:  $BACKEND_IMAGE"
-          echo "Frontend image: $FRONTEND_IMAGE"
-
-          # Ghi .env trên runner (an toàn với mọi ký tự đặc biệt)
-          {
-            printf 'MYSQL_ROOT_PASSWORD=%s\n' "$MYSQL_ROOT_PASSWORD"
-            printf 'MYSQL_DATABASE=%s\n'      "$MYSQL_DATABASE"
-            printf 'MYSQL_USER=%s\n'          "$MYSQL_USER"
-            printf 'MYSQL_PASSWORD=%s\n'      "$MYSQL_PASSWORD"
-            printf 'VNPAY_TMN_CODE=%s\n' "$VNPAY_TMN_CODE"
-            printf 'VNPAY_HASH_SECRET=%s\n' "$VNPAY_HASH_SECRET"
-            printf 'PAYPAL_CLIENT_ID=%s\n' "$PAYPAL_CLIENT_ID"
-            printf 'PAYPAL_CLIENT_SECRET=%s\n' "$PAYPAL_CLIENT_SECRET"
-            printf 'CLOUDINARY_CLOUD_NAME=%s\n' "$CLOUDINARY_CLOUD_NAME"
-            printf 'CLOUDINARY_API_KEY=%s\n'    "$CLOUDINARY_API_KEY"
-            printf 'CLOUDINARY_API_SECRET=%s\n' "$CLOUDINARY_API_SECRET"
-            printf 'JWT_SECRET=%s\n'          "$JWT_SECRET"
-            printf 'JWT_EXPIRATION=%s\n'      "$JWT_EXPIRATION"
-            printf 'MAIL_USERNAME=%s\n'       "$MAIL_USERNAME"
-            printf 'MAIL_PASSWORD=%s\n'       "$MAIL_PASSWORD"
-            printf 'NEXT_PUBLIC_API_URL=%s\n'          "$NEXT_PUBLIC_API_URL"
-            printf 'NEXT_PUBLIC_PAYPAL_CLIENT_ID=%s\n' "$NEXT_PUBLIC_PAYPAL_CLIENT_ID"
-            printf 'VNPAY_RETURN_URL=%s\n'    "$VNPAY_RETURN_URL"
-            printf 'PAYPAL_RETURN_URL=%s\n'   "$PAYPAL_RETURN_URL"
-            printf 'PAYPAL_CANCEL_URL=%s\n'   "$PAYPAL_CANCEL_URL"
-            printf 'BACKEND_IMAGE=%s\n'       "$BACKEND_IMAGE"
-            printf 'FRONTEND_IMAGE=%s\n'      "$FRONTEND_IMAGE"
-          } > /tmp/deploy.env
-
-          # Upload .env lên server
-          scp /tmp/deploy.env ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_SSH_HOSTNAME }}:~/app/.env
-
-          # Chạy docker deploy trên server
           ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_SSH_HOSTNAME }} \
+            FRONTEND_IMAGE="$FRONTEND_IMAGE" BACKEND_IMAGE="$BACKEND_IMAGE" \
             GHCR_TOKEN="$GHCR_TOKEN" GHCR_USER="$GHCR_USER" GHCR_REGISTRY="$GHCR_REGISTRY" \
             bash << 'ENDSSH'
               set -e
               cd ~/app
 
-              echo "--- Image values in .env ---"
-              grep -E "^(BACKEND|FRONTEND)_IMAGE" .env
+              echo "Backend image set to:  $BACKEND_IMAGE"
+              echo "Frontend image set to: $FRONTEND_IMAGE"
 
-              # Đăng nhập vào kho lưu trữ GHCR
+              # 1. Đăng nhập vào GHCR để Swarm có thể pull images từ private registry
               echo "$GHCR_TOKEN" | docker login "$GHCR_REGISTRY" -u "$GHCR_USER" --password-stdin
 
-              # BƯỚC 1: Chỉ kéo (Pull) những Image mới nhất của Frontend và phần demo BE về VPS
-              docker compose -p ecommerce -f docker-compose.prod.yml pull backend frontend
+              # 2. Triển khai App Stack và Monitoring Stack
+              # Cờ --with-registry-auth gửi xác thực registry cho tất cả các node worker
+              docker stack deploy -c docker-stack.yml --with-registry-auth mystack
+              docker stack deploy -c docker-stack.monitor.yml mystack-monitor
 
-              # BƯỚC 2: Ra lệnh chạy lại hệ thống. 
-              # Docker Compose sẽ TỰ ĐỘNG so sánh:
-              # - MySQL/Redis không có Image mới -> Giữ nguyên, không khởi động lại.
-              # - Phần demo BE & Frontend có Image mới -> Chỉ stop và recreate 2 vùng chứa này.
-              docker compose -p ecommerce -f docker-compose.prod.yml up -d --remove-orphans
+              # 3. Kích hoạt quyền cho scripts
+              chmod +x scripts/autoscaler.py scripts/backup-postgres.sh
 
-              # Kiểm tra lại trạng thái các vùng chứa
-              docker compose -p ecommerce -f docker-compose.prod.yml ps
+              # 4. Gắn Cron job cho Auto-scaler & Backup (xóa cũ, nạp mới)
+              (crontab -l 2>/dev/null | grep -v 'autoscaler.py\|backup-postgres.sh' || true; \
+              echo "*/2 * * * * python3 $(pwd)/scripts/autoscaler.py >> /var/log/swarm_autoscaler.log 2>&1"; \
+              echo "0 2 * * * $(pwd)/scripts/backup-postgres.sh >> /var/log/postgres_backup.log 2>&1" \
+              ) | crontab -
 
-              # Dọn dẹp rác (xóa các Image cũ để giải phóng ổ cứng VPS)
+              # 5. Dọn dẹp rác
               docker image prune -af --filter "until=24h"
 
-              echo "✅ Deployment completed successfully! Database is untouched."
+              echo "✅ Docker Swarm deployment and maintenance scheduling completed successfully!"
           ENDSSH

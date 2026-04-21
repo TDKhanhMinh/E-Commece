@@ -1,30 +1,24 @@
-# ─── Stage 1: Build ───────────────────────────────────────────────────────────
-FROM maven:3.9.9-eclipse-temurin-17 AS builder
-
+# Stage 1: Build
+FROM maven:3.9-eclipse-temurin-21 AS builder
 WORKDIR /app
-
-# Copy pom.xml first to leverage Docker layer cache for dependencies
 COPY pom.xml .
-RUN mvn dependency:go-offline -B
-
-# Copy source code and build the JAR (skip tests for Docker build)
+# Download dependencies trước (cache layer)
+RUN mvn dependency:go-offline -q
 COPY src ./src
-RUN mvn package -DskipTests -B
+RUN mvn package -DskipTests -q
 
-# ─── Stage 2: Runtime ─────────────────────────────────────────────────────────
-FROM eclipse-temurin:17-jre-alpine
-
+# Stage 2: Runtime — image nhỏ hơn nhiều
+FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
-# Add non-root user for security
-RUN addgroup -S spring && adduser -S spring -G spring
+# Tạo user không có quyền root (bảo mật)
+RUN addgroup -S logistics && adduser -S logistics -G logistics
+USER logistics
 
-# Copy the fat JAR from the build stage
-COPY --from=builder /app/target/back-end-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=builder /app/target/*.jar app.jar
 
-RUN chown spring:spring app.jar
-USER spring
+# Port Spring Boot lắng nghe
+EXPOSE 8080
 
-EXPOSE 5000
-
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Entrypoint — JAVA_OPTS được inject từ docker-stack.yml
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar --spring.profiles.active=prod"]
