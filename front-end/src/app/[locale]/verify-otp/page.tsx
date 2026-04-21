@@ -90,19 +90,19 @@ export default function VerifyOtpPage() {
     return (
         <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
             <Card className="w-full max-w-md border-none shadow-xl">
-                <CardHeader className="space-y-1 text-center">
-                    <div className="mb-4 flex justify-center">
-                        <div className="rounded-full bg-blue-100 p-3">
-                            <ShieldCheck className="h-8 w-8 text-blue-600" />
+                <CardHeader className="space-y-1 text-center p-5 sm:p-6 pb-2 sm:pb-4">
+                    <div className="mb-2 sm:mb-4 flex justify-center">
+                        <div className="rounded-full bg-blue-100 p-2 sm:p-3">
+                            <ShieldCheck className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
                         </div>
                     </div>
-                    <CardTitle className="text-2xl font-bold">
+                    <CardTitle className="text-xl sm:text-2xl font-bold">
                         Nhập mã xác thực
                     </CardTitle>
-                    <CardDescription>
+                    <CardDescription className="text-sm sm:text-base">
                         Chúng tôi đã gửi mã 6 số đến email:
                         <br />
-                        <span className="font-medium text-gray-900">
+                        <span className="font-medium text-gray-900 break-all">
                             {email}
                         </span>
                     </CardDescription>
@@ -126,33 +126,33 @@ export default function VerifyOtpPage() {
                                                     verifyMutation.isPending
                                                 }
                                             >
-                                                <InputOTPGroup>
+                                                <InputOTPGroup className="gap-1 sm:gap-2">
                                                     <InputOTPSlot
                                                         index={0}
-                                                        className="h-12 w-12 text-lg"
+                                                        className="h-10 w-10 sm:h-12 sm:w-12 text-base sm:text-lg"
                                                     />
                                                     <InputOTPSlot
                                                         index={1}
-                                                        className="h-12 w-12 text-lg"
+                                                        className="h-10 w-10 sm:h-12 sm:w-12 text-base sm:text-lg"
                                                     />
                                                     <InputOTPSlot
                                                         index={2}
-                                                        className="h-12 w-12 text-lg"
+                                                        className="h-10 w-10 sm:h-12 sm:w-12 text-base sm:text-lg"
                                                     />
                                                 </InputOTPGroup>
                                                 <InputOTPSeparator />
-                                                <InputOTPGroup>
+                                                <InputOTPGroup className="gap-1 sm:gap-2">
                                                     <InputOTPSlot
                                                         index={3}
-                                                        className="h-12 w-12 text-lg"
+                                                        className="h-10 w-10 sm:h-12 sm:w-12 text-base sm:text-lg"
                                                     />
                                                     <InputOTPSlot
                                                         index={4}
-                                                        className="h-12 w-12 text-lg"
+                                                        className="h-10 w-10 sm:h-12 sm:w-12 text-base sm:text-lg"
                                                     />
                                                     <InputOTPSlot
                                                         index={5}
-                                                        className="h-12 w-12 text-lg"
+                                                        className="h-10 w-10 sm:h-12 sm:w-12 text-base sm:text-lg"
                                                     />
                                                 </InputOTPGroup>
                                             </InputOTP>

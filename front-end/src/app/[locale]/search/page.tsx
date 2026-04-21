@@ -2,13 +2,22 @@
 
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Loader2 } from "lucide-react";
+import { Loader2, SlidersHorizontal, Search } from "lucide-react";
 import { useProducts } from "@/hooks/use-products";
 import { FilterSidebar } from "@/components/common/ui/filter-sidebar";
 import ProductItem, {
     ProductItemProps,
 } from "@/components/common/product/product-item";
 import { BackButton } from "@/components/common/ui/back-button";
+import {
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 const mapApiDataToProductItem = (apiItem: any): ProductItemProps => {
     return {
@@ -96,22 +105,50 @@ function SearchContent() {
     }, [hasMore, isFetching]);
 
     return (
-        <div className="mx-auto max-w-7xl px-4 py-8">
-            <BackButton />
-            <div className="relative flex flex-col items-start gap-8 md:flex-row">
-                <aside className="custom-scrollbar sticky top-24 z-10 w-full shrink-0 md:max-h-[calc(100vh-6rem)] md:w-1/4 md:overflow-y-auto">
-                    <h1 className="mb-8 text-2xl font-bold">
-                        Kết quả tìm kiếm cho:{" "}
-                        <span className="text-primary">
+        <div className="mx-auto max-w-7xl px-4 py-4 sm:py-8">
+            <div className="mb-4 flex items-center justify-between gap-4 md:mb-8">
+                <div className="flex items-center gap-2 sm:gap-4">
+                    <BackButton />
+                    <h1 className="text-lg leading-tight font-bold sm:text-2xl">
+                        <span className="hidden sm:inline">Kết quả cho: </span>
+                        <span className="text-primary truncate break-all">
                             &quot;{keyword}&quot;
                         </span>
                     </h1>
+                </div>
+
+                {/* Mobile Filter Trigger */}
+                <div className="md:hidden">
+                    <Sheet>
+                        <SheetTrigger asChild>
+                            <Button variant="outline" size="sm" className="gap-2">
+                                <SlidersHorizontal className="size-4" />
+                                <span>Bộ lọc</span>
+                            </Button>
+                        </SheetTrigger>
+                        <SheetContent side="right" className="w-[300px] p-0">
+                            <SheetHeader className="border-b p-6 text-left">
+                                <SheetTitle className="flex items-center gap-2">
+                                    <SlidersHorizontal className="size-5" />
+                                    Bộ lọc tìm kiếm
+                                </SheetTitle>
+                            </SheetHeader>
+                            <div className="overflow-y-auto p-6">
+                                <FilterSidebar />
+                            </div>
+                        </SheetContent>
+                    </Sheet>
+                </div>
+            </div>
+
+            <div className="relative flex flex-col items-start gap-8 md:flex-row">
+                <aside className="custom-scrollbar sticky top-24 z-10 hidden w-full shrink-0 md:block md:max-h-[calc(100vh-6rem)] md:w-1/4 md:overflow-y-auto">
                     <FilterSidebar />
                 </aside>
 
                 <main className="w-full md:w-3/4">
                     {status === "pending" && page === 0 ? (
-                        <div className="flex min-h-100 items-center justify-center">
+                        <div className="flex h-60 items-center justify-center">
                             <Loader2 className="text-primary h-8 w-8 animate-spin" />
                         </div>
                     ) : status === "error" ? (
@@ -119,11 +156,19 @@ function SearchContent() {
                             Đã xảy ra lỗi khi tải dữ liệu sản phẩm.
                         </div>
                     ) : allProducts.length === 0 && !isFetching ? (
-                        <div className="text-muted-foreground py-16 text-center text-lg">
-                            Không tìm thấy sản phẩm nào phù hợp.
+                        <div className="flex flex-col items-center justify-center py-16 text-center">
+                            <div className="mb-4 rounded-full bg-slate-100 p-6 dark:bg-slate-800">
+                                <Search className="size-12 text-slate-300" />
+                            </div>
+                            <p className="text-lg font-medium text-slate-500">
+                                Không tìm thấy sản phẩm nào phù hợp.
+                            </p>
+                            <p className="text-muted-foreground text-sm">
+                                Hãy thử thay đổi từ khóa hoặc bộ lọc của bạn.
+                            </p>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+                        <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3">
                             {allProducts.map((product: any) => (
                                 <ProductItem
                                     key={product.id}
@@ -140,9 +185,12 @@ function SearchContent() {
                         {isFetching && page > 0 ? (
                             <Loader2 className="text-primary h-6 w-6 animate-spin" />
                         ) : !hasMore && allProducts.length > 0 ? (
-                            <p className="text-muted-foreground text-sm">
-                                Đã hiển thị tất cả sản phẩm.
-                            </p>
+                            <Badge
+                                variant="outline"
+                                className="px-4 py-1 text-xs font-normal"
+                            >
+                                Đã hiển thị tất cả sản phẩm
+                            </Badge>
                         ) : null}
                     </div>
                 </main>

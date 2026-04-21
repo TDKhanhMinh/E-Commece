@@ -70,10 +70,10 @@ export default function Membership() {
     const TAB_VALUES = ["member", "silver", "gold", "platinum", "diamond"];
 
     return (
-        <div className="min-h-screen space-y-8 bg-slate-50/50 p-6 dark:bg-slate-950">
+        <div className="min-h-screen space-y-6 sm:space-y-8 bg-slate-50/50 p-4 sm:p-6 lg:p-8 dark:bg-slate-950">
             {/* THẺ THÀNH VIÊN VIP - HERO SECTION */}
             <div
-                className={`relative h-64 w-full rounded-[2.5rem] bg-linear-to-br ${currentStyle} group overflow-hidden p-8 shadow-2xl transition-all duration-700`}
+                className={`relative aspect-[1.6/1] sm:h-64 sm:aspect-auto w-full rounded-[1.5rem] sm:rounded-[2.5rem] bg-linear-to-br ${currentStyle} group overflow-hidden p-6 sm:p-8 shadow-2xl transition-all duration-700`}
             >
                 {/* Hiệu ứng ánh kim chạy qua thẻ */}
                 <div className="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 group-hover:translate-x-full"></div>
@@ -84,30 +84,30 @@ export default function Membership() {
                             <Badge className="border-none bg-white/50 text-[10px] tracking-[0.2em] text-black uppercase backdrop-blur-md">
                                 {t("page.badge")}
                             </Badge>
-                            <h2 className="text-3xl font-black tracking-tighter uppercase italic">
+                            <h2 className="text-2xl sm:text-3xl font-black tracking-tighter uppercase italic">
                                 {currentTierName}
                             </h2>
                         </div>
-                        <Crown className="size-10 opacity-50" />
+                        <Crown className="size-8 sm:size-10 opacity-50" />
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-2 sm:space-y-4">
                         <div className="flex items-end justify-between text-black">
-                            <div className="space-y-1">
-                                <p className="text-[10px] font-bold uppercase opacity-70">
+                            <div className="space-y-0.5 sm:space-y-1">
+                                <p className="text-[8px] sm:text-[10px] font-bold uppercase opacity-70">
                                     {t("page.currentAccumulatedPoints")}
                                 </p>
-                                <p className="text-4xl leading-none font-black tracking-tighter">
+                                <p className="text-2xl sm:text-4xl leading-none font-black tracking-tighter">
                                     {summary?.totalAccumulatedPoints?.toLocaleString(
                                         locale
                                     ) || 0}
                                 </p>
                             </div>
                             <div className="text-right text-black">
-                                <p className="text-[10px] font-bold uppercase opacity-70">
+                                <p className="text-[8px] sm:text-[10px] font-bold uppercase opacity-70">
                                     {t("page.cardHolder")}
                                 </p>
-                                <p className="font-bold tracking-widest uppercase italic">
+                                <p className="text-xs sm:text-base font-bold tracking-widest uppercase italic">
                                     {user?.name || t("page.customer")}
                                 </p>
                             </div>
@@ -134,7 +134,7 @@ export default function Membership() {
                             <p className="text-sm leading-relaxed font-medium text-slate-500 dark:text-slate-400">
                                 {t.rich("page.youHave", {
                                     points: (p) => (
-                                        <span className="ml-2 text-3xl font-black text-blue-600 dark:text-blue-400">
+                                        <span className="ml-2 text-2xl sm:text-3xl font-black text-blue-600 dark:text-blue-400">
                                             {summary?.currentPoints?.toLocaleString(
                                                 locale
                                             ) || 0}
@@ -154,10 +154,10 @@ export default function Membership() {
                 <Card className="group rounded-[2rem] border-none bg-white shadow-xl shadow-slate-200/50 transition-all duration-500 hover:shadow-2xl dark:bg-slate-900 dark:shadow-slate-950/50">
                     <CardContent className="space-y-6 p-8">
                         <div className="flex items-center justify-between">
-                            <h3 className="text-2xl font-black text-slate-800 italic dark:text-slate-100">
+                            <h3 className="text-xl sm:text-2xl font-black text-slate-800 italic dark:text-slate-100">
                                 {t("page.progressTitle")}
                             </h3>
-                            <ShieldCheck className="size-8 text-emerald-500" />
+                            <ShieldCheck className="size-6 sm:size-8 text-emerald-500" />
                         </div>
 
                         <div className="space-y-3">
@@ -193,15 +193,15 @@ export default function Membership() {
 
             {/* LỊCH SỬ BIẾN ĐỘNG ĐIỂM */}
             <Card className="overflow-hidden rounded-[2rem] border-none bg-white shadow-xl shadow-slate-200/50 dark:bg-slate-900 dark:shadow-slate-950/50">
-                <CardHeader className="p-8 pb-4">
-                    <CardTitle className="flex items-center gap-3 text-2xl font-black tracking-tighter text-slate-800 uppercase italic dark:text-slate-100">
-                        <div className="rounded-lg bg-slate-900 p-2 text-white dark:bg-slate-100 dark:text-slate-900">
-                            <Clock className="h-6 w-6" />
+                <CardHeader className="p-6 sm:p-8 pb-3 sm:pb-4">
+                    <CardTitle className="flex items-center gap-3 text-xl sm:text-2xl font-black tracking-tighter text-slate-800 uppercase italic dark:text-slate-100">
+                        <div className="rounded-lg bg-slate-900 p-1.5 sm:p-2 text-white dark:bg-slate-100 dark:text-slate-900">
+                            <Clock className="h-5 w-5 sm:h-6 sm:w-6" />
                         </div>
                         {t("page.historyTitle")}
                     </CardTitle>
                 </CardHeader>
-                <CardContent className="px-8 pb-8">
+                <CardContent className="px-6 sm:px-8 pb-6 sm:pb-8">
                     {isLoadingHistory ? (
                         <div className="py-10 text-center text-sm font-bold text-slate-400 italic">
                             {t("page.historyLoading")}
@@ -214,7 +214,7 @@ export default function Membership() {
                                 return (
                                     <div
                                         key={item.id}
-                                        className="flex items-center justify-between rounded-[1.5rem] border border-slate-100 bg-slate-50 p-5 transition-all duration-300 hover:bg-white hover:shadow-lg dark:border-slate-800 dark:bg-slate-800/50 dark:hover:bg-slate-800"
+                                        className="flex items-center justify-between rounded-[1.2rem] sm:rounded-[1.5rem] border border-slate-100 bg-slate-50 p-4 sm:p-5 transition-all duration-300 hover:bg-white hover:shadow-lg dark:border-slate-800 dark:bg-slate-800/50 dark:hover:bg-slate-800"
                                     >
                                         <div className="flex items-center gap-4">
                                             <div
@@ -299,19 +299,19 @@ export default function Membership() {
             </Card>
 
             {/* ƯU ĐÃI THÀNH VIÊN */}
-            <Card className="overflow-hidden rounded-[2rem] border-none bg-white shadow-xl shadow-slate-200/50 dark:bg-slate-900 dark:shadow-slate-950/50">
-                <CardContent className="space-y-8 p-8">
-                    <h3 className="border-b pb-4 text-2xl font-black tracking-tighter text-slate-800 uppercase italic dark:border-slate-800 dark:text-slate-100">
+            <Card className="overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] border-none bg-white shadow-xl shadow-slate-200/50 dark:bg-slate-900 dark:shadow-slate-950/50">
+                <CardContent className="space-y-6 sm:space-y-8 p-6 sm:p-8">
+                    <h3 className="border-b pb-4 text-xl sm:text-2xl font-black tracking-tighter text-slate-800 uppercase italic dark:border-slate-800 dark:text-slate-100">
                         {t("page.privilegesTitle")}
                     </h3>
 
                     <Tabs defaultValue="member" className="w-full">
-                        <TabsList className="hide-scrollbar h-auto w-full flex-nowrap justify-start gap-8 overflow-x-auto rounded-none border-none bg-transparent p-0">
+                        <TabsList className="hide-scrollbar h-auto w-full flex-nowrap justify-start gap-4 sm:gap-6 lg:gap-8 overflow-x-auto rounded-none border-none bg-transparent p-0">
                             {TAB_VALUES.map((val) => (
                                 <TabsTrigger
                                     value={val}
                                     key={val}
-                                    className="cursor-pointer rounded-none border-0 border-b-4 border-transparent bg-transparent px-0 py-4 text-[10px] font-black tracking-widest text-slate-300 uppercase transition-all data-[state=active]:border-slate-900 data-[state=active]:text-slate-900 dark:text-slate-600 dark:data-[state=active]:border-slate-100 dark:data-[state=active]:text-slate-100"
+                                    className="cursor-pointer rounded-none border-0 border-b-2 sm:border-b-4 border-transparent bg-transparent px-0 py-3 sm:py-4 text-[8px] sm:text-[10px] font-black tracking-widest text-slate-300 uppercase transition-all data-[state=active]:border-slate-900 data-[state=active]:text-slate-900 dark:text-slate-600 dark:data-[state=active]:border-slate-100 dark:data-[state=active]:text-slate-100"
                                 >
                                     {t(`tabs.${val}.label`)}
                                 </TabsTrigger>

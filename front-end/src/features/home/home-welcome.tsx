@@ -16,42 +16,41 @@ function HomeWelcome() {
 
     return (
         <>
-            <div className="mt-12 mb-8 grid grid-cols-1 gap-4 px-4 text-center md:grid-cols-2">
-                <div className="flex flex-col">
-                    <div className="relative h-full w-full overflow-hidden rounded-lg md:h-full">
+            <div className="mt-8 mb-8 grid grid-cols-1 gap-8 px-4 md:mt-12 md:grid-cols-2 lg:gap-12">
+                <div className="order-2 flex flex-col md:order-1">
+                    <div className="relative aspect-video w-full overflow-hidden rounded-2xl md:aspect-auto md:h-full">
                         <Image
                             src="https://res.cloudinary.com/dqioktyk4/image/upload/v1768803309/ukwtm3fvsbkioxzybkfl.png"
                             alt="Hero Background"
                             fill
                             className="object-cover"
+                            priority
                         />
                     </div>
                 </div>
-                <div className="flex flex-col px-3 text-start">
-                    <span className="mb-3 bg-gradient-to-r from-orange-500 via-indigo-500 to-green-500 bg-clip-text text-start text-xl font-bold tracking-tighter text-transparent uppercase">
+                <div className="order-1 flex flex-col text-start md:order-2">
+                    <span className="mb-3 bg-gradient-to-r from-orange-500 via-indigo-500 to-green-500 bg-clip-text text-start text-lg font-bold tracking-tighter text-transparent uppercase sm:text-xl">
                         {tWelcome("badge")}
                     </span>
-                    <span className="text-6xl font-extrabold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl dark:text-slate-100">
-                        {tWelcome("title1")}
-                    </span>
-                    <span className="mb-2 text-6xl font-extrabold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl dark:text-slate-100">
-                        {tWelcome("title2")}
-                    </span>
-                    <p className="text-secondary-dark mb-8 text-lg dark:text-slate-400">
+                    <h1 className="flex flex-col text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl dark:text-slate-100">
+                        <span>{tWelcome("title1")}</span>
+                        <span>{tWelcome("title2")}</span>
+                    </h1>
+                    <p className="text-secondary-dark mt-4 mb-8 text-base md:text-lg dark:text-slate-400">
                         {tWelcome("description")}
                     </p>
 
-                    <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-5 sm:gap-6">
                         {welcomeItems.map((item) => (
                             <div
                                 key={item.key}
-                                className="flex items-center gap-3"
+                                className="flex items-start gap-4"
                             >
-                                <div className="bg-secondary rounded-full dark:bg-secondary-dark">
-                                    <ShieldCheck className="h-14 w-14 p-2 text-white" />
+                                <div className="bg-secondary shrink-0 rounded-full dark:bg-secondary-dark">
+                                    <ShieldCheck className="h-10 w-10 p-2 text-white sm:h-12 sm:w-12" />
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="text-lg font-semibold text-slate-900 dark:text-slate-200">
+                                    <span className="text-base font-semibold text-slate-900 sm:text-lg dark:text-slate-200">
                                         {tWelcome(`items.${item.key}.title`)}
                                     </span>
                                     <span className="text-secondary-dark mt-1 text-sm dark:text-slate-500">
@@ -64,42 +63,42 @@ function HomeWelcome() {
                         ))}
                     </div>
                     <div className="mt-8 flex w-full items-center justify-start">
-                        <Button className="bg-success-darker hover:bg-success text-md cursor-pointer rounded-2xl px-24 py-4 text-white">
+                        <Button className="bg-success-darker hover:bg-success h-12 w-full cursor-pointer rounded-2xl px-8 text-base font-bold text-white transition-all sm:w-auto sm:px-16 md:text-lg">
                             {tWelcome("learnMoreButton")}
                         </Button>
                     </div>
                 </div>
             </div>
-            <div className="mx-4 mt-32 mb-8 grid grid-cols-1 rounded-2xl pl-4 text-center shadow-2xl md:grid-cols-2 dark:bg-zinc-900 dark:shadow-slate-950/50">
-                <div className="flex flex-col rounded-tl-2xl rounded-bl-2xl px-3 text-start">
-                    <span className="my-3 mt-8 bg-gradient-to-r from-orange-500 via-indigo-500 to-green-500 bg-clip-text text-start text-base font-bold tracking-tighter text-transparent uppercase">
+
+            <div className="mx-4 mt-20 mb-8 grid grid-cols-1 overflow-hidden rounded-2xl bg-white shadow-2xl md:mt-32 md:grid-cols-2 dark:bg-zinc-900 dark:shadow-slate-950/50">
+                <div className="flex flex-col p-6 text-start md:p-8 lg:p-12">
+                    <span className="mb-3 bg-gradient-to-r from-orange-500 via-indigo-500 to-green-500 bg-clip-text text-start text-sm font-bold tracking-tighter text-transparent uppercase sm:text-base">
                         {tBundles("badge")}
                     </span>
-                    <span className="text-3xl font-extrabold tracking-tight text-slate-900 lg:text-3xl dark:text-slate-100">
+                    <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl lg:text-4xl dark:text-slate-100">
                         {tBundles("title")}
-                    </span>
-                    <div className="h-65"> </div>
-                    <p className="text-secondary-dark text-sm dark:text-slate-400">
+                    </h2>
+                    <div className="hidden h-12 md:block md:h-24 lg:h-32"> </div>
+                    <p className="text-secondary-dark mt-4 text-sm leading-relaxed sm:text-base dark:text-slate-400">
                         {tBundles("description")}
                     </p>
 
-                    <div className="mb-8 flex w-full items-center justify-start py-4">
-                        <Button className="bg-success-darker hover:bg-success text-md cursor-pointer rounded-2xl px-20 py-4 text-white">
+                    <div className="mt-8 mb-4 flex w-full items-center justify-start">
+                        <Button className="bg-success-darker hover:bg-success h-12 w-full cursor-pointer rounded-2xl px-8 text-base font-bold text-white transition-all sm:w-auto sm:px-20">
                             {tBundles("shopNowButton")}
                         </Button>
                     </div>
                 </div>
-                <div className="flex flex-col rounded-tr-2xl rounded-br-2xl">
-                    <div className="relative h-full w-full overflow-hidden rounded-tr-2xl rounded-br-2xl md:h-full">
-                        <Image
-                            src="https://www.plug.tech/cdn/shop/files/Untitled_design_-_2025-06-10T113805.791.webp?v=1749573696&width=1000"
-                            alt="Hero Background"
-                            fill
-                            className="object-cover"
-                        />
-                    </div>
+                <div className="relative aspect-video w-full md:aspect-auto md:h-full">
+                    <Image
+                        src="https://www.plug.tech/cdn/shop/files/Untitled_design_-_2025-06-10T113805.791.webp?v=1749573696&width=1000"
+                        alt="Bundles Background"
+                        fill
+                        className="object-cover"
+                    />
                 </div>
             </div>
+
         </>
     );
 }

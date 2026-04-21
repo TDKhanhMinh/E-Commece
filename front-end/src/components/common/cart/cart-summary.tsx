@@ -30,33 +30,33 @@ export function CartSummary({
     return (
         <div className="lg:col-span-1">
             <Card className="sticky top-4 border-none bg-white shadow-md dark:bg-slate-900 dark:border dark:border-slate-800 dark:shadow-slate-950/50">
-                <CardContent className="p-6">
-                    <h2 className="mb-4 text-xl font-bold dark:text-slate-100">
+                <CardContent className="p-4 sm:p-6">
+                    <h2 className="mb-4 text-lg sm:text-xl font-bold dark:text-slate-100">
                         {t("title")}
                     </h2>
                     <div className="space-y-3">
-                        <div className="text-muted-foreground flex justify-between dark:text-slate-400">
+                        <div className="text-muted-foreground flex justify-between dark:text-slate-400 text-sm sm:text-base">
                             <span>{t("subtotal")}</span>
                             <span className="dark:text-slate-200">
                                 {formatCurrency(totalAmount)}
                             </span>
                         </div>
                         {totalDiscount > 0 && (
-                            <div className="text-destructive flex justify-between dark:text-red-400">
+                            <div className="text-destructive flex justify-between dark:text-red-400 text-sm sm:text-base">
                                 <span>{t("discount")}</span>
                                 <span>-{formatCurrency(totalDiscount)}</span>
                             </div>
                         )}
                         <Separator className="my-4 dark:bg-slate-800" />
-                        <div className="flex items-baseline justify-between">
-                            <span className="text-lg font-bold dark:text-slate-100">
+                        <div className="flex items-baseline justify-between transition-all">
+                            <span className="text-base sm:text-lg font-bold dark:text-slate-100">
                                 {t("total")}
                             </span>
-                            <p className="text-primary text-2xl font-black dark:text-blue-400">
+                            <p className="text-primary text-xl sm:text-2xl font-black dark:text-blue-400">
                                 {formatCurrency(finalAmount)}
                             </p>
                         </div>
-                        <div className="text-muted-foreground text-xs dark:text-slate-500">
+                        <div className="text-muted-foreground text-[10px] sm:text-xs dark:text-slate-500">
                             {t("totalItems", { count: totalItems })}
                         </div>
                         <Button

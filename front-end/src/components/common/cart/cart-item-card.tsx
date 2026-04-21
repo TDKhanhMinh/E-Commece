@@ -40,8 +40,8 @@ export function CartItemCard({
 
     return (
         <Card className="bg-slate-50/50 dark:bg-slate-900/50 dark:shadow-slate-950/50 dark:border-slate-800 overflow-hidden border-none shadow-sm dark:border">
-            <CardContent className="p-4">
-                <div className="flex items-start gap-4">
+            <CardContent className="p-3 sm:p-4">
+                <div className="flex items-start gap-3 sm:gap-4">
                     <div className="flex shrink-0 items-start">
                         <Checkbox
                             checked={isSelected}
@@ -52,7 +52,7 @@ export function CartItemCard({
                         />
                     </div>
 
-                    <div className="dark:bg-slate-800 dark:border-slate-700 h-24 w-24 shrink-0 rounded-lg border bg-white p-2">
+                    <div className="dark:bg-slate-800 dark:border-slate-700 h-20 w-20 sm:h-24 sm:w-24 shrink-0 rounded-lg border bg-white p-1.5 sm:p-2">
                         <img
                             src={item.image || "/placeholder.png"}
                             alt={item.productName}
@@ -64,10 +64,10 @@ export function CartItemCard({
                         <div>
                             <div className="flex justify-between">
                                 <div>
-                                    <h3 className="dark:text-slate-100 text-lg font-semibold">
+                                    <h3 className="dark:text-slate-100 text-base sm:text-lg font-semibold leading-tight">
                                         {item.productName}
                                     </h3>
-                                    <p className="dark:text-slate-500 text-muted-foreground text-xs">
+                                    <p className="dark:text-slate-500 text-muted-foreground mt-0.5 text-[10px] sm:text-xs">
                                         SKU: {item.skuCode}
                                     </p>
                                 </div>
@@ -102,8 +102,8 @@ export function CartItemCard({
                             )}
                         </div>
 
-                        <div className="mt-4 flex items-end justify-between">
-                            <div className="dark:bg-slate-800 dark:border-slate-700 flex items-center rounded-md border bg-white">
+                        <div className="mt-4 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                            <div className="dark:bg-slate-800 dark:border-slate-700 flex w-fit items-center rounded-md border bg-white">
                                 <Button
                                     variant="ghost"
                                     size="icon"
@@ -120,13 +120,13 @@ export function CartItemCard({
                                 >
                                     <Minus className="dark:text-slate-300 h-3 w-3" />
                                 </Button>
-                                <span className="dark:text-slate-100 w-10 text-center text-sm font-medium">
+                                <span className="dark:text-slate-100 w-8 sm:w-10 text-center text-xs sm:text-sm font-medium">
                                     {item.quantity}
                                 </span>
                                 <Button
                                     variant="ghost"
                                     size="icon"
-                                    className="dark:border-slate-700 dark:hover:bg-slate-700 h-8 w-8 rounded-none border-l"
+                                    className="dark:border-slate-700 dark:hover:bg-slate-700 h-7 w-7 sm:h-8 sm:w-8 rounded-none border-l"
                                     onClick={() => {
                                         onUpdateQuantity(
                                             item.skuId,
@@ -143,18 +143,18 @@ export function CartItemCard({
                                     <Plus className="dark:text-slate-300 h-3 w-3" />
                                 </Button>
                             </div>
-                            <div className="text-right">
+                            <div className="text-left sm:text-right">
                                 {item.discountPercent &&
                                     item.discountPercent > 0 && (
-                                        <p className="dark:text-slate-500 text-muted-foreground mb-1 text-xs line-through">
+                                        <p className="dark:text-slate-500 text-muted-foreground mb-0.5 text-[10px] sm:text-xs line-through">
                                             {formatCurrency(item.price)}
                                         </p>
                                     )}
-                                <p className="text-primary dark:text-blue-400 text-lg font-bold">
+                                <p className="text-primary dark:text-blue-400 text-base sm:text-lg font-bold">
                                     {formatCurrency(item.salePrice) ||
                                         formatCurrency(item.price)}
                                 </p>
-                                <p className="dark:text-slate-500 text-muted-foreground text-xs">
+                                <p className="dark:text-slate-500 text-muted-foreground text-[10px] sm:text-xs">
                                     {t("total", {
                                         price: formatCurrency(totalPrice),
                                     })}

@@ -81,17 +81,17 @@ export default function ResetPasswordPage() {
 
     if (!email) {
         return (
-            <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-slate-50 to-slate-100 px-4">
-                <div className="w-full max-w-md rounded-2xl bg-white p-8 text-center shadow-xl">
-                    <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-red-100">
-                        <AlertTriangle className="h-7 w-7 text-red-500" />
+            <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-slate-50 to-slate-100 px-4 py-8 sm:py-0">
+                <div className="w-full max-w-md rounded-2xl bg-white p-6 sm:p-8 text-center shadow-xl">
+                    <div className="mx-auto mb-4 flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full bg-red-100">
+                        <AlertTriangle className="h-6 w-6 sm:h-7 sm:w-7 text-red-500" />
                     </div>
 
-                    <h1 className="mb-2 text-xl font-semibold text-gray-900">
+                    <h1 className="mb-2 text-lg sm:text-xl font-semibold text-gray-900 leading-tight">
                         Phiên xác thực không hợp lệ
                     </h1>
 
-                    <p className="mb-6 text-sm text-gray-600">
+                    <p className="mb-6 text-xs sm:text-sm text-gray-600">
                         Thông tin xác thực đã hết hạn hoặc không tồn tại. Vui
                         lòng thực hiện lại quy trình đặt lại mật khẩu.
                     </p>
@@ -107,18 +107,18 @@ export default function ResetPasswordPage() {
             <Card className="w-full max-w-md border-none shadow-xl">
                 {!isSuccess ? (
                     <>
-                        <CardHeader className="space-y-1 text-center">
-                            <div className="mb-4 flex justify-center">
-                                <div className="rounded-full bg-blue-100 p-3">
-                                    <Lock className="h-8 w-8 text-blue-600" />
+                        <CardHeader className="space-y-1 text-center p-5 sm:p-6 pb-2 sm:pb-4">
+                            <div className="mb-2 sm:mb-4 flex justify-center">
+                                <div className="rounded-full bg-blue-100 p-2 sm:p-3">
+                                    <Lock className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
                                 </div>
                             </div>
-                            <CardTitle className="text-2xl font-bold">
+                            <CardTitle className="text-xl sm:text-2xl font-bold leading-tight">
                                 Đặt lại mật khẩu
                             </CardTitle>
-                            <CardDescription>
+                            <CardDescription className="text-sm sm:text-base">
                                 Tạo mật khẩu mới cho tài khoản{" "}
-                                <span className="font-medium text-gray-900">
+                                <span className="font-medium text-gray-900 break-all">
                                     {email}
                                 </span>
                             </CardDescription>
@@ -239,22 +239,22 @@ export default function ResetPasswordPage() {
                     </>
                 ) : (
                     /* --- TRẠNG THÁI THÀNH CÔNG --- */
-                    <div className="animate-in zoom-in py-10 text-center duration-300">
-                        <div className="mb-6 flex justify-center">
-                            <div className="rounded-full bg-green-100 p-4">
-                                <CheckCircle2 className="h-12 w-12 text-green-600" />
+                    <div className="animate-in zoom-in py-8 sm:py-10 text-center duration-300">
+                        <div className="mb-4 sm:mb-6 flex justify-center">
+                            <div className="rounded-full bg-green-100 p-3 sm:p-4">
+                                <CheckCircle2 className="h-10 w-10 sm:h-12 sm:w-12 text-green-600" />
                             </div>
                         </div>
-                        <CardTitle className="mb-2 text-2xl font-bold text-green-700">
+                        <CardTitle className="mb-2 text-xl sm:text-2xl font-bold text-green-700 leading-tight">
                             Thành công!
                         </CardTitle>
-                        <CardDescription className="px-6 text-base">
+                        <CardDescription className="px-6 text-sm sm:text-base">
                             Mật khẩu của bạn đã được cập nhật. Bạn sẽ được
                             chuyển hướng đến trang đăng nhập trong giây lát...
                         </CardDescription>
                         <Button
                             variant="outline"
-                            className="mt-8 border-blue-600 text-blue-600 hover:bg-blue-50"
+                            className="mt-6 sm:mt-8 border-blue-600 text-blue-600 hover:bg-blue-50 h-10 sm:h-11"
                             onClick={() => router.push("/login")}
                         >
                             Đăng nhập ngay

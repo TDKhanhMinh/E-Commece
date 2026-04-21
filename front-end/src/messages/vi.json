@@ -259,7 +259,8 @@
                 "audio": "Âm thanh được chứng nhận, Cảm xúc mỗi ngày.",
                 "smartwatches": "Luôn kết nối, Luôn năng động.",
                 "Plug packs": "Sẵn sàng tạo gói, Được tuyển chọn bởi Plug."
-            }
+            },
+            "view_more": "Khám phá ngay →"
         },
         "feedback": {
             "badge": "ĐƯỢC TIN TƯỞNG BỞI NHIỀU NGƯỜI, ĐƯỢC YÊU MẾN BỞI TẤT CẢ",
@@ -1233,6 +1234,15 @@
         "noFound": "Không tìm thấy hội thoại",
         "loading": "Đang tải...",
         "error": "Lỗi kết nối",
+        "widget": {
+            "header": "Trung tâm hỗ trợ",
+            "online": "Trực tuyến",
+            "connecting": "Đang kết nối...",
+            "welcome": "Chào mừng bạn đến với bộ phận hỗ trợ!",
+            "subtitle": "Hôm nay chúng tôi có thể giúp gì cho bạn?",
+            "justNow": "Vừa xong",
+            "inputPlaceholder": "Nhập tin nhắn..."
+        },
         "status": {
             "online": "Đang trực tuyến",
             "offline": "Mất kết nối",

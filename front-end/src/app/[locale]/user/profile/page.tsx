@@ -80,19 +80,19 @@ export default function Profile() {
         );
 
     return (
-        <div className="flex min-h-screen justify-center border-none bg-gray-50 p-4 dark:bg-slate-950">
+        <div className="flex min-h-screen justify-center border-none bg-gray-50 p-2 sm:p-4 dark:bg-slate-950">
             <Card className="w-full max-w-7xl border-none shadow-md dark:bg-slate-900 dark:shadow-slate-950/50">
-                <CardHeader>
-                    <CardTitle className="text-2xl font-bold text-green-800 dark:text-green-400">
+                <CardHeader className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+                    <CardTitle className="text-xl sm:text-2xl font-bold text-green-800 dark:text-green-400">
                         {t("title")}
                     </CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="px-4 sm:px-6 lg:px-8 pb-6 sm:pb-8">
                     <form
                         onSubmit={handleSubmit(onSubmit)}
-                        className="space-y-6"
+                        className="space-y-4 sm:space-y-6"
                     >
-                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                        <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2">
                             <div className="space-y-2">
                                 <Label
                                     htmlFor="fullname"
@@ -176,7 +176,7 @@ export default function Profile() {
                         <Button
                             type="submit"
                             disabled={mutation.isPending}
-                            className="h-auto cursor-pointer bg-green-700 px-10 py-2 text-base font-semibold text-white hover:bg-green-800 dark:bg-green-600 dark:hover:bg-green-700"
+                            className="h-10 sm:h-auto cursor-pointer bg-green-700 w-full sm:w-auto px-10 py-2 text-sm sm:text-base font-semibold text-white hover:bg-green-800 dark:bg-green-600 dark:hover:bg-green-700"
                         >
                             {mutation.isPending
                                 ? t("updatingButton")

@@ -17,17 +17,17 @@ function CollectionLayout({ children }: { children: React.ReactNode }) {
     return (
         <>
             <Header />
-            <div className="col-span-12 flex h-32 flex-row items-center justify-center">
-                <span className="text-6xl font-bold">Androids</span>
+            <div className="col-span-12 flex h-24 sm:h-32 flex-row items-center justify-center bg-slate-50 dark:bg-slate-900 border-b">
+                <span className="text-3xl sm:text-4xl lg:text-6xl font-bold tracking-tight">Androids</span>
             </div>
-            <div className="mb-8 grid min-h-screen grid-cols-12 px-8">
-                <div className="col-span-2 flex flex-col">
-                    <Card className="sticky top-20 mb-8 w-full gap-0 shadow-lg">
+            <div className="mb-8 grid grid-cols-1 lg:grid-cols-12 px-4 sm:px-6 lg:px-8 gap-6 sm:gap-8 min-h-screen pt-6">
+                <div className="lg:col-span-3 xl:col-span-2 hidden lg:flex flex-col">
+                    <Card className="sticky top-20 mb-8 w-full gap-0 shadow-lg border-slate-200 dark:border-slate-800">
                         <CardHeader className="text-lg font-bold">
                             Filters
                         </CardHeader>
                         <Separator />
-                        <CardContent>
+                        <CardContent className="p-4 sm:p-6">
                             <Accordion
                                 type="single"
                                 collapsible
@@ -45,7 +45,7 @@ function CollectionLayout({ children }: { children: React.ReactNode }) {
                                             <Checkbox id="condition-ecofriendly" />
                                             <Label
                                                 htmlFor="condition-ecofriendly"
-                                                className="text-sm font-medium"
+                                                className="text-sm font-medium cursor-pointer"
                                             >
                                                 Ecofriendly
                                             </Label>
@@ -54,7 +54,7 @@ function CollectionLayout({ children }: { children: React.ReactNode }) {
                                             <Checkbox id="condition-excellent" />
                                             <Label
                                                 htmlFor="condition-excellent"
-                                                className="text-sm font-medium"
+                                                className="text-sm font-medium cursor-pointer"
                                             >
                                                 Excellent
                                             </Label>
@@ -63,7 +63,7 @@ function CollectionLayout({ children }: { children: React.ReactNode }) {
                                             <Checkbox id="condition-good" />
                                             <Label
                                                 htmlFor="condition-good"
-                                                className="text-sm font-medium"
+                                                className="text-sm font-medium cursor-pointer"
                                             >
                                                 Good
                                             </Label>
@@ -75,7 +75,7 @@ function CollectionLayout({ children }: { children: React.ReactNode }) {
                         </CardContent>
                     </Card>
                 </div>
-                <main className="col-span-10 flex flex-1 flex-col">
+                <main className="lg:col-span-9 xl:col-span-10 flex flex-1 flex-col min-w-0">
                     {children}
                 </main>
             </div>

@@ -9,43 +9,75 @@ import {
     MapPin,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/button";
 
 export default function Footer() {
     const t = useTranslations("footer");
 
     return (
         <footer className="w-full border-t bg-zinc-50 dark:bg-zinc-950">
-            <div className="container mx-auto px-4 py-3 md:py-4">
-                <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4">
-                    <div className="space-y-4">
-                        <h3 className="text-xl font-bold tracking-tighter">
+            <div className="container mx-auto px-4 py-8 sm:py-12 lg:py-16">
+                <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4">
+                    <div className="space-y-6">
+                        <h3 className="text-xl font-bold tracking-tighter sm:text-2xl">
                             T7M ONLINE
                         </h3>
-                        <p className="text-muted-foreground text-sm leading-relaxed">
+                        <p className="text-muted-foreground text-sm leading-relaxed sm:text-base">
                             {t("description")}
                         </p>
                         <div className="flex gap-4">
-                            <Facebook className="hover:text-primary h-5 w-5 cursor-pointer" />
-                            <Instagram className="hover:text-primary h-5 w-5 cursor-pointer" />
-                            <Twitter className="hover:text-primary h-5 w-5 cursor-pointer" />
-                            <Youtube className="hover:text-primary h-5 w-5 cursor-pointer" />
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-10 w-10 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-800"
+                                aria-label="Facebook"
+                            >
+                                <Facebook className="h-5 w-5" />
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-10 w-10 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-800"
+                                aria-label="Instagram"
+                            >
+                                <Instagram className="h-5 w-5" />
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-10 w-10 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-800"
+                                aria-label="Twitter"
+                            >
+                                <Twitter className="h-5 w-5" />
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-10 w-10 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-800"
+                                aria-label="Youtube"
+                            >
+                                <Youtube className="h-5 w-5" />
+                            </Button>
                         </div>
                     </div>
 
                     <div>
-                        <h4 className="mb-4 text-sm font-semibold tracking-wider uppercase">
+                        <h4 className="mb-6 text-sm font-semibold tracking-wider uppercase">
                             {t("explore.title")}
                         </h4>
-                        <ul className="text-muted-foreground space-y-2 text-sm">
+                        <ul className="text-muted-foreground space-y-3 text-sm sm:text-base">
                             <li>
-                                <Link href="/" className="hover:text-primary">
+                                <Link
+                                    href="/"
+                                    className="hover:text-primary transition-colors"
+                                >
                                     {t("explore.home")}
                                 </Link>
                             </li>
                             <li>
                                 <Link
                                     href="/products"
-                                    className="hover:text-primary"
+                                    className="hover:text-primary transition-colors"
                                 >
                                     {t("explore.allProducts")}
                                 </Link>
@@ -53,7 +85,7 @@ export default function Footer() {
                             <li>
                                 <Link
                                     href="/categories"
-                                    className="hover:text-primary"
+                                    className="hover:text-primary transition-colors"
                                 >
                                     {t("explore.categories")}
                                 </Link>
@@ -61,7 +93,7 @@ export default function Footer() {
                             <li>
                                 <Link
                                     href="/blog"
-                                    className="hover:text-primary"
+                                    className="hover:text-primary transition-colors"
                                 >
                                     {t("explore.news")}
                                 </Link>
@@ -70,14 +102,14 @@ export default function Footer() {
                     </div>
 
                     <div>
-                        <h4 className="mb-4 text-sm font-semibold tracking-wider uppercase">
+                        <h4 className="mb-6 text-sm font-semibold tracking-wider uppercase">
                             {t("support.title")}
                         </h4>
-                        <ul className="text-muted-foreground space-y-2 text-sm">
+                        <ul className="text-muted-foreground space-y-3 text-sm sm:text-base">
                             <li>
                                 <Link
                                     href="/faq"
-                                    className="hover:text-primary"
+                                    className="hover:text-primary transition-colors"
                                 >
                                     {t("support.faq")}
                                 </Link>
@@ -85,7 +117,7 @@ export default function Footer() {
                             <li>
                                 <Link
                                     href="/shipping"
-                                    className="hover:text-primary"
+                                    className="hover:text-primary transition-colors"
                                 >
                                     {t("support.shipping")}
                                 </Link>
@@ -93,7 +125,7 @@ export default function Footer() {
                             <li>
                                 <Link
                                     href="/privacy"
-                                    className="hover:text-primary"
+                                    className="hover:text-primary transition-colors"
                                 >
                                     {t("support.privacy")}
                                 </Link>
@@ -101,7 +133,7 @@ export default function Footer() {
                             <li>
                                 <Link
                                     href="/terms"
-                                    className="hover:text-primary"
+                                    className="hover:text-primary transition-colors"
                                 >
                                     {t("support.terms")}
                                 </Link>
@@ -110,30 +142,33 @@ export default function Footer() {
                     </div>
 
                     <div>
-                        <h4 className="mb-4 text-sm font-semibold tracking-wider uppercase">
+                        <h4 className="mb-6 text-sm font-semibold tracking-wider uppercase">
                             {t("contact.title")}
                         </h4>
-                        <ul className="text-muted-foreground space-y-3 text-sm">
-                            <li className="flex items-center gap-2">
-                                <MapPin className="h-4 w-4" /> {t("contact.address")}
+                        <ul className="text-muted-foreground space-y-4 text-sm sm:text-base">
+                            <li className="flex items-start gap-3">
+                                <MapPin className="mt-0.5 h-5 w-5 shrink-0" />
+                                <span>{t("contact.address")}</span>
                             </li>
-                            <li className="flex items-center gap-2">
-                                <Phone className="h-4 w-4" /> +84 123 456 789
+                            <li className="flex items-center gap-3">
+                                <Phone className="h-5 w-5 shrink-0" />
+                                <span>+84 123 456 789</span>
                             </li>
-                            <li className="flex items-center gap-2">
-                                <Mail className="h-4 w-4" />{" "}
-                                support@t7m-online.vn
+                            <li className="flex items-center gap-3">
+                                <Mail className="h-5 w-5 shrink-0" />
+                                <span className="truncate">
+                                    support@t7m-online.vn
+                                </span>
                             </li>
                         </ul>
                     </div>
                 </div>
 
-                <div className="text-muted-foreground mt-4 border-t text-center text-sm">
-                    <p className="mt-3">
-                        {t("copyright")}
-                    </p>
+                <div className="text-muted-foreground mt-12 border-t pt-8 text-center text-sm sm:mt-16">
+                    <p>{t("copyright")}</p>
                 </div>
             </div>
         </footer>
+
     );
 }

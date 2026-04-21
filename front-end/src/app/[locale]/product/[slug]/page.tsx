@@ -79,13 +79,15 @@ function ProductDetails() {
                 slug={slug}
             />
             <article
-                className="bg-background flex min-h-screen w-full flex-col items-center justify-center"
+                className="bg-background flex min-h-screen w-full flex-col items-center"
                 itemScope
                 itemType="https://schema.org/Product"
             >
-                <section className="container w-full max-w-7xl px-4 py-8">
-                    <BackButton />
-                    <div className="grid w-full grid-cols-1 gap-8 lg:grid-cols-2">
+                <section className="container w-full max-w-7xl px-4 py-6 sm:py-8 lg:py-12">
+                    <div className="mb-4 sm:mb-6">
+                        <BackButton />
+                    </div>
+                    <div className="grid w-full grid-cols-1 gap-8 md:grid-cols-2 lg:gap-12">
                         <ProductImageGallery
                             images={allImages}
                             currentImageIndex={currentImageIndex}
@@ -106,7 +108,9 @@ function ProductDetails() {
                         />
                     </div>
                 </section>
-                <ProductAboutUs />
+                <div className="w-full">
+                    <ProductAboutUs />
+                </div>
             </article>
             <HomeSaleProducts />
             <ProductReviews

@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { useTheme } from "next-themes";
-import { Button } from "@/components/ui/button";
 import { HeaderActions } from "./header-actions";
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 import { Sheet } from "../ui/sheet";
+import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import {
     NavigationMenu,
     NavigationMenuContent,
@@ -20,6 +20,17 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { CartSheet } from "../common/cart/cart-sheet";
 import { useCartSummary } from "@/hooks/use-cart";
 import { GlobalSearch } from "@/components/common/ui/search-input";
+
+function SidebarTriggerSafe() {
+    try {
+        // useSidebar will throw if not inside SidebarProvider
+        const { state } = useSidebar();
+        if (!state) return null;
+        return <SidebarTrigger className="h-10 w-10" />;
+    } catch (e) {
+        return null;
+    }
+}
 
 export default function Header() {
     const { setTheme } = useTheme();
@@ -37,11 +48,12 @@ export default function Header() {
     return (
         <header className="bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 z-50 w-full border-b backdrop-blur">
             <Sheet>
-                <div className="mx-8 flex h-16 items-center justify-between px-4">
-                    <div className="flex items-center gap-8">
+                <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+                    <div className="flex items-center gap-2 md:gap-8">
+                        <SidebarTriggerSafe />
                         <Link
                             href="/"
-                            className="text-primary text-xl font-bold tracking-tighter"
+                            className="text-primary text-lg font-bold tracking-tighter sm:text-xl md:text-2xl"
                         >
                             T7M ONLINE
                         </Link>
@@ -54,10 +66,10 @@ export default function Header() {
                                     </NavigationMenuTrigger>
 
                                     <NavigationMenuContent className="w-full rounded-none border-t">
-                                        <div className="mx-auto max-w-7xl px-6">
-                                            <div className="grid w-250 grid-cols-[250px_1fr] gap-6 p-6">
-                                                <div className="space-y-2">
-                                                    <p className="text-muted-foreground text-xs uppercase">
+                                        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+                                            <div className="grid grid-cols-1 gap-8 lg:grid-cols-[280px_1fr]">
+                                                <div className="grid grid-cols-2 gap-x-4 gap-y-2 lg:block lg:space-y-2">
+                                                    <p className="text-muted-foreground col-span-2 mb-2 text-xs font-semibold uppercase tracking-wider lg:col-span-1">
                                                         Explore iPhone
                                                     </p>
 
@@ -79,7 +91,7 @@ export default function Header() {
                                                         >
                                                             <Link
                                                                 href="/products"
-                                                                className="hover:text-primary block py-1 text-sm font-medium"
+                                                                className="hover:text-primary block py-1.5 text-sm font-medium transition-colors"
                                                             >
                                                                 {item}
                                                             </Link>
@@ -87,13 +99,13 @@ export default function Header() {
                                                     ))}
                                                 </div>
 
-                                                <div className="grid grid-cols-2 gap-4">
-                                                    <div className="flex flex-col justify-between rounded-2xl bg-linear-to-br from-emerald-50 to-lime-200 p-6">
-                                                        <div>
-                                                            <p className="text-primary text-xs font-semibold">
+                                                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                                                    <div className="flex flex-col justify-between overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-50 to-lime-200 p-6 dark:from-emerald-950/20 dark:to-lime-900/20">
+                                                        <div className="mb-4">
+                                                            <p className="text-primary text-xs font-bold uppercase tracking-tight">
                                                                 FROM $119
                                                             </p>
-                                                            <h3 className="mt-2 text-xl font-bold">
+                                                            <h3 className="mt-2 text-xl font-bold leading-tight md:text-2xl">
                                                                 Give the Gift of
                                                                 iPhone
                                                             </h3>
@@ -101,25 +113,25 @@ export default function Header() {
                                                                 Make their
                                                                 season shine
                                                                 with premium
-                                                                preowned
-                                                                iPhones.
+                                                                preowned.
                                                             </p>
                                                         </div>
-                                                        <Image
-                                                            src="https://www.plug.tech/cdn/shop/files/PLUG_MM_SAMSUNG_ALL_IPHONES.webp?v=1763397440&width=800"
-                                                            alt="iPhones"
-                                                            width={260}
-                                                            height={180}
-                                                            className="mx-auto"
-                                                        />
+                                                        <div className="relative aspect-[4/3] w-full">
+                                                            <Image
+                                                                src="https://www.plug.tech/cdn/shop/files/PLUG_MM_SAMSUNG_ALL_IPHONES.webp?v=1763397440&width=800"
+                                                                alt="iPhones"
+                                                                fill
+                                                                className="object-contain"
+                                                            />
+                                                        </div>
                                                     </div>
 
-                                                    <div className="flex flex-col justify-between rounded-2xl bg-linear-to-br from-slate-50 to-lime-200 p-6">
-                                                        <div>
-                                                            <p className="text-xs font-semibold">
+                                                    <div className="flex flex-col justify-between overflow-hidden rounded-2xl bg-gradient-to-br from-slate-50 to-indigo-200 p-6 dark:from-slate-900/20 dark:to-indigo-900/20">
+                                                        <div className="mb-4">
+                                                            <p className="text-xs font-bold uppercase tracking-tight">
                                                                 PLUG EXCLUSIVE
                                                             </p>
-                                                            <h3 className="mt-2 text-xl font-bold">
+                                                            <h3 className="mt-2 text-xl font-bold leading-tight md:text-2xl">
                                                                 iPhone Starter
                                                                 Pack
                                                             </h3>
@@ -129,13 +141,14 @@ export default function Header() {
                                                                 bundle.
                                                             </p>
                                                         </div>
-                                                        <Image
-                                                            src="https://www.plug.tech/cdn/shop/files/PLUG_MM_IPHONES_STARTER_PACK.webp?v=1763397606&width=800"
-                                                            alt="Starter Pack"
-                                                            width={220}
-                                                            height={180}
-                                                            className="mx-auto"
-                                                        />
+                                                        <div className="relative aspect-[4/3] w-full">
+                                                            <Image
+                                                                src="https://www.plug.tech/cdn/shop/files/PLUG_MM_IPHONES_STARTER_PACK.webp?v=1763397606&width=800"
+                                                                alt="Starter Pack"
+                                                                fill
+                                                                className="object-contain"
+                                                            />
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -146,7 +159,7 @@ export default function Header() {
                         </NavigationMenu>
                     </div>
 
-                    <div className="relative hidden w-full max-w-sm items-center lg:flex">
+                    <div className="relative mx-4 hidden w-full max-w-md items-center lg:flex">
                         <GlobalSearch />
                     </div>
 

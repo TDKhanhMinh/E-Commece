@@ -17,26 +17,26 @@ export function ProductPrice({
     };
 
     return (
-        <div className={`flex flex-row items-center gap-3 ${className}`}>
+        <div className={`flex flex-row flex-wrap items-center gap-2 sm:gap-3 ${className}`}>
             <span
-                className="text-2xl font-bold text-red-600"
+                className="text-xl font-bold text-red-600 sm:text-2xl lg:text-3xl"
                 itemProp="price"
                 content={salePrice.toString()}
             >
                 {formatPrice(salePrice)}
             </span>
             {discountPercent > 0 && (
-                <>
-                    <span className="text-muted-foreground text-lg line-through">
+                <div className="flex items-center gap-2">
+                    <span className="text-muted-foreground text-sm line-through sm:text-base lg:text-lg">
                         {formatPrice(originalPrice)}
                     </span>
                     <Badge
                         variant="outline"
-                        className="border-red-200 text-red-600"
+                        className="border-red-200 bg-red-50/50 text-[10px] whitespace-nowrap text-red-600 sm:text-xs"
                     >
                         Tiết kiệm {formatPrice(originalPrice - salePrice)}
                     </Badge>
-                </>
+                </div>
             )}
             <meta itemProp="priceCurrency" content="VND" />
         </div>

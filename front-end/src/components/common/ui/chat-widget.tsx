@@ -63,7 +63,7 @@ const MessageList = memo(
                                     className={`flex flex-col ${isMyMessage ? "items-end" : "items-start"} gap-1`}
                                 >
                                     <div
-                                        className={`max-w-[85%] px-4 py-2.5 text-[13.5px] shadow-sm ${
+                                        className={`max-w-[85%] px-4 py-2.5 text-[14px] shadow-sm ${
                                             isMyMessage
                                                 ? "rounded-2xl rounded-tr-none bg-blue-600 text-white"
                                                 : "rounded-2xl rounded-tl-none border border-white bg-white text-slate-700 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200"
@@ -71,7 +71,7 @@ const MessageList = memo(
                                     >
                                         {msg.content}
                                     </div>
-                                    <span className="px-1 text-[9px] font-medium text-gray-400 uppercase dark:text-slate-500">
+                                    <span className="px-1 text-[10px] font-medium text-gray-400 uppercase dark:text-slate-500">
                                         {msg.timestamp
                                             ? new Date(
                                                   msg.timestamp
@@ -113,9 +113,9 @@ const ChatWidget = () => {
     };
 
     return (
-        <div className="fixed right-6 bottom-6 z-50 flex flex-col items-end font-sans">
+        <div className="fixed right-4 bottom-4 sm:right-6 sm:bottom-6 z-50 flex flex-col items-end font-sans">
             {isOpen && (
-                <div className="animate-in fade-in zoom-in-95 slide-in-from-bottom-10 mb-6 flex h-125 w-95 flex-col overflow-hidden rounded-[24px] border border-gray-100 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] duration-300 dark:border-slate-800 dark:bg-slate-900 dark:shadow-[0_20px_50px_rgba(0,0,0,0.4)]">
+                <div className="animate-in fade-in zoom-in-95 slide-in-from-bottom-10 mb-4 sm:mb-6 flex h-[min(500px,calc(100dvh-100px))] sm:h-125 w-[calc(100vw-32px)] sm:w-95 flex-col overflow-hidden rounded-[24px] border border-gray-100 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] duration-300 dark:border-slate-800 dark:bg-slate-900 dark:shadow-[0_20px_50px_rgba(0,0,0,0.4)]">
                     {/* 2. Header: Cố định ở trên cùng do flex-col */}
                     <div className="flex shrink-0 items-center justify-between bg-linear-to-r from-blue-600 to-indigo-600 p-4 text-white">
                         <div className="flex items-center gap-3">
@@ -173,7 +173,7 @@ const ChatWidget = () => {
                                 }
                                 placeholder={t("inputPlaceholder")}
                                 disabled={!isConnected || isLoading}
-                                className="flex-1 rounded-2xl bg-gray-100 px-4 py-2.5 text-[13.5px] transition-all outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/10 disabled:opacity-50 dark:bg-slate-950 dark:border-slate-800 dark:text-slate-100 dark:focus:bg-slate-950"
+                                className="flex-1 rounded-2xl bg-gray-100 px-4 py-2.5 text-sm transition-all outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/10 disabled:opacity-50 dark:bg-slate-950 dark:border-slate-800 dark:text-slate-100 dark:focus:bg-slate-950"
                             />
                             <button
                                 type="submit"

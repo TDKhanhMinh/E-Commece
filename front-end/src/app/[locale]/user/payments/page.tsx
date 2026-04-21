@@ -68,51 +68,51 @@ export default function PrivacyPolicy() {
     return (
         <div className="min-h-screen bg-slate-50/50 pb-20 dark:bg-slate-950">
             {/* HERO SECTION - TIÊU ĐỀ RỰC RỠ */}
-            <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-900 px-4 py-20">
+            <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-900 px-4 py-12 sm:py-20">
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
-                <div className="relative z-10 container mx-auto max-w-4xl space-y-6 text-center">
-                    <Badge className="border border-indigo-500/30 bg-indigo-500/20 px-4 py-1 text-indigo-200 backdrop-blur-md hover:bg-indigo-500/30">
+                <div className="relative z-10 container mx-auto max-w-4xl space-y-4 sm:space-y-6 text-center">
+                    <Badge className="border border-indigo-500/30 bg-indigo-500/20 px-4 py-1 text-xs text-indigo-200 backdrop-blur-md hover:bg-indigo-500/30">
                         {t("badge")}
                     </Badge>
                     <h1 
-                        className="text-4xl font-extrabold tracking-tight text-white md:text-5xl"
+                        className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white"
                         dangerouslySetInnerHTML={{ __html: t.raw("title") }}
                     />
-                    <p className="mx-auto max-w-2xl text-lg leading-relaxed text-slate-300">
+                    <p className="mx-auto max-w-2xl text-base sm:text-lg leading-relaxed text-slate-300">
                         {t("description")}
                     </p>
-                    <div className="flex items-center justify-center gap-2 text-sm text-slate-400 italic">
-                        <Lock className="size-4" /> {t("lastUpdated", { date: lastUpdated })}
+                    <div className="flex items-center justify-center gap-2 text-xs sm:text-sm text-slate-400 italic">
+                        <Lock className="size-3 sm:size-4" /> {t("lastUpdated", { date: lastUpdated })}
                     </div>
                 </div>
             </div>
 
-            <div className="relative z-20 container mx-auto -mt-12 max-w-5xl px-4">
+            <div className="relative z-20 container mx-auto -mt-8 sm:-mt-12 max-w-5xl px-4">
                 <Card className="border-none bg-white/80 shadow-2xl backdrop-blur-lg dark:border-slate-800 dark:bg-slate-900/80">
                     <CardContent className="p-0">
-                        <ScrollArea className="h-[750px] w-full rounded-2xl">
-                            <div className="space-y-16 p-8 md:p-12">
+                        <ScrollArea className="h-auto md:h-[80vh] w-full rounded-2xl">
+                            <div className="space-y-10 sm:space-y-16 p-4 sm:p-6 lg:p-10">
                                 {/* 1. DỮ LIỆU THU THẬP */}
                                 <section className="space-y-6">
                                     <div className="flex items-center gap-3 border-b border-slate-100 pb-4 dark:border-slate-800">
                                         <div className="rounded-lg bg-blue-100 p-2 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
-                                            <Database className="size-6" />
+                                            <Database className="size-5 sm:size-6" />
                                         </div>
-                                        <h2 className="text-2xl font-bold text-slate-800 italic dark:text-slate-100">
+                                        <h2 className="text-xl sm:text-2xl font-bold text-slate-800 italic dark:text-slate-100">
                                             {t("sections.dataCollection.title")}
                                         </h2>
                                     </div>
-                                    <div className="overflow-hidden rounded-2xl border border-slate-100 shadow-sm dark:border-slate-800">
-                                        <Table>
+                                    <div className="overflow-x-auto rounded-2xl border border-slate-100 shadow-sm dark:border-slate-800">
+                                        <Table className="min-w-[700px]">
                                             <TableHeader className="bg-slate-50/50 dark:bg-slate-950/50">
                                                 <TableRow className="dark:border-slate-800">
-                                                    <TableHead className="font-bold text-slate-700 dark:text-slate-300">
+                                                    <TableHead className="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300">
                                                         {t("sections.dataCollection.table.type")}
                                                     </TableHead>
-                                                    <TableHead className="font-bold text-slate-700 dark:text-slate-300">
+                                                    <TableHead className="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300">
                                                         {t("sections.dataCollection.table.example")}
                                                     </TableHead>
-                                                    <TableHead className="font-bold text-slate-700 dark:text-slate-300">
+                                                    <TableHead className="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300">
                                                         {t("sections.dataCollection.table.purpose")}
                                                     </TableHead>
                                                 </TableRow>
@@ -149,9 +149,9 @@ export default function PrivacyPolicy() {
                                 <section className="space-y-6">
                                     <div className="flex items-center gap-4 border-b border-slate-100 pb-4 dark:border-slate-800">
                                         <div className="rounded-lg bg-purple-100 p-2 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
-                                            <Eye className="size-6" />
+                                            <Eye className="size-5 sm:size-6" />
                                         </div>
-                                        <h2 className="text-2xl font-bold text-slate-800 italic dark:text-slate-100">
+                                        <h2 className="text-xl sm:text-2xl font-bold text-slate-800 italic dark:text-slate-100">
                                             {t("sections.usage.title")}
                                         </h2>
                                     </div>
@@ -159,7 +159,7 @@ export default function PrivacyPolicy() {
                                         {USAGE_INFO.map((item, index) => (
                                             <div
                                                 key={index}
-                                                className="group relative rounded-2xl border border-slate-100 bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-xl dark:border-slate-800 dark:bg-slate-800 dark:shadow-slate-950/50"
+                                                className="group relative rounded-2xl border border-slate-100 bg-white p-4 sm:p-6 shadow-sm transition-all duration-300 hover:shadow-xl dark:border-slate-800 dark:bg-slate-800 dark:shadow-slate-950/50"
                                             >
                                                 <div
                                                     className={`absolute top-0 left-0 h-full w-1 rounded-l-2xl bg-gradient-to-b ${item.gradient}`}
@@ -188,9 +188,9 @@ export default function PrivacyPolicy() {
                                 <section className="space-y-6">
                                     <div className="flex items-center gap-3 border-b border-slate-100 pb-4 dark:border-slate-800">
                                         <div className="rounded-lg bg-emerald-100 p-2 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400">
-                                            <Share2 className="size-6" />
+                                            <Share2 className="size-5 sm:size-6" />
                                         </div>
-                                        <h2 className="text-2xl font-bold text-slate-800 italic dark:text-slate-100">
+                                        <h2 className="text-xl sm:text-2xl font-bold text-slate-800 italic dark:text-slate-100">
                                             {t("sections.sharing.title")}
                                         </h2>
                                     </div>
@@ -204,21 +204,21 @@ export default function PrivacyPolicy() {
                                 </section>
 
                                 {/* 4. QUYỀN CỦA NGƯỜI DÙNG */}
-                                <section className="group relative overflow-hidden rounded-3xl bg-gradient-to-r from-indigo-600 to-purple-600 p-8 text-white">
+                                <section className="group relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-r from-indigo-600 to-purple-600 p-6 sm:p-8 text-white">
                                     <div className="relative z-10 flex flex-col justify-between gap-6 md:flex-row md:items-center">
                                         <div className="space-y-2">
-                                            <div className="inline-flex items-center gap-2 rounded-full bg-white/20 px-3 py-1 text-xs font-bold tracking-widest text-white uppercase">
+                                            <div className="inline-flex items-center gap-2 rounded-full bg-white/20 px-3 py-1 text-[10px] sm:text-xs font-bold tracking-widest text-white uppercase">
                                                 <UserCheck className="size-3" />{" "}
                                                 {t("sections.rights.badge")}
                                             </div>
-                                            <h3 className="text-2xl font-bold">
+                                            <h3 className="text-xl sm:text-2xl font-bold">
                                                 {t("sections.rights.title")}
                                             </h3>
-                                            <p className="max-w-lg text-sm text-indigo-100">
+                                            <p className="max-w-lg text-xs sm:text-sm text-indigo-100">
                                                 {t("sections.rights.description")}
                                             </p>
                                         </div>
-                                        <button className="flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-bold text-indigo-600 shadow-lg transition-colors hover:bg-yellow-300">
+                                        <button className="flex items-center justify-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-bold text-indigo-600 shadow-lg transition-colors hover:bg-yellow-300">
                                             {t("sections.rights.button")}{" "}
                                             <ChevronRight className="size-4" />
                                         </button>

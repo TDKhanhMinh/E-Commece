@@ -6,18 +6,18 @@ import SidebarUser from "@/components/common/admin/sidebar";
 
 function UserLayout({ children }: { children: React.ReactNode }) {
     return (
-        <>
-            <SidebarProvider>
+        <SidebarProvider defaultOpen={true}>
+            <div className="flex min-h-screen w-full bg-slate-50/50 dark:bg-slate-950">
                 <SidebarUser />
-                <div className="flex min-h-screen w-full flex-col bg-white dark:bg-slate-950">
+                <div className="flex min-h-screen flex-1 min-w-0 flex-col bg-white dark:bg-slate-950">
                     <Header />
-                    <main className="flex w-full flex-1 flex-col">
+                    <main className="relative flex w-full flex-1 flex-col">
                         {children}
                     </main>
                     <Footer />
                 </div>
-            </SidebarProvider>
-        </>
+            </div>
+        </SidebarProvider>
     );
 }
 

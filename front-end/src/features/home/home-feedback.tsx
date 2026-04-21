@@ -23,14 +23,14 @@ export default function HomeFeedBack() {
         router.push("/product/" + productSlug);
     };
     return (
-        <div className="mt-24 flex flex-col gap-8 py-5">
+        <div className="mt-12 flex flex-col gap-8 py-8 sm:mt-24 sm:py-12 lg:py-16">
             <section className="">
                 <div className="container mx-auto h-full px-4 text-center">
-                    <div className="mx-auto mb-12 max-w-5xl">
-                        <span className="mb-12 bg-linear-to-r from-orange-500 via-indigo-500 to-green-500 bg-clip-text text-xl font-bold tracking-tighter text-transparent uppercase">
+                    <div className="mx-auto mb-8 max-w-5xl sm:mb-12">
+                        <span className="mb-4 block bg-gradient-to-r from-orange-500 via-indigo-500 to-green-500 bg-clip-text text-lg font-bold tracking-tighter text-transparent uppercase sm:text-xl">
                             {t("badge")}
                         </span>
-                        <h2 className="my-1 font-bold uppercase text-slate-900 md:text-4xl dark:text-slate-100">
+                        <h2 className="my-1 text-2xl font-bold uppercase text-slate-900 sm:text-3xl md:text-4xl dark:text-slate-100">
                             {t("title")}
                         </h2>
                     </div>
@@ -45,28 +45,29 @@ export default function HomeFeedBack() {
                         </div>
                     ) : (
                         <SimpleBar autoHide={true} style={{ maxWidth: "100%" }}>
-                            <div className="flex flex-nowrap gap-6 px-4 pb-6">
+                            <div className="flex flex-nowrap gap-4 px-4 pb-8 sm:gap-6">
                                 {reviews.map((item: any) => (
-                                    <ReviewCard
-                                        key={item.id}
-                                        reviewerName={item.reviewerName}
-                                        reviewDate={item.reviewDate}
-                                        title={item.title}
-                                        content={item.content}
-                                        reviewerImage={
-                                            item.reviewerImage ||
-                                            "/placeholder-avatar.png"
-                                        }
-                                        productName={item.productName}
-                                        productImage={item.productImage}
-                                        rating={item.rating}
-                                        isVerified={item.isVerified}
-                                        onMoreReviewsClick={() =>
-                                            handlerMoreReviewsClick(
-                                                item.productSlug
-                                            )
-                                        }
-                                    />
+                                    <div key={item.id} className="w-[300px] shrink-0 sm:w-[380px] lg:w-[420px]">
+                                        <ReviewCard
+                                            reviewerName={item.reviewerName}
+                                            reviewDate={item.reviewDate}
+                                            title={item.title}
+                                            content={item.content}
+                                            reviewerImage={
+                                                item.reviewerImage ||
+                                                "/placeholder-avatar.png"
+                                            }
+                                            productName={item.productName}
+                                            productImage={item.productImage}
+                                            rating={item.rating}
+                                            isVerified={item.isVerified}
+                                            onMoreReviewsClick={() =>
+                                                handlerMoreReviewsClick(
+                                                    item.productSlug
+                                                )
+                                            }
+                                        />
+                                    </div>
                                 ))}
                             </div>
                         </SimpleBar>
@@ -74,6 +75,7 @@ export default function HomeFeedBack() {
                 </div>
             </section>
         </div>
+
     );
 }
 

@@ -63,13 +63,13 @@ export default function PrivacyPolicy() {
     return (
         <div className="min-h-screen bg-slate-50/50 pb-20 dark:bg-slate-950">
             {/* HERO SECTION - GRADIENT MẠNH MẼ */}
-            <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 px-4 py-24">
+            <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 px-4 py-16 sm:py-24">
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
                 <div className="relative z-10 container mx-auto max-w-4xl space-y-6 text-center">
                     <Badge className="border border-indigo-500/30 bg-indigo-500/20 px-4 py-1 text-indigo-200 backdrop-blur-md hover:bg-indigo-500/30">
                         <Sparkles className="mr-2 inline size-3" /> {t("badge")}
                     </Badge>
-                    <h1 className="text-4xl leading-tight font-black tracking-tight text-white md:text-6xl">
+                    <h1 className="text-3xl sm:text-5xl lg:text-6xl leading-tight font-black tracking-tight text-white">
                         {t.rich("title", {
                             blue: (chunks) => (
                                 <span className="bg-gradient-to-r from-cyan-400 to-emerald-400 bg-clip-text text-transparent italic">
@@ -78,11 +78,11 @@ export default function PrivacyPolicy() {
                             ),
                         })}
                     </h1>
-                    <p className="mx-auto max-w-2xl text-lg leading-relaxed font-medium text-slate-300 md:text-xl">
+                    <p className="mx-auto max-w-2xl text-base sm:text-lg font-medium text-slate-300 lg:text-xl leading-relaxed">
                         {t("description")}
                     </p>
-                    <div className="flex items-center justify-center gap-3 text-sm font-semibold tracking-wider text-slate-400 uppercase">
-                        <Lock className="size-4 text-emerald-400" />{" "}
+                    <div className="flex items-center justify-center gap-2 sm:gap-3 text-xs sm:text-sm font-semibold tracking-wider text-slate-400 uppercase">
+                        <Lock className="size-3 sm:size-4 text-emerald-400" />{" "}
                         {t("lastUpdated", { date: lastUpdated })}
                     </div>
                 </div>
@@ -92,23 +92,23 @@ export default function PrivacyPolicy() {
                 <div className="absolute -right-24 -bottom-24 h-96 w-96 rounded-full bg-emerald-500/10 blur-[100px]"></div>
             </div>
 
-            <div className="relative z-20 container mx-auto -mt-16 max-w-5xl px-4">
-                <Card className="overflow-hidden rounded-[2.5rem] border-none bg-white/90 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.14)] backdrop-blur-2xl dark:border-slate-800 dark:bg-slate-900/90">
+            <div className="relative z-20 container mx-auto -mt-10 sm:-mt-16 max-w-5xl px-4">
+                <Card className="overflow-hidden rounded-[1.5rem] sm:rounded-[2.5rem] border-none bg-white/90 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.14)] backdrop-blur-2xl dark:border-slate-800 dark:bg-slate-900/90">
                     <CardContent className="p-0">
-                        <ScrollArea className="h-[800px] w-full">
-                            <div className="space-y-16 p-8 md:p-16">
+                        <ScrollArea className="h-auto md:h-[800px] w-full">
+                            <div className="space-y-12 sm:space-y-16 p-5 sm:p-10 md:p-16">
                                 {/* 1. DANH MỤC DỮ LIỆU */}
                                 <section className="space-y-8">
-                                    <div className="flex items-center gap-4 border-l-4 border-blue-500 pl-6">
-                                        <div className="rounded-2xl bg-blue-100 p-3 text-blue-600 shadow-inner dark:bg-blue-900/30 dark:text-blue-400">
-                                            <Database className="size-7" />
+                                    <div className="flex items-center gap-4 border-l-4 border-blue-500 pl-4 sm:pl-6">
+                                        <div className="rounded-2xl bg-blue-100 p-2 sm:p-3 text-blue-600 shadow-inner dark:bg-blue-900/30 dark:text-blue-400">
+                                            <Database className="size-6 sm:size-7" />
                                         </div>
-                                        <h2 className="text-3xl font-black tracking-tight text-slate-800 uppercase dark:text-slate-100">
+                                        <h2 className="text-xl sm:text-3xl font-black tracking-tight text-slate-800 uppercase dark:text-slate-100">
                                             {t("sections.dataCollection.title")}
                                         </h2>
                                     </div>
-                                    <div className="overflow-hidden rounded-[2rem] border border-slate-100 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                                        <Table>
+                                    <div className="overflow-x-auto rounded-[1.5rem] sm:rounded-[2rem] border border-slate-100 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                                        <Table className="min-w-[700px]">
                                             <TableHeader className="bg-slate-50/50 dark:bg-slate-950/50">
                                                 <TableRow className="hover:bg-transparent dark:border-slate-800">
                                                     <TableHead className="h-14 font-bold text-slate-800 dark:text-slate-200">
@@ -164,22 +164,22 @@ export default function PrivacyPolicy() {
 
                                 {/* 2. MỤC ĐÍCH SỬ DỤNG */}
                                 <section className="space-y-8">
-                                    <div className="flex items-center gap-4 border-l-4 border-purple-500 pl-6">
-                                        <div className="rounded-2xl bg-purple-100 p-3 text-purple-600 shadow-inner dark:bg-purple-900/30 dark:text-purple-400">
-                                            <Eye className="size-7" />
+                                    <div className="flex items-center gap-4 border-l-4 border-purple-500 pl-4 sm:pl-6">
+                                        <div className="rounded-2xl bg-purple-100 p-2 sm:p-3 text-purple-600 shadow-inner dark:bg-purple-900/30 dark:text-purple-400">
+                                            <Eye className="size-6 sm:size-7" />
                                         </div>
-                                        <h2 className="text-3xl font-black tracking-tight text-slate-800 uppercase dark:text-slate-100">
+                                        <h2 className="text-xl sm:text-3xl font-black tracking-tight text-slate-800 uppercase dark:text-slate-100">
                                             {t("sections.usage.title")}
                                         </h2>
                                     </div>
-                                    <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+                                    <div className="grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-2">
                                         {USAGE_INFO_KEYS.map((item, index) => (
                                             <div
                                                 key={index}
-                                                className="group relative rounded-[2rem] border border-slate-100 bg-white p-8 transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-500/10 dark:border-slate-800 dark:bg-slate-800 dark:hover:shadow-indigo-950/50"
+                                                className="group relative rounded-[1.5rem] sm:rounded-[2rem] border border-slate-100 bg-white p-6 sm:p-8 transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-500/10 dark:border-slate-800 dark:bg-slate-800 dark:hover:shadow-indigo-950/50"
                                             >
                                                 <div
-                                                    className={`absolute top-0 left-0 h-full w-2 rounded-l-[2rem] bg-gradient-to-b ${item.gradient}`}
+                                                    className={`absolute top-0 left-0 h-full w-2 rounded-l-[1.5rem] sm:rounded-l-[2rem] bg-gradient-to-b ${item.gradient}`}
                                                 ></div>
                                                 <div className="flex items-start gap-5">
                                                     <div
@@ -207,15 +207,15 @@ export default function PrivacyPolicy() {
 
                                 {/* 3. CHIA SẺ BÊN THỨ 3 */}
                                 <section className="space-y-8">
-                                    <div className="flex items-center gap-4 border-l-4 border-emerald-500 pl-6">
-                                        <div className="rounded-2xl bg-emerald-100 p-3 text-emerald-600 shadow-inner dark:bg-emerald-900/30 dark:text-emerald-400">
-                                            <Share2 className="size-7" />
+                                    <div className="flex items-center gap-4 border-l-4 border-emerald-500 pl-4 sm:pl-6">
+                                        <div className="rounded-2xl bg-emerald-100 p-2 sm:p-3 text-emerald-600 shadow-inner dark:bg-emerald-900/30 dark:text-emerald-400">
+                                            <Share2 className="size-6 sm:size-7" />
                                         </div>
-                                        <h2 className="text-3xl font-black tracking-tight text-slate-800 uppercase dark:text-slate-100">
+                                        <h2 className="text-xl sm:text-3xl font-black tracking-tight text-slate-800 uppercase dark:text-slate-100">
                                             {t("sections.sharing.title")}
                                         </h2>
                                     </div>
-                                    <div className="flex flex-col items-center gap-8 rounded-[2.5rem] border border-emerald-100 bg-emerald-50/50 p-10 md:flex-row dark:border-emerald-900/30 dark:bg-emerald-950/20">
+                                    <div className="flex flex-col items-center gap-6 sm:gap-8 rounded-[1.5rem] sm:rounded-[2.5rem] border border-emerald-100 bg-emerald-50/50 p-6 sm:p-10 md:flex-row dark:border-emerald-900/30 dark:bg-emerald-950/20">
                                         <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-white shadow-xl shadow-emerald-200 dark:bg-slate-800 dark:shadow-emerald-950/50">
                                             <ShieldCheck className="h-10 w-10 text-emerald-600 dark:text-emerald-500" />
                                         </div>
@@ -233,14 +233,14 @@ export default function PrivacyPolicy() {
                                 </section>
 
                                 {/* QUYỀN LỢI NGƯỜI DÙNG */}
-                                <section className="group relative overflow-hidden rounded-[3rem] bg-slate-900 p-10 text-white">
+                                <section className="group relative overflow-hidden rounded-[2rem] sm:rounded-[3rem] bg-slate-900 p-6 sm:p-10 text-white">
                                     <div className="relative z-10 flex flex-col justify-between gap-8 md:flex-row md:items-center">
                                         <div className="space-y-3">
                                             <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-[10px] font-black tracking-[0.2em] text-cyan-400 uppercase">
                                                 <UserCheck className="size-3" />{" "}
                                                 {t("sections.rights.badge")}
                                             </div>
-                                            <h3 className="text-3xl font-black tracking-tight uppercase italic">
+                                            <h3 className="text-2xl sm:text-3xl font-black tracking-tight uppercase italic">
                                                 {t("sections.rights.title")}
                                             </h3>
                                             <p className="max-w-lg font-medium text-slate-400 dark:text-slate-300">

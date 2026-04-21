@@ -8,8 +8,8 @@ export function CheckoutHeader() {
     return (
         <Fragment>
             <BackButton />
-            <div className="mb-8 flex items-center gap-4">
-                <h1 className="dark:text-neutral-100 text-3xl font-bold">
+            <div className="mb-4 sm:mb-8 flex items-center gap-4">
+                <h1 className="dark:text-neutral-100 text-2xl sm:text-3xl font-bold">
                     {t("title")}
                 </h1>
             </div>

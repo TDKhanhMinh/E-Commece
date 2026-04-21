@@ -49,17 +49,17 @@ export default function HelpCenter() {
     return (
         <div className="min-h-screen bg-slate-50/50 pb-20 dark:bg-slate-950">
             {/* HERO SECTION - GRADIENT RỰC RỠ */}
-            <div className="relative overflow-hidden bg-gradient-to-br from-green-600 via-emerald-600 to-teal-700 px-4 pt-24 pb-32">
+            <div className="relative overflow-hidden bg-gradient-to-br from-green-600 via-emerald-600 to-teal-700 px-4 pt-16 pb-24 sm:pt-24 sm:pb-32">
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
                 <div className="relative z-10 container mx-auto max-w-4xl space-y-8 text-center">
                     <div className="flex justify-center">
-                        <Badge className="animate-pulse border-none bg-white/20 px-6 py-1.5 text-white backdrop-blur-xl hover:bg-white/30">
+                        <Badge className="animate-pulse border-none bg-white/20 px-4 py-1 sm:px-6 sm:py-1.5 text-xs sm:text-sm text-white backdrop-blur-xl hover:bg-white/30">
                             <Sparkles className="mr-2 size-3" /> {t("badge")}
                         </Badge>
                     </div>
 
                     <div className="space-y-4">
-                        <h1 className="text-4xl font-black tracking-tight text-white md:text-6xl">
+                        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-tight">
                             {t.rich("hello", {
                                 userName: userName,
                                 nameTag: (chunks) => (
@@ -69,18 +69,18 @@ export default function HelpCenter() {
                                 ),
                             })}
                         </h1>
-                        <p className="mx-auto max-w-xl text-lg font-medium text-emerald-50 opacity-90 md:text-xl">
+                        <p className="mx-auto max-w-xl text-base sm:text-lg lg:text-xl font-medium text-emerald-50 opacity-90">
                             {t("hero.description")}
                         </p>
                     </div>
 
-                    <div className="group relative mx-auto max-w-2xl">
+                    <div className="group relative mx-auto max-w-2xl px-2 sm:px-0">
                         <Input
-                            className="h-16 w-full rounded-2xl border-none bg-white/95 pr-14 pl-8 text-lg text-slate-800 shadow-2xl shadow-emerald-900/20 backdrop-blur-md transition-all placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-yellow-400 dark:bg-slate-900/95 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus-visible:ring-yellow-300"
+                            className="h-14 sm:h-16 w-full rounded-xl sm:rounded-2xl border-none bg-white/95 pr-14 pl-6 sm:pl-8 text-base sm:text-lg text-slate-800 shadow-2xl shadow-emerald-900/20 backdrop-blur-md transition-all placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-yellow-400 dark:bg-slate-900/95 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus-visible:ring-yellow-300"
                             placeholder={t("search.placeholder")}
                         />
-                        <div className="absolute top-1/2 right-4 -translate-y-1/2 cursor-pointer rounded-xl bg-green-600 p-2.5 text-white shadow-lg transition-transform group-hover:scale-110">
-                            <Search className="size-6" />
+                        <div className="absolute top-1/2 right-4 sm:right-4 -translate-y-1/2 cursor-pointer rounded-lg sm:rounded-xl bg-green-600 p-2 sm:p-2.5 text-white shadow-lg transition-transform group-hover:scale-110">
+                            <Search className="size-5 sm:size-6" />
                         </div>
                     </div>
                 </div>
@@ -90,23 +90,23 @@ export default function HelpCenter() {
                 <div className="absolute bottom-0 left-0 h-64 w-64 -translate-x-1/4 translate-y-1/2 rounded-full bg-emerald-400/20 blur-[80px]"></div>
             </div>
 
-            <div className="relative z-20 container mx-auto -mt-16 max-w-6xl px-4">
-                <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+            <div className="relative z-20 container mx-auto -mt-10 sm:-mt-16 max-w-6xl px-4">
+                <div className="grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {/* LEFT COLUMN: FAQ SECTIONS */}
-                    <div className="space-y-8 lg:col-span-2">
+                    <div className="space-y-6 sm:space-y-8 md:col-span-1 lg:col-span-2">
                         {HELP_SECTIONS.map((section, idx) => (
                             <Card
                                 key={idx}
-                                className="group overflow-hidden rounded-[2rem] border-none bg-white/80 shadow-xl shadow-slate-200/50 backdrop-blur-sm transition-all hover:shadow-2xl dark:border-slate-800 dark:bg-slate-900/80 dark:shadow-slate-950/50"
+                                className="group overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] border-none bg-white/80 shadow-xl shadow-slate-200/50 backdrop-blur-sm transition-all hover:shadow-2xl dark:border-slate-800 dark:bg-slate-900/80 dark:shadow-slate-950/50"
                             >
-                                <CardContent className="space-y-6 p-8">
-                                    <div className="flex items-center gap-4">
+                                <CardContent className="space-y-6 p-5 sm:p-8">
+                                    <div className="flex items-center gap-3 sm:gap-4">
                                         <div
-                                            className={`rounded-2xl p-3 ${section.color} text-white shadow-lg shadow-inherit`}
+                                            className={`rounded-xl sm:rounded-2xl p-2 sm:p-3 ${section.color} text-white shadow-lg shadow-inherit`}
                                         >
-                                            <section.icon className="size-6" />
+                                            <section.icon className="size-5 sm:size-6" />
                                         </div>
-                                        <h3 className="text-2xl font-black tracking-wider text-slate-800 uppercase italic dark:text-slate-100">
+                                        <h3 className="text-lg sm:text-2xl font-black tracking-wider text-slate-800 uppercase italic dark:text-slate-100">
                                             {section.title}
                                         </h3>
                                     </div>
@@ -133,8 +133,8 @@ export default function HelpCenter() {
                     </div>
 
                     {/* RIGHT COLUMN: CONTACT & SUPPORT */}
-                    <div className="space-y-6 lg:col-span-1">
-                        <Card className="group relative overflow-hidden rounded-[2rem] border-none bg-slate-900 p-8 text-white shadow-xl">
+                    <div className="space-y-6 md:col-span-1 lg:col-span-1">
+                        <Card className="group relative overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] border-none bg-slate-900 p-6 sm:p-8 text-white shadow-xl">
                             <div className="relative z-10 space-y-6">
                                 <div className="flex items-center gap-3">
                                     <div className="rounded-lg bg-green-500 p-2">
@@ -192,15 +192,15 @@ export default function HelpCenter() {
                             <div className="absolute -right-8 -bottom-8 size-32 rounded-full bg-green-500/10 blur-2xl transition-transform duration-700 group-hover:scale-150"></div>
                         </Card>
 
-                        <div className="rounded-[2rem] bg-gradient-to-br from-yellow-400 to-orange-500 p-8 text-white shadow-lg shadow-orange-200">
-                            <HelpCircle className="mb-4 size-10 opacity-50" />
-                            <h4 className="mb-2 text-xl leading-tight font-black italic">
+                        <div className="rounded-[1.5rem] sm:rounded-[2rem] bg-gradient-to-br from-yellow-400 to-orange-500 p-6 sm:p-8 text-white shadow-lg shadow-orange-200">
+                            <HelpCircle className="mb-4 size-8 sm:size-10 opacity-50" />
+                            <h4 className="mb-2 text-lg sm:text-xl leading-tight font-black italic">
                                 {t("directConsult.title")}
                             </h4>
-                            <p className="mb-4 text-sm font-medium opacity-90">
+                            <p className="mb-4 text-xs sm:text-sm font-medium opacity-90">
                                 {t("directConsult.description")}
                             </p>
-                            <button className="w-full rounded-xl bg-white py-3 font-bold text-orange-600 shadow-xl shadow-orange-900/20 transition-all hover:bg-slate-900 hover:text-white">
+                            <button className="w-full rounded-xl bg-white py-3 text-sm sm:text-base font-bold text-orange-600 shadow-xl shadow-orange-900/20 transition-all hover:bg-slate-900 hover:text-white">
                                 {t("directConsult.button")}
                             </button>
                         </div>

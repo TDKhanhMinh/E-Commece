@@ -8,6 +8,7 @@ import { useCancelOrder, useOrdersByUser } from "@/hooks/use-order";
 import { useMemo, useState } from "react";
 import { OrderPageResponse, OrderStatus } from "@/type/order-type";
 import { Button } from "@/components/ui/button";
+import { PaginationControl } from "@/components/common/ui/pagination-control";
 
 import { useLocale, useTranslations } from "next-intl";
 import { formatCurrency } from "@/lib/format-price";
@@ -80,16 +81,16 @@ export default function OrderHistory() {
     // Loading state
 
     return (
-        <div className="w-full rounded-xl border bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <div className="mb-2 flex flex-col items-center justify-between gap-4 md:flex-row">
-                <h2 className="self-start text-xl font-bold md:self-center">
+        <div className="w-full rounded-xl border bg-white p-4 sm:p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div className="mb-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+                <h2 className="text-xl sm:text-2xl font-bold">
                     {t("title")}
                 </h2>
 
                 <div className="relative w-full md:w-80">
                     <Input
                         placeholder={t("searchPlaceholder")}
-                        className="h-10 rounded-full border-gray-200 bg-gray-50 pr-10 pl-4 text-sm dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100"
+                        className="h-10 rounded-full border-gray-200 bg-gray-50 pr-10 pl-4 text-sm dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100 focus-visible:ring-green-500"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
@@ -102,12 +103,12 @@ export default function OrderHistory() {
                 onValueChange={handleTabChange}
                 className="min-h-screen w-full"
             >
-                <TabsList className="scrollbar-hide mb-0 h-auto w-full flex-nowrap justify-start gap-6 overflow-x-auto rounded-none border-b bg-transparent p-0 dark:border-slate-800">
+                <TabsList className="scrollbar-hide mb-2 h-auto w-full flex-nowrap justify-start gap-3 sm:gap-6 overflow-x-auto rounded-none border-b bg-transparent p-0 dark:border-slate-800">
                     {tabs.map((tab) => (
                         <TabsTrigger
                             key={tab.value}
                             value={tab.value}
-                            className="shrink-0 cursor-pointer rounded-none border-t-0 border-r-0 border-b-2 border-l-0 bg-transparent px-0 py-3 text-sm font-medium text-gray-500 uppercase data-[state=active]:border-green-600 data-[state=active]:text-green-600 dark:text-slate-400 dark:data-[state=active]:text-green-500"
+                            className="shrink-0 cursor-pointer rounded-none border-t-0 border-r-0 border-b-2 border-l-0 bg-transparent px-2 py-3 text-xs sm:text-sm font-medium text-gray-500 uppercase transition-all data-[state=active]:border-green-600 data-[state=active]:text-green-600 dark:text-slate-400 dark:data-[state=active]:text-green-500"
                         >
                             {tab.value === "all" ? t("all") : tab.label}
                         </TabsTrigger>
@@ -154,72 +155,26 @@ export default function OrderHistory() {
 
                                         {orderPage &&
                                             orderPage.totalPages > 1 && (
-                                                <div className="mt-4 flex items-center justify-between border-t pt-6 dark:border-slate-800">
+                                                <div className="mt-8 flex flex-col items-center justify-between gap-4 border-t pt-6 sm:flex-row dark:border-slate-800">
                                                     <div className="text-sm text-gray-500 dark:text-slate-400">
                                                         {t("pagination", {
                                                             count: orderPage.numberOfElements,
                                                             total: orderPage.totalElements,
                                                         })}
                                                     </div>
-                                                    <div className="flex gap-2">
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            onClick={() =>
-                                                                handlePageChange(
-                                                                    currentPage -
-                                                                        1
-                                                                )
-                                                            }
-                                                            disabled={
-                                                                orderPage.first
-                                                            }
-                                                        >
-                                                            {t("prev")}
-                                                        </Button>
-                                                        <div className="flex items-center gap-2">
-                                                            {Array.from(
-                                                                {
-                                                                    length: orderPage.totalPages,
-                                                                },
-                                                                (_, i) => (
-                                                                    <Button
-                                                                        key={i}
-                                                                        variant={
-                                                                            currentPage ===
-                                                                            i
-                                                                                ? "default"
-                                                                                 : "outline"
-                                                                        }
-                                                                        size="sm"
-                                                                        onClick={() =>
-                                                                            handlePageChange(
-                                                                                i
-                                                                            )
-                                                                        }
-                                                                        className="min-w-10"
-                                                                    >
-                                                                        {i + 1}
-                                                                    </Button>
-                                                                )
-                                                            )}
-                                                        </div>
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            onClick={() =>
-                                                                handlePageChange(
-                                                                    currentPage +
-                                                                        1
-                                                                )
-                                                            }
-                                                            disabled={
-                                                                orderPage.last
-                                                            }
-                                                        >
-                                                            {t("next")}
-                                                        </Button>
-                                                    </div>
+                                                    <PaginationControl
+                                                        currentPage={
+                                                            currentPage + 1
+                                                        }
+                                                        totalPages={
+                                                            orderPage.totalPages
+                                                        }
+                                                        onPageChange={(page) =>
+                                                            handlePageChange(
+                                                                page - 1
+                                                            )
+                                                        }
+                                                    />
                                                 </div>
                                             )}
                                     </>

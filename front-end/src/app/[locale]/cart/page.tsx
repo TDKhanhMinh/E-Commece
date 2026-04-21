@@ -161,7 +161,7 @@ export default function CartPage() {
     );
 
     return (
-        <div className="container mx-auto max-w-6xl px-4 py-8">
+        <div className="container mx-auto max-w-6xl px-4 py-4 sm:py-8">
             <CartHeader
                 itemCount={summary.itemCount}
                 onClearCart={handleClearCart}
@@ -169,7 +169,7 @@ export default function CartPage() {
                 hasItems={cart.items.length > 0}
             />
 
-            <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-3 lg:gap-8">
                 <CartItemsList
                     items={cart.items}
                     checkedItems={checkedItems}

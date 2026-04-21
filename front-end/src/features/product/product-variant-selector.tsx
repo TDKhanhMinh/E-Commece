@@ -12,11 +12,11 @@ export function ProductVariantSelector({
     return (
         <>
             {Object.entries(attributeGroups).map(([attributeName, values]) => (
-                <div key={attributeName} className="mb-8">
-                    <h3 className="mb-4 text-xl font-bold capitalize">
+                <div key={attributeName} className="mb-6 sm:mb-8">
+                    <h3 className="mb-3 text-base font-bold capitalize sm:mb-4 sm:text-lg lg:text-xl">
                         Chọn {attributeName}
                     </h3>
-                    <div className="flex flex-wrap gap-3">
+                    <div className="flex flex-wrap gap-2 sm:gap-3">
                         {Array.from(values).map((value) => {
                             const isSelected =
                                 selectedAttributes[attributeName] === value;
@@ -39,7 +39,7 @@ export function ProductVariantSelector({
                                 <Button
                                     key={value}
                                     variant={isSelected ? "default" : "outline"}
-                                    className={`min-w-[100px] rounded-xl transition-all ${
+                                    className={`h-10 min-w-[80px] rounded-xl px-4 text-xs transition-all sm:h-11 sm:min-w-[100px] sm:text-sm ${
                                         isSelected
                                             ? "border-primary ring-primary/20 ring-2"
                                             : ""

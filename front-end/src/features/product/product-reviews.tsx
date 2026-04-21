@@ -87,91 +87,97 @@ function ProductReviews({
     }
 
     return (
-        <div className="mt-12 mb-12 flex w-full flex-col items-center gap-8 py-5">
+        <div className="mt-12 mb-12 flex w-full flex-col items-center gap-6 py-5 sm:gap-8 sm:py-8">
             <section className="container px-4">
-                <div className="mb-8 w-full text-center">
-                    <h1 className="text-4xl font-bold">Reviews</h1>
+                <div className="mb-8 w-full text-center sm:mb-12">
+                    <h2 className="text-2xl font-bold sm:text-3xl md:text-4xl dark:text-slate-100">
+                        Reviews
+                    </h2>
                 </div>
 
-                <div className="flex w-full flex-row gap-4">
-                    <div className="w-2/4">
-                        <div className="flex flex-row items-center justify-center">
-                            <div className="flex flex-col items-center justify-center px-4">
-                                <span className="text-4xl font-semibold">
-                                    {
-                                        // @ts-ignore
-                                        summaryData?.averageRating?.toFixed(
-                                            2
-                                        ) || "0.00"
-                                    }
-                                </span>
-                                <div className="my-2 flex flex-row items-center gap-1">
-                                    {Array.from({ length: 5 }).map((_, i) => (
-                                        <Star
-                                            key={i}
-                                            className={`h-7 w-7 ${
-                                                i <
-                                                Math.round(
-                                                    // @ts-ignore
-                                                    summaryData?.averageRating ||
-                                                        0
-                                                )
-                                                    ? "fill-yellow-400 text-yellow-400"
-                                                    : "text-gray-300"
-                                            }`}
-                                        />
-                                    ))}
-                                </div>
-                                <span>
-                                    {
-                                        // @ts-ignore
-                                        summaryData?.totalReviews || 0
-                                    }{" "}
-                                    reviews
-                                </span>
-                            </div>
-                            <div className="w-2/4">
-                                {[5, 4, 3, 2, 1].map((star) => {
-                                    const count =
-                                        // @ts-ignore
-                                        summaryData?.ratingCounts?.[star] || 0;
+                <div className="flex w-full flex-col gap-8 lg:flex-row lg:items-start lg:gap-12">
+                    {/* Summary Section */}
+                    <div className="flex w-full flex-col gap-6 sm:flex-row sm:items-center sm:justify-start lg:w-3/5 lg:gap-8">
+                        <div className="flex flex-col items-center justify-center rounded-2xl bg-muted/30 p-6 sm:p-8">
+                            <span className="text-4xl font-bold sm:text-5xl">
+                                {
                                     // @ts-ignore
-                                    const percentage = summaryData?.totalReviews
-                                        ? // @ts-ignore
-                                          (count / summaryData.totalReviews) *
-                                          100
-                                        : 0;
-
-                                    return (
-                                        <div
-                                            key={star}
-                                            className="flex flex-row items-center justify-center"
-                                        >
-                                            <span className="mx-4 w-4 text-lg">
-                                                {star}
-                                            </span>
-                                            <Progress
-                                                value={percentage}
-                                                className="h-2"
-                                            />
-                                        </div>
-                                    );
-                                })}
+                                    summaryData?.averageRating?.toFixed(1) ||
+                                        "0.0"
+                                }
+                            </span>
+                            <div className="my-3 flex flex-row items-center gap-1">
+                                {Array.from({ length: 5 }).map((_, i) => (
+                                    <Star
+                                        key={i}
+                                        className={`h-5 w-5 sm:h-6 sm:w-6 ${
+                                            i <
+                                            Math.round(
+                                                // @ts-ignore
+                                                summaryData?.averageRating || 0
+                                            )
+                                                ? "fill-yellow-400 text-yellow-400"
+                                                : "text-gray-300"
+                                        }`}
+                                    />
+                                ))}
                             </div>
+                            <span className="text-muted-foreground text-sm font-medium">
+                                {
+                                    // @ts-ignore
+                                    summaryData?.totalReviews || 0
+                                }{" "}
+                                reviews
+                            </span>
+                        </div>
+
+                        <div className="flex-1 space-y-2">
+                            {[5, 4, 3, 2, 1].map((star) => {
+                                const count =
+                                    // @ts-ignore
+                                    summaryData?.ratingCounts?.[star] || 0;
+                                // @ts-ignore
+                                const percentage = summaryData?.totalReviews
+                                    ? // @ts-ignore
+                                      (count / summaryData.totalReviews) * 100
+                                    : 0;
+
+                                return (
+                                    <div
+                                        key={star}
+                                        className="flex flex-row items-center gap-3"
+                                    >
+                                        <span className="w-3 text-sm font-medium">
+                                            {star}
+                                        </span>
+                                        <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
+                                        <Progress
+                                            value={percentage}
+                                            className="h-2 flex-1"
+                                        />
+                                        <span className="text-muted-foreground w-8 text-right text-xs">
+                                            {count}
+                                        </span>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
 
-                    <div className="w-2/4">
-                        <div className="flex flex-row items-center justify-start gap-4">
-                            <span>
-                                Filter reviews{" "}
-                                <Filter className="mr-2 inline-block h-5 w-5" />
+                    {/* Filter Section */}
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between lg:w-2/5 lg:flex-col lg:items-start lg:justify-start">
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm font-semibold">
+                                Filter reviews
                             </span>
+                            <Filter className="h-4 w-4 text-muted-foreground" />
+                        </div>
+                        <div className="flex gap-3">
                             <Select
                                 defaultValue="newest"
                                 onValueChange={handleSortChange}
                             >
-                                <SelectTrigger className="w-50">
+                                <SelectTrigger className="w-full sm:w-[180px]">
                                     <SelectValue placeholder="Sort by" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -192,18 +198,28 @@ function ProductReviews({
                                     </SelectGroup>
                                 </SelectContent>
                             </Select>
+
+                            <div className="hidden lg:block">
+                                <ReviewDialog
+                                    productId={productId}
+                                    productName={productName}
+                                />
+                            </div>
                         </div>
                     </div>
-                    <ReviewDialog
-                        productId={productId}
-                        productName={productName}
-                    />
+
+                    <div className="block lg:hidden">
+                        <ReviewDialog
+                            productId={productId}
+                            productName={productName}
+                        />
+                    </div>
                 </div>
 
-                <Separator className="my-8" />
+                <Separator className="my-8 sm:my-12" />
 
                 {reviews.length > 0 ? (
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         {reviews.map((review: any) => (
                             <ReviewCard
                                 key={review.id}
@@ -220,12 +236,12 @@ function ProductReviews({
                                     review.productImage || productImage
                                 }
                                 isVerified={review.isVerified}
-                                className="max-w-full"
+                                className="h-full"
                             />
                         ))}
                     </div>
                 ) : (
-                    <div className="text-muted-foreground py-20 text-center">
+                    <div className="text-muted-foreground py-16 text-center sm:py-24">
                         Sản phẩm chưa có đánh giá nào.
                     </div>
                 )}
@@ -233,7 +249,7 @@ function ProductReviews({
                 {data &&
                     // @ts-ignore
                     !data.last && (
-                        <div className="container mx-auto mt-12 px-4 text-center">
+                        <div className="mt-10 text-center sm:mt-16">
                             <Button
                                 onClick={() =>
                                     setParams((prev) => ({
@@ -241,7 +257,7 @@ function ProductReviews({
                                         size: prev.size + 6,
                                     }))
                                 }
-                                className="rounded-full bg-green-900 px-16 py-4 font-bold text-white hover:bg-green-800"
+                                className="w-full rounded-full bg-green-900 py-6 font-bold text-white transition-colors hover:bg-green-800 sm:w-auto sm:px-12"
                             >
                                 Load more reviews
                             </Button>

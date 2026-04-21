@@ -49,7 +49,7 @@ export function PaginationControl({
 
     return (
         <Pagination>
-            <PaginationContent>
+            <PaginationContent className="gap-0.5 sm:gap-1">
                 <PaginationItem>
                     <PaginationPrevious
                         href="#"
@@ -68,21 +68,29 @@ export function PaginationControl({
                 {generatePaginationItems().map((page, index) => {
                     if (typeof page === "string") {
                         return (
-                            <PaginationItem key={index}>
+                            <PaginationItem key={index} className="hidden sm:inline-block">
                                 <PaginationEllipsis />
                             </PaginationItem>
                         );
                     }
 
+                    // Hide outer pages on extreme mobile if they aren't the current or direct neighbor
+                    const isFar = Math.abs((page as number) - currentPage) > 1;
+                    const isFirstOrLast = page === 1 || page === totalPages;
+
                     return (
-                        <PaginationItem key={index}>
+                        <PaginationItem 
+                            key={index}
+                            className={isFar && !isFirstOrLast ? "hidden md:inline-block" : ""}
+                        >
                             <PaginationLink
                                 href="#"
                                 isActive={page === currentPage}
                                 onClick={(e) => {
                                     e.preventDefault();
-                                    onPageChange(page);
+                                    onPageChange(page as number);
                                 }}
+                                className="h-9 w-9 sm:h-10 sm:w-10"
                             >
                                 {page}
                             </PaginationLink>

@@ -42,16 +42,16 @@ export function CheckoutSummaryCard({
     );
 
     return (
-        <Card className="dark:bg-slate-950 sticky top-4 border-none bg-white shadow-sm">
-            <CardHeader className="pb-4">
-                <CardTitle className="dark:text-neutral-100 text-lg font-bold text-slate-800">
+        <Card className="dark:bg-slate-950 sticky top-4 border-none bg-white shadow-sm ring-1 ring-slate-200/60 dark:ring-slate-800/50">
+            <CardHeader className="px-4 py-3 sm:px-6 sm:py-4 border-b border-slate-50 dark:border-slate-800/50 bg-slate-50/30 dark:bg-slate-800/20">
+                <CardTitle className="dark:text-neutral-100 text-base sm:text-lg font-bold text-slate-800">
                     {t("title")}
                 </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 p-4 sm:p-6">
                 <div className="space-y-3">
                     {/* Tạm tính */}
-                    <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400">
+                    <div className="flex justify-between text-xs sm:text-sm text-slate-600 dark:text-slate-400">
                         <span>{t("subtotal", { count: summary.totalItems })}</span>
                         <span className="font-medium text-slate-800 dark:text-slate-200">
                             {formatCurrency(summary.finalAmount)}
@@ -59,7 +59,7 @@ export function CheckoutSummaryCard({
                     </div>
 
                     {/* Phí vận chuyển */}
-                    <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400">
+                    <div className="flex justify-between text-xs sm:text-sm text-slate-600 dark:text-slate-400">
                         <span className="flex items-center gap-1.5">
                             <Truck className="h-4 w-4 text-slate-400 dark:text-slate-500" />
                             {t("shippingFee")}
@@ -73,9 +73,9 @@ export function CheckoutSummaryCard({
 
                     {/* Giảm giá Voucher */}
                     {voucherDiscount > 0 && (
-                        <div className="flex justify-between text-sm text-emerald-600 dark:text-emerald-400">
+                        <div className="flex justify-between text-xs sm:text-sm text-emerald-600 dark:text-emerald-400">
                             <span className="flex items-center gap-1.5">
-                                <Ticket className="h-4 w-4" />
+                                <Ticket className="h-4 w-4 text-emerald-500" />
                                 {t("voucherDiscount")}
                             </span>
                             <span className="font-semibold">
@@ -86,9 +86,9 @@ export function CheckoutSummaryCard({
 
                     {/* Giảm giá Điểm thưởng */}
                     {pointsDiscount > 0 && (
-                        <div className="flex justify-between text-sm text-amber-600 dark:text-amber-400">
+                        <div className="flex justify-between text-xs sm:text-sm text-amber-600 dark:text-amber-400">
                             <span className="flex items-center gap-1.5">
-                                <Coins className="h-4 w-4" />
+                                <Coins className="h-4 w-4 text-amber-500" />
                                 {t("pointsUsage")}
                             </span>
                             <span className="font-semibold">
@@ -101,14 +101,14 @@ export function CheckoutSummaryCard({
 
                     {/* Tổng cộng */}
                     <div className="flex items-end justify-between">
-                        <span className="dark:text-slate-100 text-base font-bold text-slate-800">
+                        <span className="dark:text-slate-100 text-sm sm:text-base font-bold text-slate-800">
                             {t("total")}
                         </span>
                         <div className="text-right">
-                            <span className="text-primary text-2xl font-bold">
+                            <span className="text-primary text-xl sm:text-2xl font-black">
                                 {formatCurrency(displayFinalAmount)}
                             </span>
-                            <p className="text-muted-foreground dark:text-slate-500 mt-1 text-[11px]">
+                            <p className="text-muted-foreground dark:text-slate-500 mt-0.5 text-[10px] sm:text-[11px]">
                                 {t("vatIncluded")}
                             </p>
                         </div>
@@ -116,7 +116,7 @@ export function CheckoutSummaryCard({
                 </div>
 
                 <Button
-                    className="mt-2 h-12 w-full rounded-xl text-base font-bold"
+                    className="mt-2 h-11 sm:h-12 w-full rounded-xl text-sm sm:text-base font-bold shadow-lg shadow-blue-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
                     onClick={onConfirmOrder}
                     disabled={isProcessing || !hasAddresses}
                 >
@@ -131,15 +131,15 @@ export function CheckoutSummaryCard({
                 </Button>
 
                 {!hasAddresses && (
-                    <p className="text-destructive text-center text-xs font-medium">
+                    <p className="text-destructive text-center text-[10px] sm:text-xs font-medium">
                         {t("addressRequiredHint")}
                     </p>
                 )}
 
-                <BackButton />
+                <BackButton className="w-full" />
 
-                <div className="dark:border-blue-900/30 dark:bg-blue-950/20 rounded-lg border border-blue-100/50 bg-blue-50/50 p-3">
-                    <p className="dark:text-blue-300 text-[11px] leading-relaxed text-blue-800">
+                <div className="dark:border-blue-900/30 dark:bg-blue-950/20 rounded-xl border border-blue-100/50 bg-blue-50/50 p-3">
+                    <p className="dark:text-blue-300 text-[10px] sm:text-[11px] leading-relaxed text-blue-800">
                         💡 {t.rich("terms", {
                             link: (chunks) => (
                                 <a

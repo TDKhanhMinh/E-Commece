@@ -195,19 +195,19 @@ export default function CheckoutPage() {
     const shippingFee = shippingMethod === "express" ? 30000 : 0;
 
     return (
-        <div className="container mx-auto max-w-6xl px-4 py-8">
+        <div className="container mx-auto max-w-6xl px-4 py-4 sm:py-8">
             {paypalPaymentData ? (
-                <div className="animate-in fade-in py-16 duration-500 flex flex-col items-center justify-center space-y-6">
+                <div className="animate-in fade-in py-8 sm:py-16 duration-500 flex flex-col items-center justify-center space-y-6">
                     <div className="space-y-2 text-center">
-                        <h2 className="dark:text-slate-100 text-3xl font-bold text-slate-800">
+                        <h2 className="dark:text-slate-100 text-2xl sm:text-3xl font-bold text-slate-800">
                             {t("paypalTitle", { orderId: paypalPaymentData.orderId })}
                         </h2>
-                        <p className="dark:text-slate-400 text-slate-600">
+                        <p className="dark:text-slate-400 text-sm sm:text-base text-slate-600">
                             {t("paypalDescription")}
                         </p>
                     </div>
 
-                    <div className="dark:border-slate-800 dark:bg-slate-900/50 w-full max-w-md rounded-2xl border border-slate-100 bg-slate-50 p-6 shadow-sm">
+                    <div className="dark:border-slate-800 dark:bg-slate-900/50 w-full max-w-md rounded-2xl border border-slate-100 bg-slate-50 p-4 sm:p-6 shadow-sm">
                         <PayPalCheckoutButton
                             orderId={paypalPaymentData.orderId}
                             totalAmountVnd={paypalPaymentData.amount}
@@ -231,8 +231,8 @@ export default function CheckoutPage() {
                 <>
                     <CheckoutHeader />
 
-                    <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-                        <div className="space-y-6 lg:col-span-2">
+                    <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-3 lg:gap-8">
+                        <div className="space-y-4 sm:space-y-6 lg:col-span-2">
                             <DeliveryAddressCard
                                 hasAddresses={hasAddresses}
                                 defaultAddress={defaultAddress}

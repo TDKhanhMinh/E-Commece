@@ -7,6 +7,7 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
+    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
@@ -26,19 +27,20 @@ interface NotificationResponse {
     createdDate?: string;
 }
 
-export function NotificationDropdown() {
+export function NotificationContent({ onActionComplete }: { onActionComplete?: () => void }) {
     const t = useTranslations("common");
-    const [isOpen, setIsOpen] = useState(false);
-    
     const { data: notifications = [], isLoading, refetch } = useNotificationsQuery(0, 20);
     const markAllAsReadMutation = useMarkAllAsReadMutation();
 
     const unreadCount = notifications.filter((n: NotificationResponse) => n.isRead === false || n.read === false).length;
 
-    const markAllAsRead = () => {
+    const markAllAsRead = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
         markAllAsReadMutation.mutate(undefined, {
             onSuccess: () => {
                 toast.success("Đã đánh dấu tất cả là đã đọc");
+                refetch();
             },
             onError: () => {
                 toast.error("Có lỗi xảy ra");
@@ -47,10 +49,88 @@ export function NotificationDropdown() {
     };
 
     return (
-        <DropdownMenu open={isOpen} onOpenChange={(open) => {
-            setIsOpen(open);
-            if (open) refetch();
-        }}>
+        <div className="flex flex-col w-full">
+            <div className="flex items-center justify-between p-4 pb-2 border-b md:border-none">
+                <h4 className="text-sm font-semibold">Thông báo</h4>
+                {unreadCount > 0 && (
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={markAllAsRead}
+                        className="h-auto p-0 text-xs text-muted-foreground hover:text-primary transition-colors"
+                    >
+                        <Check className="mr-1 h-3 w-3" />
+                        Đánh dấu đã đọc
+                    </Button>
+                )}
+            </div>
+            <SimpleBar style={{ maxHeight: 400 }} className="w-full p-2">
+                {notifications.length === 0 && !isLoading ? (
+                    <div className="flex flex-col items-center justify-center py-10 text-center">
+                        <BellRing className="mb-3 h-10 w-10 text-muted-foreground/40" />
+                        <p className="text-sm font-medium text-muted-foreground">
+                            Bạn chưa có thông báo nào
+                        </p>
+                    </div>
+                ) : (
+                    <div className="flex flex-col gap-1">
+                        {notifications.map((notification: any, index: number) => {
+                            const isUnread =
+                                notification.isRead === false ||
+                                notification.read === false;
+                            return (
+                                <DropdownMenuItem
+                                    key={notification.id || `notification-${index}`}
+                                    className={`flex flex-col items-start gap-1 rounded-lg p-3 transition-colors ${
+                                        isUnread
+                                            ? "bg-muted/50 font-medium"
+                                            : "text-muted-foreground"
+                                    }`}
+                                >
+                                    <div className="flex w-full items-start justify-between gap-2">
+                                        <span className="text-sm leading-snug">
+                                            {notification.title}
+                                        </span>
+                                        {isUnread && (
+                                            <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-blue-500" />
+                                        )}
+                                    </div>
+                                    <span className="line-clamp-2 text-xs leading-relaxed opacity-80">
+                                        {notification.body ||
+                                            notification.message}
+                                    </span>
+                                </DropdownMenuItem>
+                            );
+                        })}
+                    </div>
+                )}
+            </SimpleBar>
+            {onActionComplete && (
+                 <div className="border-t p-2 text-center md:hidden">
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-10 w-full text-xs font-medium"
+                        onClick={onActionComplete}
+                    >
+                        Đóng
+                    </Button>
+                </div>
+            )}
+        </div>
+    );
+}
+
+export function NotificationDropdown() {
+    const t = useTranslations("common");
+    const [isOpen, setIsOpen] = useState(false);
+    
+    // We only need unreadCount for the trigger badge
+    const { data: notifications = [] } = useNotificationsQuery(0, 20);
+    const unreadCount = notifications.filter((n: NotificationResponse) => n.isRead === false || n.read === false).length;
+
+    return (
+        <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
             <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="relative rounded-full">
                     <Bell className="h-5 w-5" />
@@ -61,46 +141,8 @@ export function NotificationDropdown() {
                     )}
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-80">
-                <div className="flex items-center justify-between p-4 pb-2">
-                    <h4 className="text-sm font-semibold">Thông báo</h4>
-                    {unreadCount > 0 && (
-                        <Button variant="ghost" size="sm" onClick={markAllAsRead} className="h-auto p-0 text-xs text-muted-foreground hover:text-primary">
-                            <Check className="mr-1 h-3 w-3" />
-                            Đánh dấu đã đọc
-                        </Button>
-                    )}
-                </div>
-                <SimpleBar style={{ maxHeight: 300 }} className="w-full p-2">
-                    {notifications.length === 0 && !isLoading ? (
-                        <div className="flex flex-col items-center justify-center py-8 text-center">
-                            <BellRing className="mb-2 h-8 w-8 text-muted-foreground/50" />
-                            <p className="text-sm text-muted-foreground">Bạn chưa có thông báo nào</p>
-                        </div>
-                    ) : (
-                        <div className="flex flex-col gap-1">
-                            {notifications.map((notification:any) => {
-                                const isUnread = notification.isRead === false || notification.read === false;
-                                return (
-                                    <DropdownMenuItem key={notification.id} className={`flex flex-col items-start gap-1 p-3 ${isUnread ? "bg-muted/50 font-medium" : "text-muted-foreground"}`}>
-                                        <div className="flex w-full items-start justify-between gap-2">
-                                            <span className="text-sm">{notification.title}</span>
-                                            {isUnread && <span className="mt-1 h-2 w-2 rounded-full bg-blue-500" />}
-                                        </div>
-                                        <span className="line-clamp-2 text-xs opacity-80">
-                                            {notification.body || notification.message}
-                                        </span>
-                                    </DropdownMenuItem>
-                                )
-                            })}
-                        </div>
-                    )}
-                </SimpleBar>
-                <div className="p-2 border-t text-center">
-                    <Button variant="ghost" size="sm" className="w-full text-xs" onClick={() => setIsOpen(false)}>
-                        Đóng
-                    </Button>
-                </div>
+            <DropdownMenuContent align="end" className="w-[calc(100vw-32px)] sm:w-80 p-0 overflow-hidden">
+                <NotificationContent onActionComplete={() => setIsOpen(false)} />
             </DropdownMenuContent>
         </DropdownMenu>
     );

@@ -24,26 +24,26 @@ export default function HomeSaleProducts() {
     const categories = ["All", "iPhone", "MacBook", "iPad", "Watch", "Audio"];
 
     return (
-        <div className="flex flex-col gap-8 bg-zinc-50 pt-6 pb-8 dark:bg-zinc-900/50">
+        <div className="flex flex-col gap-8 bg-zinc-50 py-8 sm:py-12 lg:py-16 dark:bg-zinc-900/50">
             <section className="">
                 <div className="container mx-auto h-full px-4 text-center">
-                    <div className="mx-auto mb-12 max-w-3xl">
-                        <span className="mb-12 bg-gradient-to-r from-orange-500 via-indigo-500 to-green-500 bg-clip-text text-xl font-bold tracking-tighter text-transparent uppercase">
+                    <div className="mx-auto mb-8 max-w-3xl sm:mb-12">
+                        <span className="mb-4 block bg-gradient-to-r from-orange-500 via-indigo-500 to-green-500 bg-clip-text text-lg font-bold tracking-tighter text-transparent uppercase sm:text-xl">
                             {t("badge")}
                         </span>
-                        <h2 className="mt-0.5 font-bold uppercase text-slate-900 md:text-4xl dark:text-slate-100">
+                        <h2 className="mt-1 text-2xl font-bold uppercase text-slate-900 sm:text-3xl md:text-4xl dark:text-slate-100">
                             {t("title")}
                         </h2>
                     </div>
 
-                    {/* Category Filters */}
-                    <div className="mb-6 flex flex-row justify-center gap-4">
+                    {/* Category Filters - Scrollable on mobile */}
+                    <div className="mb-8 flex flex-nowrap items-center justify-start gap-3 overflow-x-auto px-4 pb-4 sm:flex-wrap sm:justify-center sm:gap-4 sm:overflow-x-visible sm:pb-0">
                         {categories.map((category) => (
                             <Button
                                 key={category}
                                 variant="outline"
                                 onClick={() => setSelectedCategory(category)}
-                                className={`cursor-pointer rounded-full px-6 py-3 font-semibold transition-colors ${
+                                className={`h-10 shrink-0 cursor-pointer rounded-full px-5 py-2 text-sm font-semibold transition-colors sm:h-11 sm:px-6 sm:py-3 sm:text-base ${
                                     selectedCategory === category
                                         ? "bg-primary text-white"
                                         : "hover:bg-primary hover:text-white dark:border-zinc-700 dark:bg-zinc-900 dark:text-slate-200 dark:hover:bg-zinc-800"
@@ -69,15 +69,18 @@ export default function HomeSaleProducts() {
                         </div>
                     ) : (
                         <SimpleBar autoHide={true} style={{ maxWidth: "100%" }}>
-                            <div className="flex flex-nowrap gap-6 px-4">
+                            <div className="flex flex-nowrap gap-4 px-4 pb-8 sm:gap-6">
                                 {products.map((item: any) => (
-                                    <ProductItem item={item} key={item.id} />
+                                    <div key={item.id} className="w-[260px] shrink-0 sm:w-[300px]">
+                                        <ProductItem item={item} />
+                                    </div>
                                 ))}
                             </div>
                         </SimpleBar>
                     )}
                 </div>
             </section>
+
 
             {/* View All Button */}
             <div className="container mx-auto px-4 text-center">

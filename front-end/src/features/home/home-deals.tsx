@@ -35,24 +35,24 @@ export default function HomeDeals() {
     }
 
     return (
-        <div className="flex flex-col gap-8 py-5">
+        <div className="flex flex-col gap-8 py-8 sm:py-12 lg:py-16">
             <section className="">
                 <div className="container mx-auto h-full px-4 text-center">
-                    <div className="mx-auto mb-12 max-w-5xl">
-                        <span className="mb-12 bg-linear-to-r from-orange-500 via-indigo-500 to-green-500 bg-clip-text text-xl font-bold tracking-tighter text-transparent uppercase">
+                    <div className="mx-auto mb-8 max-w-5xl sm:mb-12">
+                        <span className="mb-4 block bg-gradient-to-r from-orange-500 via-indigo-500 to-green-500 bg-clip-text text-lg font-bold tracking-tighter text-transparent uppercase sm:text-xl">
                             {t("badge")}
                         </span>
-                        <h2 className="my-1 text-2xl font-bold uppercase text-slate-900 md:text-4xl dark:text-slate-100">
+                        <h2 className="my-1 text-2xl font-bold uppercase text-slate-900 sm:text-3xl md:text-4xl dark:text-slate-100">
                             {t("title")}
                         </h2>
-                        <p className="text-secondary mt-3 text-base dark:text-slate-400">
+                        <p className="text-secondary-dark mt-3 text-sm sm:text-base dark:text-slate-400">
                             {t("description")}
                         </p>
                     </div>
 
                     {/* Section 1: 2 Deals lớn */}
                     {topDeals.length > 0 && (
-                        <div className="mb-8 grid grid-cols-1 gap-4 text-center md:grid-cols-2">
+                        <div className="mb-6 grid grid-cols-1 gap-4 text-center sm:grid-cols-2 sm:gap-6">
                             {topDeals.map((item: any) => (
                                 <div className="flex flex-col" key={item.id}>
                                     <DealItem
@@ -75,7 +75,7 @@ export default function HomeDeals() {
 
                     {/* Section 2: 4 Deals nhỏ */}
                     {middleDeals.length > 0 && (
-                        <div className="mb-8 grid grid-cols-1 gap-4 text-center md:grid-cols-4">
+                        <div className="mb-6 grid grid-cols-1 gap-4 text-center sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
                             {middleDeals.map((item: any) => (
                                 <DealItem
                                     key={item.id}
@@ -94,7 +94,7 @@ export default function HomeDeals() {
                     )}
 
                     {bottomDeal.length > 0 && (
-                        <div className="grid grid-cols-1 gap-4 text-center md:grid-cols-1">
+                        <div className="grid grid-cols-1 gap-4 text-center">
                             {bottomDeal.map((item: any) => (
                                 <DealItem
                                     key={item.id}
@@ -113,6 +113,7 @@ export default function HomeDeals() {
                     )}
                 </div>
             </section>
+
 
             <div className="container mx-auto px-4 text-center">
                 <Link href="/search">

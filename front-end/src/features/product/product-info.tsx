@@ -50,17 +50,17 @@ export function ProductInfo({
         });
     };
     return (
-        <div className="flex flex-col">
-            <ScrollArea className="h-[700px] w-full">
-                <div className="flex flex-col pr-4">
+        <div className="flex flex-col lg:h-[700px]">
+            <ScrollArea className="h-full w-full">
+                <div className="flex flex-col pr-0 lg:pr-4">
                     {discountPercent > 0 && (
-                        <Label className="mb-4 w-fit rounded-md bg-gradient-to-r from-yellow-200 to-orange-400 px-4 py-1.5 text-sm font-bold text-black uppercase">
+                        <Label className="mb-4 w-fit rounded-md bg-gradient-to-r from-yellow-200 to-orange-400 px-3 py-1.5 text-xs font-bold text-black uppercase sm:px-4 sm:text-sm">
                             Sale {discountPercent}%
                         </Label>
                     )}
 
-                    <div className="mb-4 flex flex-row items-center justify-between">
-                        <div className="text-primary font-semibold dark:text-blue-400">
+                    <div className="mb-3 flex items-center justify-between sm:mb-4">
+                        <div className="text-primary text-sm font-semibold dark:text-blue-400 sm:text-base">
                             SKU: {selectedSku?.skuCode || "N/A"}
                         </div>
                         <div
@@ -69,14 +69,14 @@ export function ProductInfo({
                             itemScope
                             itemType="https://schema.org/AggregateRating"
                         >
-                            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                            <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400 sm:h-4 sm:w-4" />
                             <span
-                                className="font-medium dark:text-slate-100"
+                                className="text-sm font-medium sm:text-base dark:text-slate-100"
                                 itemProp="ratingValue"
                             >
                                 {product.rating || 0}
                             </span>
-                            <span className="text-muted-foreground dark:text-slate-400">
+                            <span className="text-muted-foreground text-xs sm:text-sm dark:text-slate-400">
                                 (
                                 <span itemProp="reviewCount">
                                     {product.reviewCount || 0}
@@ -87,7 +87,7 @@ export function ProductInfo({
                     </div>
 
                     <h1
-                        className="text-2xl leading-tight font-bold dark:text-slate-100"
+                        className="text-xl leading-tight font-bold sm:text-2xl lg:text-3xl dark:text-slate-100"
                         itemProp="name"
                     >
                         {product.name}
@@ -98,82 +98,20 @@ export function ProductInfo({
                         salePrice={salePrice}
                         originalPrice={originalPrice}
                         discountPercent={discountPercent}
-                        className="mt-4"
+                        className="mt-4 sm:mt-6"
                     />
 
                     {product.variants?.length > 1 && (
-                        <div className="text-muted-foreground mt-2 flex items-center gap-2 text-sm dark:text-slate-400">
+                        <div className="text-muted-foreground mt-3 flex items-center gap-2 text-sm dark:text-slate-400">
                             <Package className="h-4 w-4" />
                             <span>{product.variants.length} phiên bản</span>
                         </div>
                     )}
 
-                    <Button
-                        className="mt-6 rounded-full px-8"
-                        size="lg"
-                        disabled={
-                            !selectedSku?.stock ||
-                            selectedSku?.stock === 0 ||
-                            addToCart.isPending
-                        }
-                        onClick={handleAddToCart}
-                        aria-label={
-                            selectedSku?.stock > 0
-                                ? "Thêm vào giỏ hàng"
-                                : "Sản phẩm hết hàng"
-                        }
-                    >
-                        <ShoppingCart className="mr-2 h-5 w-5" />
-                        {addToCart.isPending
-                            ? "Đang thêm..."
-                            : selectedSku?.stock > 0
-                              ? "Thêm vào giỏ hàng"
-                              : "Hết hàng"}
-                    </Button>
-
-                    <Separator className="my-8" />
-
-                    <ProductVariantSelector
-                        attributeGroups={attributeGroups}
-                        selectedAttributes={selectedAttributes}
-                        onAttributeChange={onAttributeChange}
-                        variants={product.variants || []}
-                    />
-
-                    <ProductSkuInfo sku={selectedSku} />
-
-                    <Separator className="my-8 dark:bg-slate-800" />
-
-                    <div className="rounded-2xl border border-gray-200 bg-gray-50 p-6 dark:border-slate-800 dark:bg-slate-900/50">
-                        {discountPercent > 0 && (
-                            <Label className="mb-4 w-fit rounded-md bg-gradient-to-r from-yellow-200 to-orange-400 px-4 py-1.5 text-sm font-bold text-black uppercase">
-                                Sale {discountPercent}%
-                            </Label>
-                        )}
-
-                        <h2 className="mb-2 text-2xl font-bold dark:text-slate-100">
-                            {product.name}
-                        </h2>
-
-                        {selectedSku && (
-                            <p className="text-muted-foreground mb-4 text-sm dark:text-slate-400">
-                                SKU: {selectedSku.skuCode}
-                            </p>
-                        )}
-
-                        <div className="mb-4 flex flex-row items-center gap-3">
-                            <span className="text-2xl font-bold text-red-600 dark:text-red-400">
-                                {formatCurrency(salePrice)}
-                            </span>
-                            {discountPercent > 0 && (
-                                <span className="text-muted-foreground line-through dark:text-slate-500">
-                                    {formatCurrency(originalPrice)}
-                                </span>
-                            )}
-                        </div>
-
+                    {/* Primary CTA Area - Simplified for Mobile */}
+                    <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center lg:mt-8">
                         <Button
-                            className="mb-6 w-full rounded-full px-8"
+                            className="h-12 flex-1 rounded-full px-8 text-base font-semibold sm:h-14"
                             size="lg"
                             disabled={
                                 !selectedSku?.stock ||
@@ -189,16 +127,47 @@ export function ProductInfo({
                                   ? "Thêm vào giỏ hàng"
                                   : "Hết hàng"}
                         </Button>
+                    </div>
 
-                        <Separator className="mb-6 dark:bg-slate-800" />
+                    <Separator className="my-6 sm:my-8" />
+
+                    <div className="space-y-6 sm:space-y-8">
+                        <ProductVariantSelector
+                            attributeGroups={attributeGroups}
+                            selectedAttributes={selectedAttributes}
+                            onAttributeChange={onAttributeChange}
+                            variants={product.variants || []}
+                        />
+
+                        <ProductSkuInfo sku={selectedSku} />
+                    </div>
+
+                    <Separator className="my-6 sm:my-8 dark:bg-slate-800" />
+
+                    {/* Secondary Product Details Box */}
+                    <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 sm:rounded-2xl sm:p-6 lg:p-8 dark:border-slate-800 dark:bg-slate-900/50">
+                        <h2 className="mb-4 text-lg font-bold sm:text-xl lg:text-2xl dark:text-slate-100">
+                            Chi tiết sản phẩm
+                        </h2>
+
+                        <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+                            <span className="text-2xl font-bold text-red-600 sm:text-3xl dark:text-red-400">
+                                {formatCurrency(salePrice)}
+                            </span>
+                            {discountPercent > 0 && (
+                                <span className="text-muted-foreground text-sm line-through sm:text-base dark:text-slate-500">
+                                    {formatCurrency(originalPrice)}
+                                </span>
+                            )}
+                        </div>
 
                         <Accordion type="single" collapsible className="w-full">
                             <AccordionItem
-                                value="1"
+                                value="description"
                                 className="border-b border-slate-200 dark:border-slate-800"
                             >
-                                <AccordionTrigger className="text-left text-sm font-semibold text-slate-900 hover:no-underline md:text-lg dark:text-slate-100">
-                                    Mô tả sản phẩm
+                                <AccordionTrigger className="py-4 text-left text-sm font-semibold text-slate-900 hover:no-underline sm:text-base dark:text-slate-100">
+                                    Mô tả đầy đủ
                                 </AccordionTrigger>
                                 <AccordionContent
                                     className="pb-6 text-sm leading-relaxed text-slate-600 dark:text-slate-300"
@@ -210,14 +179,16 @@ export function ProductInfo({
                             </AccordionItem>
                         </Accordion>
 
-                        <Separator className="my-6 dark:bg-slate-800" />
-
-                        <ProductWarranty />
+                        <div className="mt-8">
+                            <ProductWarranty />
+                        </div>
                     </div>
 
-                    <ProductSpecifications
-                        specifications={product.specifications || []}
-                    />
+                    <div className="mt-8 lg:mt-12">
+                        <ProductSpecifications
+                            specifications={product.specifications || []}
+                        />
+                    </div>
                 </div>
 
                 <ScrollBar orientation="vertical" />

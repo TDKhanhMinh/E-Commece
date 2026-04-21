@@ -87,11 +87,11 @@ export default function OrderDetail() {
     }
 
     return (
-        <div className="mx-auto min-h-screen max-w-7xl p-4 md:p-6 dark:bg-slate-950">
-            <div className="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="mx-auto min-h-screen max-w-7xl p-4 sm:p-6 dark:bg-slate-950">
+            <div className="mt-4 grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-3 lg:gap-8">
                 {/* CỘT TRÁI: THÔNG TIN ĐƠN HÀNG */}
                 <Card className="border-none shadow-sm lg:col-span-2 dark:bg-slate-900 dark:shadow-slate-950/50">
-                    <CardHeader className="pb-4">
+                    <CardHeader className="p-4 sm:p-6 pb-2 sm:pb-4">
                         <div className="mb-4 flex items-center gap-2">
                             <Link
                                 href="/user/orders"
@@ -99,19 +99,19 @@ export default function OrderDetail() {
                             >
                                 <ChevronLeft className="size-5" />
                             </Link>
-                            <CardTitle className="text-xl font-bold dark:text-slate-100">
+                            <CardTitle className="text-lg sm:text-xl font-bold dark:text-slate-100">
                                 {t("title")}
                             </CardTitle>
                         </div>
 
-                        <div className="space-y-1">
-                            <p className="text-secondary-dark text-lg font-bold dark:text-slate-100">
+                        <div className="space-y-2">
+                            <p className="text-secondary-dark text-base sm:text-lg font-bold dark:text-slate-100">
                                 {t("idLabel")} {orderDetails?.orderId || "N/A"}
                             </p>
-                            <div className="text-secondary-dark mt-2 flex items-start gap-2 text-sm dark:text-slate-400">
+                            <div className="text-secondary-dark mt-2 flex items-start gap-2 text-xs sm:text-sm dark:text-slate-400">
                                 <MapPin className="mt-0.5 size-4 shrink-0 text-blue-600 dark:text-blue-400" />
                                 <div>
-                                    <span className="font-semibold">
+                                    <span className="font-semibold text-slate-800 dark:text-slate-200">
                                         {
                                             orderDetails?.deliveryAddress
                                                 ?.userName
@@ -134,18 +134,18 @@ export default function OrderDetail() {
                         </div>
                     </CardHeader>
 
-                    <CardContent className="space-y-6">
-                        <div className="space-y-4 text-sm">
+                    <CardContent className="p-4 sm:p-6 pt-0 space-y-6">
+                        <div className="space-y-3 sm:space-y-4 text-xs sm:text-sm">
                             <div className="flex items-center justify-between">
                                 <span className="text-secondary-dark font-semibold dark:text-slate-300">
                                     {t("statusLabel")}
                                 </span>
-                                <span className="font-medium text-red-500 dark:text-red-400">
+                                <div className="font-medium">
                                     {getStatusBadge(
                                         orderDetails?.status,
                                         tStatus
                                     )}
-                                </span>
+                                </div>
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-secondary-dark font-semibold dark:text-slate-300">
@@ -225,23 +225,23 @@ export default function OrderDetail() {
 
                         <Separator />
 
-                        <div className="space-y-2 text-sm">
+                        <div className="space-y-2 text-xs sm:text-sm">
                             <div className="flex items-center justify-between">
-                                <span className="text-secondary-dark text-base font-light dark:text-slate-400">
+                                <span className="text-secondary-dark text-sm sm:text-base font-light dark:text-slate-400">
                                     {t("totalDiscount")}
                                 </span>
-                                <span className="text-secondary-dark text-base font-light dark:text-slate-200">
+                                <span className="text-secondary-dark text-sm sm:text-base font-light dark:text-slate-200">
                                     {formatCurrency(
                                         orderDetails?.totalDiscount || 0,
                                         locale
                                     )}
                                 </span>
                             </div>
-                            <div className="flex items-center justify-between">
-                                <span className="text-secondary-dark text-base font-bold dark:text-slate-100">
+                            <div className="flex items-center justify-between transition-all">
+                                <span className="text-secondary-dark text-base sm:text-lg font-bold dark:text-slate-100">
                                     {t("finalAmount")}
                                 </span>
-                                <span className="text-secondary-dark text-xl font-bold dark:text-green-500">
+                                <span className="text-secondary-dark text-lg sm:text-2xl font-bold dark:text-green-500">
                                     {formatCurrency(
                                         orderDetails?.finalAmount || 0,
                                         locale
@@ -315,18 +315,18 @@ export default function OrderDetail() {
                         </p>
                     </CardHeader>
 
-                    <CardContent className="flex flex-col gap-4">
+                    <CardContent className="flex flex-col gap-3 sm:gap-4 p-3 sm:p-6">
                         {products.map((product: OrderItem, index: number) => (
                             <div
                                 key={product.skuCode || index}
-                                className="flex gap-4 rounded-xl border bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/50"
+                                className="flex gap-3 sm:gap-4 rounded-xl border bg-slate-50 p-3 sm:p-4 dark:border-slate-800 dark:bg-slate-800/50"
                             >
-                                <div className="relative h-20 w-20 shrink-0">
+                                <div className="relative h-16 w-16 sm:h-20 sm:w-20 shrink-0">
                                     <Image
                                         src={product.image}
                                         alt="Product"
                                         fill
-                                        className="rounded-md object-contain"
+                                        className="rounded-md object-contain p-1"
                                     />
                                 </div>
 
@@ -345,14 +345,14 @@ export default function OrderDetail() {
                                         {t("skuLabel")} {product.skuCode}
                                     </p>
 
-                                    <div className="flex items-center gap-2 pt-1">
-                                        <span className="text-sm font-bold text-red-500 dark:text-red-400">
+                                    <div className="flex items-center gap-2 pt-0.5">
+                                        <span className="text-sm sm:text-base font-bold text-red-500 dark:text-red-400">
                                             {formatCurrency(
                                                 product.salePrice,
                                                 locale
                                             )}
                                         </span>
-                                        <span className="text-secondary-dark text-xs line-through decoration-gray-400 dark:text-slate-500 dark:decoration-slate-600">
+                                        <span className="text-secondary-dark text-[10px] sm:text-xs line-through decoration-gray-400 dark:text-slate-500 dark:decoration-slate-600">
                                             {formatCurrency(
                                                 product.price,
                                                 locale
