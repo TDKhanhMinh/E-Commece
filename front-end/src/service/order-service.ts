@@ -24,8 +24,12 @@ export const checkout = async (userId: number, data: CheckoutRequest) => {
 
 // Lấy chi tiết đơn hàng theo ID
 export const getOrderById = async (
-    orderId: string | Array<string> | undefined
-) => http.get<ApiResponse<OrderResponse>>(`/orders/${orderId}`);
+    orderId: string | undefined
+): Promise<OrderResponse | null> => {
+    if (!orderId) return null;
+    const response = await http.get(`/orders/${orderId}`);
+    return response as unknown as OrderResponse;
+};
 
 // Lấy danh sách đơn hàng theo user với pagination
 export const getOrdersByUser: (

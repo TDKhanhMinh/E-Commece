@@ -38,6 +38,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
         productId as number
     );
     const product = productData as any;
+    console.log(product);
 
     // Fetch all categories for dropdown (no pagination)
     const { data: categoriesData, isLoading: categoriesLoading } =

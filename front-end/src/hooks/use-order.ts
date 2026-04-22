@@ -21,13 +21,14 @@ import { toast } from "sonner";
  * @param orderId ID đơn hàng
  */
 export const useOrderDetail = (orderId: string | Array<string> | undefined) => {
+    const id = Array.isArray(orderId) ? orderId[0] : orderId;
+    
     return useQuery({
-        queryKey: ["order", orderId],
-        queryFn: async () => {
-            return await getOrderById(orderId);
-        },
-        enabled: !!orderId,
+        queryKey: ["order", id],
+        queryFn: () => getOrderById(id),
+        enabled: !!id,
         staleTime: 1000 * 60,
+        retry: 1,
     });
 };
 

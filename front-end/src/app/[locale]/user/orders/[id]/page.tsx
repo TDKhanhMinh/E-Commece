@@ -28,10 +28,11 @@ export default function OrderDetail() {
 
     const responseCode = searchParams.get("vnp_ResponseCode");
 
-    const { data, isLoading } = useOrderDetail(orderId);
-    const orderDetails = data as OrderDetailResponse | undefined;
+    const { data, isLoading, isError } = useOrderDetail(orderId);
+    const orderDetails = data as OrderDetailResponse | null | undefined;
 
     const products: OrderItem[] = orderDetails?.items || [];
+    
     const getShippingMethodLabel = (method?: string) => {
         if (!method) return t("unknown");
 
@@ -44,10 +45,8 @@ export default function OrderDetail() {
                 return method;
         }
     };
-    console.log("Order detail data:", orderDetails);
-    useEffect(() => {
-        // @ts-ignore
 
+    useEffect(() => {
         if (responseCode) {
             if (responseCode === "00") {
                 toast.success(t("paySuccess"));
@@ -61,8 +60,10 @@ export default function OrderDetail() {
                 window.location.pathname
             );
         }
-    }, [searchParams]);
-    if (isLoading) {
+    }, [responseCode, t]);
+
+    // Loading state - chờ đến khi có data
+    if (isLoading || (!orderDetails && !isError)) {
         return (
             <div className="mx-auto flex min-h-screen max-w-7xl items-center justify-center p-4 dark:bg-slate-950">
                 <div className="text-muted-foreground flex flex-col items-center gap-2 dark:text-slate-400">
@@ -73,7 +74,8 @@ export default function OrderDetail() {
         );
     }
 
-    if ((!orderDetails || !products.length) && orderId) {
+    // Error state hoặc không tìm thấy đơn hàng
+    if (isError || !orderDetails) {
         return (
             <div className="mx-auto min-h-screen max-w-7xl p-4 md:p-6 dark:bg-slate-950">
                 <div className="mt-4 rounded-lg border bg-white p-6 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
