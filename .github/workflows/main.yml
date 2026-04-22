@@ -329,26 +329,36 @@ jobs:
               # 1. Đăng nhập vào GHCR để Swarm có thể pull images từ private registry
               echo "$GHCR_TOKEN" | docker login "$GHCR_REGISTRY" -u "$GHCR_USER" --password-stdin
 
-              # Load environment variables from .env to make CLOUDFLARE_TUNNEL_TOKEN available for docker stack
+              # Load environment variables from .env
               set -a
               [ -f .env ] && source .env
               set +a
 
-              # 2. Triển khai App Stack và Monitoring Stack
-              # Cờ --with-registry-auth gửi xác thực registry cho tất cả các node worker
+              # 2. Xóa và tạo lại nginx configs (Docker configs là immutable)
+              echo "Updating nginx configs..."
+              # Xóa nginx service trước để có thể xóa configs
+              docker service rm mystack_nginx 2>/dev/null || true
+              sleep 2
+              # Xóa configs cũ
+              docker config rm mystack_nginx_conf mystack_nginx_app_conf 2>/dev/null || true
+              # Tạo configs mới
+              docker config create mystack_nginx_conf nginx/nginx.conf
+              docker config create mystack_nginx_app_conf nginx/conf.d/app.conf
+
+              # 3. Triển khai App Stack và Monitoring Stack
               docker stack deploy -c docker-stack.yml --with-registry-auth mystack
               docker stack deploy -c docker-stack.monitor.yml mystack-monitor
 
-              # 3. Kích hoạt quyền cho scripts
+              # 4. Kích hoạt quyền cho scripts
               chmod +x scripts/autoscaler.py scripts/backup-postgres.sh
 
-              # 4. Gắn Cron job cho Auto-scaler & Backup (xóa cũ, nạp mới)
+              # 5. Gắn Cron job cho Auto-scaler & Backup (xóa cũ, nạp mới)
               (crontab -l 2>/dev/null | grep -v 'autoscaler.py\|backup-postgres.sh' || true; \
               echo "*/2 * * * * python3 $(pwd)/scripts/autoscaler.py >> /var/log/swarm_autoscaler.log 2>&1"; \
               echo "0 2 * * * $(pwd)/scripts/backup-postgres.sh >> /var/log/postgres_backup.log 2>&1" \
               ) | crontab -
 
-              # 5. Dọn dẹp rác
+              # 6. Dọn dẹp rác
               docker image prune -af --filter "until=24h"
 
               echo "✅ Docker Swarm deployment and maintenance scheduling completed successfully!"
