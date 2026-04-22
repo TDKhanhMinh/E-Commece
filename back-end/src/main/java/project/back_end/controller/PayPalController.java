@@ -58,8 +58,8 @@ public class PayPalController {
                 return ResponseEntity.ok(new ApiResponse<>(200, "Thanh toán thành công", "SUCCESS"));
 
             } catch (Exception e) {
-                log.error("Lỗi khi cập nhật trạng thái đơn hàng {}: {}", orderId, e.getMessage());
-                return ResponseEntity.ok(new ApiResponse<>(500, "Thanh toán thành công nhưng lỗi cập nhật hệ thống", "PAYMENT_SUCCESS_BUT_UPDATE_FAILED"));
+                log.error("Lỗi khi cập nhật trạng thái đơn hàng {} sau khi PayPal capture thành công: {}", orderId, e.getMessage(), e);
+                return ResponseEntity.ok(new ApiResponse<>(500, "Thanh toán thành công nhưng lỗi cập nhật hệ thống. Vui lòng liên hệ hỗ trợ.", "PAYMENT_SUCCESS_BUT_UPDATE_FAILED"));
             }
         } else {
             log.warn("Capture PayPal Order ID: {} thất bại", paypalOrderId);

@@ -9,6 +9,9 @@ import project.back_end.entity.ShipperProfile;
 import project.back_end.enumerate.DeliveryStatus;
 
 public interface DeliveryRepository extends JpaRepository<Delivery, Long> {
+    
+    boolean existsByOrderId(Long orderId);
+    
     @Query("SELECT d FROM Delivery d WHERE d.shipper is null ORDER BY d.createdAt DESC")
     Page<Delivery> getUnassignedDeliveries(Pageable pageable);
 

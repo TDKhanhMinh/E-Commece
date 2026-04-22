@@ -50,6 +50,11 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     public void createDeliveryForOrder(Order order) {
+        if (deliveryRepository.existsByOrderId(order.getId())) {
+            log.info("Delivery already exists for order {}, skipping creation", order.getId());
+            return;
+        }
+        
         DirectionsResponse directions = goongMapService.getDirections(
                 Double.parseDouble("10.732091380000043"), Double.parseDouble("106.69945521900007"),
                 Double.parseDouble(order.getDeliveryAddress().getLatitude()),
