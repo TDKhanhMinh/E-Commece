@@ -42,10 +42,30 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
+        
+        // Local development
         config.addAllowedOrigin("http://localhost:3000");
+        
+        // Production - all variations
+        config.addAllowedOrigin("https://voipelearning.shop");
         config.addAllowedOrigin("https://www.voipelearning.shop");
+        config.addAllowedOrigin("https://api.voipelearning.shop");
+        
+        // Allow all headers
         config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
+        
+        // Allow all HTTP methods
+        config.addAllowedMethod("GET");
+        config.addAllowedMethod("POST");
+        config.addAllowedMethod("PUT");
+        config.addAllowedMethod("DELETE");
+        config.addAllowedMethod("PATCH");
+        config.addAllowedMethod("OPTIONS");
+        
+        // Expose headers for frontend
+        config.addExposedHeader("Authorization");
+        config.addExposedHeader("Content-Type");
+        
         source.registerCorsConfiguration("/**", config);
         return source;
     }
