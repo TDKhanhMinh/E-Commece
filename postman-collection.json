@@ -1,0 +1,1016 @@
+{
+  "info": {
+    "name": "NextJS E-Commerce API",
+    "description": "Complete API collection for NextJS E-Commerce project\n\nBase URL: {{baseUrl}}\nAuthentication: Bearer Token",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.voipelearning.shop/api",
+      "description": "API Base URL"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "description": "JWT Access Token (set after login)"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "description": "Authentication endpoints",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/register",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\",\n  \"fullName\": \"John Doe\",\n  \"phone\": \"0123456789\"\n}"
+            },
+            "description": "Register a new user account"
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/login",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "description": "Login and get access token"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.token) {",
+                  "    pm.collectionVariables.set('accessToken', jsonData.data.token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/auth/change-password",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"oldPassword\": \"password123\",\n  \"newPassword\": \"newPassword456\"\n}"
+            },
+            "description": "Change user password (requires authentication)"
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/auth/forgot-password?email=user@example.com",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "forgot-password"],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "user@example.com"
+                }
+              ]
+            },
+            "description": "Request password reset OTP"
+          }
+        },
+        {
+          "name": "Verify OTP",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/auth/verify-otp?email=user@example.com&otp=123456",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "verify-otp"],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "user@example.com"
+                },
+                {
+                  "key": "otp",
+                  "value": "123456"
+                }
+              ]
+            },
+            "description": "Verify OTP code"
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/auth/reset-password?email=user@example.com&newPassword=newPassword123",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "reset-password"],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "user@example.com"
+                },
+                {
+                  "key": "newPassword",
+                  "value": "newPassword123"
+                }
+              ]
+            },
+            "description": "Reset password after OTP verification"
+          }
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "description": "User profile and address management",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/user/profile",
+            "description": "Get current user profile"
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/user/profile",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"John Doe Updated\",\n  \"phone\": \"0987654321\",\n  \"avatar\": \"https://example.com/avatar.jpg\"\n}"
+            },
+            "description": "Update user profile"
+          }
+        },
+        {
+          "name": "Get All Users (Admin)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/user/all?page=0&size=10&sortBy=id&sortDir=asc",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "all"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "id"
+                },
+                {
+                  "key": "sortDir",
+                  "value": "asc"
+                },
+                {
+                  "key": "searchQuery",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get all users with pagination (Admin only)"
+          }
+        },
+        {
+          "name": "Delete User (Admin)",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/user/1",
+            "description": "Delete a user by ID (Admin only)"
+          }
+        },
+        {
+          "name": "Get Delivery Addresses",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/user/delivery-addresses",
+            "description": "Get all delivery addresses of current user"
+          }
+        },
+        {
+          "name": "Add Delivery Address",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/user/delivery-addresses",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"recipientName\": \"John Doe\",\n  \"phone\": \"0123456789\",\n  \"address\": \"123 Main Street\",\n  \"ward\": \"Ward 1\",\n  \"district\": \"District 1\",\n  \"city\": \"Ho Chi Minh City\",\n  \"isDefault\": true\n}"
+            },
+            "description": "Add a new delivery address"
+          }
+        },
+        {
+          "name": "Update Delivery Address",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/user/delivery-addresses/1",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"recipientName\": \"John Doe Updated\",\n  \"phone\": \"0987654321\",\n  \"address\": \"456 New Street\",\n  \"ward\": \"Ward 2\",\n  \"district\": \"District 2\",\n  \"city\": \"Ha Noi\",\n  \"isDefault\": false\n}"
+            },
+            "description": "Update an existing delivery address"
+          }
+        },
+        {
+          "name": "Delete Delivery Address",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/user/delivery-addresses/1",
+            "description": "Delete a delivery address"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "description": "Product and SKU management",
+      "item": [
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/products?page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                },
+                {
+                  "key": "keyword",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "categoryId",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "brandId",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get all products with pagination and filters"
+          }
+        },
+        {
+          "name": "Get Product By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/products/1",
+            "description": "Get product details by ID"
+          }
+        },
+        {
+          "name": "Get Product By Slug",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/products/slug/product-name-slug",
+            "description": "Get product details by slug"
+          }
+        },
+        {
+          "name": "Create Product (Admin)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/products",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New Product\",\n  \"description\": \"Product description here\",\n  \"categoryId\": 1,\n  \"brandId\": 1,\n  \"images\": [\"https://example.com/image1.jpg\"],\n  \"attributes\": [\n    {\n      \"attributeId\": 1,\n      \"values\": [\"Red\", \"Blue\"]\n    }\n  ]\n}"
+            },
+            "description": "Create a new product (Admin only)"
+          }
+        },
+        {
+          "name": "Update Product (Admin)",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/products/1",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Product\",\n  \"description\": \"Updated description\",\n  \"categoryId\": 1,\n  \"brandId\": 1,\n  \"images\": [\"https://example.com/image2.jpg\"]\n}"
+            },
+            "description": "Update an existing product (Admin only)"
+          }
+        },
+        {
+          "name": "Delete Product (Admin)",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/products/1",
+            "description": "Delete a product (Admin only)"
+          }
+        },
+        {
+          "name": "Create SKU",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/products/1/skus",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skuCode\": \"SKU-001\",\n  \"price\": 100000,\n  \"stock\": 50,\n  \"images\": [\"https://example.com/sku-image.jpg\"],\n  \"attributeValues\": [\n    {\n      \"attributeId\": 1,\n      \"value\": \"Red\"\n    }\n  ]\n}"
+            },
+            "description": "Create a new SKU for a product"
+          }
+        },
+        {
+          "name": "Auto Generate SKU",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/products/1/auto-generate",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"basePrice\": 100000,\n  \"baseStock\": 10\n}"
+            },
+            "description": "Auto generate SKUs based on product attributes"
+          }
+        },
+        {
+          "name": "Update SKU",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/skus/1",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 150000,\n  \"stock\": 100\n}"
+            },
+            "description": "Update SKU details"
+          }
+        },
+        {
+          "name": "Update SKU Details",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/products/1/sku/1",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 150000,\n  \"stock\": 100,\n  \"images\": [\"https://example.com/new-image.jpg\"]\n}"
+            },
+            "description": "Update SKU details for a specific product"
+          }
+        },
+        {
+          "name": "Toggle SKU Status",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{baseUrl}}/skus/1/status?isActive=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["skus", "1", "status"],
+              "query": [
+                {
+                  "key": "isActive",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Toggle SKU active/inactive status"
+          }
+        },
+        {
+          "name": "Delete SKU",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/skus/1",
+            "description": "Delete a SKU"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cart",
+      "description": "Shopping cart management",
+      "item": [
+        {
+          "name": "Get Current Cart",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/cart",
+            "description": "Get current user's cart"
+          }
+        },
+        {
+          "name": "Add Item to Cart",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/cart/items",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skuId\": 1,\n  \"quantity\": 2\n}"
+            },
+            "description": "Add a product SKU to cart"
+          }
+        },
+        {
+          "name": "Update Cart Item",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/cart/items/1",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 5\n}"
+            },
+            "description": "Update quantity of a cart item by SKU ID"
+          }
+        },
+        {
+          "name": "Remove Cart Item",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/cart/items/1",
+            "description": "Remove an item from cart by SKU ID"
+          }
+        },
+        {
+          "name": "Merge Cart",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/cart/merge",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  {\n    \"skuId\": 1,\n    \"quantity\": 2\n  },\n  {\n    \"skuId\": 2,\n    \"quantity\": 1\n  }\n]"
+            },
+            "description": "Merge guest cart with user cart after login"
+          }
+        },
+        {
+          "name": "Clear Cart",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/cart/clear",
+            "description": "Clear all items from cart"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "description": "Order management",
+      "item": [
+        {
+          "name": "Checkout",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/orders/checkout?userId=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders", "checkout"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "1"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deliveryAddressId\": 1,\n  \"paymentMethod\": \"COD\",\n  \"voucherCode\": \"\",\n  \"note\": \"Please call before delivery\",\n  \"items\": [\n    {\n      \"skuId\": 1,\n      \"quantity\": 2\n    }\n  ]\n}"
+            },
+            "description": "Create a new order (checkout)"
+          }
+        },
+        {
+          "name": "Get Order By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/orders/1",
+            "description": "Get order details by ID"
+          }
+        },
+        {
+          "name": "Get User Orders",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/orders?page=0&size=10&status=&sort=createdAt,desc",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "description": "PENDING, CONFIRMED, SHIPPING, DELIVERED, CANCELLED"
+                },
+                {
+                  "key": "sort",
+                  "value": "createdAt,desc"
+                },
+                {
+                  "key": "startDate",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "endDate",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "query",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get current user's orders with pagination and filters"
+          }
+        },
+        {
+          "name": "Get Admin Orders",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/orders/admin?page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders", "admin"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "sort",
+                  "value": "createdAt,desc",
+                  "disabled": true
+                },
+                {
+                  "key": "startDate",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "endDate",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "query",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get all orders (Admin only)"
+          }
+        },
+        {
+          "name": "Update Order Status (Admin)",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "{{baseUrl}}/orders/1/status?status=CONFIRMED",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders", "1", "status"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "CONFIRMED",
+                  "description": "PENDING, CONFIRMED, SHIPPING, DELIVERED, CANCELLED"
+                }
+              ]
+            },
+            "description": "Update order status (Admin only)"
+          }
+        },
+        {
+          "name": "Cancel Order",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/orders/1",
+            "description": "Cancel an order"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "description": "Category management",
+      "item": [
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/categories?page=0&size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                },
+                {
+                  "key": "keyword",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get all categories with pagination"
+          }
+        },
+        {
+          "name": "Get Category By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/categories/1",
+            "description": "Get category details by ID"
+          }
+        },
+        {
+          "name": "Create Category (Admin)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/categories",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New Category\",\n  \"description\": \"Category description\",\n  \"image\": \"https://example.com/category-image.jpg\",\n  \"parentId\": null\n}"
+            },
+            "description": "Create a new category (Admin only)"
+          }
+        },
+        {
+          "name": "Update Category (Admin)",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/categories/1",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Category\",\n  \"description\": \"Updated description\",\n  \"image\": \"https://example.com/new-image.jpg\"\n}"
+            },
+            "description": "Update a category (Admin only)"
+          }
+        },
+        {
+          "name": "Delete Category (Admin)",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/categories/1",
+            "description": "Delete a category (Admin only)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Brands",
+      "description": "Brand management",
+      "item": [
+        {
+          "name": "Get All Brands",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/brands?page=0&size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["brands"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                },
+                {
+                  "key": "keyword",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get all brands with pagination"
+          }
+        },
+        {
+          "name": "Create Brand (Admin)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/brands",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New Brand\",\n  \"description\": \"Brand description\",\n  \"logo\": \"https://example.com/brand-logo.jpg\"\n}"
+            },
+            "description": "Create a new brand (Admin only)"
+          }
+        },
+        {
+          "name": "Update Brand (Admin)",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/brands/1",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Brand\",\n  \"description\": \"Updated description\",\n  \"logo\": \"https://example.com/new-logo.jpg\"\n}"
+            },
+            "description": "Update a brand (Admin only)"
+          }
+        },
+        {
+          "name": "Delete Brand (Admin)",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/brands/1",
+            "description": "Delete a brand (Admin only)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Attributes",
+      "description": "Product attributes",
+      "item": [
+        {
+          "name": "Get All Attributes",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/attributes",
+            "description": "Get all product attributes (Color, Size, etc.)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vouchers",
+      "description": "Voucher/Coupon management",
+      "item": [
+        {
+          "name": "Validate Voucher",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/vouchers/validate?code=DISCOUNT10&orderAmount=500000",
+              "host": ["{{baseUrl}}"],
+              "path": ["vouchers", "validate"],
+              "query": [
+                {
+                  "key": "code",
+                  "value": "DISCOUNT10"
+                },
+                {
+                  "key": "orderAmount",
+                  "value": "500000"
+                }
+              ]
+            },
+            "description": "Validate a voucher code for an order"
+          }
+        },
+        {
+          "name": "Get All Vouchers (Admin)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/vouchers",
+            "description": "Get all vouchers (Admin only)"
+          }
+        },
+        {
+          "name": "Get Voucher By ID (Admin)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/vouchers/1",
+            "description": "Get voucher details by ID (Admin only)"
+          }
+        },
+        {
+          "name": "Create Voucher (Admin)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/vouchers",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"NEWVOUCHER\",\n  \"discountType\": \"PERCENTAGE\",\n  \"discountValue\": 10,\n  \"minOrderAmount\": 100000,\n  \"maxDiscount\": 50000,\n  \"usageLimit\": 100,\n  \"startDate\": \"2024-01-01T00:00:00\",\n  \"endDate\": \"2024-12-31T23:59:59\",\n  \"isActive\": true\n}"
+            },
+            "description": "Create a new voucher (Admin only)"
+          }
+        },
+        {
+          "name": "Update Voucher (Admin)",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/vouchers/1",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"UPDATEDVOUCHER\",\n  \"discountType\": \"FIXED\",\n  \"discountValue\": 50000,\n  \"minOrderAmount\": 200000,\n  \"usageLimit\": 50,\n  \"isActive\": true\n}"
+            },
+            "description": "Update a voucher (Admin only)"
+          }
+        },
+        {
+          "name": "Disable Voucher (Admin)",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/vouchers/1?action=false",
+              "host": ["{{baseUrl}}"],
+              "path": ["vouchers", "1"],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "false",
+                  "description": "true to enable, false to disable"
+                }
+              ]
+            },
+            "description": "Enable/Disable a voucher (Admin only)"
+          }
+        }
+      ]
+    }
+  ]
+}
