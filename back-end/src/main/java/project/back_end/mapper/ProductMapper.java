@@ -27,6 +27,7 @@ public interface ProductMapper {
     @Mapping(target = "configurableOptions", source = "skus", qualifiedByName = "extractOptions")
     @Mapping(target = "categoryId", source = "category.id")
     @Mapping(target = "brandId", source = "brand.id")
+    @Mapping(target = "images", source = "images")
     ProductDetailResponse toDetailResponse(Product product);
 
     @Mapping(target = "attributeName", source = "attribute.name")
@@ -74,10 +75,19 @@ public interface ProductMapper {
                 ? sku.getImages().get(0) : "https://png.pngtree.com/png-clipart/20220719/original/pngtree-new-product-in-banner-style-png-image_8366873.png";
     }
 
-    // Lấy ảnh đại diện cho danh sách sản phẩm (Ảnh của SKU đầu tiên)
+    // Lấy ảnh đại diện cho danh sách sản phẩm (Ưu tiên: Product images > SKU images > Default)
     default String getThumbnail(Product product) {
-        if (product.getSkus() == null || product.getSkus().isEmpty())
-            return "https://png.pngtree.com/png-clipart/20220719/original/pngtree-new-product-in-banner-style-png-image_8366873.png";
+        String defaultImage = "https://png.pngtree.com/png-clipart/20220719/original/pngtree-new-product-in-banner-style-png-image_8366873.png";
+
+        // Ưu tiên 1: Ảnh từ Product
+        if (product.getImages() != null && !product.getImages().isEmpty()) {
+            return product.getImages().get(0);
+        }
+
+        // Ưu tiên 2: Ảnh từ SKU đầu tiên
+        if (product.getSkus() == null || product.getSkus().isEmpty()) {
+            return defaultImage;
+        }
         return getFirstImage(product.getSkus().get(0));
     }
 

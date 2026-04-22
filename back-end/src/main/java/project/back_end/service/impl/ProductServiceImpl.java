@@ -56,8 +56,6 @@ public class ProductServiceImpl implements ProductService {
     public ProductDetailResponse createProduct(ProductRequest request) {
         Product product = new Product();
         mapRequestToEntity(request, product);
-
-
         product.setSlug(toSlug(request.getName()));
 
         Product savedProduct = productRepository.save(product);
@@ -117,6 +115,17 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_FOUND));
         product.setBrand(brand);
 
+        // Xử lý Images (Xóa cũ thêm mới để update list)
+        if (product.getImages() != null) {
+            product.getImages().clear();
+        } else {
+            product.setImages(new ArrayList<>());
+        }
+
+        if (request.getImages() != null && !request.getImages().isEmpty()) {
+            product.getImages().addAll(request.getImages());
+        }
+
         // Xử lý Specs (Xóa cũ thêm mới để update list)
         if (product.getSpecs() != null) {
             product.getSpecs().clear();
@@ -172,15 +181,8 @@ public class ProductServiceImpl implements ProductService {
                     .anyMatch(sku -> sku.getStock() != null && sku.getStock() > 0);
             res.setInStock(inStock);
 
-            // Lấy hình ảnh đại diện từ SKU đầu tiên
-            String defaultImage = "https://th.bing.com/th/id/R.5fa32d0f91bb6befd88027725b4f2e0d?rik=6PlumKuW4AsJxQ&pid=ImgRaw&r=0";
-            String imageUrl = Optional.ofNullable(product.getSkus())
-                    .filter(skus -> !skus.isEmpty())
-                    .map(skus -> skus.get(0))
-                    .map(Sku::getImages)
-                    .filter(images -> !images.isEmpty())
-                    .map(images -> images.get(0))
-                    .orElse(defaultImage);
+            // Lấy hình ảnh đại diện từ SKU đầu tiên hoặc từ Product images
+            String imageUrl = getProductThumbnail(product);
             res.setImage(imageUrl);
         } else {
             // Không có SKU
@@ -188,7 +190,7 @@ public class ProductServiceImpl implements ProductService {
             res.setMaxPrice(0.0);
             res.setVariantCount(0);
             res.setInStock(false);
-            res.setImage("https://th.bing.com/th/id/R.5fa32d0f91bb6befd88027725b4f2e0d?rik=6PlumKuW4AsJxQ&pid=ImgRaw&r=0");
+            res.setImage(getProductThumbnail(product));
         }
 
         // Tính discount percent (nếu có sự chênh lệch giá)
@@ -208,6 +210,29 @@ public class ProductServiceImpl implements ProductService {
         return res;
     }
 
+    /**
+     * Lấy hình ảnh đại diện cho sản phẩm theo thứ tự ưu tiên:
+     * 1. Ảnh đầu tiên của Product (nếu có)
+     * 2. Ảnh đầu tiên của SKU đầu tiên (nếu có)
+     * 3. Ảnh mặc định
+     */
+    private String getProductThumbnail(Product product) {
+        String defaultImage = "https://th.bing.com/th/id/R.5fa32d0f91bb6befd88027725b4f2e0d?rik=6PlumKuW4AsJxQ&pid=ImgRaw&r=0";
+
+        // Ưu tiên 1: Ảnh từ Product
+        if (product.getImages() != null && !product.getImages().isEmpty()) {
+            return product.getImages().get(0);
+        }
+
+        // Ưu tiên 2: Ảnh từ SKU đầu tiên
+        return Optional.ofNullable(product.getSkus())
+                .filter(skus -> !skus.isEmpty())
+                .map(skus -> skus.get(0))
+                .map(Sku::getImages)
+                .filter(images -> !images.isEmpty())
+                .map(images -> images.get(0))
+                .orElse(defaultImage);
+    }
 
     // Slug generator
     private static final Pattern NONLATIN = Pattern.compile("[^\\w-]");

@@ -3,6 +3,7 @@ export interface ProductFormValues {
     description: string;
     categoryId: string;
     brandId: string;
+    images: string[];
     specs: {
         attributeId: string;
         value: string;

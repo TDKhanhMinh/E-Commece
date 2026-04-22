@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -23,6 +24,8 @@ public class ProductRequest {
 
     @Size(max = 2000, message = "Description must not exceed 2000 characters")
     private String description;
+
+    private List<String> images = new ArrayList<>();
 
     @Valid
     private List<SpecRequest> specs;

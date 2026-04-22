@@ -29,6 +29,12 @@ public class Product extends BaseProduct {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @ElementCollection
+    @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
+    @Column(name = "image_url", length = 500)
+    @OrderColumn(name = "image_order")
+    private List<String> images = new ArrayList<>();
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;

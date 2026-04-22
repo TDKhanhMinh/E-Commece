@@ -1,18 +1,19 @@
 "use client";
 
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Form } from "@/components/ui/form";
+import { Form, FormField } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 import { SkuManager } from "../sku/sku-manager";
 import { ProductGeneralInfo } from "./product-general-info";
 import { ProductSpecs } from "./product-specs";
+import { ProductImageManager } from "./product-image-manager";
 import {
     ProductFormProps,
     ProductFormValues,
@@ -31,6 +32,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
     const t = useTranslations("products.form");
     const router = useRouter();
     const isEditMode = Boolean(productId);
+    const [isImageUploading, setIsImageUploading] = useState(false);
 
     const { data: productData, isLoading } = useProductDetail(
         productId as number
@@ -62,6 +64,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
             description: "",
             categoryId: "",
             brandId: "",
+            images: [],
             specs: [],
         },
     });
@@ -76,6 +79,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
             description: product.description,
             categoryId: product.categoryId?.toString() ?? "",
             brandId: product.brandId?.toString() ?? "",
+            images: product.images ?? [],
             specs: product.specifications.map((s: any) => ({
                 attributeId: s.attributeId?.toString() ?? "",
                 value: s.value,
@@ -86,10 +90,14 @@ export default function ProductForm({ productId }: ProductFormProps) {
 
     const onSubmit = useCallback(
         (values: ProductFormValues) => {
+            if (isImageUploading) return;
+
             const payload = {
-                ...values,
+                name: values.name,
+                description: values.description,
                 categoryId: Number(values.categoryId),
                 brandId: Number(values.brandId),
+                images: values.images,
                 specs: values.specs.map((s) => ({
                     attributeId: Number(s.attributeId),
                     value: s.value,
@@ -109,7 +117,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
                     router.push(`/admin/products/${res.id}`),
             });
         },
-        [isEditMode, productId, createMutation, updateMutation, router]
+        [isEditMode, productId, createMutation, updateMutation, router, isImageUploading]
     );
 
     const pageTitle = useMemo(
@@ -150,6 +158,19 @@ export default function ProductForm({ productId }: ProductFormProps) {
                                 brands={brands}
                             />
 
+                            <FormField
+                                control={control}
+                                name="images"
+                                render={({ field }) => (
+                                    <ProductImageManager
+                                        value={field.value}
+                                        onChange={field.onChange}
+                                        isUploading={isImageUploading}
+                                        onUploadingChange={setIsImageUploading}
+                                    />
+                                )}
+                            />
+
                             <ProductSpecs
                                 control={control}
                                 attributes={attributes}
@@ -160,6 +181,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
                                     type="submit"
                                     size="lg"
                                     className="px-10"
+                                    disabled={isImageUploading}
                                 >
                                     {t("save")}
                                 </Button>
