@@ -37,7 +37,8 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: validate
+      # Đổi thành 'validate' sau khi tables đã được tạo
+      ddl-auto: update
     show-sql: false
     properties:
       hibernate:
