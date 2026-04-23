@@ -27,8 +27,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     // 5. Tìm kiếm danh mục gốc với phân trang
     @Query("SELECT c FROM Category c WHERE c.parent IS NULL " +
-            "AND (:keyword IS NULL OR :keyword = '' OR " +
-            "LOWER(c.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-            "LOWER(c.slug) LIKE LOWER(CONCAT('%', :keyword, '%')))")
+            "AND (CAST(:keyword AS text) IS NULL OR CAST(:keyword AS text) = '' OR " +
+            "LOWER(c.name) LIKE LOWER(CONCAT('%', CAST(:keyword AS text), '%')) OR " +
+            "LOWER(c.slug) LIKE LOWER(CONCAT('%', CAST(:keyword AS text), '%')))")
     Page<Category> searchRootCategories(@Param("keyword") String keyword, Pageable pageable);
 }

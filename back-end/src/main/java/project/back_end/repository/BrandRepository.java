@@ -17,8 +17,8 @@ public interface BrandRepository extends JpaRepository<Brand, Long> {
 
     // Tìm kiếm brand với phân trang
     @Query("SELECT b FROM Brand b WHERE " +
-            "(:keyword IS NULL OR :keyword = '' OR " +
-            "LOWER(b.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-            "LOWER(b.slug) LIKE LOWER(CONCAT('%', :keyword, '%')))")
+            "(CAST(:keyword AS text) IS NULL OR CAST(:keyword AS text) = '' OR " +
+            "LOWER(b.name) LIKE LOWER(CONCAT('%', CAST(:keyword AS text), '%')) OR " +
+            "LOWER(b.slug) LIKE LOWER(CONCAT('%', CAST(:keyword AS text), '%')))")
     Page<Brand> searchBrands(@Param("keyword") String keyword, Pageable pageable);
 }

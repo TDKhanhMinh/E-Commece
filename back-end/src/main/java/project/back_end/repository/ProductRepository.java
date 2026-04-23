@@ -15,7 +15,7 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
     @Query("SELECT p FROM Product p WHERE " +
-            "(:keyword IS NULL OR :keyword = '' OR LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
+            "(CAST(:keyword AS text) IS NULL OR CAST(:keyword AS text) = '' OR LOWER(p.name) LIKE LOWER(CONCAT('%', CAST(:keyword AS text), '%'))) " +
             "AND (CAST(:categoryId AS long) IS NULL OR p.category.id = :categoryId) " +
             "AND (CAST(:brandId AS long) IS NULL OR p.brand.id = :brandId)")
     Page<Product> searchProducts(

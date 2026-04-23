@@ -20,10 +20,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> getAllByRole(User.Role role);
 
     @Query("SELECT u FROM User u WHERE " +
-            "(:keyword IS NULL OR :keyword = '' OR " +
-            "LOWER(u.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-            "LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-            "LOWER(u.phone) LIKE LOWER(CONCAT('%', :keyword, '%')))")
+            "(CAST(:keyword AS text) IS NULL OR CAST(:keyword AS text) = '' OR " +
+            "LOWER(u.name) LIKE LOWER(CONCAT('%', CAST(:keyword AS text), '%')) OR " +
+            "LOWER(u.email) LIKE LOWER(CONCAT('%', CAST(:keyword AS text), '%')) OR " +
+            "LOWER(u.phone) LIKE LOWER(CONCAT('%', CAST(:keyword AS text), '%')))")
     Page<User> searchUsers(@Param("keyword") String keyword, Pageable pageable);
 
     /**

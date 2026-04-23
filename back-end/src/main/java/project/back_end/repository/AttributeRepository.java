@@ -17,8 +17,8 @@ public interface AttributeRepository extends JpaRepository<Attribute, Long> {
 
     // Tìm kiếm theo name, code với phân trang
     @Query("SELECT a FROM Attribute a WHERE " +
-            "(:keyword IS NULL OR :keyword = '' OR " +
-            "LOWER(a.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-            "LOWER(a.code) LIKE LOWER(CONCAT('%', :keyword, '%')))")
+            "(CAST(:keyword AS text) IS NULL OR CAST(:keyword AS text) = '' OR " +
+            "LOWER(a.name) LIKE LOWER(CONCAT('%', CAST(:keyword AS text), '%')) OR " +
+            "LOWER(a.code) LIKE LOWER(CONCAT('%', CAST(:keyword AS text), '%')))")
     Page<Attribute> searchAttributes(@Param("keyword") String keyword, Pageable pageable);
 }
