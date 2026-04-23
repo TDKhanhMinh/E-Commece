@@ -17,10 +17,9 @@ public interface DeliveryRepository extends JpaRepository<Delivery, Long> {
 
     @Query("SELECT d FROM Delivery d JOIN d.order o JOIN o.deliveryAddress a " +
             "WHERE (:status IS NULL OR d.status = :status) " +
-            "AND (:search IS NULL OR LOWER(a.userName) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(a.phoneNumber) LIKE LOWER(CONCAT('%', :search, '%'))) "
-            +
-            "AND (:startDate IS NULL OR d.createdAt >= :startDate) " +
-            "AND (:endDate IS NULL OR d.createdAt <= :endDate) " +
+            "AND (:search IS NULL OR LOWER(a.userName) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(a.phoneNumber) LIKE LOWER(CONCAT('%', :search, '%'))) " +
+            "AND (CAST(:startDate AS timestamp) IS NULL OR d.createdAt >= :startDate) " +
+            "AND (CAST(:endDate AS timestamp) IS NULL OR d.createdAt <= :endDate) " +
             "ORDER BY d.createdAt DESC")
     Page<Delivery> filterDeliveries(
             DeliveryStatus status,

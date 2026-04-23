@@ -33,8 +33,8 @@ public interface WalletTransactionRepository extends JpaRepository<WalletTransac
                         WHERE (:status IS NULL OR wt.status = :status)
                         AND (:type IS NULL OR wt.type = :type)
                         AND (:action IS NULL OR wt.action = :action)
-                        AND (:createdAtAfter IS NULL OR wt.createdAt >= :createdAtAfter)
-                        AND (:createdAtBefore IS NULL OR wt.createdAt <= :createdAtBefore)
+                        AND (CAST(:createdAtAfter AS timestamp) IS NULL OR wt.createdAt >= :createdAtAfter)
+                        AND (CAST(:createdAtBefore AS timestamp) IS NULL OR wt.createdAt <= :createdAtBefore)
                         ORDER BY wt.createdAt DESC
                         """)
         Page<WalletTransaction> filterWalletTransactions(

@@ -37,10 +37,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
                         @Param("status") OrderStatus status, Pageable pageable);
 
         @Query("SELECT o FROM Order o WHERE (:status IS NULL OR o.status = :status) " +
-                        "AND (:startDate IS NULL OR o.createdAt >= :startDate) " +
-                        "AND (:endDate IS NULL OR o.createdAt <= :endDate) " +
-                        "AND (:deliveryStartDate IS NULL OR o.deliveredAt >= :deliveryStartDate) " +
-                        "AND (:deliveryEndDate IS NULL OR o.deliveredAt <= :deliveryEndDate) " +
+                        "AND (CAST(:startDate AS timestamp) IS NULL OR o.createdAt >= :startDate) " +
+                        "AND (CAST(:endDate AS timestamp) IS NULL OR o.createdAt <= :endDate) " +
+                        "AND (CAST(:deliveryStartDate AS timestamp) IS NULL OR o.deliveredAt >= :deliveryStartDate) " +
+                        "AND (CAST(:deliveryEndDate AS timestamp) IS NULL OR o.deliveredAt <= :deliveryEndDate) " +
                         "ORDER BY o.createdAt DESC")
         Page<Order> filterOrders(
                         @Param("status") OrderStatus status,
