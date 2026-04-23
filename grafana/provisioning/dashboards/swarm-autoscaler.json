@@ -256,7 +256,7 @@
           "refId": "B"
         }
       ],
-      "title": "📊 Replica Count Over Time (Min: 2, Max: 8)",
+      "title": "📊 Replica Count Over Time (Min: 1, Max: 10)",
       "type": "timeseries"
     },
     {
@@ -348,7 +348,7 @@
       "id": 30,
       "options": {
         "code": { "language": "plaintext", "showLineNumbers": false },
-        "content": "## ⚙️ Autoscaler Configuration\n\n| Setting | Value |\n|---------|-------|\n| **Scale UP threshold** | CPU > 70% |\n| **Scale DOWN threshold** | CPU < 30% |\n| **Min Replicas** | 2 |\n| **Max Replicas** | 8 |\n| **Cooldown** | 120 seconds |\n| **Check interval** | Every 2 minutes |\n\n### 📋 Scale Events\nKhi CPU vượt ngưỡng, autoscaler sẽ:\n- **CPU > 70%** → Thêm 1 replica (tối đa 8)\n- **CPU < 30%** → Giảm 1 replica (tối thiểu 2)",
+        "content": "## ⚙️ Autoscaler Configuration\n\n| Setting | Value |\n|---------|-------|\n| **Scale UP threshold** | CPU > 70% |\n| **Scale DOWN threshold** | CPU < 30% |\n| **Min Replicas** | 1 |\n| **Max Replicas** | 10 |\n| **Cooldown** | 60 seconds |\n| **Check interval** | Every 2 minutes |\n\n### 📋 Scale Events\nKhi CPU vượt ngưỡng, autoscaler sẽ:\n- **CPU > 70%** → Thêm 1 replica (tối đa 10)\n- **CPU < 30%** → Giảm 1 replica (tối thiểu 1)",
         "mode": "markdown"
       },
       "type": "text"
