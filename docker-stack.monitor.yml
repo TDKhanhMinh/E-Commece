@@ -15,6 +15,7 @@ volumes:
   prometheus_data:
   grafana_data:
   portainer_data:
+  autoscaler_state:
 
 services:
 
@@ -161,6 +162,7 @@ services:
     volumes:
       - ./scripts/autoscaler.py:/app/autoscaler.py:ro
       - /var/run/docker.sock:/var/run/docker.sock
+      - autoscaler_state:/tmp
     networks:
       - mystack_public
       - monitoring
@@ -173,7 +175,7 @@ services:
         echo "Autoscaler starting... Running every 2 minutes" &&
         while true; do
           python /app/autoscaler.py || echo "Autoscaler run failed"
-          sleep 120
+          sleep 30
         done
     deploy:
       replicas: 1

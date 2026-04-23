@@ -28,7 +28,7 @@ CONFIG = {
     "service_name": "mystack_backend",
 
     # Giới hạn số replica
-    "min_replicas": 2,      # Luôn giữ tối thiểu 2 để HA
+    "min_replicas": 1,      # Luôn giữ tối thiểu 2 để HA
     "max_replicas": 10,      # Không scale quá 10 (tránh quá tải DB)
 
     # Ngưỡng CPU để ra quyết định scale
@@ -36,7 +36,7 @@ CONFIG = {
     "scale_down_cpu_threshold": 30,  # Scale DOWN khi CPU trung bình < 30%
 
     # Cooldown: không scale liên tục, chờ ít nhất 2 phút giữa 2 lần scale
-    "cooldown_seconds": 120,
+    "cooldown_seconds": 60,
     "cooldown_file": "/tmp/autoscaler_last_action",
 
     # Lock file: ngăn 2 instance script chạy đồng thời
@@ -69,7 +69,7 @@ def get_avg_cpu_percent() -> float:
     """
     query = (
         'avg(rate(container_cpu_usage_seconds_total'
-        '{container_label_com_docker_swarm_service_name=~".*backend.*"}[2m]))'
+        '{container_label_com_docker_swarm_service_name=~".*backend.*"}[1m]))'
         ' * 100'
     )
     try:
@@ -207,7 +207,11 @@ def main():
         current_replicas = get_current_replicas()
         if current_replicas < 0:
             return
-
+        # Sau dòng: if current_replicas < 0: return
+        if current_replicas < CONFIG["min_replicas"]:
+            log.warning(f"Replicas ({current_replicas}) < min ({CONFIG['min_replicas']}). Enforcing min...")
+            scale_service(CONFIG["min_replicas"])
+            return
         log.info(
             f"CPU trung bình: {cpu:.1f}% | "
             f"Replicas hiện tại: {current_replicas} | "
@@ -217,7 +221,8 @@ def main():
         # ---- Bước 4: Ra quyết định scale ----
         if cpu > CONFIG["scale_up_cpu_threshold"]:
             if current_replicas < CONFIG["max_replicas"]:
-                new_count = min(current_replicas + 1, CONFIG["max_replicas"])
+                step = 3 if cpu > 90 else (2 if cpu > 80 else 1)
+                new_count = min(current_replicas + step, CONFIG["max_replicas"])
                 log.info(
                     f"CPU {cpu:.1f}% > ngưỡng {CONFIG['scale_up_cpu_threshold']}% "
                     f"→ SCALE UP: {current_replicas} → {new_count}"
