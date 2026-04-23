@@ -42,6 +42,7 @@ export default function RegisterPage() {
             name: "",
             phone: "",
             confirmPassword: "",
+            role: "USER",
         },
     });
 
