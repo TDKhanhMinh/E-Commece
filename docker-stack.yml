@@ -134,6 +134,8 @@ services:
       PAYPAL_CLIENT_SECRET: ${PAYPAL_CLIENT_SECRET}
       PAYPAL_RETURN_URL: ${PAYPAL_RETURN_URL:-https://www.voipelearning.shop/en/user/orders}
       PAYPAL_CANCEL_URL: ${PAYPAL_CANCEL_URL:-https://www.voipelearning.shop/en/user/orders}
+      # Goong Map
+      GOONG_API_KEY: ${GOONG_API_KEY}
       # JVM options
       JAVA_OPTS: >-
         -Xms256m

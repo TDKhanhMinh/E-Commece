@@ -54,3 +54,6 @@ paypal:
   cancelUrl: ${PAYPAL_CANCEL_URL}
   currency: USD
   intent: sale
+
+goongmap:
+  api-key: ${GOONG_API_KEY}

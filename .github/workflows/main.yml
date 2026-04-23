@@ -283,6 +283,8 @@ jobs:
           PAYPAL_CLIENT_SECRET: ${{ secrets.PAYPAL_CLIENT_SECRET }}
           PAYPAL_RETURN_URL: ${{ secrets.PAYPAL_RETURN_URL }}
           PAYPAL_CANCEL_URL: ${{ secrets.PAYPAL_CANCEL_URL }}
+          # Goong Map
+          GOONG_API_KEY: ${{ secrets.GOONG_API_KEY }}
         run: |
           {
             printf 'BACKEND_IMAGE=%s\n'           "$BACKEND_IMAGE"
@@ -302,6 +304,7 @@ jobs:
             printf 'PAYPAL_CLIENT_SECRET=%s\n'    "$PAYPAL_CLIENT_SECRET"
             printf 'PAYPAL_RETURN_URL=%s\n'       "${PAYPAL_RETURN_URL:-https://www.voipelearning.shop/en/user/orders}"
             printf 'PAYPAL_CANCEL_URL=%s\n'       "${PAYPAL_CANCEL_URL:-https://www.voipelearning.shop/en/user/orders}"
+            printf 'GOONG_API_KEY=%s\n'           "$GOONG_API_KEY"
           } > .env
 
       - name: Sync deployment files to server
