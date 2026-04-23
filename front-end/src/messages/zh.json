@@ -1027,6 +1027,10 @@
     },
     "transactions": {
         "title": "交易管理",
+        "tabs": {
+            "wallet": "钱包交易",
+            "payment": "订单支付"
+        },
         "loading": "正在加载交易数据...",
         "error": "加载交易数据时发生错误。",
         "empty": "未找到交易记录。",

@@ -1027,7 +1027,11 @@
     },
     "transactions": {
         "title": "Transaction Management",
-        "loading": "Loading transaction data...",
+        "tabs": {
+            "wallet": "Wallet",
+            "payment": "Order Payments"
+        },
+        "loading": "Loading transactions...",
         "error": "An error occurred while loading transaction data.",
         "empty": "No transactions found.",
         "filters": {
