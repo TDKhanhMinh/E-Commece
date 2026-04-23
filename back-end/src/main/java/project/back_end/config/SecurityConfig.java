@@ -18,11 +18,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.savedrequest.NullRequestCache;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import org.springframework.security.web.savedrequest.NullRequestCache;
 
 @Configuration
 @EnableWebSecurity
@@ -42,18 +41,18 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        
+
         // Local development
         config.addAllowedOrigin("http://localhost:3000");
-        
+
         // Production - all variations
         config.addAllowedOrigin("https://voipelearning.shop");
         config.addAllowedOrigin("https://www.voipelearning.shop");
         config.addAllowedOrigin("https://api.voipelearning.shop");
-        
+
         // Allow all headers
         config.addAllowedHeader("*");
-        
+
         // Allow all HTTP methods
         config.addAllowedMethod("GET");
         config.addAllowedMethod("POST");
@@ -61,11 +60,11 @@ public class SecurityConfig {
         config.addAllowedMethod("DELETE");
         config.addAllowedMethod("PATCH");
         config.addAllowedMethod("OPTIONS");
-        
+
         // Expose headers for frontend
         config.addExposedHeader("Authorization");
         config.addExposedHeader("Content-Type");
-        
+
         source.registerCorsConfiguration("/**", config);
         return source;
     }
@@ -79,8 +78,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/actuator/health/**").permitAll()
-                        .requestMatchers("/api/payment/vnpay-ipn/**").permitAll()
-                        .requestMatchers("/api/payment/vnpay-return/**").permitAll()
+                        .requestMatchers("/api/vnpay/**").permitAll()
                         .requestMatchers("/api/paypal/**").permitAll()
                         .requestMatchers("/ws-chat/**", "/api/ws-chat/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
