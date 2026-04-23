@@ -29,7 +29,7 @@ public class Delivery {
     private String pickupLatitude;
     private String pickupLongitude;
     
-    @Column(columnDefinition = "LONGTEXT")
+    @Column(columnDefinition = "TEXT")
     private String encodedPolyline;
 
     private String distanceText;
@@ -41,6 +41,7 @@ public class Delivery {
 
     private BigDecimal amountToCollect;
 
+    @Enumerated(EnumType.STRING)
     private DeliveryStatus status;
 
     private LocalDateTime createdAt = LocalDateTime.now();
