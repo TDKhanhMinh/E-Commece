@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import {
     createTransaction,
     getAllTransactionsAdmin,
+    getAllTransactionsPaymentAdmin,
     getMyTransactions,
     updateTransactionStatus,
 } from "@/service/transaction-service";
@@ -33,6 +34,20 @@ export const useTransactionsAdmin = (params?: any) => {
         queryKey: ["transactions", "admin", params],
         queryFn: async () => {
             return await getAllTransactionsAdmin(params);
+        },
+        staleTime: 1000 * 60 * 5, // Cache 5 phút
+    });
+};
+
+/**
+ * 3. Hook lấy tất cả giao dịch thanh toán cho Admin (VNPAY/momo...)
+ * @param params
+ */
+export const useTransactionsPaymentAdmin = (params?: any) => {
+    return useQuery({
+        queryKey: ["transactions", "payment", "admin", params],
+        queryFn: async () => {
+            return await getAllTransactionsPaymentAdmin(params);
         },
         staleTime: 1000 * 60 * 5, // Cache 5 phút
     });
@@ -74,10 +89,7 @@ export const useCreateTransaction = () => {
         mutationFn: (data: TransactionRequest) => createTransaction(data),
         onSuccess: () => {
             toast.success("Đã gửi yêu cầu giao dịch thành công!");
-            // Cập nhật lại danh sách giao dịch ngay lập tức
             queryClient.invalidateQueries({ queryKey: ["transactions", "me"] });
-            // Nếu có API lấy số dư ví, cũng cần invalidate nó ở đây
-            // queryClient.invalidateQueries({ queryKey: ["wallet", "balance"] });
         },
         onError: (error: any) => {
             const msg = error?.message || "Lỗi khi xử lý giao dịch";

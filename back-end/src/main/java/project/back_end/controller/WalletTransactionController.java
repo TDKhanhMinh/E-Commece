@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import project.back_end.request.WithdrawRequest;
 import project.back_end.response.ApiResponse;
 import project.back_end.response.BalanceAndRevenueResponse;
+import project.back_end.response.PaymentTransactionResponse;
 import project.back_end.response.WalletTransactionResponse;
 import project.back_end.response.WithdrawResponse;
 import project.back_end.service.WalletService;
@@ -55,6 +56,18 @@ public class WalletTransactionController {
     ) {
         return ResponseEntity.ok(new ApiResponse<>(200, "Success",
                 walletService.getAllTransactions(status, pageable, type, action, startDate, endDate)));
+    }
+
+    @GetMapping("/payment-transactions/all")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<Page<PaymentTransactionResponse>>> getAllPaymentTransactions(
+            Pageable pageable,
+            @RequestParam(defaultValue = "ALL") String status,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate
+    ) {
+        return ResponseEntity.ok(new ApiResponse<>(200, "Success",
+                walletService.getAllPaymentTransactions(status, pageable, startDate, endDate)));
     }
 
     @PutMapping("/transactions/{id}/status")

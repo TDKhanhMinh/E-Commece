@@ -7,8 +7,6 @@ secrets:
     external: true
   redis_password:
     external: true
-  # cloudflare_tunnel_token không cần nữa vì cloudflared chạy trên host
-
 configs:
   nginx_conf:
     file: ./nginx/nginx.conf
@@ -89,7 +87,7 @@ services:
       restart_policy:
         condition: on-failure
         delay: 10s
-        max_attempts: 3
+        max_attempts: 2
         window: 60s
       resources:
         limits:
@@ -195,7 +193,7 @@ services:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 3s
-      retries: 3
+      retries: 2
       start_period: 10s
     deploy:
       replicas: 1
@@ -252,24 +250,3 @@ services:
         reservations:
           cpus: "0.25"
           memory: 256M
-
-  # ── Cloudflare Tunnel ──────────────────────────────────────────────────────
-  # NOTE: cloudflared đang chạy trực tiếp trên host (systemd service)
-  # Không cần chạy trong Docker. Config tại /etc/cloudflared/config.yml
-  # Để enable lại tunnel trong Docker, uncomment phần dưới:
-  #
-  # tunnel:
-  #   image: cloudflare/cloudflared:latest
-  #   command: sh -c "tunnel --no-autoupdate run --token $$(cat /run/secrets/cloudflare_tunnel_token)"
-  #   secrets:
-  #     - cloudflare_tunnel_token
-  #   extra_hosts:
-  #     - "host.docker.internal:host-gateway"
-  #   networks:
-  #     - public
-  #   deploy:
-  #     replicas: 1
-  #     restart_policy:
-  #       condition: on-failure
-  #   depends_on:
-  #     - nginx

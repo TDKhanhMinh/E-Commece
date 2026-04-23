@@ -29,7 +29,7 @@ CONFIG = {
 
     # Giới hạn số replica
     "min_replicas": 2,      # Luôn giữ tối thiểu 2 để HA
-    "max_replicas": 8,      # Không scale quá 8 (tránh quá tải DB)
+    "max_replicas": 10,      # Không scale quá 10 (tránh quá tải DB)
 
     # Ngưỡng CPU để ra quyết định scale
     "scale_up_cpu_threshold": 70,    # Scale UP khi CPU trung bình > 70%

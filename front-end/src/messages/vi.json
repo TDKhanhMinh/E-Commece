@@ -1026,6 +1026,10 @@
     },
     "transactions": {
         "title": "Quản lý giao dịch",
+        "tabs": {
+            "wallet": "Giao dịch ví",
+            "payment": "Thanh toán đơn hàng"
+        },
         "loading": "Đang tải dữ liệu giao dịch...",
         "error": "Đã xảy ra lỗi khi tải dữ liệu giao dịch.",
         "empty": "Không tìm thấy giao dịch nào.",

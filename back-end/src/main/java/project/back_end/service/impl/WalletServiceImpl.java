@@ -8,21 +8,27 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import project.back_end.entity.Order;
+import project.back_end.entity.PaymentTransaction;
 import project.back_end.entity.ShipperProfile;
 import project.back_end.entity.User;
 import project.back_end.entity.WalletTransaction;
 import project.back_end.enumerate.ErrorCode;
+import project.back_end.enumerate.PaymentStatus;
 import project.back_end.enumerate.TransactionAction;
 import project.back_end.enumerate.TransactionStatus;
 import project.back_end.enumerate.TransactionType;
 import project.back_end.event.WalletTransactionEvent;
 import project.back_end.exception.AppException;
 import project.back_end.mapper.WalletMapper;
+import project.back_end.repository.OrderRepository;
+import project.back_end.repository.PaymentTransactionRepository;
 import project.back_end.repository.ShipperProfileRepository;
 import project.back_end.repository.UserRepository;
 import project.back_end.repository.WalletTransactionRepository;
 import project.back_end.request.WithdrawRequest;
 import project.back_end.response.BalanceAndRevenueResponse;
+import project.back_end.response.PaymentTransactionResponse;
 import project.back_end.response.WalletTransactionResponse;
 import project.back_end.response.WithdrawResponse;
 import project.back_end.service.WalletService;
@@ -30,6 +36,7 @@ import project.back_end.service.WalletService;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -40,6 +47,48 @@ public class WalletServiceImpl implements WalletService {
     private final UserRepository userRepository;
     private final WalletMapper walletMapper;
     private final ShipperProfileRepository shipperProfileRepository;
+    private final OrderRepository orderRepository;
+    private final PaymentTransactionRepository paymentTransactionRepository;
+
+    @Override
+    @Transactional
+    public void createPaymentTransaction(Long orderId, Map<String, String> vnpayParams) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+
+        User user = order.getUser();
+
+        // Parse thông tin từ VNPay params
+        String transactionCode = vnpayParams.get("vnp_TransactionNo");
+        String orderReference = vnpayParams.get("vnp_TxnRef");
+        String bankCode = vnpayParams.get("vnp_BankCode");
+        String vnpResponseCode = vnpayParams.get("vnp_ResponseCode");
+        String paymentDate = vnpayParams.get("vnp_PayDate");
+        String vnpAmount = vnpayParams.get("vnp_Amount");
+
+        // VNPay gửi amount * 100, cần chia lại
+        BigDecimal amount = BigDecimal.ZERO;
+        if (vnpAmount != null && !vnpAmount.isEmpty()) {
+            amount = new BigDecimal(vnpAmount).divide(BigDecimal.valueOf(100));
+        }
+
+        PaymentTransaction transaction = new PaymentTransaction();
+        transaction.setOrder(order);
+        transaction.setUser(user);
+        transaction.setTransactionCode(transactionCode);
+        transaction.setOrderReference(orderReference);
+        transaction.setAmount(amount);
+        transaction.setPaymentMethod("VNPAY");
+        transaction.setBankCode(bankCode);
+        transaction.setStatus(PaymentStatus.SUCCESS);
+        transaction.setVnpResponseCode(vnpResponseCode);
+        transaction.setPaymentDate(paymentDate);
+
+        paymentTransactionRepository.save(transaction);
+
+        log.info("Payment transaction created for order #{}: amount={}, bank={}, transactionCode={}",
+                orderId, amount, bankCode, transactionCode);
+    }
 
     @Override
     public void addDeliveryFee(String email, BigDecimal fee, Long orderId) {
@@ -134,6 +183,66 @@ public class WalletServiceImpl implements WalletService {
                 transactionStatus, transactionType, transactionAction,
                 createdAtAfter, createdAtBefore, pageable)
                 .map(walletMapper::toWalletTransactionResponse);
+    }
+
+    @Override
+    public Page<PaymentTransactionResponse> getAllPaymentTransactions(String status, Pageable pageable,
+            String startDate, String endDate) {
+
+        // Parse dates
+        LocalDateTime createdAtAfter = null;
+        LocalDateTime createdAtBefore = null;
+        if (startDate != null && !startDate.isEmpty() && !startDate.equalsIgnoreCase("null")) {
+            try {
+                if (startDate.contains("T")) {
+                    createdAtAfter = LocalDateTime.parse(startDate);
+                } else {
+                    createdAtAfter = java.time.LocalDate.parse(startDate).atStartOfDay();
+                }
+            } catch (Exception e) {
+                throw new AppException(ErrorCode.INVALID_REQUEST);
+            }
+        }
+        if (endDate != null && !endDate.isEmpty() && !endDate.equalsIgnoreCase("null")) {
+            try {
+                if (endDate.contains("T")) {
+                    createdAtBefore = LocalDateTime.parse(endDate);
+                } else {
+                    createdAtBefore = java.time.LocalDate.parse(endDate).atTime(23, 59, 59);
+                }
+            } catch (Exception e) {
+                throw new AppException(ErrorCode.INVALID_REQUEST);
+            }
+        }
+
+        // Parse status
+        PaymentStatus paymentStatus = null;
+        if (status != null && !status.equalsIgnoreCase("ALL") && !status.equalsIgnoreCase("null")) {
+            try {
+                paymentStatus = PaymentStatus.valueOf(status.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new AppException(ErrorCode.INVALID_TRANSACTION_STATUS);
+            }
+        }
+
+        return paymentTransactionRepository
+                .filterPaymentTransactions(paymentStatus, createdAtAfter, createdAtBefore, pageable)
+                .map(pt -> {
+                    PaymentTransactionResponse resp = new PaymentTransactionResponse();
+                    resp.setId(pt.getId());
+                    resp.setOrderId(pt.getOrder().getId());
+                    resp.setUserEmail(pt.getUser().getEmail());
+                    resp.setTransactionCode(pt.getTransactionCode());
+                    resp.setOrderReference(pt.getOrderReference());
+                    resp.setAmount(pt.getAmount().toString());
+                    resp.setPaymentMethod(pt.getPaymentMethod());
+                    resp.setBankCode(pt.getBankCode());
+                    resp.setStatus(pt.getStatus().name());
+                    resp.setVnpResponseCode(pt.getVnpResponseCode());
+                    resp.setPaymentDate(pt.getPaymentDate());
+                    resp.setCreatedAt(pt.getCreatedAt().toString());
+                    return resp;
+                });
     }
 
     @Override

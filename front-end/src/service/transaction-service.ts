@@ -1,6 +1,7 @@
 import http from "@/service/http";
 import { ApiResponse, PageResponse } from "@/type/api-type";
 import {
+    PaymentTransaction,
     TransactionRequest,
     TransactionResponse,
 } from "@/type/transaction-type";
@@ -25,6 +26,16 @@ export const getAllTransactionsAdmin = async (params?: any) =>
         { params }
     );
 
+
+/**
+ * Lấy danh sách tất cả giao dịch thanh toán (Dành cho Admin)
+ * @param params Object chứa: page, size, sortBy...
+ */
+export const getAllTransactionsPaymentAdmin = async (params?: any) =>
+    http.get<ApiResponse<PageResponse<PaymentTransaction>>>(
+        `/wallet/payment-transactions/all`,
+        { params }
+    );
 /**
  * Cập nhật trạng thái của một giao dịch cụ thể
  * @param transactionId ID của giao dịch

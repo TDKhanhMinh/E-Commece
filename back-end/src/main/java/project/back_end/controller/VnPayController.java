@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import project.back_end.request.PaymentRequest;
 import project.back_end.response.ApiResponse;
 import project.back_end.service.OrderService;
+import project.back_end.service.WalletService;
 import project.back_end.service.impl.VnPayService;
 
 import java.util.Map;
@@ -17,10 +18,12 @@ public class VnPayController {
 
     private final VnPayService vnPayService;
     private final OrderService orderService;
+    private final WalletService walletService;
 
-    public VnPayController(VnPayService vnPayService, OrderService orderService) {
+    public VnPayController(VnPayService vnPayService, OrderService orderService, WalletService walletService) {
         this.vnPayService = vnPayService;
         this.orderService = orderService;
+        this.walletService = walletService;
     }
 
     @PostMapping("/create")
@@ -57,8 +60,11 @@ public class VnPayController {
 
         if ("00".equals(responseCode)) {
 
-            // update trạng thái đơn hàng trong database
+            // Update trạng thái đơn hàng trong database
             orderService.updateOrderStatus(Long.valueOf(orderId), "PAID");
+
+            // Tạo payment transaction lưu thông tin giao dịch
+            walletService.createPaymentTransaction(Long.valueOf(orderId), params);
 
             return ResponseEntity.ok(new ApiResponse<>(200, "OK", null));
         }

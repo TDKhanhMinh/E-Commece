@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
+import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import {
     Table,
@@ -46,9 +47,15 @@ import {
     DialogTrigger,
     DialogFooter,
 } from "@/components/ui/dialog";
+import {
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+} from "@/components/ui/tabs";
 
-import { useTransactionsAdmin, useUpdateTransactionStatus } from "@/hooks/use-transaction";
-import { TransactionResponse } from "@/type/transaction-type";
+import { useTransactionsAdmin, useTransactionsPaymentAdmin, useUpdateTransactionStatus } from "@/hooks/use-transaction";
+import { PaymentTransaction, TransactionResponse } from "@/type/transaction-type";
 import { fDateTime } from "@/lib/format-date-time";
 import { formatCurrency } from "@/lib/format-price";
 
@@ -175,6 +182,7 @@ const UpdateTransactionStatusDialog = ({
 export default function TransactionManagement() {
     const t = useTranslations("transactions");
     const [page, setPage] = useState(0);
+    const [viewType, setViewType] = useState<"wallet" | "payment">("wallet");
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [filters, setFilters] = useState({
         status: "ALL",
@@ -186,19 +194,25 @@ export default function TransactionManagement() {
     const [tempFilters, setTempFilters] = useState(filters);
     const size = 20;
 
-    const {
-        data: pageData,
-        isLoading,
-        isError,
-    } = useTransactionsAdmin({
+    const commonParams = {
         page,
         size,
+        startDate: filters.startDate || null,
+        endDate: filters.endDate || null,
+    };
+
+    const walletParams = {
+        ...commonParams,
         status: filters.status === "ALL" ? null : filters.status,
         type: filters.type === "ALL" ? null : filters.type,
         action: filters.action === "ALL" ? null : filters.action,
-        startDate: filters.startDate || null,
-        endDate: filters.endDate || null,
-    });
+    };
+
+    const walletQuery = useTransactionsAdmin(walletParams);
+    const paymentQuery = useTransactionsPaymentAdmin(commonParams);
+
+    const activeQuery = viewType === "wallet" ? walletQuery : paymentQuery;
+    const { data: pageData, isLoading, isError } = activeQuery;
 
     const getActionLabel = (action: string) => {
         const labels: Record<string, string> = {
@@ -240,117 +254,141 @@ export default function TransactionManagement() {
 
     return (
         <div className="space-y-6 p-6">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
+                <Tabs value={viewType} onValueChange={(v) => { setViewType(v as any); setPage(0); }} className="w-full md:w-auto">
+                    <TabsList className="grid w-full grid-cols-2 lg:w-[400px]">
+                        <TabsTrigger value="wallet">
+                            {t("tabs.wallet") || "Giao dịch ví"}
+                        </TabsTrigger>
+                        <TabsTrigger value="payment">
+                            {t("tabs.payment") || "Thanh toán đơn hàng"}
+                        </TabsTrigger>
+                    </TabsList>
+                </Tabs>
+            </div>
+
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
-                    <CardTitle className="text-2xl font-bold">
-                        {t("title")}
+                    <CardTitle className="text-xl font-semibold">
+                        {viewType === "wallet" ? "Danh sách giao dịch hệ thống" : "Danh sách thanh toán từ đối tác"}
                     </CardTitle>
-                    <Dialog open={isFilterOpen} onOpenChange={setIsFilterOpen}>
-                        <DialogTrigger asChild>
-                            <Button variant="outline" className="relative">
-                                <Filter className="mr-2 h-4 w-4" />
-                                {t("filters.button")}
-                                {activeFilterCount > 0 && (
-                                    <Badge 
-                                        variant="destructive" 
-                                        className="absolute -top-2 -right-2 h-5 w-5 justify-center rounded-full p-0 text-[10px]"
-                                    >
-                                        {activeFilterCount}
-                                    </Badge>
-                                )}
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-[425px]">
-                            <DialogHeader>
-                                <DialogTitle>{t("filters.title")}</DialogTitle>
-                            </DialogHeader>
-                            <div className="space-y-6 py-4">
-                                <div className="space-y-3">
-                                    <Label className="text-base font-semibold">{t("filters.status")}</Label>
-                                    <RadioGroup
-                                        value={tempFilters.status}
-                                        onValueChange={(value) => setTempFilters(prev => ({ ...prev, status: value }))}
-                                        className="grid grid-cols-2 gap-2 sm:grid-cols-3"
-                                    >
-                                        {[
-                                            { label: t("status.all"), value: "ALL" },
-                                            { label: t("status.pending"), value: "PENDING" },
-                                            { label: t("status.success"), value: "SUCCESS" },
-                                            { label: t("status.failed"), value: "FAILED" },
-                                            { label: t("status.rejected"), value: "REJECTED" },
-                                        ].map((item) => (
-                                            <div key={item.value} className="flex items-center space-x-2 rounded-md border p-2 transition-colors hover:bg-slate-50">
-                                                <RadioGroupItem value={item.value} id={`status-${item.value}`} />
-                                                <Label htmlFor={`status-${item.value}`} className="flex-1 cursor-pointer text-sm">
-                                                    {item.label}
-                                                </Label>
-                                            </div>
-                                        ))}
-                                    </RadioGroup>
-                                </div>
+                    <div className="flex items-center gap-2">
+                        {viewType === "wallet" && (
+                            <Dialog open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+                                <DialogTrigger asChild>
+                                    <Button variant="outline" className="relative size-9 p-0 md:size-auto md:px-4 md:py-2">
+                                        <Filter className="h-4 w-4 md:mr-2" />
+                                        <span className="hidden md:inline">{t("filters.button")}</span>
+                                        {activeFilterCount > 0 && (
+                                            <Badge 
+                                                variant="destructive" 
+                                                className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full p-0 text-[10px]"
+                                            >
+                                                {activeFilterCount}
+                                            </Badge>
+                                        )}
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[425px]">
+                                    <DialogHeader>
+                                        <DialogTitle>{t("filters.title")}</DialogTitle>
+                                    </DialogHeader>
+                                    <div className="space-y-6 py-4">
+                                        <div className="space-y-3">
+                                            <Label className="text-base font-semibold">{t("filters.status")}</Label>
+                                            <RadioGroup
+                                                value={tempFilters.status}
+                                                onValueChange={(value) => setTempFilters(prev => ({ ...prev, status: value }))}
+                                                className="grid grid-cols-2 gap-2 sm:grid-cols-3"
+                                            >
+                                                {[
+                                                    { label: t("status.all"), value: "ALL" },
+                                                    { label: t("status.pending"), value: "PENDING" },
+                                                    { label: t("status.success"), value: "SUCCESS" },
+                                                    { label: t("status.failed"), value: "FAILED" },
+                                                    { label: t("status.rejected"), value: "REJECTED" },
+                                                ].map((item) => (
+                                                    <div key={item.value} className="flex items-center space-x-2 rounded-md border p-2 transition-colors hover:bg-slate-50">
+                                                        <RadioGroupItem value={item.value} id={`status-${item.value}`} />
+                                                        <Label htmlFor={`status-${item.value}`} className="flex-1 cursor-pointer text-sm">
+                                                            {item.label}
+                                                        </Label>
+                                                    </div>
+                                                ))}
+                                            </RadioGroup>
+                                        </div>
 
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-2">
-                                        <Label className="text-sm font-medium">{t("filters.startDate")}</Label>
-                                        <Input 
-                                            type="date" 
-                                            value={tempFilters.startDate}
-                                            onChange={(e) => setTempFilters(prev => ({ ...prev, startDate: e.target.value }))}
-                                        />
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <Label className="text-sm font-medium">{t("filters.startDate")}</Label>
+                                                <Input 
+                                                    type="date" 
+                                                    value={tempFilters.startDate}
+                                                    onChange={(e) => setTempFilters(prev => ({ ...prev, startDate: e.target.value }))}
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label className="text-sm font-medium">{t("filters.endDate")}</Label>
+                                                <Input 
+                                                    type="date" 
+                                                    value={tempFilters.endDate}
+                                                    onChange={(e) => setTempFilters(prev => ({ ...prev, endDate: e.target.value }))}
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="space-y-2">
-                                        <Label className="text-sm font-medium">{t("filters.endDate")}</Label>
-                                        <Input 
-                                            type="date" 
-                                            value={tempFilters.endDate}
-                                            onChange={(e) => setTempFilters(prev => ({ ...prev, endDate: e.target.value }))}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                            <DialogFooter className="flex sm:justify-between">
-                                <Button 
-                                    variant="outline" 
-                                    onClick={handleResetFilters}
-                                    className="text-red-500 hover:text-red-600 hover:bg-red-50"
-                                >
-                                    <RefreshCcw className="mr-2 h-4 w-4" />
-                                    {t("filters.reset")}
-                                </Button>
-                                <Button onClick={handleApplyFilters}>
-                                    {t("filters.apply")}
-                                </Button>
-                            </DialogFooter>
-                        </DialogContent>
-                    </Dialog>
+                                    <DialogFooter className="flex sm:justify-between">
+                                        <Button 
+                                            variant="outline" 
+                                            onClick={handleResetFilters}
+                                            className="text-red-500 hover:bg-red-50 hover:text-red-600"
+                                        >
+                                            <RefreshCcw className="mr-2 h-4 w-4" />
+                                            {t("filters.reset")}
+                                        </Button>
+                                        <Button onClick={handleApplyFilters}>
+                                            {t("filters.apply")}
+                                        </Button>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
+                        )}
+                        <Button variant="outline" size="icon" onClick={() => activeQuery.refetch()}>
+                            <RefreshCcw className={cn("h-4 w-4", activeQuery.isFetching && "animate-spin")} />
+                        </Button>
+                    </div>
                 </CardHeader>
                 <CardContent>
-                    <div className="rounded-md border">
-                        <Table>
+                    <div className="w-full overflow-x-auto rounded-md border">
+                        <Table className="min-w-[800px]">
                             <TableHeader>
-                                <TableRow className="bg-muted/50">
-                                    <TableHead className="w-[100px]">
-                                        {t("table.id")}
-                                    </TableHead>
-                                    <TableHead>{t("table.time")}</TableHead>
-                                    <TableHead>{t("table.type")}</TableHead>
-                                    <TableHead>{t("table.amount")}</TableHead>
-                                    <TableHead>{t("table.status")}</TableHead>
-                                    <TableHead className="hidden md:table-cell">
-                                        {t("table.description")}
-                                    </TableHead>
-                                    <TableHead className="w-[50px] text-right">
-                                        {t("table.actions")}
-                                    </TableHead>
-                                </TableRow>
+                                {viewType === "wallet" ? (
+                                    <TableRow className="bg-muted/50">
+                                        <TableHead className="w-[100px]">{t("table.id")}</TableHead>
+                                        <TableHead>{t("table.time")}</TableHead>
+                                        <TableHead>{t("table.type")}</TableHead>
+                                        <TableHead>{t("table.amount")}</TableHead>
+                                        <TableHead>{t("table.status")}</TableHead>
+                                        <TableHead className="hidden md:table-cell">{t("table.description")}</TableHead>
+                                        <TableHead className="w-[50px] text-right">{t("table.actions")}</TableHead>
+                                    </TableRow>
+                                ) : (
+                                    <TableRow className="bg-muted/50">
+                                        <TableHead className="w-[100px]">ID</TableHead>
+                                        <TableHead>Thời gian</TableHead>
+                                        <TableHead>Mã đơn/Email</TableHead>
+                                        <TableHead>Mã GD</TableHead>
+                                        <TableHead>Số tiền</TableHead>
+                                        <TableHead>PTTT/Ngân hàng</TableHead>
+                                        <TableHead>Trạng thái</TableHead>
+                                    </TableRow>
+                                )}
                             </TableHeader>
                             <TableBody>
                                 {isLoading ? (
                                     <TableRow>
-                                        <TableCell
-                                            colSpan={7}
-                                            className="text-muted-foreground h-24 text-center"
-                                        >
+                                        <TableCell colSpan={viewType === "wallet" ? 7 : 7} className="h-24 text-center text-muted-foreground">
                                             <div className="flex items-center justify-center">
                                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                                 {t("loading")}
@@ -359,80 +397,66 @@ export default function TransactionManagement() {
                                     </TableRow>
                                 ) : isError ? (
                                     <TableRow>
-                                        <TableCell
-                                            colSpan={7}
-                                            className="h-24 text-center font-medium text-red-500"
-                                        >
+                                        <TableCell colSpan={viewType === "wallet" ? 7 : 7} className="h-24 text-center font-medium text-red-500">
                                             {t("error")}
                                         </TableCell>
                                     </TableRow>
                                 ) : //@ts-ignore
                                 pageData && pageData.content.length > 0 ? (
                                     //@ts-ignore
-                                    pageData.content.map(
-                                        (txn: TransactionResponse) => (
+                                    pageData.content.map((txn: any) => (
+                                        viewType === "wallet" ? (
                                             <TableRow key={txn.transactionId}>
-                                                <TableCell className="font-medium">
-                                                    #{txn.transactionId}
-                                                </TableCell>
-                                                <TableCell>
-                                                    {fDateTime(
-                                                        txn.createdAt,
-                                                        "dd/MM/yyyy HH:mm:ss"
-                                                    )}
-                                                </TableCell>
+                                                <TableCell className="font-medium">#{txn.transactionId}</TableCell>
+                                                <TableCell>{fDateTime(txn.createdAt, "dd/MM/yyyy HH:mm:ss")}</TableCell>
                                                 <TableCell>
                                                     <div className="flex flex-col">
-                                                        <span
-                                                            className={
-                                                                txn.type ===
-                                                                "CREDIT"
-                                                                    ? "font-semibold text-green-600"
-                                                                    : "font-semibold text-red-600"
-                                                            }
-                                                        >
-                                                            {txn.type ===
-                                                            "CREDIT"
-                                                                ? t("type.credit")
-                                                                : t("type.debit")}
+                                                        <span className={txn.type === "CREDIT" ? "font-semibold text-green-600" : "font-semibold text-red-600"}>
+                                                            {txn.type === "CREDIT" ? t("type.credit") : t("type.debit")}
                                                         </span>
-                                                        <span className="text-muted-foreground text-xs">
-                                                            {getActionLabel(
-                                                                txn.transactionAction
-                                                            )}
-                                                        </span>
+                                                        <span className="text-xs text-muted-foreground">{getActionLabel(txn.transactionAction)}</span>
                                                     </div>
                                                 </TableCell>
-                                                <TableCell className="font-bold">
-                                                    {formatCurrency(txn.amount)}
-                                                </TableCell>
+                                                <TableCell className="font-bold">{formatCurrency(txn.amount)}</TableCell>
                                                 <TableCell>
-                                                    <Badge
-                                                        className={getStatusColor(
-                                                            txn.transactionStatus
-                                                        )}
-                                                        variant="outline"
-                                                    >
+                                                    <Badge className={getStatusColor(txn.transactionStatus)} variant="outline">
                                                         {txn.transactionStatus}
                                                     </Badge>
                                                 </TableCell>
-                                                <TableCell className="text-muted-foreground hidden text-sm md:table-cell">
-                                                    {txn.description || "—"}
-                                                </TableCell>
+                                                <TableCell className="hidden text-sm text-muted-foreground md:table-cell">{txn.description || "—"}</TableCell>
                                                 <TableCell className="text-right">
-                                                    <TransactionActions
-                                                        transaction={txn}
-                                                    />
+                                                    <TransactionActions transaction={txn} />
+                                                </TableCell>
+                                            </TableRow>
+                                        ) : (
+                                            <TableRow key={txn.id}>
+                                                <TableCell className="font-medium">#{txn.id}</TableCell>
+                                                <TableCell>{fDateTime(txn.createdAt, "dd/MM/yyyy HH:mm:ss")}</TableCell>
+                                                <TableCell>
+                                                    <div className="flex flex-col">
+                                                        <span className="font-semibold text-blue-600">#{txn.orderId}</span>
+                                                        <span className="text-xs text-muted-foreground truncate max-w-[150px]">{txn.userEmail}</span>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="font-mono text-xs">{txn.transactionCode}</TableCell>
+                                                <TableCell className="font-bold">{formatCurrency(Number(txn.amount))}</TableCell>
+                                                <TableCell>
+                                                    <div className="flex flex-col">
+                                                        <span className="text-xs font-semibold">{txn.paymentMethod}</span>
+                                                        <span className="text-[10px] text-muted-foreground">{txn.bankCode}</span>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Badge className={txn.status === "SUCCESS" ? "bg-green-100 text-green-800 hover:bg-green-100" : "bg-red-100 text-red-800 hover:bg-red-100"} variant="outline">
+                                                        {txn.status}
+                                                    </Badge>
                                                 </TableCell>
                                             </TableRow>
                                         )
-                                    )
+                                    ))
                                 ) : (
                                     <TableRow>
-                                        <TableCell
-                                            colSpan={7}
-                                            className="text-muted-foreground h-24 text-center"
-                                        >
+                                        <TableCell colSpan={viewType === "wallet" ? 7 : 7} className="h-24 text-center text-muted-foreground">
                                             {t("empty")}
                                         </TableCell>
                                     </TableRow>
@@ -442,7 +466,7 @@ export default function TransactionManagement() {
                     </div>
 
                     <div className="mt-4 flex items-center justify-between">
-                        <div className="text-muted-foreground text-sm">
+                        <div className="text-sm text-muted-foreground">
                             {//@ts-ignore
                             pageData && t("pagination.summary", { 
                                 //@ts-ignore
@@ -464,17 +488,12 @@ export default function TransactionManagement() {
                                                 e.preventDefault();
                                                 if (page > 0) setPage(page - 1);
                                             }}
-                                            className={
-                                                //@ts-ignore
-                                                pageData.first
-                                                    ? "pointer-events-none opacity-50"
-                                                    : "cursor-pointer"
-                                            }
+                                            className={//@ts-ignore
+                                                pageData.first ? "pointer-events-none opacity-50" : "cursor-pointer"}
                                         />
                                     </PaginationItem>
 
-                                    {Array.from({
-                                        //@ts-ignore
+                                    {Array.from({ //@ts-ignore
                                         length: pageData.totalPages,
                                     }).map((_, index) => (
                                         <PaginationItem key={index}>
@@ -499,12 +518,8 @@ export default function TransactionManagement() {
                                                 //@ts-ignore
                                                 if (page < pageData.totalPages - 1) setPage(page + 1);
                                             }}
-                                            className={
-                                                //@ts-ignore
-                                                pageData.last
-                                                    ? "pointer-events-none opacity-50"
-                                                    : "cursor-pointer"
-                                            }
+                                            className={//@ts-ignore
+                                                pageData.last ? "pointer-events-none opacity-50" : "cursor-pointer"}
                                         />
                                     </PaginationItem>
                                 </PaginationContent>
